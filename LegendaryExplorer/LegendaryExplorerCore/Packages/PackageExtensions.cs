@@ -138,7 +138,10 @@ namespace LegendaryExplorerCore.Packages
                         level.Actors.Add(actor.UIndex);
                     }
                 }
-                levelExport.WriteBinary(level);
+                if (added)
+                {
+                    levelExport.WriteBinary(level);
+                }
             }
 
             return added;

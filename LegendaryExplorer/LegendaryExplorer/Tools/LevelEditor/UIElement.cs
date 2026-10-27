@@ -37,6 +37,15 @@ public enum EWidgetMode
     Scale
 }
 
+/// <summary>
+/// How a viewport drag ended: a completed drag is recorded for undo, a cancelled one restores what it started from
+/// </summary>
+public enum DragEndReason
+{
+    Completed,
+    Cancelled
+}
+
 public class Widget : UIElement
 {
     public ActorProxy Attach;
@@ -476,14 +485,22 @@ public class Widget : UIElement
         }
     }
 
-    public void EndDrag()
+    public void EndDrag(DragEndReason reason = DragEndReason.Completed)
     {
         if (IsDragging && Attach is not null)
         {
-            var afterSnapshot = Attach.SnapshotTransform();
-            if (!_dragStartSnapshot.Equals(afterSnapshot))
+            if (reason is DragEndReason.Cancelled)
             {
-                OnDragComplete?.Invoke(Attach, _dragStartSnapshot, afterSnapshot);
+                //restored while still dragging, so the editor doesn't record it as an edit
+                Attach.RestoreTransform(_dragStartSnapshot);
+            }
+            else
+            {
+                var afterSnapshot = Attach.SnapshotTransform();
+                if (!_dragStartSnapshot.Equals(afterSnapshot))
+                {
+                    OnDragComplete?.Invoke(Attach, _dragStartSnapshot, afterSnapshot);
+                }
             }
         }
         IsDragging = false;

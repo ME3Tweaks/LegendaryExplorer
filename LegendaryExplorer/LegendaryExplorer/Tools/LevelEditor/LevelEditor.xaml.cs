@@ -805,6 +805,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void CloseAllFiles()
     {
+        CancelViewportDrag();
         Game = MEGame.Unknown;
         // Through SelectActor, so that the details panes stop showing (and offering to select) the closed levels' actors
         SelectActor(null, false);
@@ -904,6 +905,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void CloseFileCore(OpenLevelFile file)
     {
+        CancelViewportDrag();
         if (SelectedActor is not null && file.Actors.Contains(SelectedActor))
         {
             SelectedActor = null;
@@ -1093,6 +1095,14 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
     }
 
+    //a drag works in the mode it started in
+    private void SetWidgetMode(EWidgetMode mode, string name)
+    {
+        CancelViewportDrag();
+        RenderContext.TransformWidget.Mode = mode;
+        CurrentModeName = name;
+    }
+
     private void LoadCommands()
     {
         SetAssignmentPolicyCommand = new RelayCommand(policy => AssignmentPolicy = (LightAssignmentPolicy)policy);
@@ -1103,10 +1113,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         SaveAsCommand = new GenericCommand(SaveFileAs, () => CanEditScene && PackageIsLoaded());
         SaveSingleFileCommand = new RelayCommand(SaveSingleFileExecute, _ => CanEditScene && PackageIsLoaded());
         CloseFileCommand = new RelayCommand(CloseFileExecute, _ => CanEditScene);
-        ToggleTranslateCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.Translate; CurrentModeName = "Translate"; }, PackageIsLoaded);
-        ToggleRotateCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.Rotate; CurrentModeName = "Rotate"; }, PackageIsLoaded);
-        ToggleScaleCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.Scale; CurrentModeName = "Scale"; }, PackageIsLoaded);
-        ToggleUniformScaleCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.UniformScale; CurrentModeName = "Uniform Scale"; }, PackageIsLoaded);
+        ToggleTranslateCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.Translate, "Translate"), PackageIsLoaded);
+        ToggleRotateCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.Rotate, "Rotate"), PackageIsLoaded);
+        ToggleScaleCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.Scale, "Scale"), PackageIsLoaded);
+        ToggleUniformScaleCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.UniformScale, "Uniform Scale"), PackageIsLoaded);
         CommitChangesCommand = new GenericCommand(CommitChanges, () => CanEditScene && PackageIsLoaded());
         CommitSingleFileCommand = new RelayCommand(CommitSingleFileExecute, _ => CanEditScene && PackageIsLoaded());
         LoadRelatedLevelsCommand = new GenericCommand(LoadRelatedLevels, () => CanEditScene && PackageIsLoaded());
@@ -1118,7 +1128,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 FocusOnBounds(SelectedActor.GetBounds());
             }
         }, () => PackageIsLoaded() && SelectedActor is { HasSpatialRepresentation: true });
-        ToggleLocalCoordsCommand = new GenericCommand(() => UseLocalCoordsForWidget = !UseLocalCoordsForWidget, PackageIsLoaded);
+        ToggleLocalCoordsCommand = new GenericCommand(() => { CancelViewportDrag(); UseLocalCoordsForWidget = !UseLocalCoordsForWidget; }, PackageIsLoaded);
         OpenInPackageEditorCommand = new GenericCommand(() =>
         {
             if (SelectedActor?.Export is { } export)
@@ -1173,9 +1183,26 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         OnPropertyChanged(nameof(CanRedo));
     }
 
+    /// <summary>
+    /// Abandons a viewport drag, restoring what it started from, before something that can't happen mid-drag (undo, a mode change, closing a file)
+    /// </summary>
+    private void CancelViewportDrag()
+    {
+        if (!RenderContext.IsDragging) return;
+        RenderContext.EndDrag(DragEndReason.Cancelled);
+        SceneViewer.SyncMouseCapture();
+    }
+
+    protected override void OnDeactivated(EventArgs e)
+    {
+        CancelViewportDrag();
+        base.OnDeactivated(e);
+    }
+
     public void Undo_Clicked(object sender, RoutedEventArgs e) => Undo();
     public void Undo()
     {
+        CancelViewportDrag();
         if (UndoHistory.CanUndo)
         {
             _isApplyingUndoRedo = true;
@@ -1192,6 +1219,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public void Redo_Clicked(object sender, RoutedEventArgs e) => Redo();
     void Redo()
     {
+        CancelViewportDrag();
         if (UndoHistory.CanRedo)
         {
             _isApplyingUndoRedo = true;
@@ -1305,6 +1333,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private bool CommitChangesForFiles(IEnumerable<OpenLevelFile> requested)
     {
+        CancelViewportDrag();
         var files = requested.ToHashSet();
         DecalPackageMigration migration;
         try
@@ -1804,6 +1833,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void ReloadFile(OpenLevelFile file)
     {
+        CancelViewportDrag();
         // Remove all actors for this file, then re-load
         (Vector3, float, float) savedCamPOV = default;
         Vector3 savedActorPos = default;

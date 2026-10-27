@@ -234,11 +234,13 @@ public class LightGizmo : UIElement
         return t < 0 ? null : rayOrigin + rayDirection * t;
     }
 
-    public void EndDrag()
+    public void EndDrag(DragEndReason reason = DragEndReason.Completed)
     {
         if (DragHandle is not LightHandle.None && Attach is not null && Attach.Light.Settings != DragStartSettings)
         {
-            OnDragComplete?.Invoke(Attach, DragStartSettings, Attach.Light.Settings);
+            //restored while still dragging, so the editor doesn't record it as an edit
+            if (reason is DragEndReason.Cancelled) Attach.Light.Apply(DragStartSettings);
+            else OnDragComplete?.Invoke(Attach, DragStartSettings, Attach.Light.Settings);
         }
         DragHandle = LightHandle.None;
     }

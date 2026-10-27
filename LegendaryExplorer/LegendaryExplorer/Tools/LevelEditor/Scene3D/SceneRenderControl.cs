@@ -418,6 +418,11 @@ public abstract class RenderContext
         return false;
     }
 
+    /// <summary>
+    /// Whether the context owns the mouse (such as during a drag), so the control captures it and keeps reporting it outside the viewport
+    /// </summary>
+    public virtual bool HoldsMouseCapture => false;
+
     public virtual void EmptyCaches()
     {
         
@@ -695,6 +700,7 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
             return;
         Point position = e.GetPosition(this);
         e.Handled = Context.MouseDown(buttons, (int)position.X, (int)position.Y);
+        SyncMouseCapture();
     }
 
     private void SceneRenderControlWPF_PreviewMouseUp(object sender, MouseButtonEventArgs e)
@@ -710,12 +716,30 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
             return;
         Point position = e.GetPosition(this);
         e.Handled = Context.MouseUp(buttons, (int)position.X, (int)position.Y);
+        SyncMouseCapture();
     }
 
     private void SceneRenderControlWPF_PreviewMouseMove(object sender, MouseEventArgs e)
     {
         Point position = e.GetPosition(this);
         e.Handled = Context.MouseMove((int)position.X, (int)position.Y);
+        SyncMouseCapture();
+    }
+
+    /// <summary>
+    /// Captures the mouse while the context holds it, so a drag's release outside the viewport still reaches it.
+    /// Call after ending a drag from outside the input events
+    /// </summary>
+    public void SyncMouseCapture()
+    {
+        if (Context?.HoldsMouseCapture == true)
+        {
+            if (!IsMouseCaptured) CaptureMouse();
+        }
+        else if (IsMouseCaptured)
+        {
+            ReleaseMouseCapture();
+        }
     }
 
     private void SceneRenderControlWPF_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -732,14 +756,22 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
         }
         else
         {
-            e.Handled = Context.KeyDown(e.Key);
+            e.Handled = Context.KeyDown(InputKey(e));
+            SyncMouseCapture();
         }
     }
 
     public void OnKeyUp(object sender, KeyEventArgs e)
     {
-        e.Handled = Context.KeyUp(e.Key);
+        e.Handled = Context.KeyUp(InputKey(e));
+        SyncMouseCapture();
     }
+
+    /// <summary>
+    /// While Alt is held WPF reports keys as <see cref="Key.System"/>. During a drag the context gets the real key, so Escape still cancels;
+    /// otherwise Alt combinations stay the window's (menu access keys, Alt+F4)
+    /// </summary>
+    private Key InputKey(KeyEventArgs e) => e.Key is Key.System && Context.HoldsMouseCapture ? e.SystemKey : e.Key;
 
     private void SceneRenderControl_LostMouseCapture(object sender, MouseEventArgs e)
     {

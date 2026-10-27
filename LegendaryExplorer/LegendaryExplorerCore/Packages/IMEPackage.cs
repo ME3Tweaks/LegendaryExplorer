@@ -265,6 +265,11 @@ namespace LegendaryExplorerCore.Packages
         public bool IsModified { get; internal set; }
 
         /// <summary>
+        /// Whether a <see cref="PackageEditScope"/> is open on this package. It can't be saved meanwhile
+        /// </summary>
+        bool IsInEditScope { get; }
+
+        /// <summary>
         /// Compares this package against the one located on disk at the specified path
         /// </summary>
         /// <param name="packagePath"></param>

@@ -1056,6 +1056,56 @@ namespace LegendaryExplorerCore.Packages
         private int? propsEndOffset;
 
         /// <summary>
+        /// Everything an <see cref="PackageEditScope"/> restores if its edits are abandoned. Data, the component map and the
+        /// generation counts are replaced rather than edited in place (except while saving, which a scope prevents), so they're kept by reference
+        /// </summary>
+        internal sealed class EditState(ExportEntry entry)
+        {
+            public readonly ExportEntry Entry = entry;
+            private readonly CommonHeaderFields header = entry._commonHeaderFields;
+            private readonly int uIndex = entry._uIndex;
+            private readonly int headerOffset = entry.HeaderOffset;
+            private readonly byte[] componentMap = entry._componentMap;
+            private readonly int[] generationNetObjectCounts = entry._generationNetObjectCounts;
+            private readonly int[] generationNetObjectCountValues = entry._generationNetObjectCounts?.ArrayClone();
+            private readonly byte[] data = entry._data;
+            private readonly int? propsEnd = entry.propsEndOffset;
+            private readonly bool dataWasChanged = entry.dataChanged;
+            private readonly bool headerWasChanged = entry.headerChanged;
+            private readonly bool pending = entry._entryHasPendingChanges;
+
+            /// <summary>Puts the entry back without raising change notifications. Returns whether anything was different</summary>
+            public bool Restore()
+            {
+                ExportEntry e = Entry;
+                bool countsDiffer = generationNetObjectCounts != e._generationNetObjectCounts
+                    || generationNetObjectCounts is not null && !generationNetObjectCounts.AsSpan().SequenceEqual(generationNetObjectCountValues);
+                bool differed = !header.Equals(e._commonHeaderFields) || uIndex != e._uIndex || headerOffset != e.HeaderOffset
+                    || componentMap != e._componentMap || countsDiffer || data != e._data
+                    || dataWasChanged != e.dataChanged || headerWasChanged != e.headerChanged || pending != e._entryHasPendingChanges;
+                e._commonHeaderFields = header;
+                e._uIndex = uIndex;
+                e.HeaderOffset = headerOffset;
+                e._componentMap = componentMap;
+                if (generationNetObjectCountValues is not null) generationNetObjectCountValues.AsSpan().CopyTo(generationNetObjectCounts);
+                e._generationNetObjectCounts = generationNetObjectCounts;
+                e._data = data;
+                e.propsEndOffset = propsEnd;
+                e.dataChanged = dataWasChanged;
+                e.headerChanged = headerWasChanged;
+                e._entryHasPendingChanges = pending;
+                return differed;
+            }
+        }
+
+        //lets bindings re-read an entry an edit scope restored
+        internal void NotifyRestored()
+        {
+            PropertyChanged?.Invoke(this, EmptyPropertyChangedEventArgs);
+            EntryModifiedChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
         /// Gets the ending offset of the properties for this export, where binary data begins (if any). This call caches the position, the cached value is invalidated when the .Data attribute of this export is updated.
         /// </summary>
         /// <returns></returns>

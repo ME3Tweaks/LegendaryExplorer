@@ -228,6 +228,27 @@ public class LevelEditorRenderContext : MeshRenderContext
     const int HitTestSize = 3;
     private ModifierKeys? clickModifiers;
 
+    /// <summary>Whether a widget, light handle or spline tangent drag owns the mouse. Drags belong to the left button</summary>
+    public bool IsDragging => TransformWidget.IsDragging || LightGizmo.IsDragging || SplineGizmo.IsDragging;
+
+    public override bool HoldsMouseCapture => IsDragging;
+
+    /// <summary>Whether the left button is down, for noticing a release the viewport never received. Replaceable in tests</summary>
+    public Func<bool> IsLeftButtonDown { get; set; } = static () => Mouse.LeftButton is MouseButtonState.Pressed;
+
+    /// <summary>Buttons whose next release belongs to a cancelled drag, so it must not also click the scene</summary>
+    private readonly HashSet<MouseButtons> swallowedReleases = [];
+
+    /// <summary>Ends whichever drag is active. Cancelling restores what it started from and records nothing</summary>
+    public void EndDrag(DragEndReason reason)
+    {
+        if (!IsDragging) return;
+        if (reason is DragEndReason.Cancelled) swallowedReleases.Add(MouseButtons.Left);
+        TransformWidget.EndDrag(reason);
+        LightGizmo.EndDrag(reason);
+        SplineGizmo.EndDrag(reason);
+    }
+
     public override bool MouseUp(MouseButtons button, int x, int y) => MouseUp(button, x, y, Keyboard.Modifiers);
 
     /// <summary>Completes a viewport click with its mouse-down modifiers, including clicks on a spline actor's mesh.</summary>
@@ -238,19 +259,11 @@ public class LevelEditorRenderContext : MeshRenderContext
             modifiers = clickModifiers ?? modifiers;
             clickModifiers = null;
         }
-        if (TransformWidget.IsDragging)
+        if (swallowedReleases.Remove(button)) return true;
+        if (IsDragging)
         {
-            TransformWidget.EndDrag();
-            return true;
-        }
-        if (LightGizmo.IsDragging)
-        {
-            LightGizmo.EndDrag();
-            return true;
-        }
-        if (SplineGizmo.IsDragging)
-        {
-            SplineGizmo.EndDrag();
+            //only the drag's own button completes it
+            if (button is MouseButtons.Left) EndDrag(DragEndReason.Completed);
             return true;
         }
         if (base.MouseUp(button, x, y)) return true;
@@ -285,23 +298,24 @@ public class LevelEditorRenderContext : MeshRenderContext
     /// <summary>Starts a viewport click, retaining Ctrl/Shift even if released before the mouse button.</summary>
     public bool MouseDown(MouseButtons button, int x, int y, ModifierKeys modifiers)
     {
-        if (button is MouseButtons.Left) clickModifiers = modifiers;
-        if (TransformWidget.IsDragging)
+        //a new press supersedes a release that never arrived
+        swallowedReleases.Remove(button);
+        if (IsDragging)
         {
-            //failsafe if mouseup event was not captured
-            if (Mouse.LeftButton is MouseButtonState.Released)
+            //the drag's release was missed if the left button is up, or pressed again: it ended there
+            if (button is MouseButtons.Left || !IsLeftButtonDown())
             {
-                TransformWidget.EndDrag();
+                EndDrag(DragEndReason.Completed);
+            }
+            else
+            {
+                //another button cancels the drag, and its own release mustn't click the scene either
+                EndDrag(DragEndReason.Cancelled);
+                swallowedReleases.Add(button);
+                return true;
             }
         }
-        if (LightGizmo.IsDragging && Mouse.LeftButton is MouseButtonState.Released)
-        {
-            LightGizmo.EndDrag();
-        }
-        if (SplineGizmo.IsDragging && Mouse.LeftButton is MouseButtonState.Released)
-        {
-            SplineGizmo.EndDrag();
-        }
+        if (button is MouseButtons.Left) clickModifiers = modifiers;
         if (HitBufferView is not null)
         {
             IHitProxy selected = GetHitProxy(x, y);
@@ -309,7 +323,7 @@ public class LevelEditorRenderContext : MeshRenderContext
             TransformWidget.CurrentAxis = EWidgetAxis.None;
             switch (selected)
             {
-                case AxisHitProxy axisProxy:
+                case AxisHitProxy axisProxy when button is MouseButtons.Left:
                     TransformWidget.CurrentAxis = axisProxy.Axis;
                     TransformWidget.BeginDrag(x, y);
                     return true;
@@ -324,6 +338,36 @@ public class LevelEditorRenderContext : MeshRenderContext
             }
         }
         return base.MouseDown(button, x, y);
+    }
+
+    public override bool KeyDown(Key key)
+    {
+        if (IsDragging)
+        {
+            if (key is Key.Escape)
+            {
+                EndDrag(DragEndReason.Cancelled);
+                return true;
+            }
+            //Alt mustn't reach the window's menu while it's held during a drag
+            if (key is Key.LeftAlt or Key.RightAlt) return true;
+        }
+        return base.KeyDown(key);
+    }
+
+    public override bool KeyUp(Key key) => IsDragging && key is Key.LeftAlt or Key.RightAlt || base.KeyUp(key);
+
+    //losing the mouse or keyboard to anything else (another window, a dialog) abandons the drag
+    public override bool LostMouseFocus()
+    {
+        EndDrag(DragEndReason.Cancelled);
+        return base.LostMouseFocus();
+    }
+
+    public override bool LostKeyboardFocus()
+    {
+        EndDrag(DragEndReason.Cancelled);
+        return base.LostKeyboardFocus();
     }
 
     /// <summary>Handles Ctrl clicks on spline markers or meshes through the real hit buffer; Shift breaks instead of connecting or flipping.</summary>
@@ -341,36 +385,17 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public override bool MouseMove(int x, int y)
     {
-        if (TransformWidget.IsDragging)
+        if (IsDragging)
         {
-            //failsafe if mouseup event was not captured
-            if (Mouse.LeftButton is MouseButtonState.Released)
+            //failsafe if the release was never received: the button was let go, so the drag is complete
+            if (!IsLeftButtonDown())
             {
-                TransformWidget.EndDrag();
+                EndDrag(DragEndReason.Completed);
                 return true;
             }
-            TransformWidget.Drag(this, x, y);
-            return true;
-        }
-        if (LightGizmo.IsDragging)
-        {
-            //failsafe if mouseup event was not captured
-            if (Mouse.LeftButton is MouseButtonState.Released)
-            {
-                LightGizmo.EndDrag();
-                return true;
-            }
-            LightGizmo.Drag(this, x, y);
-            return true;
-        }
-        if (SplineGizmo.IsDragging)
-        {
-            if (Mouse.LeftButton is MouseButtonState.Released)
-            {
-                SplineGizmo.EndDrag();
-                return true;
-            }
-            SplineGizmo.Drag(this, x, y);
+            if (TransformWidget.IsDragging) TransformWidget.Drag(this, x, y);
+            else if (LightGizmo.IsDragging) LightGizmo.Drag(this, x, y);
+            else SplineGizmo.Drag(this, x, y);
             return true;
         }
         if (base.MouseMove(x, y)) return true;

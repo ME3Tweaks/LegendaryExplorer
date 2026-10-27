@@ -780,10 +780,14 @@ public class SplineTangentGizmo : UIElement
         Attach.SetWorldTangent((arrive ? -side : side) * length, "tangent");
     }
 
-    public void EndDrag()
+    public void EndDrag(DragEndReason reason = DragEndReason.Completed)
     {
         if (DragHandle is not SplineTangentHandle.None && Attach is not null && Attach.Settings != DragStartSettings)
-            OnDragComplete?.Invoke(Attach, DragStartSettings, Attach.Settings);
+        {
+            //restored while still dragging, so the editor doesn't record it as an edit
+            if (reason is DragEndReason.Cancelled) Attach.RestoreSettings(DragStartSettings);
+            else OnDragComplete?.Invoke(Attach, DragStartSettings, Attach.Settings);
+        }
         DragHandle = SplineTangentHandle.None;
     }
 }

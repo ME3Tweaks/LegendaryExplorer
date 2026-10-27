@@ -1070,6 +1070,12 @@ namespace LegendaryExplorerCore.Packages
                 return;
             }
             var update = new PackageUpdate(change, index);
+            if (editScope is not null)
+            {
+                //held until the scope's edits are kept, and dropped if they're abandoned
+                editScope.Updates.Add(update);
+                return;
+            }
             lock (_updatelock)
             {
                 pendingUpdates.Add(update);
