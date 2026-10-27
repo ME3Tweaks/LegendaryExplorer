@@ -158,6 +158,9 @@ public sealed class LightmassInstance : LightmassMapping
     public int LodIndex;
     public LightmassMesh Mesh;
     public Matrix4x4 LocalToWorld;
+    /// <summary>Null for ordinary static meshes; Lightmass applies this deformation to the shared source mesh.</summary>
+    public SplineMeshDeformation Spline;
+    public string VertexFactoryType => Spline == null ? "FLocalVertexFactory" : "FSplineMeshVertexFactory";
     public Vector3 BoundsMin, BoundsMax;
     public int MeshIndex, LevelId;
     public bool CastShadow, CastShadowAsTwoSided;
@@ -350,7 +353,7 @@ public sealed class LightmassSceneBuilder : IDisposable
         var levelBinaries = new List<(IMEPackage Package, Level Level)>();
         foreach (var package in levels)
         {
-            hasShadowOnlyReceivers |= package.Exports.Where(e => e.ClassName == "StaticMeshComponent")
+            hasShadowOnlyReceivers |= package.Exports.Where(IsStaticMeshComponent)
                 .Any(e => ObjectBinary.From<StaticMeshComponent>(e).LODData.Any(l => l.LightMap.LightMapType == ELightMapType.LMT_None
                     && (l.ShadowMaps.Length > 0 || l.ShadowVertexBuffers.Length > 0)));
             var levelExport = package.Exports.FirstOrDefault(e => e.ClassName == "Level" && e.ObjectName.Name == "PersistentLevel");
@@ -519,6 +522,8 @@ public sealed class LightmassSceneBuilder : IDisposable
 
     // ================= meshes =================
 
+    static bool IsStaticMeshComponent(ExportEntry component) => component.ClassName is "StaticMeshComponent" or "SplineMeshComponent";
+
     /// <summary>Static mesh components of the level's actors, with their owner's class (collection actors list theirs in their binary).</summary>
     static IEnumerable<(ExportEntry Component, string OwnerClass)> StaticMeshComponents(IMEPackage package, Level level)
     {
@@ -528,12 +533,12 @@ public sealed class LightmassSceneBuilder : IDisposable
         {
             if (actor.ClassName != "StaticMeshCollectionActor") continue;
             foreach (int u in ObjectBinary.From<StaticMeshCollectionActor>(actor).Components)
-                if (package.TryGetUExport(u, out var c) && c.ClassName == "StaticMeshComponent" && seen.Add(c))
+                if (package.TryGetUExport(u, out var c) && IsStaticMeshComponent(c) && seen.Add(c))
                     yield return (c, actor.ClassName);
         }
         foreach (var export in package.Exports)
         {
-            if (export.ClassName != "StaticMeshComponent" || export.Parent is not ExportEntry owner || !actors.Contains(owner) || !seen.Add(export)) continue;
+            if (!IsStaticMeshComponent(export) || export.Parent is not ExportEntry owner || !actors.Contains(owner) || !seen.Add(export)) continue;
             yield return (export, owner.ClassName);
         }
     }
@@ -573,6 +578,12 @@ public sealed class LightmassSceneBuilder : IDisposable
             return;
         }
         var mesh = GetMesh(meshExport, staticMesh);
+        var spline = component.ClassName == "SplineMeshComponent" ? SplineMeshDeformation.Read(props, staticMesh.Bounds) : null;
+        if (spline != null && (!float.IsFinite(spline.MeshRangeZ) || spline.MeshRangeZ <= 0))
+        {
+            scene.Count("mesh: spline has invalid mesh Z range (kept)");
+            return;
+        }
 
         var shadowSettings = ShadowParticipation.Read(props);
         bool castShadow = shadowSettings.BakesShadow;
@@ -600,7 +611,7 @@ public sealed class LightmassSceneBuilder : IDisposable
             if (lod > 0 && !bake && shadowLayout == null && !allocate) continue;
             if (!bake && shadowLayout == null && !allocate && !castShadow) continue;
 
-            var (min, max, receiverBounds) = MeshBounds(lodModel.PositionVertexBuffer.VertexData, l2w);
+            var (min, max, receiverBounds) = MeshBounds(lodModel.PositionVertexBuffer.VertexData, l2w, spline);
             var instance = new LightmassInstance
             {
                 Guid = Guid.NewGuid(),
@@ -608,6 +619,7 @@ public sealed class LightmassSceneBuilder : IDisposable
                 LodIndex = lod,
                 Mesh = mesh,
                 LocalToWorld = l2w,
+                Spline = spline,
                 BoundsMin = min, BoundsMax = max,
                 MeshIndex = thisMeshIndex,
                 LevelId = levelId,
@@ -647,8 +659,8 @@ public sealed class LightmassSceneBuilder : IDisposable
                     LightmassMappingAllocator.HasUsableUv(lodModel, mesh.LightMapCoordinateIndex));
                 // The shadow maps come out in the mapping's kind, and the receiver's materials draw each with a light pass of that kind
                 var shadowed = reaching.Where(IsShadowMapped).ToList();
-                bool Lightmap(bool texture) => materialEntries.Count > 0 && materialEntries.All(m => SupportsNewLightmap(m, texture));
-                bool Shadows(bool texture) => shadowed.All(l => materialEntries.All(m => SupportsShadowMaps(m, l, texture)));
+                bool Lightmap(bool texture) => materialEntries.Count > 0 && materialEntries.All(m => SupportsNewLightmap(m, texture, instance.VertexFactoryType));
+                bool Shadows(bool texture) => shadowed.All(l => materialEntries.All(m => SupportsShadowMaps(m, l, texture, instance.VertexFactoryType)));
                 var size = ChooseMappingSize(preferred, shadowLayout, texture => Lightmap(texture) && Shadows(texture))
                     ?? ChooseMappingSize(preferred, shadowLayout, Lightmap);
                 if (size is { } chosen)
@@ -754,33 +766,34 @@ public sealed class LightmassSceneBuilder : IDisposable
     void ReportUnsupportedShadowMaps(LightmassInstance instance, List<IEntry> materials)
     {
         foreach (var light in instance.RelevantLights.Where(IsShadowMapped).Where(l => ReachesBox(l.Light, instance.BoundsMin, instance.BoundsMax)))
-            if (!materials.All(m => SupportsShadowMaps(m, light, instance.IsTextureMapping)))
+            if (!materials.All(m => SupportsShadowMaps(m, light, instance.IsTextureMapping, instance.VertexFactoryType)))
                 scene.Count($"shadow maps: {light.Light.Type} {(instance.IsTextureMapping ? "texture" : "vertex")} shadow maps without a cooked light pass on the receiver's material (written anyway)");
     }
 
-    bool SupportsNewLightmap(IEntry entry, bool texture)
+    bool SupportsNewLightmap(IEntry entry, bool texture, string vertexFactoryType = "FLocalVertexFactory")
     {
         string policy = texture ? "FDirectionalLightMapTexturePolicy" : "FDirectionalVertexLightMapPolicy";
-        return entry != null && HasCookedShaders(entry, $"TBasePassVertexShader{policy}FNoDensityPolicy", $"TBasePassPixelShader{policy}NoSkyLight");
+        return entry != null && HasCookedShaders(entry, vertexFactoryType, $"TBasePassVertexShader{policy}FNoDensityPolicy", $"TBasePassPixelShader{policy}NoSkyLight");
     }
 
     /// <summary>A missing material is drawn with the default material, which has every light pass.</summary>
-    bool SupportsShadowMaps(IEntry entry, LightmassLight light, bool texture)
+    bool SupportsShadowMaps(IEntry entry, LightmassLight light, bool texture, string vertexFactoryType)
     {
         var (vertex, pixel) = ShadowMapLightShaders(light.Light.Type, texture, light.SignedDistanceField);
-        return entry == null || HasCookedShaders(entry, vertex, pixel);
+        return entry == null || HasCookedShaders(entry, vertexFactoryType, vertex, pixel);
     }
 
-    readonly Dictionary<(IEntry Material, string VertexShader), bool> cookedShaders = new();
+    readonly Dictionary<(IEntry Material, string VertexFactory, string VertexShader, string PixelShader), bool> cookedShaders = new();
     readonly Dictionary<IMEPackage, ShaderCache> allocationShaderCaches = new();
 
-    /// <summary>Whether the material's cooked shader map (its own, or its nearest parent's with one) has both shaders. Unlit materials have no lighting passes.</summary>
-    bool HasCookedShaders(IEntry entry, string vertexShader, string pixelShader)
+    /// <summary>Whether the material's cooked shader map (its own, or its nearest parent's with one) has both shaders for the receiver's vertex factory. Unlit materials have no lighting passes.</summary>
+    bool HasCookedShaders(IEntry entry, string vertexFactoryType, string vertexShader, string pixelShader)
     {
-        if (cookedShaders.TryGetValue((entry, vertexShader), out bool cooked)) return cooked;
+        var key = (entry, vertexFactoryType, vertexShader, pixelShader);
+        if (cookedShaders.TryGetValue(key, out bool cooked)) return cooked;
         try
         {
-            if (ReadMaterial(entry).Unlit) return cookedShaders[(entry, vertexShader)] = true;
+            if (ReadMaterial(entry).Unlit) return cookedShaders[key] = true;
             var current = Resolve(entry);
             for (int depth = 0; current != null && depth < 16; depth++)
             {
@@ -793,14 +806,14 @@ public sealed class LightmassSceneBuilder : IDisposable
                             allocationShaderCaches[p] = cache = p.FindExport("SeekFreeShaderCache", "ShaderCache") is { } e ? ObjectBinary.From<ShaderCache>(e) : null;
                         return cache;
                     }
-                    var (_, shaders) = LegendaryExplorerCore.Shaders.ShaderCacheManipulator.GetMaterialShaderMapAndShaders(current, Cache, vertexShader, pixelShader);
-                    return cookedShaders[(entry, vertexShader)] = shaders.All(s => s != null);
+                    var (_, shaders) = LegendaryExplorerCore.Shaders.ShaderCacheManipulator.GetMaterialShaderMapAndFactoryShaders(current, Cache, vertexFactoryType, vertexShader, pixelShader);
+                    return cookedShaders[key] = shaders.All(s => s != null);
                 }
                 current = props.GetProp<ObjectProperty>("Parent") is { Value: not 0 } parent ? Resolve(current.FileRef.GetEntry(parent.Value)) : null;
             }
         }
         catch (Exception e) { scene.Count($"mapping: shader policy lookup failed ({e.GetType().Name})"); }
-        return cookedShaders[(entry, vertexShader)] = false;
+        return cookedShaders[key] = false;
     }
 
     /// <summary>
@@ -850,12 +863,13 @@ public sealed class LightmassSceneBuilder : IDisposable
     /// A mesh's world-space box, and its bounds as UE3 gives a primitive (its local bounds transformed, as UPrimitiveComponent::Bounds) for
     /// deciding which lights reach it
     /// </summary>
-    static (Vector3 Min, Vector3 Max, BoxSphereBounds Receiver) MeshBounds(Vector3[] positions, Matrix4x4 l2w)
+    static (Vector3 Min, Vector3 Max, BoxSphereBounds Receiver) MeshBounds(Vector3[] positions, Matrix4x4 l2w, SplineMeshDeformation spline = null)
     {
         var min = new Vector3(float.MaxValue); var max = new Vector3(float.MinValue);
         var local = new Box();
-        foreach (var p in positions)
+        foreach (var position in positions)
         {
+            var p = spline == null ? position : spline.Deform(position, Vector3.Zero, Vector4.Zero).Position;
             local.Add(p);
             var w = Vector3.Transform(p, l2w);
             min = Vector3.Min(min, w); max = Vector3.Max(max, w);

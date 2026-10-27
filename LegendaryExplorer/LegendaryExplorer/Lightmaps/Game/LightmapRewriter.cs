@@ -297,7 +297,7 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
             var t = Read(tex);
             bool streamed = t.Export.GetProperty<NameProperty>("TextureFileCacheName") is { } n && n.Value.Name != "None";
             (Vector3, float)? bounds = null;
-            if (r.Owner.ClassName == "StaticMeshComponent" && ComponentGeometry.Load(r.Owner, meshes, out _) is { } g)
+            if (r.Owner.ClassName is "StaticMeshComponent" or "SplineMeshComponent" && ComponentGeometry.Load(r.Owner, meshes, out _) is { } g)
             {
                 var (min, max) = g.Bounds();
                 bounds = ((min + max) / 2, Vector3.Distance(min, max) / 2);

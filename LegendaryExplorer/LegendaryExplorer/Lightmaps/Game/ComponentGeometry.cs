@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -75,18 +76,27 @@ public sealed class ComponentGeometry
         bool hasLightMapUVs = lmIndex < lod.VertexBuffer.NumTexCoords;
 
         var l2w = WorldTransforms.Component(component);
+        var spline = component.ClassName == "SplineMeshComponent" ? SplineMeshDeformation.Read(props, mesh.Bounds) : null;
+        if (spline != null && (!float.IsFinite(spline.MeshRangeZ) || spline.MeshRangeZ <= 0))
+        {
+            skipReason = "spline has invalid mesh Z range";
+            return null;
+        }
         int n = lod.PositionVertexBuffer.VertexData.Length;
         var positions = new Vector3[n];
         var tx = new Vector3[n]; var ty = new Vector3[n]; var tz = new Vector3[n];
         var uvs = new Vector2[n];
         for (int i = 0; i < n; i++)
         {
-            positions[i] = Vector3.Transform(lod.PositionVertexBuffer.VertexData[i], l2w);
+            var position = lod.PositionVertexBuffer.VertexData[i];
             var vtx = lod.VertexBuffer.VertexData[i];
             // UE3 CalcTangentBasis: TangentY = cross(TangentZ, TangentX) * TangentZ.w, built in local space,
             // then all three axes go through LocalToWorld (LocalVertexFactory.usf).
             var x = (Vector3)vtx.TangentX;
             var z4 = (Vector4)vtx.TangentZ;
+            if (spline != null)
+                (position, x, z4) = spline.Deform(position, x, z4);
+            positions[i] = Vector3.Transform(position, l2w);
             var z = new Vector3(z4.X, z4.Y, z4.Z);
             var y = Vector3.Cross(z, x) * (z4.W < 0 ? -1f : 1f);
             tx[i] = SafeNormalize(Vector3.TransformNormal(x, l2w));

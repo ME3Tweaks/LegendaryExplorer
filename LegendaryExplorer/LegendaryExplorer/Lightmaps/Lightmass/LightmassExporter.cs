@@ -226,8 +226,30 @@ public sealed class LightmassExporter(LightmassScene scene, DuplicatingIni ini, 
         w.Bool(instance.LocalToWorld.GetDeterminant() < 0); // bReverseWinding
         w.Bool(true); // bShouldSelfShadow
         w.Guid(instance.Mesh.Guid);
-        w.Bool(false); // bIsSplineMesh
-        w.PadTo(start, 272); // FSplineMeshParams, zeroed
+        w.Bool(instance.Spline != null); // bIsSplineMesh
+        // FVector4 members align to 16 bytes, including the first member of FSplineMeshParams (offset 112).
+        // UE3 Lightmass.cpp's Copy(FVector, FVector4) sets W to 1, even for the tangents and SplineXDir.
+        if (instance.Spline is { } s)
+        {
+            w.PadTo(start, 112);
+            w.Vector4(s.StartPos, 1);
+            w.Vector4(s.StartTangent, 1);
+            w.Vector2(s.StartScale);
+            w.Float(s.StartRoll);
+            w.Vector2(s.StartOffset);
+            w.PadTo(start, 176);
+            w.Vector4(s.EndPos, 1);
+            w.Vector4(s.EndTangent, 1);
+            w.Vector2(s.EndScale);
+            w.Float(s.EndRoll);
+            w.Vector2(s.EndOffset);
+            w.PadTo(start, 240);
+            w.Vector4(s.XDir, 1);
+            w.Bool(s.SmoothInterpRollScale);
+            w.Float(s.MeshMinZ);
+            w.Float(s.MeshRangeZ);
+        }
+        w.PadTo(start, 272);
     }
 
     /// <summary>
