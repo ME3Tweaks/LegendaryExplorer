@@ -667,6 +667,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     public async Task LoadFileAsync(string s)
     {
+        if (!ConfirmCloseFiles("Open the new files anyway?")) return;
+
         try
         {
             CloseAllFiles();
@@ -811,6 +813,24 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     /// failures are only logged. Can be called from a background thread
     /// </summary>
     private static void RecordGameShaderLoadFailures(AggregateException e) => Debug.WriteLine(e);
+
+    private bool ConfirmCloseFiles(string question)
+    {
+        if (!CanChangeFiles) return false;
+
+        var dirtyFiles = OpenFiles.Where(f => f.IsDirty || f.Package.IsModified).ToList();
+        if (!IsBakePreview && dirtyFiles.Count > 0)
+        {
+            string fileNames = string.Join(",\n", dirtyFiles.Select(f => f.FileName));
+            if (MessageBox.Show(this,
+                    $"The following files have unsaved changes:\n{fileNames}\n\n{question}",
+                    "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes)
+                return false;
+        }
+
+        // A save or preview refresh can start while the confirmation dialog is open.
+        return CanChangeFiles;
+    }
 
     private void CloseAllFiles()
     {
@@ -2546,6 +2566,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 }
                 isFirst = result == MessageBoxResult.No;
             }
+            if (isFirst && !ConfirmCloseFiles("Open the new files anyway?")) return;
             using var guard = new RenderGuard(this);
             if (isFirst) CloseAllFiles();
             for (int i = 0; i < files.Length; i++)
@@ -2579,18 +2600,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             return;
         }
 
-        var dirtyFiles = OpenFiles.Where(f => f.IsDirty || f.Package.IsModified).ToList();
-        if (!IsBakePreview && dirtyFiles.Count > 0)
+        if (!ConfirmCloseFiles("Close anyway?"))
         {
-            string fileNames = string.Join(",\n", dirtyFiles.Select(f => f.FileName));
-            var result = MessageBox.Show(this,
-                $"The following files have unsaved changes:\n{fileNames}\n\nClose anyway?",
-                "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (result == MessageBoxResult.No)
-            {
-                e.Cancel = true;
-                return;
-            }
+            e.Cancel = true;
+            return;
         }
 
         CloseAllFiles();
@@ -2686,6 +2699,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private async void OpenRecentFileSet(RecentFileSet set)
     {
+        if (!ConfirmCloseFiles("Open the new files anyway?")) return;
         CloseAllFiles();
 
         using var guard = new RenderGuard(this);
