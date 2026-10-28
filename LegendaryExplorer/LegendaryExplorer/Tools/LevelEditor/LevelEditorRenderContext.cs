@@ -242,6 +242,11 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public override bool HoldsMouseCapture => IsDragging;
 
+    //an Alt+drag's Alt is often released after the mouse, and its release mustn't then open the window's menu
+    private bool altReleaseOwed;
+
+    public override bool ClaimsAltKeys => IsDragging || altReleaseOwed;
+
     /// <summary>Whether the left button is down, for noticing a release the viewport never received. Replaceable in tests</summary>
     public Func<bool> IsLeftButtonDown { get; set; } = static () => Mouse.LeftButton is MouseButtonState.Pressed;
 
@@ -334,7 +339,9 @@ public class LevelEditorRenderContext : MeshRenderContext
             {
                 case AxisHitProxy axisProxy when button is MouseButtons.Left:
                     TransformWidget.CurrentAxis = axisProxy.Axis;
-                    TransformWidget.BeginDrag(x, y);
+                    //Alt alone duplicates; other combinations drag as they always have
+                    TransformWidget.BeginDrag(x, y, duplicate: modifiers is ModifierKeys.Alt);
+                    altReleaseOwed = modifiers.HasFlag(ModifierKeys.Alt);
                     return true;
                 case LightHandleHitProxy handleProxy when button is MouseButtons.Left:
                     LightGizmo.BeginDrag(handleProxy.Handle);
@@ -364,7 +371,15 @@ public class LevelEditorRenderContext : MeshRenderContext
         return base.KeyDown(key);
     }
 
-    public override bool KeyUp(Key key) => IsDragging && key is Key.LeftAlt or Key.RightAlt || base.KeyUp(key);
+    public override bool KeyUp(Key key)
+    {
+        if (key is Key.LeftAlt or Key.RightAlt && (IsDragging || altReleaseOwed))
+        {
+            altReleaseOwed = false;
+            return true;
+        }
+        return base.KeyUp(key);
+    }
 
     //losing the mouse or keyboard to anything else (another window, a dialog) abandons the drag
     public override bool LostMouseFocus()
@@ -376,6 +391,7 @@ public class LevelEditorRenderContext : MeshRenderContext
     public override bool LostKeyboardFocus()
     {
         EndDrag(DragEndReason.Cancelled);
+        altReleaseOwed = false;
         return base.LostKeyboardFocus();
     }
 

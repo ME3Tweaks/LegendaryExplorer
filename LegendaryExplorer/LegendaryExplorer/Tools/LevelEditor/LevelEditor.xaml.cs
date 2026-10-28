@@ -426,6 +426,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         PreviewUpdateTimer.Tick += ProcessPreviewUpdates;
         RenderContext.PackageCache.PackageUpdated += QueuePreviewUpdate;
         RenderContext.TransformWidget.OnDragComplete = OnWidgetDragComplete;
+        RenderContext.TransformWidget.OnDuplicateDragStart = BeginDuplicateDrag;
+        RenderContext.TransformWidget.OnDuplicateDragComplete = OnDuplicateDragComplete;
         RenderContext.LightGizmo.OnDragComplete = OnLightGizmoDragComplete;
         RenderContext.SplineGizmo.OnDragComplete = OnSplineGizmoDragComplete;
         ActorsView =CollectionViewSource.GetDefaultView(Actors);
@@ -1072,7 +1074,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         UpdateGlobalDirtyState();
     }
 
-    void IActorEditorContext.Select(ActorProxy actor) => SelectedActor = actor;
+    //without focusing the camera, which would also throw off a drag that's moving the selection
+    void IActorEditorContext.Select(ActorProxy actor) => ViewportActorSelect(actor);
 
     #endregion
 
@@ -1915,6 +1918,24 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (before.Equals(after)) return;
         UndoHistory.Push(new TransformAction(actor, before, after, $"Drag {actor.ActorName}"));
         _preEditSnapshot = after;
+    }
+
+    private SplineActorProxy.Duplication BeginDuplicateDrag(SplineActorProxy point)
+    {
+        string refusal = CanMutateScene ? point.DuplicateRefusal
+            : "Wait for the current operation (such as saving or refreshing the preview) to finish, then try again.";
+        if (refusal is null) return point.BeginDuplicate();
+        //once the drag has ended, so the message doesn't arrive in the middle of its mouse input
+        Dispatcher.InvokeAsync(() => MessageBox.Show(this, $"{point.ActorName} can't be duplicated. {refusal}", "Duplicate spline point"));
+        return null;
+    }
+
+    private void OnDuplicateDragComplete(IUndoAction step)
+    {
+        UndoHistory.Push(step);
+        //the copy is selected, and its drag is part of the step
+        _preEditSnapshot = selectedActor?.SnapshotTransform();
+        LightDiagnosticsStale = true;
     }
 
     #region Lights

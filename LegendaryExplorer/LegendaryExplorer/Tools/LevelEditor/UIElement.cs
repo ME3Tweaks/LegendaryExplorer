@@ -324,6 +324,9 @@ public class Widget : UIElement
         if (Attach is null || CurrentAxis is EWidgetAxis.None) return;
 
         Vector2 mousePos = new(x, y);
+        //an Alt+drag only duplicates once it's clearly a drag, so a click makes no copy. Until then the drag stays where it started
+        if (duplicateArmed && duplication is null
+            && Vector2.Distance(mousePos, DragStart) < System.Windows.SystemParameters.MinimumHorizontalDragDistance) return;
         Vector2 dragDiff = PrevDragPos - mousePos;
 
         if (Mode is EWidgetMode.Rotate)
@@ -419,12 +422,11 @@ public class Widget : UIElement
                         {
                             _accumulatedTranslationLocal += vecDiff;
                             Vector3 snapped = SnapVec(_accumulatedTranslationLocal, TranslateSnapValue);
-                            Attach.Location = _dragStartSnapshot.Location - Vector3.Transform(snapped, LocalRotation);
+                            DragTo(context, _dragStartSnapshot.Location - Vector3.Transform(snapped, LocalRotation));
                         }
                         else
                         {
-                            vecDiff = Vector3.Transform(vecDiff, LocalRotation);
-                            Attach.Location -= vecDiff;
+                            DragTo(context, Attach.Location - Vector3.Transform(vecDiff, LocalRotation));
                         }
                     }
                     else
@@ -471,9 +473,26 @@ public class Widget : UIElement
     /// </summary>
     public Action<ActorProxy, TransformSnapshot, TransformSnapshot> OnDragComplete;
 
-    public void BeginDrag(int x, int y)
+    /// <summary>
+    /// Starts duplicating the spline point an Alt+translation drag is on, when the drag first moves it: returns the duplicate, whose copy the rest
+    /// of the drag moves instead, or null if the point can't be duplicated, which ends the drag. Wired by LevelEditor
+    /// </summary>
+    public Func<SplineActorProxy, SplineActorProxy.Duplication> OnDuplicateDragStart;
+
+    /// <summary>Called with the undo step of a completed duplicate drag, in place of <see cref="OnDragComplete"/>. Wired by LevelEditor</summary>
+    public Action<IUndoAction> OnDuplicateDragComplete;
+
+    //latched when the drag starts, so releasing Alt mid-drag changes nothing
+    private bool duplicateArmed;
+    private SplineActorProxy.Duplication duplication;
+    private ActorProxy duplicateSource;
+
+    /// <param name="duplicate">Whether a translation drag of a spline point moves a copy of it (an Alt+drag)</param>
+    public void BeginDrag(int x, int y, bool duplicate = false)
     {
         IsDragging = true;
+        duplicateArmed = duplicate && Mode is EWidgetMode.Translate && Attach is SplineActorProxy && OnDuplicateDragStart is not null;
+        duplication = null;
         PrevDragPos = DragStart = new Vector2(x, y);
         _accumulatedTranslationLocal = Vector3.Zero;
         _accumulatedRotation = 0f;
@@ -485,9 +504,47 @@ public class Widget : UIElement
         }
     }
 
+    /// <summary>
+    /// Moves what a translation drag is on to <paramref name="location"/>, as moving the mouse along an axis does. An Alt+drag's first move
+    /// duplicates the point instead, and moves the copy; the copy starts where the point is, so the drag carries on from where it started.
+    /// The connection between them follows the copy to whichever side of the point it's on
+    /// </summary>
+    public void DragTo(LevelEditorRenderContext context, Vector3 location)
+    {
+        if (!IsDragging || Attach is null || location == Attach.Location) return;
+        if (duplicateArmed && duplication is null)
+        {
+            duplicateSource = Attach;
+            duplication = OnDuplicateDragStart((SplineActorProxy)Attach);
+            if (duplication is null)
+            {
+                context.EndDrag(DragEndReason.Cancelled);
+                return;
+            }
+            Attach = duplication.Copy;
+        }
+        Attach.Location = location;
+        duplication?.Follow();
+    }
+
     public void EndDrag(DragEndReason reason = DragEndReason.Completed)
     {
-        if (IsDragging && Attach is not null)
+        if (IsDragging && duplication is not null)
+        {
+            //the duplicate's step includes moving the copy. Completing one left where the point is cancels it
+            if (reason is DragEndReason.Completed && duplication.Complete() is { } step)
+            {
+                OnDuplicateDragComplete?.Invoke(step);
+            }
+            else
+            {
+                if (reason is DragEndReason.Cancelled) duplication.Cancel();
+                Attach = duplicateSource;
+            }
+            duplication = null;
+            duplicateSource = null;
+        }
+        else if (IsDragging && Attach is not null)
         {
             if (reason is DragEndReason.Cancelled)
             {
@@ -504,5 +561,6 @@ public class Widget : UIElement
             }
         }
         IsDragging = false;
+        duplicateArmed = false;
     }
 }

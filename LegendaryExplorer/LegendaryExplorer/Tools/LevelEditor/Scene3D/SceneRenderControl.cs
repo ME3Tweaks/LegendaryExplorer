@@ -423,6 +423,12 @@ public abstract class RenderContext
     /// </summary>
     public virtual bool HoldsMouseCapture => false;
 
+    /// <summary>
+    /// Whether keys pressed while Alt is held reach the context as themselves (so Escape is Escape, and Alt's own release can be held back from the
+    /// window's menu). Otherwise Alt combinations stay the window's
+    /// </summary>
+    public virtual bool ClaimsAltKeys => HoldsMouseCapture;
+
     public virtual void EmptyCaches()
     {
         
@@ -771,7 +777,7 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
     /// While Alt is held WPF reports keys as <see cref="Key.System"/>. During a drag the context gets the real key, so Escape still cancels;
     /// otherwise Alt combinations stay the window's (menu access keys, Alt+F4)
     /// </summary>
-    private Key InputKey(KeyEventArgs e) => e.Key is Key.System && Context.HoldsMouseCapture ? e.SystemKey : e.Key;
+    private Key InputKey(KeyEventArgs e) => e.Key is Key.System && Context.ClaimsAltKeys ? e.SystemKey : e.Key;
 
     private void SceneRenderControl_LostMouseCapture(object sender, MouseEventArgs e)
     {

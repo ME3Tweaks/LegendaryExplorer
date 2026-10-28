@@ -5,6 +5,7 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
@@ -30,42 +31,29 @@ public sealed partial class SplineActorProxy
     };
 
     /// <summary>Why the point can't be duplicated now, or null</summary>
-    public string DuplicateRefusal => PlanDuplicate(out _);
-
-    /// <param name="mesh">The DeformMesh the point has once it connects to its copy</param>
-    private string PlanDuplicate(out int mesh)
+    public string DuplicateRefusal
     {
-        mesh = deformMesh;
-        if (IsDisposed || Editor?.RenderContext.DrawList_3D.Contains(this) != true) return "It isn't in the scene.";
-        if (IsReadOnly) return "Its file is read-only.";
-        if (Pcc.Game != MEGame.LE3) return "Only LE3's levels have spline points, so only LE3's are known well enough to copy.";
-        if (ClassName is not ("SplineActor" or "SplineLoftActor")) return $"It's a {ClassName}, which can't be copied yet.";
-        string[] unknown = Properties.Select(p => p.Name.Instanced)
-            .Where(n => !RecreatedProperties.Contains(n) && !CopiedProperties.Contains(n, StringComparer.OrdinalIgnoreCase)).ToArray();
-        if (unknown.Length > 0) return $"It has {string.Join(", ", unknown)}, which a copy can't be made with yet.";
-        // Its outgoing connections are broken, which changes the backlinks of the points they go to
-        foreach (var connection in connections)
+        get
         {
-            if (FindPoint(connection.Target) is not { IsReadOnly: false })
-                return $"Its connection to {Registry.NameOf(connection.Target) ?? "an unloaded point"} is broken by duplicating, and that point isn't loaded or is read-only.";
+            if (IsDisposed || Editor?.RenderContext.DrawList_3D.Contains(this) != true) return "It isn't in the scene.";
+            if (IsReadOnly) return "Its file is read-only.";
+            if (Pcc.Game != MEGame.LE3) return "Only LE3's levels have spline points, so only LE3's are known well enough to copy.";
+            if (ClassName is not ("SplineActor" or "SplineLoftActor")) return $"It's a {ClassName}, which can't be copied yet.";
+            string[] unknown = Properties.Select(p => p.Name.Instanced)
+                .Where(n => !RecreatedProperties.Contains(n) && !CopiedProperties.Contains(n, StringComparer.OrdinalIgnoreCase)).ToArray();
+            if (unknown.Length > 0) return $"It has {string.Join(", ", unknown)}, which a copy can't be made with yet.";
+            // Whichever way the new connection goes, its mesh is the point's: its own, or the copy's copy of it
+            if (IsLoft && (deformMesh == 0 || Pcc.GetEntry(deformMesh)?.IsA("StaticMesh") != true))
+                return "Its connection to the copy needs a DeformMesh. Assign one first.";
+            return null;
         }
-        if (!IsLoft) return null;
-        // As UE3 does: the first incoming point's mesh, if that's a loft point. Never another incoming point's
-        if (linksFrom.Count > 0)
-        {
-            if (FindPoint(linksFrom[0]) is not { } first) return "Its first incoming point isn't loaded, and it takes that point's mesh.";
-            if (first.IsLoft) mesh = first.deformMesh;
-        }
-        if (mesh == 0 || Pcc.GetEntry(mesh)?.IsA("StaticMesh") != true)
-            return mesh == deformMesh ? "Its connection to the copy needs a DeformMesh. Assign one first."
-                : "Its connection to the copy needs a DeformMesh, and its first incoming point's, which it takes, is none.";
-        return null;
     }
 
     /// <summary>
-    /// Starts duplicating the point as UE3's editor does (FEdModeSpline::ActorsDuplicatedNotify): a draft copy is drawn at its place and selected;
-    /// the point's outgoing connections are broken and it connects to the copy alone; the copy has no connections; and a loft point takes its first
-    /// incoming point's mesh (the copy keeps the point's own). Nothing is written to the package. Move the copy, then complete or cancel it
+    /// Starts duplicating the point: a draft copy is drawn at its place and selected, and connected to it. The point keeps all its connections and
+    /// its mesh; the copy has the point's mesh and no other connections. Unlike UE3's editor (FEdModeSpline::ActorsDuplicatedNotify), which breaks
+    /// the point's outgoing connections and always connects the point to the copy, the new connection follows the copy (<see cref="Duplication.Follow"/>),
+    /// so a spline extends either way. Nothing is written to the package. Move the copy, then complete or cancel it
     /// </summary>
     public Duplication BeginDuplicate() => new(this);
 
@@ -73,33 +61,32 @@ public sealed partial class SplineActorProxy
     {
         private readonly SplineActorProxy source;
         private readonly ActorProxy selection;
-        //the topology of every point the duplicate changes, the copy's included, before it
+        //the topology of the point and the copy, the only points the duplicate changes, before it
         private readonly (SplineActorProxy Point, TopologyState State)[] before;
         private bool finished;
 
         /// <summary>The draft copy. Move it; it's drawn, selected and editable until the duplicate completes or is cancelled</summary>
         public SplineActorProxy Copy { get; }
 
+        /// <summary>
+        /// Whether the copy is ahead of the point along the spline (its tangent), so the point connects to it. Behind it, the copy connects to the
+        /// point instead. Ahead until it's moved
+        /// </summary>
+        public bool CopyIsAhead { get; private set; } = true;
+
         internal Duplication(SplineActorProxy source)
         {
-            if (source.PlanDuplicate(out int mesh) is { } refusal) throw new InvalidOperationException($"{source.DisplayText} can't be duplicated. {refusal}");
+            if (source.DuplicateRefusal is { } refusal) throw new InvalidOperationException($"{source.DisplayText} can't be duplicated. {refusal}");
             this.source = source;
             var editor = source.Editor;
             selection = editor.RenderContext.SelectedActor;
-            var targets = source.connections.Select(c => source.FindPoint(c.Target)).ToArray();
             Copy = CreateDraft(editor, source, source.Registry.ProposeName(source.Pcc, source.ClassName));
-            before = [.. targets.Prepend(source).Append(Copy).Distinct().Select(p => (p, p.CaptureTopology()))];
+            before = [(source, source.CaptureTopology()), (Copy, Copy.CaptureTopology())];
             try
             {
                 using var edit = new SceneEdit(editor);
                 edit.Attach(Copy);
-                edit.Do(() =>
-                {
-                    foreach (var target in targets) source.RemoveConnection(target);
-                    source.deformMesh = mesh;
-                    source.AddConnection(Copy);
-                    RefreshPoints(before.Select(s => s.Point));
-                }, () => Restore(before));
+                edit.Do(() => Connect(ahead: true), () => Restore(before));
                 edit.Select(Copy);
                 edit.Complete();
             }
@@ -111,8 +98,29 @@ public sealed partial class SplineActorProxy
         }
 
         /// <summary>
-        /// Finishes the duplicate as one undo step, for the caller to record. A copy left where the point is (exactly) isn't a duplicate:
-        /// it's cancelled, and there's no step
+        /// Points the connection the way the copy has moved: from the point while the copy is ahead of it along the spline, to the point while it's
+        /// behind. Call it after moving the copy. On the plane across the spline at the point, the connection stays as it is
+        /// </summary>
+        public void Follow()
+        {
+            ObjectDisposedException.ThrowIf(finished, this);
+            float along = Vector3.Dot(Copy.Location - source.Location, source.Node.WorldTangent);
+            if (along != 0 && along > 0 != CopyIsAhead) Connect(along > 0);
+        }
+
+        private void Connect(bool ahead)
+        {
+            source.RemoveConnection(Copy);
+            Copy.RemoveConnection(source);
+            if (ahead) source.AddConnection(Copy);
+            else Copy.AddConnection(source);
+            CopyIsAhead = ahead;
+            RefreshPoints([source, Copy]);
+        }
+
+        /// <summary>
+        /// Finishes the duplicate as one undo step, for the caller to record, with the connection following where the copy is. A copy left where
+        /// the point is (exactly) isn't a duplicate: it's cancelled, and there's no step
         /// </summary>
         public IUndoAction Complete()
         {
@@ -122,6 +130,7 @@ public sealed partial class SplineActorProxy
                 Cancel();
                 return null;
             }
+            Follow();
             finished = true;
             return new DuplicateAction(source.Editor, Copy, selection, before, [.. before.Select(s => (s.Point, s.Point.CaptureTopology()))]);
         }
