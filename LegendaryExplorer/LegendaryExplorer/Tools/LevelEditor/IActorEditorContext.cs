@@ -27,4 +27,13 @@ public interface IActorEditorContext
 
     /// <summary>The loaded, writable level that can receive a migrated decal.</summary>
     ExportEntry GetDecalDestinationLevel(IMEPackage package) => null;
+
+    /// <summary>A <see cref="SceneEdit"/> drew a view, which is now one of the editor's actors</summary>
+    void OnViewAttached(ActorProxy view) { }
+
+    /// <summary>A <see cref="SceneEdit"/> stopped drawing a view (without disposing it), which is no longer one of the editor's actors</summary>
+    void OnViewDetached(ActorProxy view) { }
+
+    /// <summary>Selects an actor, or nothing, as the editor's own selection (with its inspector and gizmos)</summary>
+    void Select(ActorProxy actor) => RenderContext.SelectedActor = actor;
 }

@@ -363,16 +363,22 @@ public sealed partial class SplineActorProxy
         }
         if (TopologyDirty || referencesChanged)
         {
-            Properties.AddOrReplaceProp(new ArrayProperty<StructProperty>(connections.Select(c => new StructProperty("SplineConnection",
+            SetArray(new ArrayProperty<StructProperty>(connections.Select(c => new StructProperty("SplineConnection",
                 [new ObjectProperty(committed[c].SplineComponent?.UIndex ?? 0, "SplineComponent"), new ObjectProperty(Registry.StoredUIndex(c.Target), "ConnectTo")])), "Connections"));
-            Properties.AddOrReplaceProp(new ArrayProperty<ObjectProperty>(linksFrom.Select(i => new ObjectProperty(Registry.StoredUIndex(i))), "LinksFrom"));
+            SetArray(new ArrayProperty<ObjectProperty>(linksFrom.Select(i => new ObjectProperty(Registry.StoredUIndex(i))), "LinksFrom"));
         }
         if (IsLoft && (TopologyDirty || MeshConfigurationDirty || referencesChanged))
         {
-            Properties.AddOrReplaceProp(new ArrayProperty<ObjectProperty>(connections.Select(c => new ObjectProperty(committed[c].MeshExport.UIndex)), "SplineMeshComps"));
+            SetArray(new ArrayProperty<ObjectProperty>(connections.Select(c => new ObjectProperty(committed[c].MeshExport.UIndex)), "SplineMeshComps"));
             Properties.AddOrReplaceProp(new ObjectProperty(deformMesh, "DeformMesh"));
-            Properties.AddOrReplaceProp(new ArrayProperty<ObjectProperty>(deformMaterials.Select(i => new ObjectProperty(i)), "DeformMeshMaterials"));
+            SetArray(new ArrayProperty<ObjectProperty>(deformMaterials.Select(i => new ObjectProperty(i)), "DeformMeshMaterials"));
         }
+    }
+
+    /// <summary>An empty array is left out, as UE3 serializes one equal to its default, unless the point has it (so it's emptied)</summary>
+    private void SetArray<T>(ArrayProperty<T> array) where T : Property
+    {
+        if (array.Count > 0 || Properties.ContainsNamedProp(array.Name)) Properties.AddOrReplaceProp(array);
     }
 
     /// <summary>
@@ -420,8 +426,10 @@ public sealed partial class SplineActorProxy
         {
             if (connections.Any(c => Registry[c.Target] is { IsUnresolved: false } target && target.IsLoft != IsLoft))
                 return "Plain and loft spline points cannot connect. Break the mixed connection first.";
-            if (connections.Any(c => Registry[c.Target]?.IsDraft == true) || linksFrom.Any(i => Registry[i]?.IsDraft == true))
-                return "It's connected to a new point that hasn't been committed, and new points can't be committed yet.";
+            // Another tool's edit rebuilt a point from its export, which put back its committed connections in place of its pending ones: this one's
+            // backlinks would no longer match the loaded points that connect to it
+            if (TopologyDirty && LoadedPoints.FirstOrDefault(p => p.IsConnectedTo(this) != linksFrom.Contains(p.Id)) is { } stale)
+                return $"Its connection from {stale.ActorName} changed when another tool edited {stale.ActorName}. Connect them as they should be, or reset the changes.";
             if (IsLoft && (connections.Any(c => c.Mesh is null || c.MeshExport is { } mesh && !mesh.IsA("SplineMeshComponent"))
                 || !TopologyDirty && !MeshConfigurationDirty && Properties.GetProp<ArrayProperty<ObjectProperty>>("SplineMeshComps")?
                     .Any(p => p.ResolveToEntry(Pcc) is not ExportEntry mesh || !mesh.IsA("SplineMeshComponent")) == true))

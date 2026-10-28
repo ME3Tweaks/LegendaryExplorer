@@ -1,4 +1,5 @@
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ public sealed class ActorRecord
     public ActorId Id { get; }
     public IMEPackage Package { get; }
     /// <summary>The committed export, or null for a draft or an unresolved reference</summary>
-    public ExportEntry Export { get; }
+    public ExportEntry Export { get; private set; }
     /// <summary>For an unresolved reference: the UIndex that was stored (an import, or a missing export)</summary>
     public int StoredUIndex { get; }
     /// <summary>The actor's class, for a draft (an export's is its own)</summary>
@@ -62,6 +63,9 @@ public sealed class ActorRecord
     }
 
     public bool IsDraft => Export is null && StoredUIndex == 0;
+
+    /// <summary>A draft's new export, written by a commit (null again if the commit is abandoned)</summary>
+    internal void Bind(ExportEntry export) => Export = export;
     public bool IsUnresolved => StoredUIndex != 0;
 
     internal ActorRecord(ActorId id, ExportEntry export)
@@ -136,6 +140,30 @@ public sealed class ActorRegistry
         var record = new ActorRecord(ActorId.New(), package, @class, name, isSpline, isLoft);
         records[record.Id] = record;
         return record;
+    }
+
+    /// <summary>
+    /// A name for a new actor of a class, as the editor names placed actors (Class_N): one no export of the package or other draft has.
+    /// A commit names its export this unless the package has since gained it
+    /// </summary>
+    public string ProposeName(IMEPackage package, string className)
+    {
+        int number = package.GetNextIndexedName(className).Number;
+        foreach (ActorRecord record in records.Values)
+        {
+            if (record.IsDraft && record.Package == package && NameReference.FromInstancedString(record.Name) is var name && name.Name == className)
+                number = Math.Max(number, name.Number + 1);
+        }
+        return new NameReference(className, number).Instanced;
+    }
+
+    /// <summary>Binds a draft to the export a commit created for it, or with null, takes it back when the commit is abandoned</summary>
+    internal void Bind(ActorId draft, ExportEntry export)
+    {
+        ActorRecord record = records[draft];
+        if (record.Export is { } previous) byExport.Remove(previous);
+        record.Bind(export);
+        if (export is not null) byExport[export] = draft;
     }
 
     /// <summary>

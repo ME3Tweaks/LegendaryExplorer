@@ -99,12 +99,10 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
         }
     }
 
-    /// <summary>Actors the level gains or loses at its next commit. They make it dirty even with no view (a pending deletion) or no dirty actor left</summary>
-    public LevelLifecycleChanges Lifecycle { get; } = new();
-
+    /// <summary>A new actor (a draft) is one of the file's actors, and wholly uncommitted, so it makes the file dirty</summary>
     public void RecalculateDirty()
     {
-        IsDirty = Lifecycle.HasChanges || Actors.Any(a => a.IsDirty);
+        IsDirty = Actors.Any(a => a.IsDirty);
     }
 
     private bool isReadOnly;
@@ -119,7 +117,6 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
         Owner = owner;
         Package = package;
         LevelExport = levelExport;
-        Lifecycle.Changed += RecalculateDirty;
     }
 
     #region IPackageUser

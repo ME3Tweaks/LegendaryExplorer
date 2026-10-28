@@ -8,21 +8,22 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// Unless <see cref="Complete"/> is called before it's disposed, each step is undone in reverse order: views it attached are taken out again,
 /// views it detached are put back where they were, and the selection is restored. Packages are never touched. Only one can be open on a scene at a time.
 /// It never disposes a view: a detached one belongs to whoever detached it (an undo step that can attach the same view again), as does one
-/// attached by an edit that was abandoned. A view's owning file's actor list follows the draw list; the window's own actor list does not yet
-/// (it doesn't use scene edits)
+/// attached by an edit that was abandoned. Views join and leave their owning file's actors and the editor's (<see cref="IActorEditorContext.OnViewAttached"/>)
 /// </summary>
 public sealed class SceneEdit : IDisposable
 {
+    private readonly IActorEditorContext editor;
     private readonly LevelEditorRenderContext scene;
     private readonly ActorProxy selection;
     private readonly List<Action> undo = [];
     private bool finished;
 
-    public SceneEdit(LevelEditorRenderContext scene)
+    public SceneEdit(IActorEditorContext editor)
     {
+        scene = editor.RenderContext;
         //a nested edit would complete or roll back part of the outer one's steps on its own
         if (scene.IsEditingScene) throw new InvalidOperationException("Another change to the scene is in progress.");
-        this.scene = scene;
+        this.editor = editor;
         selection = scene.SelectedActor;
         scene.IsEditingScene = true;
     }
@@ -39,6 +40,7 @@ public sealed class SceneEdit : IDisposable
         {
             scene.RemoveActor(view);
             if (file?.Actors.Remove(view) == true) file.RecalculateDirty();
+            editor.OnViewDetached(view);
         });
         scene.AddActor(view);
         if (file is not null && !file.Actors.Contains(view))
@@ -46,6 +48,7 @@ public sealed class SceneEdit : IDisposable
             file.Actors.Add(view);
             file.RecalculateDirty();
         }
+        editor.OnViewAttached(view);
     }
 
     /// <summary>Stops drawing a view and removes it from its owning file's actors</summary>
@@ -64,13 +67,23 @@ public sealed class SceneEdit : IDisposable
                 file.Actors.Insert(Math.Min(fileIndex, file.Actors.Count), view);
                 file.RecalculateDirty();
             }
+            editor.OnViewAttached(view);
         });
+        if (scene.SelectedActor == view) editor.Select(null);
         scene.RemoveActor(view);
         if (fileIndex >= 0)
         {
             file.Actors.RemoveAt(fileIndex);
             file.RecalculateDirty();
         }
+        editor.OnViewDetached(view);
+    }
+
+    /// <summary>Selects a view (or nothing) through the editor; abandoning the edit restores the selection it began with</summary>
+    public void Select(ActorProxy view)
+    {
+        ObjectDisposedException.ThrowIf(finished, this);
+        editor.Select(view);
     }
 
     /// <summary>Makes a model change that <paramref name="revert"/> undoes if the edit is abandoned</summary>
@@ -95,7 +108,7 @@ public sealed class SceneEdit : IDisposable
         try
         {
             for (int i = undo.Count - 1; i >= 0; i--) undo[i]();
-            scene.SelectedActor = selection;
+            editor.Select(selection);
         }
         finally
         {

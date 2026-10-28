@@ -93,16 +93,14 @@ public sealed partial class SplineActorProxy : ActorProxy
     /// </summary>
     public static SplineActorProxy CreateDraft(IActorEditorContext context, SplineActorProxy source, string name)
     {
-        var props = new PropertyCollection
-        {
-            CommonStructs.Vector3Prop(source.location, source.Pcc.Game.IsGame3() ? "location" : "Location"),
-            CommonStructs.RotatorProp(source.rotation, "Rotation"),
-            new FloatProperty(source.drawScale, "DrawScale"),
-            CommonStructs.Vector3Prop(source.drawScale3D, "DrawScale3D"),
-            CommonStructs.Vector3Prop(source.prePivot, "PrePivot")
-        };
-        // Only values the copy can own outright; references into the source's components (or any other object it owns) are never copied
-        foreach (string copied in new[] { "bHidden", "Tag", "bDisableDestination", "SplineColor", "bMovable", "bAcceptsLights", "MeshMaxDrawDistance" })
+        // As a commit writes them: only where they differ from the defaults
+        var props = new PropertyCollection();
+        if (source.location != Vector3.Zero) props.Add(CommonStructs.Vector3Prop(source.location, source.Pcc.Game.IsGame3() ? "location" : "Location"));
+        if (!source.rotation.IsZero) props.Add(CommonStructs.RotatorProp(source.rotation, "Rotation"));
+        if (source.drawScale != 1) props.Add(new FloatProperty(source.drawScale, "DrawScale"));
+        if (source.drawScale3D != source.defaultDrawScale3D) props.Add(CommonStructs.Vector3Prop(source.drawScale3D, "DrawScale3D"));
+        if (source.prePivot != Vector3.Zero) props.Add(CommonStructs.Vector3Prop(source.prePivot, "PrePivot"));
+        foreach (string copied in CopiedProperties)
         {
             if (source.Properties.GetProp<Property>(copied) is { } prop) props.AddOrReplaceProp(prop.DeepClone());
         }
@@ -368,6 +366,11 @@ public sealed partial class SplineActorProxy : ActorProxy
     {
         committed = null;
         base.AbandonCommit();
+        if (materialized)
+        {
+            materialized = false;
+            BindExport(null);
+        }
     }
 
     public override void MarkClean()
@@ -381,6 +384,11 @@ public sealed partial class SplineActorProxy : ActorProxy
         cleanSettings = settings;
         AcceptConnections();
         base.MarkClean();
+        if (materialized)
+        {
+            materialized = false;
+            OnCommittedAsNew();
+        }
         Point.NotifySettings();
         OnPropertyChanged(nameof(EditingStatus));
     }

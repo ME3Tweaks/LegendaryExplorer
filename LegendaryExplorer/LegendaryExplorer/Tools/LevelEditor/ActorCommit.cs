@@ -49,11 +49,23 @@ public static class ActorCommit
     private static void Write(OpenLevelFile file, IReadOnlySet<ActorProxy> skipped, List<(OpenLevelFile, ActorProxy)> written)
     {
         Dictionary<int, StaticCollectionActor> collectionActorMap = [];
+        // New points get their exports first, so that every reference to one (another point's connection, a backlink) can be written
+        var created = new HashSet<ActorProxy>();
+        foreach (var draft in file.Actors.OfType<SplineActorProxy>().Where(a => a.IsDraft).ToList())
+        {
+            draft.BeginCommit();
+            written.Add((file, draft));
+            created.Add(draft);
+            draft.Materialize(file.LevelExport);
+        }
         foreach (ActorProxy actor in file.Actors)
         {
-            if (!actor.IsDirty || skipped?.Contains(actor) == true) continue;
-            actor.BeginCommit();
-            written.Add((file, actor));
+            if (!created.Contains(actor))
+            {
+                if (!actor.IsDirty || skipped?.Contains(actor) == true) continue;
+                actor.BeginCommit();
+                written.Add((file, actor));
+            }
             if (actor is CollectionActorComponentProxy cacp)
             {
                 bool moved = cacp.IsTransformDirty;

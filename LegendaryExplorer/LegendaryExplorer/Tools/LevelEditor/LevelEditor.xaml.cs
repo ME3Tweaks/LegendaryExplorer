@@ -1053,6 +1053,27 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
     }
 
+    //a scene edit has already drawn the view and made it one of its file's actors
+    void IActorEditorContext.OnViewAttached(ActorProxy view)
+    {
+        if (Actors.Contains(view)) return;
+        Actors.Add(view);
+        view.ResolveAttachment(Actors);
+        Actors.Sort(a => a.SortIndex);
+        UpdateGlobalDirtyState();
+    }
+
+    //the view isn't disposed: the scene edit's caller (an undo step) can attach it again
+    void IActorEditorContext.OnViewDetached(ActorProxy view)
+    {
+        if (!Actors.Remove(view)) return;
+        if (SelectedActor == view) SelectedActor = null;
+        view.Detach();
+        UpdateGlobalDirtyState();
+    }
+
+    void IActorEditorContext.Select(ActorProxy actor) => SelectedActor = actor;
+
     #endregion
 
     #region Commands
@@ -1339,8 +1360,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void CommitChanges()
     {
-        //a level whose only change is a deleted actor may have none left
-        if (!PackageIsLoaded() || Actors.Count is 0 && !OpenFiles.Any(f => f.Lifecycle.HasChanges)) return;
+        if (!PackageIsLoaded() || Actors.Count is 0) return;
 
         CommitChangesForFiles(OpenFiles.Where(f => !f.IsReadOnly));
     }
@@ -1374,9 +1394,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                     }
                 }
             }
-            // New and deleted actors need the lifecycle commit, which doesn't exist yet: refuse before anything is written
-            if (files.FirstOrDefault(f => f.Lifecycle.HasChanges || f.Actors.Any(a => a.IsDraft)) is { } lifecycleFile)
-                throw new InvalidOperationException($"{lifecycleFile.FileName} has new or deleted actors, which can't be committed yet. Undo them, or reset the file's changes.");
             foreach (var spline in files.SelectMany(f => f.Actors).OfType<SplineActorProxy>().Where(s => s.IsDirty))
                 spline.ValidateConnectionsForCommit();
             migration = DecalPackageMigration.Prepare(files.SelectMany(f => f.Actors).OfType<DecalActorProxy>());
@@ -1839,7 +1856,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         file.Actors.Clear();
         //reloaded from the package, so these are new actors: undo steps recorded against the old ones are orphaned, and drafts are gone
         RenderContext.Registry.Forget(file.Package);
-        file.Lifecycle.Clear();
 
         Level levelBin = file.LevelExport.GetBinaryData<Level>();
         var (actors, _) = LoadActors(levelBin, file);

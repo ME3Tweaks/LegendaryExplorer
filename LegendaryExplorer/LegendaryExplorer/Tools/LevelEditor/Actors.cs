@@ -49,13 +49,37 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     public ActorId Id { get; }
 
     /// <summary>The committed export. Null for a draft, which has none until a commit writes it</summary>
-    public ExportEntry Export { get; }
+    public ExportEntry Export { get; private set; }
     public bool IsDraft => Export is null;
     private readonly IMEPackage pcc;
     protected IMEPackage Pcc => pcc;
     /// <summary>The package the actor belongs to, whether or not it has an export there yet</summary>
     public IMEPackage Package => pcc;
     private readonly IEntry actorClass;
+    protected IEntry ActorClass => actorClass;
+
+    /// <summary>
+    /// Gives a draft the export a commit created for it, as its actor's export too; null takes it back when the commit is abandoned
+    /// </summary>
+    private protected void BindExport(ExportEntry export)
+    {
+        Export = export;
+        Editor.RenderContext.Registry.Bind(Id, export);
+    }
+
+    /// <summary>The label for an actor named <paramref name="name"/>: with its Tag, unless that's the class name (the default)</summary>
+    private string Label(string name) => Tag.Name.CaseInsensitiveEquals(actorClass?.ObjectName.Name ?? "Class") ? name : $"{name} ({Tag})";
+
+    /// <summary>A committed draft is labelled by the name its export was given</summary>
+    private protected void OnCommittedAsNew()
+    {
+        DisplayText = Label(Export.ObjectName.Instanced);
+        OnPropertyChanged(nameof(DisplayText));
+        OnPropertyChanged(nameof(ActorName));
+        OnPropertyChanged(nameof(IndexLabel));
+        OnPropertyChanged(nameof(ExportLabel));
+        OnPropertyChanged(nameof(SortIndex));
+    }
     /// <summary>The actor's class name, as <see cref="ExportEntry.ClassName"/> is for its export</summary>
     public string ClassName => Export?.ClassName ?? actorClass?.ObjectName.Name ?? "Class";
     /// <summary>The actor's object name: its export's, or the one proposed for a draft. Use this rather than <see cref="Export"/> for labels</summary>
@@ -71,7 +95,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public string OwningFileName => System.IO.Path.GetFileName(Pcc.FilePath);
 
-    public string DisplayText { get; }
+    public string DisplayText { get; private set; }
 
     // Use the resolved proxy type so subclasses and collection components are
     // categorized consistently, regardless of their export names or tags.
@@ -243,7 +267,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     public float ZPos { get => location.Z; set => Location = location with { Z = value }; }
 
     //the class default object's, used when the actor doesn't set one
-    private readonly Vector3 defaultDrawScale3D = Vector3.One;
+    private protected readonly Vector3 defaultDrawScale3D = Vector3.One;
 
     public Vector3 DrawScale3D
     {
@@ -390,11 +414,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         IsHidden = (props.GetProp<BoolProperty>("bHidden")
                     ?? EffectiveLightingProperties.ClassDefaultProperty<BoolProperty>(actorClass, actorExport, "bHidden", cache))?.Value ?? false;
 
-        DisplayText = name;
-        if (!Tag.Name.CaseInsensitiveEquals(actorClass?.ObjectName.Name ?? "Class"))
-        {
-            DisplayText += $" ({Tag})";
-        }
+        DisplayText = Label(name);
 
         var rotationProp = props.GetProp<StructProperty>("Rotation");
         var locationsProp = props.GetProp<StructProperty>("location");
