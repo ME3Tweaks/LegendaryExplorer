@@ -441,6 +441,12 @@ public class StaticMeshComponentProxy : MeshComponentProxy
             {
                 foreach (var element in stm.LODModels[LOD].Elements)
                     Dependencies.Track(meshExport.FileRef.GetEntry(element.Material));
+                // Only a spline mesh has a deformation. The game draws its sections whose materials can't be drawn on one with its default material
+                if (deformation is not null)
+                {
+                    SplineActorProxy.UseGameSplineMeshMaterials(stm.LODModels[LOD].Elements, meshExport.FileRef, MaterialOverrides, context.PackageCache,
+                        SplineActorProxy.EngineDefaultMaterial(Export.Game, context.PackageCache));
+                }
                 MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD, Properties, PreviewProperties is not null && !preservePreviewLighting);
                 Mesh = new ModelPreview<VertexType>(context, stm, LOD, staticLighting, MaterialOverrides, deformation);
                 MaterialOverrides.Clear();

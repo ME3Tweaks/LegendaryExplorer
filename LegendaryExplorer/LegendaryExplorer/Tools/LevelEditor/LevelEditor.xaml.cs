@@ -2000,7 +2000,22 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
         var mesh = EntrySelector.GetEntry<IEntry>(this, point.Package, "Select DeformMesh", entry => entry.IsA("StaticMesh"));
-        if (mesh is not null) point.SetDeformMesh(mesh.UIndex, point.DeformMeshMaterials);
+        if (mesh is null || point.SetDeformMesh(mesh.UIndex, point.DeformMeshMaterials) is null) return;
+        //allowed, since its sections can be given overrides next
+        var problems = point.SplineMeshMaterialProblems(mesh.UIndex, [.. point.DeformMeshMaterials]).ToList();
+        if (problems.Count > 0)
+        {
+            MessageBox.Show(this, $"In game, some of {mesh.ObjectName.Instanced}'s sections won't be drawn with their materials on a spline. " +
+                $"Give them DeformMeshMaterials overrides that can be:\n\n{string.Join("\n", problems)}", "DeformMesh");
+        }
+    }
+
+    //the game draws a material it can't draw on a spline mesh with its default material instead
+    private bool RefuseSplineMaterial(SplineActorProxy point, IEntry material)
+    {
+        if (point.SplineMeshMaterialProblem(material.UIndex) is not { } problem) return false;
+        MessageBox.Show(this, problem, "DeformMeshMaterials");
+        return true;
     }
     private void SplineClearMesh_Click(object sender, RoutedEventArgs e)
     {
@@ -2010,7 +2025,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
         var material = EntrySelector.GetEntry<IEntry>(this, point.Package, "Add DeformMeshMaterials override", entry => entry.IsA("MaterialInterface"));
-        if (material is not null) point.SetDeformMesh(point.DeformMesh, point.DeformMeshMaterials.Append(material.UIndex));
+        if (material is not null && !RefuseSplineMaterial(point, material)) point.SetDeformMesh(point.DeformMesh, point.DeformMeshMaterials.Append(material.UIndex));
     }
     private void SplineClearMaterials_Click(object sender, RoutedEventArgs e)
     {
@@ -2024,7 +2039,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             case "Choose":
                 var material = EntrySelector.GetEntry<IEntry>(this, slot.Point.Package, $"Material override for slot {slot.Index}", entry => entry.IsA("MaterialInterface"));
-                if (material is null) return;
+                if (material is null || RefuseSplineMaterial(slot.Point, material)) return;
                 values[slot.Index] = material.UIndex;
                 break;
             case "Clear": values[slot.Index] = 0; break;

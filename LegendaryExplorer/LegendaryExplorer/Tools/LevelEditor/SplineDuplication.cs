@@ -14,6 +14,7 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 public sealed partial class SplineActorProxy
 {
     // Every property on the 4,101 spline points in LE3's shipping levels (the only game whose levels have any), by what a copy does with it.
+    // LE1 and LE2 have the same spline classes; their Actor classes differ, and a point with an Actor property not listed here is refused there too.
     // Any other property blocks duplication, so a copy is only made of values whose meaning is known
 
     /// <summary>Copied as they are: values the copy owns outright</summary>
@@ -37,7 +38,8 @@ public sealed partial class SplineActorProxy
         {
             if (IsDisposed || Editor?.RenderContext.DrawList_3D.Contains(this) != true) return "It isn't in the scene.";
             if (IsReadOnly) return "Its file is read-only.";
-            if (Pcc.Game != MEGame.LE3) return "Only LE3's levels have spline points, so only LE3's are known well enough to copy.";
+            // The spline classes are the same in all three (LE3's SplineLoftActor adds only bCastShadow), and so is how their placed actors are made
+            if (!Pcc.Game.IsLEGame()) return "Only the Legendary Edition's spline points are known well enough to copy.";
             if (ClassName is not ("SplineActor" or "SplineLoftActor")) return $"It's a {ClassName}, which can't be copied yet.";
             string[] unknown = Properties.Select(p => p.Name.Instanced)
                 .Where(n => !RecreatedProperties.Contains(n) && !CopiedProperties.Contains(n, StringComparer.OrdinalIgnoreCase)).ToArray();
@@ -215,7 +217,8 @@ public sealed partial class SplineActorProxy
     }
 
     // A new point's export has what every LE3 spline point in a shipping level has: these flags, its class (an import), no archetype, the Level as
-    // its outer, a Class_N name, a state frame for its class, no binary after its properties, no Components, and one entry in Level.Actors
+    // its outer, a Class_N name, a state frame for its class, no binary after its properties, no Components, and one entry in Level.Actors.
+    // LE1's and LE2's levels have no spline points, but their placed actors made from their class have the same flags, class, state frame and membership
     private const EObjectFlags NewPointFlags = EObjectFlags.Transactional | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer
         | EObjectFlags.LoadForEdit | EObjectFlags.HasStack;
 
