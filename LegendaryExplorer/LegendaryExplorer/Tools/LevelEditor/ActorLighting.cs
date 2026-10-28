@@ -54,6 +54,7 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
     }
     public bool IsReadOnly => Mesh.Actor is null || Mesh.Actor.IsReadOnly;
     internal bool IsOrphaned => Mesh.Actor is null || Mesh.Actor.IsDisposed;
+    internal ActorId? OwnerId => Mesh.Actor?.Id;
     public ActorLightingSettings Settings => settings;
     public bool HasChanges => settings != cleanSettings;
     public IReadOnlyList<ActorLightingChannel> Channels { get; }
@@ -263,21 +264,40 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
         Mesh.Actor?.RefreshLightingDirty();
     }
 
+    /// <summary>Writes and accepts the pending edits</summary>
     public void Commit()
     {
+        Write();
+        MarkClean();
+    }
+
+    /// <summary>
+    /// Writes the pending edits to <paramref name="component"/> (by default the mesh's own), leaving them pending until <see cref="MarkClean"/>,
+    /// so an abandoned commit leaves them as they were. A spline connection's new mesh is written to the export the commit creates for it
+    /// </summary>
+    internal void Write(ExportEntry component = null)
+    {
+        component ??= Component;
         var changed = GetChangedProperties();
-        if (changed.Count > 0)
+        if (changed.Count is 0) return;
+        if (settings.LightEnvironment != cleanSettings.LightEnvironment && !CanAssignEnvironment(settings.LightEnvironment))
+            throw new InvalidOperationException("The light environment must belong to this actor or its archetype.");
+        if (settings.LightEnvironment != cleanSettings.LightEnvironment && settings.LightEnvironment is > 0
+            && EnvironmentOwner is { } owner && component.FileRef.TryGetUExport(settings.LightEnvironment.Value, out var environment)
+            && environment.Parent == owner && environment.IsA("LightEnvironmentComponent"))
         {
-            if (settings.LightEnvironment != cleanSettings.LightEnvironment && !CanAssignEnvironment(settings.LightEnvironment))
-                throw new InvalidOperationException("The light environment must belong to this actor or its archetype.");
-            if (settings.LightEnvironment != cleanSettings.LightEnvironment && settings.LightEnvironment is > 0
-                && EnvironmentOwner is { } owner && Component.FileRef.TryGetUExport(settings.LightEnvironment.Value, out var environment)
-                && environment.Parent == owner && environment.IsA("LightEnvironmentComponent"))
-                ActorLightEnvironment.Register(owner, environment);
-            var props = Component.GetProperties();
-            foreach (var property in changed) props.AddOrReplaceProp(property);
-            Component.WriteProperties(props);
+            ActorLightEnvironment.Register(owner, environment);
+            //the actor writes its own properties too (a commit may do it after this), so it must not write its older Components back
+            Mesh.Actor?.OnComponentsWritten(owner);
         }
+        var props = component.GetProperties();
+        foreach (var property in changed) props.AddOrReplaceProp(property);
+        component.WriteProperties(props);
+    }
+
+    /// <summary>Accepts the written edits as the saved settings</summary>
+    internal void MarkClean()
+    {
         SavedProperties = EffectiveLightingProperties.ReadPrimitive(Component, Context.PackageCache);
         cleanSettings = settings;
         RefreshEnvironments();
@@ -313,6 +333,8 @@ public sealed class ActorLightingAction(EditableActorLighting lighting, ActorLig
 {
     public string Description => $"Edit {lighting.ComponentName} lighting";
     public bool IsOrphaned => lighting.IsOrphaned;
+    //a model with no actor isn't known to be independent of anything
+    public IReadOnlyCollection<ActorId> Subjects => lighting.OwnerId is { } owner ? [owner] : null;
     public void Undo() => lighting.Apply(before);
     public void Redo() => lighting.Apply(after);
 }

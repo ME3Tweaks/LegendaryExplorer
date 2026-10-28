@@ -122,18 +122,19 @@ public sealed class EditableDecal : NotifyPropertyChangedBase
 
 public sealed class DecalSettingsAction(DecalActorProxy actor, DecalSettings before, DecalSettings after, string property) : IMergeableUndoAction
 {
+    private readonly ActorRef subject = new(actor);
     private DecalSettings latest = after;
     private DateTime time = DateTime.UtcNow;
     public string Description => $"Edit decal {property}";
-    public bool IsOrphaned => actor.IsDisposed;
-    public void Undo() => actor.Decal.Restore(before);
-    public void Redo() => actor.Decal.Restore(latest);
+    public bool IsOrphaned => subject.IsOrphaned;
+    public IReadOnlyCollection<ActorId> Subjects => [subject.Id];
+    public void Undo() => ((DecalActorProxy)subject.View).Decal.Restore(before);
+    public void Redo() => ((DecalActorProxy)subject.View).Decal.Restore(latest);
     public bool TryMerge(IUndoAction next)
     {
-        if (next is not DecalSettingsAction action || action.Actor != actor || action.Property != property
+        if (next is not DecalSettingsAction action || !action.subject.RefersTo(subject) || action.Property != property
             || action.time - time > TimeSpan.FromMilliseconds(500)) return false;
         latest = action.latest; time = action.time; return true;
     }
-    private DecalActorProxy Actor => actor;
     private string Property => property;
 }

@@ -174,6 +174,9 @@ public sealed class EditableLight : NotifyPropertyChangedBase
     /// Its proxy was replaced or closed
     /// </summary>
     internal bool IsOrphaned => Owner.IsDisposed;
+
+    /// <summary>The proxy whose light this is</summary>
+    internal ActorProxy OwnerActor => Owner;
     public bool HasRadius => Type is SceneLightType.Point or SceneLightType.Spot;
     public bool IsSpot => Type is SceneLightType.Spot;
     public string TypeName => Type switch
@@ -354,7 +357,7 @@ public sealed class EditableLight : NotifyPropertyChangedBase
         editedOwnerTransform is null && !HasChanges ? null : new LightPreviewOverride(editedOwnerTransform, GetChangedProperties());
 
     /// <summary>
-    /// Writes the edited settings to the component
+    /// Writes the edited settings to the component. They're still pending until <see cref="MarkClean"/>, so an abandoned commit leaves them as they were
     /// </summary>
     /// <param name="parentToWorld">If the owner was moved, its new transform, which updates the component's cached copy of it (if it has one)</param>
     public void Commit(Matrix4x4? parentToWorld)
@@ -373,7 +376,6 @@ public sealed class EditableLight : NotifyPropertyChangedBase
             }
             Component.WriteProperties(props);
         }
-        MarkClean();
     }
 
     public void MarkClean()
@@ -709,7 +711,7 @@ public class StaticLightCollectionComponentProxy : CollectionActorComponentProxy
 /// </summary>
 public class LightSettingsAction : IMergeableUndoAction
 {
-    private readonly EditableLight Light;
+    private readonly ActorRef Owner;
     private readonly LightSettings Before;
     private LightSettings After;
     private DateTime LastEdit;
@@ -719,7 +721,7 @@ public class LightSettingsAction : IMergeableUndoAction
 
     public LightSettingsAction(EditableLight light, LightSettings before, LightSettings after, string actorName)
     {
-        Light = light;
+        Owner = new ActorRef(light.OwnerActor);
         Before = before;
         After = after;
         LastEdit = DateTime.UtcNow;
@@ -727,13 +729,16 @@ public class LightSettingsAction : IMergeableUndoAction
         Description = $"Edit {actorName} {string.Join(", ", ChangedFields)}";
     }
 
+    //the light of whichever view draws its actor now
+    private EditableLight Light => ((ILightProxy)Owner.View).Light;
     public void Undo() => Light.Apply(Before);
     public void Redo() => Light.Apply(After);
-    public bool IsOrphaned => Light.IsOrphaned;
+    public bool IsOrphaned => Owner.IsOrphaned;
+    public IReadOnlyCollection<ActorId> Subjects => [Owner.Id];
 
     public bool TryMerge(IUndoAction next)
     {
-        if (next is not LightSettingsAction edit || edit.Light != Light || edit.Before != After || (edit.LastEdit - LastEdit).TotalSeconds > 1
+        if (next is not LightSettingsAction edit || !edit.Owner.RefersTo(Owner) || edit.Before != After || (edit.LastEdit - LastEdit).TotalSeconds > 1
             || !edit.ChangedFields.SequenceEqual(ChangedFields))
             return false;
         After = edit.After;

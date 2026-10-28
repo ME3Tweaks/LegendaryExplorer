@@ -226,7 +226,7 @@
             <Border DockPanel.Dock="Bottom" Padding="8,4" BorderBrush="{StaticResource EditorBorder}" BorderThickness="0,1,0,0" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right" Text="{Binding CurrentModeName}" Foreground="{StaticResource EditorMuted}" Margin="12,0,0,0"/>
-                    <TextBlock DockPanel.Dock="Right" Text="{Binding SelectedActor.Export.ObjectName.Instanced, TargetNullValue=''}" Foreground="#81B3DD" Margin="12,0"/>
+                    <TextBlock DockPanel.Dock="Right" Text="{Binding SelectedActor.ActorName, TargetNullValue=''}" Foreground="#81B3DD" Margin="12,0"/>
                     <sharedToolControls:StatusBarGameIDIndicator DockPanel.Dock="Left" GameType="{Binding Game}" Visibility="{Binding HasAnyFileOpen, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0,-3,8,-3"/>
                     <TextBlock x:Name="StatusBar_LeftMostText" Text="Open a level package to begin" TextTrimming="CharacterEllipsis"/>
                 </DockPanel>
@@ -305,7 +305,7 @@
                                         <fa:ImageAwesome.Style><Style TargetType="fa:ImageAwesome"><Setter Property="Icon" Value="Solid_Cube"/><Setter Property="Foreground" Value="#CDB374"/><Style.Triggers><DataTrigger Binding="{Binding Category}" Value="Lights"><Setter Property="Icon" Value="Solid_Lightbulb"/><Setter Property="Foreground" Value="#F0C04F"/></DataTrigger></Style.Triggers></Style></fa:ImageAwesome.Style>
                                     </fa:ImageAwesome>
                                     <TextBlock Grid.Column="1" Text="{Binding DisplayText}" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding Export.UIndex}" Margin="8,0,0,0" FontSize="11" Opacity="0.8"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding IndexLabel}" Margin="8,0,0,0" FontSize="11" Opacity="0.8"/>
                                     <TextBlock Grid.Column="3" Text="•" Foreground="{StaticResource EditorDirty}" HorizontalAlignment="Right" Visibility="{Binding IsDirty, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="Uncommitted change"/>
                                 </Grid>
                             </DataTemplate></ListBox.ItemTemplate>
@@ -372,9 +372,9 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel>
                                 <StackPanel Margin="10,10,10,12">
-                                    <Border Background="{StaticResource EditorInput}" BorderBrush="{StaticResource EditorBorder}" BorderThickness="1" Padding="8,6" CornerRadius="2"><TextBlock Text="{Binding SelectedActor.Export.ObjectName.Instanced, TargetNullValue='Select an actor'}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/></Border>
+                                    <Border Background="{StaticResource EditorInput}" BorderBrush="{StaticResource EditorBorder}" BorderThickness="1" Padding="8,6" CornerRadius="2"><TextBlock Text="{Binding SelectedActor.ActorName, TargetNullValue='Select an actor'}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/></Border>
                                     <TextBlock Text="{Binding SelectedActor.DisplayText}" Foreground="#81B3DD" FontSize="11" Margin="0,7,0,0" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding SelectedActor.Export.UIndex, StringFormat='Export {0}'}" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,3,0,0"/>
+                                    <TextBlock Text="{Binding SelectedActor.ExportLabel}" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,3,0,0"/>
                                     <TextBlock Text="{Binding SelectedActor.CoverageLabel}" FontWeight="SemiBold" Margin="0,8,0,0"/>
                                     <TextBlock Text="{Binding SelectedActor.CoverageReason}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,3,0,0"/>
                                     <TextBlock Text="Read-only package" Foreground="{StaticResource EditorDirty}" Margin="0,6,0,0" Visibility="{Binding SelectedActor.OwningFile.IsReadOnly, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}"/>
@@ -678,8 +678,8 @@
                                 <Button Command="{Binding Data.SelectChangedActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" HorizontalContentAlignment="Stretch" Padding="3,0" ToolTip="Select and frame this changed actor">
                                     <Grid>
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="55"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="240"/></Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Export.UIndex}" Foreground="{StaticResource EditorDirty}"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding Export.ObjectName.Instanced}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding IndexLabel}" Foreground="{StaticResource EditorDirty}"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding ActorName}" TextTrimming="CharacterEllipsis"/>
                                         <TextBlock Grid.Column="2" Text="{Binding OwningFileName}" TextTrimming="CharacterEllipsis" Foreground="{StaticResource EditorMuted}"/>
                                         <TextBlock Grid.Column="3" HorizontalAlignment="Right" Foreground="{StaticResource EditorMuted}"><Run Text="X "/><Run Text="{Binding XPos, StringFormat=F1}"/><Run Text="  Y "/><Run Text="{Binding YPos, StringFormat=F1}"/><Run Text="  Z "/><Run Text="{Binding ZPos, StringFormat=F1}"/></TextBlock>
                                     </Grid>

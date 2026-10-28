@@ -35,15 +35,18 @@ public sealed partial class SplineActorProxy : ActorProxy
     /// <summary>A SplineLoftActor, whose connections deform meshes. Otherwise only its tangent is a spline value</summary>
     public bool IsLoft { get; }
     public SplineLoftSettings Settings => settings;
-    public EditableSplinePoint Point { get; }
+    public EditableSplinePoint Point { get; private set; }
     /// <summary>Picks this point from the marker the tangent gizmo draws over the scene. Registered by the render context with the actor</summary>
-    public SplinePointHitProxy PointHitProxy { get; }
+    public SplinePointHitProxy PointHitProxy { get; private set; }
     public override string Category => IsLoft ? "Spline meshes" : "Splines";
     public override int HitPriority => SplineMeshComps.Any(c => c.HasPreviewMesh) ? IHitProxy.StandardPriority : IHitProxy.WireFramePriority;
 
-    private sealed class Connection(ExportEntry target, ExportEntry splineComponent, SplineMeshComponentProxy mesh)
+    private ActorRegistry Registry => Editor.RenderContext.Registry;
+
+    /// <summary>A connection to another point, by its actor id: a draft point has no export to refer to</summary>
+    private sealed class Connection(ActorId target, ExportEntry splineComponent, SplineMeshComponentProxy mesh)
     {
-        public readonly ExportEntry Target = target;
+        public readonly ActorId Target = target;
         public ExportEntry SplineComponent = splineComponent;
         public SplineMeshComponentProxy Mesh = mesh;
         public ExportEntry MeshExport = mesh?.Export;
@@ -66,12 +69,66 @@ public sealed partial class SplineActorProxy : ActorProxy
     public SplineActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         IsLoft = actorExport.IsA("SplineLoftActor");
+        defaults = ReadDefaults(context, actorExport.Class, actorExport);
+        settings = cleanSettings = SplineLoftSettings.Read(Properties, defaults);
+        ReadConnections(context);
+        initialized = true;
+    }
+
+    /// <summary>A draft point, drawn from its own values alone. Its package is untouched</summary>
+    private SplineActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties) : base(context, draft, properties)
+    {
+        IsLoft = draft.IsLoft;
+        defaults = ReadDefaults(context, draft.Class, null);
+        settings = cleanSettings = SplineLoftSettings.Read(Properties, defaults);
+        ReadConnections(context);
+        initialized = true;
+        //a draft is wholly uncommitted
+        UpdateDirty();
+    }
+
+    /// <summary>
+    /// A draft copy of <paramref name="source"/> as it currently is (its pending values, not its export's): its transform, spline values and mesh choices,
+    /// with no connections or components. Nothing is added to the package; the copy has an export only once a commit writes it
+    /// </summary>
+    public static SplineActorProxy CreateDraft(IActorEditorContext context, SplineActorProxy source, string name)
+    {
+        var props = new PropertyCollection
+        {
+            CommonStructs.Vector3Prop(source.location, source.Pcc.Game.IsGame3() ? "location" : "Location"),
+            CommonStructs.RotatorProp(source.rotation, "Rotation"),
+            new FloatProperty(source.drawScale, "DrawScale"),
+            CommonStructs.Vector3Prop(source.drawScale3D, "DrawScale3D"),
+            CommonStructs.Vector3Prop(source.prePivot, "PrePivot")
+        };
+        // Only values the copy can own outright; references into the source's components (or any other object it owns) are never copied
+        foreach (string copied in new[] { "bHidden", "Tag", "bDisableDestination", "SplineColor", "bMovable", "bAcceptsLights", "MeshMaxDrawDistance" })
+        {
+            if (source.Properties.GetProp<Property>(copied) is { } prop) props.AddOrReplaceProp(prop.DeepClone());
+        }
+        source.settings.Write(props, source.defaults);
+        if (source.IsLoft)
+        {
+            props.AddOrReplaceProp(new ObjectProperty(source.deformMesh, "DeformMesh"));
+            props.AddOrReplaceProp(new ArrayProperty<ObjectProperty>(source.deformMaterials.Select(i => new ObjectProperty(i)), "DeformMeshMaterials"));
+        }
+        ActorRegistry registry = context.RenderContext.Registry;
+        IEntry actorClass = source.Export?.Class ?? registry[source.Id].Class;
+        ActorRecord record = registry.CreateDraft(source.Pcc, actorClass, name, isSpline: true, source.IsLoft);
+        return new SplineActorProxy(context, record, props) { OwningFile = source.OwningFile };
+    }
+
+    private static SplineLoftSettings ReadDefaults(IActorEditorContext context, IEntry actorClass, ExportEntry actorExport)
+    {
         var cache = context.RenderContext.PackageCache;
         var defaultProps = new PropertyCollection();
         foreach (string name in new[] { "SplineActorTangent", "Roll", "ScaleX", "ScaleY", "Offset", "WorldXDir", "bSmoothInterpRollAndScale" })
-            if (EffectiveLightingProperties.ClassDefaultProperty<Property>(actorExport, name, cache) is { } prop) defaultProps.Add(prop);
-        defaults = SplineLoftSettings.Read(defaultProps, SplineLoftSettings.Defaults);
-        settings = cleanSettings = SplineLoftSettings.Read(Properties, defaults);
+            if (EffectiveLightingProperties.ClassDefaultProperty<Property>(actorClass, actorExport, name, cache) is { } prop) defaultProps.Add(prop);
+        return SplineLoftSettings.Read(defaultProps, SplineLoftSettings.Defaults);
+    }
+
+    private void ReadConnections(IActorEditorContext context)
+    {
 
         var meshes = IsLoft ? Properties.GetProp<ArrayProperty<ObjectProperty>>("SplineMeshComps")?.ToList() ?? [] : [];
         var byIndex = new SplineMeshComponentProxy[meshes.Count];
@@ -89,20 +146,28 @@ public sealed partial class SplineActorProxy : ActorProxy
         var connectionProps = Properties.GetProp<ArrayProperty<StructProperty>>("Connections")?.ToList() ?? [];
         for (int i = 0; i < connectionProps.Count; i++)
         {
-            var target = connectionProps[i].GetProp<ObjectProperty>("ConnectTo")?.ResolveToEntry(Pcc) as ExportEntry;
+            var target = Registry.IdForStored(Pcc, connectionProps[i].GetProp<ObjectProperty>("ConnectTo")?.Value ?? 0);
             var spline = connectionProps[i].GetProp<ObjectProperty>("SplineComponent")?.ResolveToEntry(Pcc) as ExportEntry;
             var connection = new Connection(target, spline, i < byIndex.Length ? byIndex[i] : null);
-            if (target is null) connection.Defect = "It connects to nothing.";
-            else if (!target.IsA("SplineActor")) connection.Defect = $"It connects to a {target.ClassName}, not a spline point.";
-            else if (IsLoft && !target.IsA("SplineLoftActor")) connection.MeshDefect = $"It connects to a {target.ClassName}, not a loft point.";
-            else if (IsLoft && connection.Mesh is null) connection.MeshDefect = "It has no SplineMeshComponent.";
+            connection.Defect = TargetDefect(target);
+            if (connection.Defect is null && IsLoft && !Registry[target].IsLoft) connection.MeshDefect = $"It connects to a {TargetClassName(target)}, not a loft point.";
+            else if (connection.Defect is null && IsLoft && connection.Mesh is null) connection.MeshDefect = "It has no SplineMeshComponent.";
             connections.Add(connection);
         }
         Point = new EditableSplinePoint(this);
         PointHitProxy = new SplinePointHitProxy(this);
         InitializeConnections();
-        initialized = true;
     }
+
+    private string TargetClassName(ActorId target) => Registry[target] is { } record ? record.Export?.ClassName ?? record.Class?.ObjectName.Name ?? "Class" : "Class";
+
+    /// <summary>Why a connection to <paramref name="target"/> can't be rebuilt at all, or null</summary>
+    private string TargetDefect(ActorId target) => Registry[target] switch
+    {
+        null or { IsUnresolved: true } => "It connects to nothing.",
+        { IsSpline: false } => $"It connects to a {TargetClassName(target)}, not a spline point.",
+        _ => null
+    };
 
     /// <summary>This point and the loaded points connected to it, directly or through others, in either direction</summary>
     public List<SplineActorProxy> Network()
@@ -115,7 +180,7 @@ public sealed partial class SplineActorProxy : ActorProxy
             foreach (var next in points)
             {
                 if (network.Contains(next)) continue;
-                if (point.connections.Any(c => c.Target == next.Export) || next.connections.Any(c => c.Target == point.Export)) network.Add(next);
+                if (point.connections.Any(c => c.Target == next.Id) || next.connections.Any(c => c.Target == point.Id)) network.Add(next);
             }
         }
         return network;
@@ -126,7 +191,7 @@ public sealed partial class SplineActorProxy : ActorProxy
     {
         SplineLoftNode node = Node;
         foreach (var connection in connections)
-            if (connection.Defect is null && FindPoint(connection.Target) is { } target) yield return SplineLoftGeometry.SplineInfo(node, target.Node, Export.Game);
+            if (connection.Defect is null && FindPoint(connection.Target) is { } target) yield return SplineLoftGeometry.SplineInfo(node, target.Node, Pcc.Game);
     }
 
     /// <summary>This point as UE3 builds the splines from it: its Location, AActor::LocalToWorld (with FGlobalMath's trig table) and spline values</summary>
@@ -138,10 +203,10 @@ public sealed partial class SplineActorProxy : ActorProxy
     internal IEnumerable<SplineActorProxy> LoadedPoints =>
         Editor?.RenderContext.DrawList_3D.OfType<SplineActorProxy>().Where(a => !a.IsDisposed && a.Pcc == Pcc) ?? [];
 
-    private SplineActorProxy FindPoint(ExportEntry export) => export is null ? null : LoadedPoints.FirstOrDefault(a => a.Export == export);
+    private SplineActorProxy FindPoint(ActorId id) => id.IsEmpty ? null : LoadedPoints.FirstOrDefault(a => a.Id == id);
 
     /// <summary>The loaded points with a connection to this one</summary>
-    public IEnumerable<SplineActorProxy> IncomingPoints => LoadedPoints.Where(a => a != this && a.connections.Any(c => c.Target == Export));
+    public IEnumerable<SplineActorProxy> IncomingPoints => LoadedPoints.Where(a => a != this && a.connections.Any(c => c.Target == Id));
 
     /// <summary>
     /// ASplineActor::UpdateSplineComponents, and for a loft ASplineLoftActor::UpdateSplineParams, for each connection: rebuilt from this point and the next
@@ -184,6 +249,16 @@ public sealed partial class SplineActorProxy : ActorProxy
         foreach (var incoming in IncomingPoints) incoming.RefreshConnections();
     }
 
+    /// <summary>
+    /// The view was added to or removed from the scene. Connections are found among the drawn points, so this point's and the ones ending here
+    /// are rebuilt against whichever view of each actor is drawn now
+    /// </summary>
+    internal void OnSceneMembershipChanged()
+    {
+        if (IsDisposed || !initialized) return;
+        OnPointChanged();
+    }
+
     protected override void UpdateLocalToWorld()
     {
         base.UpdateLocalToWorld();
@@ -217,7 +292,8 @@ public sealed partial class SplineActorProxy : ActorProxy
         ApplySettings(settings with { Tangent = Vector3.TransformNormal(worldTangent, worldToLocal) }, property);
     }
 
-    protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || settings != cleanSettings || connections.Any(c => c.IsRebuilt)
+    //a draft is wholly uncommitted
+    protected override bool HasUncommittedChanges() => IsDraft || base.HasUncommittedChanges() || settings != cleanSettings || connections.Any(c => c.IsRebuilt)
         || TopologyDirty || MeshConfigurationDirty;
 
     public string EditingStatus
@@ -260,6 +336,7 @@ public sealed partial class SplineActorProxy : ActorProxy
 
     public override void CommitChanges(PackageCache packageCache = null)
     {
+        if (IsDraft) throw new InvalidOperationException($"{DisplayText} is a draft: it has no export to commit to.");
         if (IsReadOnly) return;
         ValidateConnectionsForCommit();
         CommitConnections();
@@ -267,7 +344,8 @@ public sealed partial class SplineActorProxy : ActorProxy
         base.CommitChanges(packageCache);
         foreach (var connection in connections)
         {
-            if (connection.MeshRebuilt)
+            //a mesh written from its preview already has its deformation
+            if (connection.MeshRebuilt && !committed[connection].MeshWritten)
             {
                 var meshProps = connection.Mesh.Export.GetProperties();
                 connection.Mesh.Deformation.Write(meshProps);
@@ -280,10 +358,21 @@ public sealed partial class SplineActorProxy : ActorProxy
                 connection.SplineComponent.WriteProperties(splineProps);
             }
         }
+        CommitConnectionLighting();
+    }
+
+    /// <summary>Its connection meshes' lighting is written and accepted with its connections, to the components the commit writes</summary>
+    internal override IEnumerable<MeshComponentProxy> LightingMeshes => [];
+
+    internal override void AbandonCommit()
+    {
+        committed = null;
+        base.AbandonCommit();
     }
 
     public override void MarkClean()
     {
+        AcceptCommittedConnections();
         foreach (var connection in connections)
         {
             if (connection.MeshRebuilt) connection.Mesh.AcceptDeformation();
@@ -298,7 +387,7 @@ public sealed partial class SplineActorProxy : ActorProxy
 
     public override bool TryRefreshPreview(IMEPackage package, HashSet<int> updatedExports, bool force = false)
     {
-        if (package == Pcc && (updatedExports.Contains(Export.UIndex)
+        if (package == Pcc && (!IsDraft && updatedExports.Contains(Export.UIndex)
             || connections.Any(c => c.SplineComponent is not null && updatedExports.Contains(c.SplineComponent.UIndex)
                 || c.MeshExport is not null && updatedExports.Contains(c.MeshExport.UIndex) && c.MeshExport.ClassName != "SplineMeshComponent"))) return false;
         bool refreshed = base.TryRefreshPreview(package, updatedExports, force);
@@ -445,7 +534,7 @@ public sealed class EditableSplinePoint(SplineActorProxy owner) : NotifyProperty
 
 public sealed class SplineSettingsAction : IMergeableUndoAction
 {
-    private readonly SplineActorProxy actor;
+    private readonly ActorRef actor;
     private readonly SplineLoftSettings before;
     private readonly string property;
     private SplineLoftSettings latest;
@@ -453,19 +542,21 @@ public sealed class SplineSettingsAction : IMergeableUndoAction
 
     public SplineSettingsAction(SplineActorProxy actor, SplineLoftSettings before, SplineLoftSettings after, string property)
     {
-        this.actor = actor;
+        this.actor = new ActorRef(actor);
         this.before = before;
         this.property = property;
         latest = after;
     }
 
+    private SplineActorProxy Point => (SplineActorProxy)actor.View;
     public string Description => $"Edit spline {property}";
-    public bool IsOrphaned => actor.IsDisposed;
-    public void Undo() => actor.RestoreSettings(before);
-    public void Redo() => actor.RestoreSettings(latest);
+    public bool IsOrphaned => actor.IsOrphaned;
+    public IReadOnlyCollection<ActorId> Subjects => [actor.Id];
+    public void Undo() => Point.RestoreSettings(before);
+    public void Redo() => Point.RestoreSettings(latest);
     public bool TryMerge(IUndoAction next)
     {
-        if (next is not SplineSettingsAction action || action.actor != actor || action.property != property
+        if (next is not SplineSettingsAction action || !action.actor.RefersTo(actor) || action.property != property
             || action.time - time > TimeSpan.FromMilliseconds(500)) return false;
         latest = action.latest; time = action.time; return true;
     }

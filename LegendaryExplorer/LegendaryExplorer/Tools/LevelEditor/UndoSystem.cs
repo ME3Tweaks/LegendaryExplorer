@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -19,6 +20,10 @@ public readonly record struct TransformSnapshot(
         DrawScale3D == other.DrawScale3D;
 }
 
+/// <summary>
+/// A step of the history. One that also implements <see cref="IDisposable"/> holds something only it can release, such as a view it took out of
+/// the scene and can put back; the history disposes it once it drops the step (redo steps a new one replaced, pruned or trimmed steps, or Clear)
+/// </summary>
 public interface IUndoAction
 {
     string Description { get; }
@@ -29,6 +34,12 @@ public interface IUndoAction
     /// What it edits was replaced (such as an actor rebuilt after another tool edited it), so undoing or redoing it would change nothing
     /// </summary>
     bool IsOrphaned { get; }
+
+    /// <summary>
+    /// The actors whose state it restores, which steps on the far side of it in the history may depend on (see <see cref="UndoHistory.RemoveOrphaned"/>).
+    /// Null if it doesn't say, so it's assumed to share state with every other step
+    /// </summary>
+    IReadOnlyCollection<ActorId> Subjects => null;
 }
 
 /// <summary>
@@ -44,7 +55,7 @@ public interface IMergeableUndoAction : IUndoAction
 
 public class TransformAction : IUndoAction
 {
-    private readonly ActorProxy _actor;
+    private readonly ActorRef _actor;
     private readonly TransformSnapshot _before;
     private readonly TransformSnapshot _after;
 
@@ -52,15 +63,16 @@ public class TransformAction : IUndoAction
 
     public TransformAction(ActorProxy actor, TransformSnapshot before, TransformSnapshot after, string description)
     {
-        _actor = actor;
+        _actor = new ActorRef(actor);
         _before = before;
         _after = after;
         Description = description;
     }
 
-    public void Undo() => _actor.RestoreTransform(_before);
-    public void Redo() => _actor.RestoreTransform(_after);
-    public bool IsOrphaned => _actor.IsDisposed;
+    public void Undo() => _actor.View.RestoreTransform(_before);
+    public void Redo() => _actor.View.RestoreTransform(_after);
+    public bool IsOrphaned => _actor.IsOrphaned;
+    public IReadOnlyCollection<ActorId> Subjects => [_actor.Id];
 }
 
 public class UndoHistory : NotifyPropertyChangedBase
@@ -79,10 +91,18 @@ public class UndoHistory : NotifyPropertyChangedBase
         OnPropertyChanged(nameof(CanRedo));
     }
 
+    //a step being undone or redone; the stacks must not change under it
+    private bool _executing;
+
+    /// <summary>Whether a step is being undone or redone</summary>
+    public bool IsExecuting => _executing;
+
     public void Push(IUndoAction action)
     {
+        if (_executing) throw new InvalidOperationException("A step can't be recorded while another is being undone or redone.");
         if (_undoStack.TryPeek(out IUndoAction previous) && previous is IMergeableUndoAction mergeable && mergeable.TryMerge(action))
         {
+            Drop(_redoStack);
             _redoStack.Clear();
             NotifyCanUndoRedoChanged();
             return;
@@ -97,72 +117,95 @@ public class UndoHistory : NotifyPropertyChangedBase
             {
                 _undoStack.Push(items[i]);
             }
+            Drop(items[(MaxHistorySize / 2)..]);
         }
         _undoStack.Push(action);
+        Drop(_redoStack);
         _redoStack.Clear();
         NotifyCanUndoRedoChanged();
     }
 
-    public void Undo()
-    {
-        if (_undoStack.TryPop(out var action))
-        {
-            action.Undo();
-            _redoStack.Push(action);
-        }
-        NotifyCanUndoRedoChanged();
-    }
+    public void Undo() => UndoMultiple(1);
 
-    public void Redo()
-    {
-        if (_redoStack.TryPop(out var action))
-        {
-            action.Redo();
-            _undoStack.Push(action);
-        }
-        NotifyCanUndoRedoChanged();
-    }
+    public void Redo() => RedoMultiple(1);
 
-    public void UndoMultiple(int count)
-    {
-        for (int i = 0; i < count && _undoStack.TryPop(out var action); i++)
-        {
-            action.Undo();
-            _redoStack.Push(action);
-        }
-        NotifyCanUndoRedoChanged();
-    }
+    /// <summary>
+    /// Undoes up to <paramref name="count"/> actions, one at a time. An action moves to the redo stack only once it has succeeded, so if one throws
+    /// it stays where it was (and the exception propagates); the ones before it remain undone
+    /// </summary>
+    public void UndoMultiple(int count) => Move(_undoStack, _redoStack, count, static action => action.Undo());
 
-    public void RedoMultiple(int count)
+    /// <inheritdoc cref="UndoMultiple"/>
+    public void RedoMultiple(int count) => Move(_redoStack, _undoStack, count, static action => action.Redo());
+
+    private void Move(Stack<IUndoAction> from, Stack<IUndoAction> to, int count, Action<IUndoAction> execute)
     {
-        for (int i = 0; i < count && _redoStack.TryPop(out var action); i++)
+        if (_executing) throw new InvalidOperationException("Another step is being undone or redone.");
+        _executing = true;
+        try
         {
-            action.Redo();
-            _undoStack.Push(action);
+            for (int i = 0; i < count && from.TryPeek(out var action); i++)
+            {
+                execute(action);
+                from.Pop();
+                to.Push(action);
+            }
         }
-        NotifyCanUndoRedoChanged();
+        finally
+        {
+            _executing = false;
+            NotifyCanUndoRedoChanged();
+        }
     }
 
     public void Clear()
     {
+        Drop(_undoStack);
+        Drop(_redoStack);
         _undoStack.Clear();
         _redoStack.Clear();
         NotifyCanUndoRedoChanged();
     }
 
+    /// <summary>Releases what dropped actions hold (see <see cref="IUndoAction"/>); they're never undone or redone again</summary>
+    private static void Drop(IEnumerable<IUndoAction> actions)
+    {
+        foreach (IUndoAction action in actions) (action as IDisposable)?.Dispose();
+    }
+
     /// <summary>
-    /// Forgets the actions whose subjects were replaced. Each action restores absolute values of its own subject,
-    /// so the others are unaffected by the removal
+    /// Forgets the actions whose subjects were replaced, and the ones that depended on them. Removing an action makes its effect permanent, which the
+    /// steps beyond it (older ones to undo, later ones to redo) were never applied against: undoing an older spline topology step would restore a
+    /// point's connections from before the removed one's edit while its neighbours keep theirs. So every step beyond a removed one that shares an
+    /// actor with it (or with any step removed for that reason) goes too, as does every step beyond one whose actors aren't known.
+    /// Steps nearer than a removed one were applied on top of its effect, and stay
     /// </summary>
     public void RemoveOrphaned()
     {
         static bool Prune(Stack<IUndoAction> stack)
         {
-            //newest first, so they're pushed back oldest first
-            IUndoAction[] kept = stack.Where(action => !action.IsOrphaned).ToArray();
-            if (kept.Length == stack.Count) return false;
+            //nearest first: an undo stack enumerates newest first, a redo stack next to redo first
+            var kept = new List<IUndoAction>();
+            var removedSubjects = new HashSet<ActorId>();
+            bool removedUnknown = false;
+            var removed = new List<IUndoAction>();
+            foreach (IUndoAction action in stack)
+            {
+                IReadOnlyCollection<ActorId> subjects = action.Subjects;
+                bool dependent = removedUnknown || removedSubjects.Count > 0 && (subjects is null || subjects.Any(removedSubjects.Contains));
+                if (!action.IsOrphaned && !dependent)
+                {
+                    kept.Add(action);
+                    continue;
+                }
+                removed.Add(action);
+                if (subjects is null) removedUnknown = true;
+                else removedSubjects.UnionWith(subjects);
+            }
+            if (removed.Count == 0) return false;
+            Drop(removed);
             stack.Clear();
-            for (int i = kept.Length - 1; i >= 0; i--) stack.Push(kept[i]);
+            for (int i = kept.Count - 1; i >= 0; i--) stack.Push(kept[i]);
             return true;
         }
         if (Prune(_undoStack) | Prune(_redoStack)) NotifyCanUndoRedoChanged();

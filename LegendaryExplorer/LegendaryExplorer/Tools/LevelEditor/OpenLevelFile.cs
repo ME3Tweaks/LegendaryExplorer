@@ -79,10 +79,11 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
     private static string OwnerClass(ILightProxy light) => light switch
     {
         CollectionActorComponentProxy collection => collection.CollectionActorExport.ClassName,
-        ActorProxy actor => actor.Export.ClassName,
+        ActorProxy actor => actor.ClassName,
         _ => ""
     };
 
+    //null outside the window (in tests)
     private readonly LevelEditor Owner;
 
     private bool isDirty;
@@ -93,21 +94,24 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
         {
             if (SetProperty(ref isDirty, value))
             {
-                Owner.UpdateGlobalDirtyState();
+                Owner?.UpdateGlobalDirtyState();
             }
         }
     }
 
+    /// <summary>Actors the level gains or loses at its next commit. They make it dirty even with no view (a pending deletion) or no dirty actor left</summary>
+    public LevelLifecycleChanges Lifecycle { get; } = new();
+
     public void RecalculateDirty()
     {
-        IsDirty = Actors.Any(a => a.IsDirty);
+        IsDirty = Lifecycle.HasChanges || Actors.Any(a => a.IsDirty);
     }
 
     private bool isReadOnly;
     public bool IsReadOnly
     {
-        get => Owner.IsBakePreview || isReadOnly;
-        set { if (!Owner.IsBakePreview) SetProperty(ref isReadOnly, value); }
+        get => Owner?.IsBakePreview == true || isReadOnly;
+        set { if (Owner?.IsBakePreview != true) SetProperty(ref isReadOnly, value); }
     }
 
     public OpenLevelFile(LevelEditor owner, IMEPackage package, ExportEntry levelExport)
@@ -115,6 +119,7 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
         Owner = owner;
         Package = package;
         LevelExport = levelExport;
+        Lifecycle.Changed += RecalculateDirty;
     }
 
     #region IPackageUser

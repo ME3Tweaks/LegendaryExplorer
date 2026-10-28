@@ -18,7 +18,17 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 {
     public IActorEditorContext Editor;
-    public OpenLevelFile OwningFile { get; set; }
+    private OpenLevelFile owningFile;
+    public OpenLevelFile OwningFile
+    {
+        get => owningFile;
+        //an actor that's already dirty (a draft) makes its new file dirty
+        set
+        {
+            owningFile = value;
+            if (isDirty && value is not null) value.IsDirty = true;
+        }
+    }
 
     public Matrix4x4 LocalToWorld;
 
@@ -35,8 +45,29 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     protected PropertyCollection Properties;
 
+    /// <summary>The actor this proxy draws. A proxy rebuilt for the same actor (or export) has the same id</summary>
+    public ActorId Id { get; }
+
+    /// <summary>The committed export. Null for a draft, which has none until a commit writes it</summary>
     public ExportEntry Export { get; }
-    protected IMEPackage Pcc => Export.FileRef;
+    public bool IsDraft => Export is null;
+    private readonly IMEPackage pcc;
+    protected IMEPackage Pcc => pcc;
+    /// <summary>The package the actor belongs to, whether or not it has an export there yet</summary>
+    public IMEPackage Package => pcc;
+    private readonly IEntry actorClass;
+    /// <summary>The actor's class name, as <see cref="ExportEntry.ClassName"/> is for its export</summary>
+    public string ClassName => Export?.ClassName ?? actorClass?.ObjectName.Name ?? "Class";
+    /// <summary>The actor's object name: its export's, or the one proposed for a draft. Use this rather than <see cref="Export"/> for labels</summary>
+    public string ActorName => Export?.ObjectName.Instanced ?? Editor?.RenderContext.Registry.NameOf(Id) ?? DisplayText;
+    /// <summary>
+    /// The outliner's order: committed actors by UIndex, then drafts (which have none). Only for sorting, never a UIndex
+    /// </summary>
+    public int SortIndex => Export?.UIndex ?? int.MaxValue;
+    /// <summary>For the outliner and pending changes: the export's UIndex, or "new" for a draft</summary>
+    public string IndexLabel => Export?.UIndex.ToString() ?? "new";
+    /// <summary>For the details panel</summary>
+    public string ExportLabel => Export is null ? "New: no export until committed" : $"Export {Export.UIndex}";
 
     public string OwningFileName => System.IO.Path.GetFileName(Pcc.FilePath);
 
@@ -81,8 +112,40 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public virtual void MarkClean()
     {
+        propertiesBeforeCommit = null;
         _cleanSnapshot = SnapshotTransform();
         IsDirty = false;
+    }
+
+    //a commit writes its values into Properties too (replacing top-level properties, never editing one in place), so a shallow copy restores them
+    private List<Property> propertiesBeforeCommit;
+
+    /// <summary>
+    /// Called before <see cref="CommitChanges"/> when the commit may be abandoned (its package writes rolled back): <see cref="AbandonCommit"/>
+    /// then puts back what the commit changed in this view, and <see cref="MarkClean"/> accepts it
+    /// </summary>
+    internal virtual void BeginCommit() => propertiesBeforeCommit = [.. Properties];
+
+    /// <summary>
+    /// Takes on the Components array a commit wrote to <paramref name="owner"/> (registering a new component), if it's this actor's export. Replaced
+    /// rather than edited, so abandoning the commit restores the old one
+    /// </summary>
+    internal void OnComponentsWritten(ExportEntry owner)
+    {
+        if (Export is null || Export != owner || Properties is null || owner.GetProperty<ArrayProperty<ObjectProperty>>("Components") is not { } components) return;
+        Properties.AddOrReplaceProp(components);
+    }
+
+    /// <summary>The meshes whose pending lighting edits a commit writes to their own components, alongside this actor's</summary>
+    internal virtual IEnumerable<MeshComponentProxy> LightingMeshes => Components.OfType<MeshComponentProxy>();
+
+    /// <summary>Undoes what a commit begun with <see cref="BeginCommit"/> changed in this view, leaving its pending edits as they were</summary>
+    internal virtual void AbandonCommit()
+    {
+        if (propertiesBeforeCommit is null) return;
+        Properties.Clear();
+        Properties.AddRange(propertiesBeforeCommit);
+        propertiesBeforeCommit = null;
     }
 
     /// <summary>
@@ -303,19 +366,32 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     }
 
     protected ActorProxy(IActorEditorContext context, ExportEntry actorExport)
+        : this(context, actorExport, actorExport.FileRef, actorExport.Class, context.RenderContext.Registry.IdFor(actorExport),
+            actorExport.ObjectName.Instanced, actorExport.GetCondensedProperties()) { }
+
+    /// <summary>
+    /// A draft actor: drawn from <paramref name="properties"/> (its own, without class defaults), with no export. Nothing is added to its package
+    /// </summary>
+    protected ActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties)
+        : this(context, null, draft.Package, draft.Class, draft.Id, draft.Name, properties) { }
+
+    private ActorProxy(IActorEditorContext context, ExportEntry actorExport, IMEPackage package, IEntry actorClass, ActorId id, string name, PropertyCollection props)
     {
         Editor = context;
         Export = actorExport;
-        Properties = actorExport.GetCondensedProperties();
-        PropertyCollection props = Properties;
+        pcc = package;
+        this.actorClass = actorClass;
+        Id = id;
+        Properties = props;
+        var cache = context.RenderContext.PackageCache;
 
         props.ReadProp(ref Tag);
         //classes such as Trigger are hidden by default
         IsHidden = (props.GetProp<BoolProperty>("bHidden")
-                    ?? EffectiveLightingProperties.ClassDefaultProperty<BoolProperty>(actorExport, "bHidden", context.RenderContext.PackageCache))?.Value ?? false;
+                    ?? EffectiveLightingProperties.ClassDefaultProperty<BoolProperty>(actorClass, actorExport, "bHidden", cache))?.Value ?? false;
 
-        DisplayText = Export.ObjectName.Instanced;
-        if (!Tag.Name.CaseInsensitiveEquals(Export.ClassName))
+        DisplayText = name;
+        if (!Tag.Name.CaseInsensitiveEquals(actorClass?.ObjectName.Name ?? "Class"))
         {
             DisplayText += $" ({Tag})";
         }
@@ -328,7 +404,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         drawScale = props.GetProp<FloatProperty>("DrawScale")?.Value ?? 1;
         location = locationsProp != null ? CommonStructs.GetVector3(locationsProp) : Vector3.Zero;
         //some classes scale by default: Default__Terrain's DrawScale3D is 256
-        if (drawScale3DProp is null && EffectiveLightingProperties.ClassDefaultProperty<StructProperty>(actorExport, "DrawScale3D", context.RenderContext.PackageCache) is { } defaultScale)
+        if (drawScale3DProp is null && EffectiveLightingProperties.ClassDefaultProperty<StructProperty>(actorClass, actorExport, "DrawScale3D", cache) is { } defaultScale)
         {
             defaultDrawScale3D = CommonStructs.GetVector3(defaultScale);
         }
@@ -343,6 +419,8 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     protected ActorProxy(ExportEntry actorExport)
     {
         Export = actorExport;
+        pcc = actorExport.FileRef;
+        Id = ActorId.New();
         DisplayText = Export.ObjectName.Instanced;
         drawScale = 1;
         location =  Vector3.Zero;
@@ -566,6 +644,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public virtual void CommitChanges(PackageCache packageCache = null)
     {
+        if (IsDraft) throw new InvalidOperationException($"{DisplayText} is a draft: it has no export to commit to.");
         var props = Properties;
 
         string locationPropName = Export.Game.IsGame3() ? "location" : "Location";
@@ -598,7 +677,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// </summary>
     public virtual bool TryRefreshPreview(IMEPackage package, HashSet<int> updatedExports, bool force = false)
     {
-        if (Export.FileRef == package && updatedExports.Contains(Export.UIndex) && this is not StaticMeshComponentActorProxy
+        if (Export is not null && Export.FileRef == package && updatedExports.Contains(Export.UIndex) && this is not StaticMeshComponentActorProxy
             || this is CollectionActorComponentProxy collection && collection.CollectionActorExport.FileRef == package
                 && updatedExports.Contains(collection.CollectionActorExport.UIndex)
             || Components.Any(component => component is not MeshComponentProxy && component.Export.FileRef == package
@@ -619,7 +698,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public virtual bool TestUIndexes(HashSet<int> uIndexes)
     {
-        if (uIndexes.Contains(Export.UIndex))
+        if (Export is not null && uIndexes.Contains(Export.UIndex))
         {
             return true;
         }
@@ -904,9 +983,16 @@ public abstract class CollectionActorComponentProxy : ActorProxy
         {
             throw new ArgumentException("Does not contain this component", nameof(collectionActor));
         }
-        Matrix4x4 m = ActorUtils.ComposeLocalToWorld(Location, Rotation, DrawScale * DrawScale3D, PrePivot);
-        collectionActor.LocalToWorldTransforms[idx] = m;
-        SavedLocalToWorld = m;
+        collectionActor.LocalToWorldTransforms[idx] = ComposedLocalToWorld;
+    }
+
+    private Matrix4x4 ComposedLocalToWorld => ActorUtils.ComposeLocalToWorld(Location, Rotation, DrawScale * DrawScale3D, PrePivot);
+
+    public override void MarkClean()
+    {
+        //the transform the commit wrote, if it was moved
+        if (IsTransformDirty) SavedLocalToWorld = ComposedLocalToWorld;
+        base.MarkClean();
     }
 
     public override bool TestUIndexes(HashSet<int> uIndexes)
@@ -939,6 +1025,8 @@ public class PrefabInstanceProxy : ActorProxy
     /// The prefab's actors, which aren't in the editor's actor list
     /// </summary>
     internal IReadOnlyList<ActorProxy> Children => Actors;
+
+    internal override IEnumerable<MeshComponentProxy> LightingMeshes => Actors.SelectMany(a => a.LightingMeshes);
     private readonly List<Matrix4x4> RelativeMatrices = [];
     // Not Editor, which is cleared for a prefab nested in another prefab, but is still needed to reload its children
     private readonly IActorEditorContext PreviewContext;

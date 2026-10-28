@@ -45,8 +45,10 @@ internal static class EffectiveLightingProperties
         }
     }
 
-    internal static ExportEntry ClassDefault(ExportEntry export, PackageCache cache) =>
-        export.Class is { } type ? Cached(cache, d => d.Objects, type, () => Resolve(type, cache) is { } resolved
+    internal static ExportEntry ClassDefault(ExportEntry export, PackageCache cache) => ClassDefaultOf(export.Class, cache);
+
+    private static ExportEntry ClassDefaultOf(IEntry type, PackageCache cache) =>
+        type is not null ? Cached(cache, d => d.Objects, type, () => Resolve(type, cache) is { } resolved
             ? resolved.FileRef.FindExport("Default__" + resolved.ObjectName.Instanced) : null) : null;
 
     /// <summary>The class default object's properties, read once per package cache. Never modified: callers copy what they take</summary>
@@ -76,7 +78,11 @@ internal static class EffectiveLightingProperties
 
     /// <summary>A property the object's class default object has, for one the object and its archetypes don't set. Null if it has none</summary>
     public static T ClassDefaultProperty<T>(ExportEntry export, string name, PackageCache cache) where T : Property =>
-        ClassDefault(export, cache) is { } cdo && cdo != export ? ClassDefaultProperties(cdo, cache).GetProp<T>(name)?.DeepClone() as T : null;
+        ClassDefaultProperty<T>(export.Class, export, name, cache);
+
+    /// <summary>The same for an object of class <paramref name="type"/> that may have no export yet (a draft); <paramref name="export"/> is its export, if any</summary>
+    public static T ClassDefaultProperty<T>(IEntry type, ExportEntry export, string name, PackageCache cache) where T : Property =>
+        ClassDefaultOf(type, cache) is { } cdo && cdo != export ? ClassDefaultProperties(cdo, cache).GetProp<T>(name)?.DeepClone() as T : null;
 
     public static PropertyCollection Read(ExportEntry export, PackageCache cache) => Read(export, cache, static _ => true);
 

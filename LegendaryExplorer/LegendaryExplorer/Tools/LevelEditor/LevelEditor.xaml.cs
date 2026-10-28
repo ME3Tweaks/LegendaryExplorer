@@ -399,6 +399,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     public bool IsBakePreview { get; }
     public bool CanEditScene => !IsBakePreview;
+
+    /// <summary>
+    /// Nothing else is changing the scene or reading it in the background: no preview refresh, file load or save (which read packages and the scene
+    /// on other threads while the window stays responsive), history step or scene edit is in progress. Undo, redo and commit wait for this
+    /// </summary>
+    private bool CanMutateScene => CanEditScene && !IsBusy && !PreviewRefreshInProgress && !loadingBakePreview && !_isApplyingUndoRedo
+        && !UndoHistory.IsExecuting && !RenderContext.IsEditingScene;
     private bool loadingBakePreview;
 
     public LevelEditor() : this(false) { }
@@ -768,7 +775,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
             return result;
         }).ConfigureAwait(true);
-        var sorted = actors.OrderBy(actor => actor.Export.UIndex).ToList();
+        var sorted = actors.OrderBy(actor => actor.SortIndex).ToList();
         openFile.Actors.AddRange(sorted);
         Actors.AddRange(sorted);
         RenderContext.LoadActors(sorted);
@@ -786,7 +793,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
         if (ExportQueuedForFocusing > 0)
         {
-            if (sorted.FirstOrDefault(a => a.Export.UIndex == ExportQueuedForFocusing) is { } proxy)
+            if (sorted.FirstOrDefault(a => a.Export?.UIndex == ExportQueuedForFocusing) is { } proxy)
             {
                 SelectedActor = proxy;
                 ExportQueuedForFocusing = 0;
@@ -850,16 +857,15 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 MessageBoxResult.No => LinkedFileCloseChoice.Discard,
                 _ => LinkedFileCloseChoice.Cancel
             };
-            if (choice == LinkedFileCloseChoice.Save)
-            {
-                SetBusy("Saving linked files...");
-            }
-
+            //busy only once the commit is done: a commit waits for whatever made the window busy
+            bool saving = false;
             try
             {
                 await LinkedFileEdits.CloseGroupAsync(group, file, choice, async () =>
                 {
                     if (!CanSaveLinkedFiles(group) || !CommitChangesForFiles(group)) return false;
+                    SetBusy("Saving linked files...");
+                    saving = true;
                     // Committing pending edits may have added more files to this group.
                     var linked = LinkedEdits.GetLinkedFiles(file).ToList();
                     if (!CanSaveLinkedFiles(linked)) return false;
@@ -877,7 +883,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
             finally
             {
-                if (choice == LinkedFileCloseChoice.Save)
+                if (saving)
                 {
                     EndBusy();
                 }
@@ -928,6 +934,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         // Drops the cache's reference (and its update observer), so reopening the file without other users reads it from disk.
         // Kept if other open levels imported from it
         RenderContext.PackageCache.StopUsingPackage(filePath);
+        //reopening it starts new actors, even if the package object is shared and comes back
+        RenderContext.Registry.Forget(file.Package);
         UndoHistory.RemoveOrphaned();
         HasAnyFileOpen = OpenFiles.Count > 0;
         UpdateGlobalDirtyState();
@@ -1040,7 +1048,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             RenderContext.AddActor(actor);
             if (sort)
             {
-                Actors.Sort(a => a.Export.UIndex);
+                Actors.Sort(a => a.SortIndex);
             }
         }
     }
@@ -1117,8 +1125,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         ToggleRotateCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.Rotate, "Rotate"), PackageIsLoaded);
         ToggleScaleCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.Scale, "Scale"), PackageIsLoaded);
         ToggleUniformScaleCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.UniformScale, "Uniform Scale"), PackageIsLoaded);
-        CommitChangesCommand = new GenericCommand(CommitChanges, () => CanEditScene && PackageIsLoaded());
-        CommitSingleFileCommand = new RelayCommand(CommitSingleFileExecute, _ => CanEditScene && PackageIsLoaded());
+        CommitChangesCommand = new GenericCommand(CommitChanges, () => CanMutateScene && PackageIsLoaded());
+        CommitSingleFileCommand = new RelayCommand(CommitSingleFileExecute, _ => CanMutateScene && PackageIsLoaded());
         LoadRelatedLevelsCommand = new GenericCommand(LoadRelatedLevels, () => CanEditScene && PackageIsLoaded());
         FocusSelectedCommand = new GenericCommand(() =>
         {
@@ -1138,10 +1146,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 p.LoadPackage(export.FileRef, export.UIndex);
                 p.Activate();
             }
-        }, () => CanEditScene && PackageIsLoaded() && SelectedActor is not null);
+        }, () => CanEditScene && PackageIsLoaded() && SelectedActor is { IsDraft: false });
         OpenRecentSetCommand = new RelayCommand(obj => { if (obj is RecentFileSet set) OpenRecentFileSet(set); });
-        UndoCommand = new GenericCommand(Undo, () => UndoHistory.CanUndo);
-        RedoCommand = new GenericCommand(Redo, () => UndoHistory.CanRedo);
+        UndoCommand = new GenericCommand(Undo, () => UndoHistory.CanUndo && CanMutateScene);
+        RedoCommand = new GenericCommand(Redo, () => UndoHistory.CanRedo && CanMutateScene);
         ToggleOrthoViewCommand = new GenericCommand(() => IsOrthographicView = !IsOrthographicView);
         FocusFileCommand = new RelayCommand(parameter =>
         {
@@ -1202,28 +1210,35 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public void Undo_Clicked(object sender, RoutedEventArgs e) => Undo();
     public void Undo()
     {
+        if (!CanMutateScene) return;
         CancelViewportDrag();
-        if (UndoHistory.CanUndo)
-        {
-            _isApplyingUndoRedo = true;
-            UndoHistory.Undo();
-            _isApplyingUndoRedo = false;
-            if (SelectedActor is not null)
-            {
-                _preEditSnapshot = SelectedActor.SnapshotTransform();
-            }
-            _preEditLightSettings = SelectedLight?.Settings;
-        }
+        if (UndoHistory.CanUndo) ApplyHistoryStep(UndoHistory.Undo, "Undo");
     }
 
     public void Redo_Clicked(object sender, RoutedEventArgs e) => Redo();
     void Redo()
     {
+        if (!CanMutateScene) return;
         CancelViewportDrag();
-        if (UndoHistory.CanRedo)
+        if (UndoHistory.CanRedo) ApplyHistoryStep(UndoHistory.Redo, "Redo");
+    }
+
+    /// <summary>
+    /// Undoes or redoes one step. A step that fails (such as one whose actor isn't drawn) stays in the history where it was, and is reported
+    /// </summary>
+    private void ApplyHistoryStep(Action step, string name)
+    {
+        _isApplyingUndoRedo = true;
+        try
         {
-            _isApplyingUndoRedo = true;
-            UndoHistory.Redo();
+            step();
+        }
+        catch (InvalidOperationException e)
+        {
+            MessageBox.Show(this, e.Message, $"{name} failed");
+        }
+        finally
+        {
             _isApplyingUndoRedo = false;
             if (SelectedActor is not null)
             {
@@ -1324,7 +1339,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void CommitChanges()
     {
-        if (!PackageIsLoaded() || Actors.Count is 0) return;
+        //a level whose only change is a deleted actor may have none left
+        if (!PackageIsLoaded() || Actors.Count is 0 && !OpenFiles.Any(f => f.Lifecycle.HasChanges)) return;
 
         CommitChangesForFiles(OpenFiles.Where(f => !f.IsReadOnly));
     }
@@ -1333,6 +1349,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private bool CommitChangesForFiles(IEnumerable<OpenLevelFile> requested)
     {
+        // A save or preview refresh reads the packages on another thread, and a scene edit or history step would be cut in two
+        if (!CanMutateScene)
+        {
+            MessageBox.Show(this, "Wait for the current operation (such as saving or refreshing the preview) to finish, then commit again.", "Commit Changes");
+            return false;
+        }
         CancelViewportDrag();
         var files = requested.ToHashSet();
         DecalPackageMigration migration;
@@ -1352,6 +1374,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                     }
                 }
             }
+            // New and deleted actors need the lifecycle commit, which doesn't exist yet: refuse before anything is written
+            if (files.FirstOrDefault(f => f.Lifecycle.HasChanges || f.Actors.Any(a => a.IsDraft)) is { } lifecycleFile)
+                throw new InvalidOperationException($"{lifecycleFile.FileName} has new or deleted actors, which can't be committed yet. Undo them, or reset the file's changes.");
             foreach (var spline in files.SelectMany(f => f.Actors).OfType<SplineActorProxy>().Where(s => s.IsDirty))
                 spline.ValidateConnectionsForCommit();
             migration = DecalPackageMigration.Prepare(files.SelectMany(f => f.Actors).OfType<DecalActorProxy>());
@@ -1363,10 +1388,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
         using (migration)
         {
-            try { migration.Apply(); }
-            catch (InvalidOperationException error)
+            // The decal migration and every actor write are one package edit: a failure anywhere restores all the files and leaves every edit pending
+            try { ActorCommit.Commit(OpenFiles.Where(files.Contains).ToList(), migration.Apply, migration.Moves.Select(m => (ActorProxy)m.Actor).ToHashSet()); }
+            catch (Exception error) when (error is not OutOfMemoryException)
             {
-                MessageBox.Show(this, error.Message, "Decal migration");
+                MessageBox.Show(this, $"Nothing was committed: {error.Message}", "Commit Changes");
                 return false;
             }
             var selectedMove = migration.Moves.FirstOrDefault(m => m.Actor == SelectedActor);
@@ -1377,7 +1403,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 if (SelectedActor == move.Actor) SelectedActor = null;
                 RemoveActor(move.Actor);
             }
-            foreach (var file in files) CommitPreparedFile(file);
             foreach (var move in migration.Moves)
             {
                 var actor = ActorProxy.Create(this, move.Destination.GetUExport(move.ActorIndex));
@@ -1389,51 +1414,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         UpdateGlobalDirtyState();
         ClearUndoHistory();
         return true;
-    }
-
-    private void CommitPreparedFile(OpenLevelFile file)
-    {
-        Dictionary<int, StaticCollectionActor> collectionActorMap = [];
-
-        foreach (ActorProxy actor in file.Actors)
-        {
-            if (!actor.IsDirty)
-            {
-                continue;
-            }
-            if (actor is CollectionActorComponentProxy cacp)
-            {
-                bool moved = cacp.IsTransformDirty;
-                // A light whose settings alone changed must not rewrite (and so rebuild) its whole collection.
-                if (moved)
-                {
-                    if (!collectionActorMap.TryGetValue(cacp.CollectionActorExport.UIndex, out var collectionActor))
-                    {
-                        collectionActor = (StaticCollectionActor)ObjectBinary.From(cacp.CollectionActorExport);
-                        collectionActorMap.Add(cacp.CollectionActorExport.UIndex, collectionActor);
-                    }
-                    cacp.CommitChanges(collectionActor);
-                }
-                if (cacp is ILightProxy collectionLight)
-                {
-                    collectionLight.Light.Commit(moved ? cacp.LocalToWorld : null);
-                }
-            }
-            else
-            {
-                // A loft point can be dirty without moving: its spline values, or a connection rebuilt because the next point moved
-                if (actor.IsTransformDirty || actor is ILightProxy or DecalActorProxy or SplineActorProxy) actor.CommitChanges();
-            }
-            foreach (var mesh in MeshComponents(actor)) mesh.ExistingLighting?.Commit();
-            if (actor is not DecalActorProxy) actor.MarkClean();
-        }
-
-        foreach (var collectionActor in collectionActorMap.Values)
-        {
-            collectionActor.Export.WriteBinary(collectionActor);
-        }
-        foreach (var decal in file.Actors.OfType<DecalActorProxy>()) decal.MarkClean();
-        file.IsDirty = false;
     }
 
     private void ClearUndoHistory()
@@ -1643,7 +1623,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         // Package loading and shader preparation also read the scene on background threads.
         // Keep edits queued until those readers finish, and suspend rendering while replacing GPU resources. (Package saves aren't readers of the scene)
         if (_busyCount > 0 || PreviewRefreshInProgress || RenderContext.TransformWidget.IsDragging || RenderContext.LightGizmo.IsDragging
-            || RenderContext.SplineGizmo.IsDragging) return;
+            || RenderContext.SplineGizmo.IsDragging || RenderContext.IsEditingScene || _isApplyingUndoRedo || UndoHistory.IsExecuting) return;
         PreviewUpdateTimer.Stop();
         if (OpenFiles.Count == 0 || PreviewClosed)
         {
@@ -1786,6 +1766,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                         collectionActorsToUpdate.Add(collectionOwner);
                         continue;
                     }
+                    //another tool changed it: the rebuilt proxy is the same actor (so connections to it still resolve), but its earlier undo steps are orphaned with the old one
+                    RenderContext.Registry.Invalidate(alteredActor.Export);
                     RemoveActor(alteredActor);
                     if (file.Package.GetEntry(alteredActor.Export.UIndex) is ExportEntry actorExport
                         && ActorProxy.Create(this, actorExport) is { } actorProxy)
@@ -1801,6 +1783,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 {
                     if (file.Actors[i].Export == collectionActor || file.Actors[i].CollectionOwner == collectionActor)
                     {
+                        RenderContext.Registry.Invalidate(file.Actors[i].Export);
                         RemoveActor(file.Actors[i]);
                     }
                 }
@@ -1815,12 +1798,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
             if (updated)
             {
-                Actors.Sort(a => a.Export.UIndex);
+                Actors.Sort(a => a.SortIndex);
                 UpdateGlobalDirtyState();
             }
             if (reselectUIndex is not 0)
             {
-                SelectedActor = Actors.FirstOrDefault(a => a.Export.UIndex == reselectUIndex && a.Export.FileRef == file.Package);
+                SelectedActor = Actors.FirstOrDefault(a => a.Export?.UIndex == reselectUIndex && a.Package == file.Package);
                 if (SelectedActor is not null)
                 {
                     (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw)
@@ -1842,7 +1825,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             savedCamPOV = (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw);
             savedActorPos = SelectedActor.Location;
-            reselectUIndex = SelectedActor.Export.UIndex;
+            //a selected draft is discarded with the rest of the file's pending changes
+            reselectUIndex = SelectedActor.Export?.UIndex ?? 0;
             SelectedActor = null;
         }
 
@@ -1853,17 +1837,20 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             actor.Dispose();
         }
         file.Actors.Clear();
+        //reloaded from the package, so these are new actors: undo steps recorded against the old ones are orphaned, and drafts are gone
+        RenderContext.Registry.Forget(file.Package);
+        file.Lifecycle.Clear();
 
         Level levelBin = file.LevelExport.GetBinaryData<Level>();
         var (actors, _) = LoadActors(levelBin, file);
-        var sorted = actors.OrderBy(a => a.Export.UIndex).ToList();
+        var sorted = actors.OrderBy(a => a.SortIndex).ToList();
         file.Actors.AddRange(sorted);
         Actors.AddRange(sorted);
         RenderContext.LoadActors(sorted);
 
         if (reselectUIndex is not 0)
         {
-            var reselect = Actors.FirstOrDefault(a => a.Export.UIndex == reselectUIndex && a.Export.FileRef == file.Package);
+            var reselect = Actors.FirstOrDefault(a => a.Export?.UIndex == reselectUIndex && a.Package == file.Package);
             if (reselect is not null)
             {
                 SelectedActor = reselect;
@@ -1901,7 +1888,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             var after = actor.SnapshotTransform();
             if (!before.Equals(after))
             {
-                UndoHistory.Push(new TransformAction(actor, before, after, $"Edit {actor.Export.ObjectName.Instanced}"));
+                UndoHistory.Push(new TransformAction(actor, before, after, $"Edit {actor.ActorName}"));
                 _preEditSnapshot = after;
             }
         }
@@ -1910,7 +1897,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void OnWidgetDragComplete(ActorProxy actor, TransformSnapshot before, TransformSnapshot after)
     {
         if (before.Equals(after)) return;
-        UndoHistory.Push(new TransformAction(actor, before, after, $"Drag {actor.Export.ObjectName.Instanced}"));
+        UndoHistory.Push(new TransformAction(actor, before, after, $"Drag {actor.ActorName}"));
         _preEditSnapshot = after;
     }
 
@@ -1955,7 +1942,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void SplineMesh_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
-        var mesh = EntrySelector.GetEntry<IEntry>(this, point.Export.FileRef, "Select DeformMesh", entry => entry.IsA("StaticMesh"));
+        var mesh = EntrySelector.GetEntry<IEntry>(this, point.Package, "Select DeformMesh", entry => entry.IsA("StaticMesh"));
         if (mesh is not null) point.SetDeformMesh(mesh.UIndex, point.DeformMeshMaterials);
     }
     private void SplineClearMesh_Click(object sender, RoutedEventArgs e)
@@ -1965,7 +1952,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void SplineMaterials_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
-        var material = EntrySelector.GetEntry<IEntry>(this, point.Export.FileRef, "Add DeformMeshMaterials override", entry => entry.IsA("MaterialInterface"));
+        var material = EntrySelector.GetEntry<IEntry>(this, point.Package, "Add DeformMeshMaterials override", entry => entry.IsA("MaterialInterface"));
         if (material is not null) point.SetDeformMesh(point.DeformMesh, point.DeformMeshMaterials.Append(material.UIndex));
     }
     private void SplineClearMaterials_Click(object sender, RoutedEventArgs e)
@@ -1979,7 +1966,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         switch (operation)
         {
             case "Choose":
-                var material = EntrySelector.GetEntry<IEntry>(this, slot.Point.Export.FileRef, $"Material override for slot {slot.Index}", entry => entry.IsA("MaterialInterface"));
+                var material = EntrySelector.GetEntry<IEntry>(this, slot.Point.Package, $"Material override for slot {slot.Index}", entry => entry.IsA("MaterialInterface"));
                 if (material is null) return;
                 values[slot.Index] = material.UIndex;
                 break;
@@ -2090,7 +2077,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (!_isApplyingUndoRedo && !RenderContext.LightGizmo.IsDragging && _preEditLightSettings is { } before && before != light.Settings
             && selectedActor is not null)
         {
-            UndoHistory.Push(new LightSettingsAction(light, before, light.Settings, selectedActor.Export.ObjectName.Instanced));
+            UndoHistory.Push(new LightSettingsAction(light, before, light.Settings, selectedActor.ActorName));
         }
         _preEditLightSettings = light.Settings;
     }
@@ -2098,7 +2085,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void OnLightGizmoDragComplete(ILightProxy light, LightSettings before, LightSettings after)
     {
         if (light is not ActorProxy actor) return;
-        UndoHistory.Push(new LightSettingsAction(light.Light, before, after, actor.Export.ObjectName.Instanced));
+        UndoHistory.Push(new LightSettingsAction(light.Light, before, after, actor.ActorName));
         _preEditLightSettings = after;
         LightDiagnosticsStale = true;
     }
@@ -2393,10 +2380,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (string.IsNullOrEmpty(_actorFilterText)) return true;
         return obj is ActorProxy actor &&
                (actor.DisplayText.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase)
-                || actor.Export.ClassName.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase)
+                || actor.ClassName.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase)
                 || actor.CoverageLabel.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase)
                 || actor.Category.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase)
-                || (int.TryParse(_actorFilterText.TrimStart('#'), out int index) && actor.Export.UIndex == index));
+                || (int.TryParse(_actorFilterText.TrimStart('#'), out int index) && actor.Export?.UIndex == index));
     }
 
     private void ActorFilter_TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -2423,7 +2410,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void GotoButton_Clicked(object sender, RoutedEventArgs e)
     {
         if (int.TryParse(Goto_TextBox.Text, out int uIdx)
-            && Actors.FirstOrDefault(a => a.Export.UIndex == uIdx) is ActorProxy actor)
+            && Actors.FirstOrDefault(a => a.Export?.UIndex == uIdx) is ActorProxy actor)
         {
             SelectAndRevealActor(actor);
         }

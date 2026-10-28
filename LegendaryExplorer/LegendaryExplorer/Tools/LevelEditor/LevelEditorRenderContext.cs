@@ -23,6 +23,15 @@ public class LevelEditorRenderContext : MeshRenderContext
 {
     public event Action<ActorProxy> SelectActor;
     public List<ActorProxy> DrawList_3D = [];
+
+    /// <summary>The editing session's actors, which the proxies in the draw list are views of</summary>
+    public ActorRegistry Registry { get; } = new();
+
+    /// <summary>
+    /// A <see cref="SceneEdit"/> is open. It's the only change of which views are drawn in progress: another can't start, and the editor holds back
+    /// preview refreshes, history steps and commits until it ends
+    /// </summary>
+    public bool IsEditingScene { get; internal set; }
     private Dictionary<LegendaryExplorerCore.Packages.ExportEntry, MeshComponentProxy> decalReceivers;
     internal MeshComponentProxy FindDecalReceiver(LegendaryExplorerCore.Packages.ExportEntry export)
     {
@@ -590,7 +599,11 @@ public class LevelEditorRenderContext : MeshRenderContext
         if (DrawList_3D.Remove(actor))
         {
             HitProxies.RemoveAt(actor.HitID);
-            if (actor is SplineActorProxy spline) HitProxies.RemoveAt(spline.PointHitProxy.HitID);
+            if (actor is SplineActorProxy spline)
+            {
+                HitProxies.RemoveAt(spline.PointHitProxy.HitID);
+                spline.OnSceneMembershipChanged();
+            }
             if (SelectedActor == actor) SelectedActor = null;
         }
     }
@@ -601,14 +614,21 @@ public class LevelEditorRenderContext : MeshRenderContext
         if (actor is SplineActorProxy spline) spline.PointHitProxy.HitID = HitProxies.Add(spline.PointHitProxy);
     }
 
-    internal void AddActor(ActorProxy actor)
+    internal void AddActor(ActorProxy actor) => InsertActor(DrawList_3D.Count, actor);
+
+    /// <summary>Adds an actor at a position in the draw list, such as where it was before a <see cref="SceneEdit"/> was abandoned</summary>
+    internal void InsertActor(int index, ActorProxy actor)
     {
         decalReceivers = null;
         if (!DrawList_3D.Contains(actor))
         {
-            DrawList_3D.Add(actor);
+            DrawList_3D.Insert(Math.Clamp(index, 0, DrawList_3D.Count), actor);
             foreach (var decal in DrawList_3D.OfType<DecalActorProxy>()) decal.BindReceivers(this);
             AddHitProxies(actor);
+            (actor as SplineActorProxy)?.OnSceneMembershipChanged();
         }
     }
+
+    /// <summary>What a hit ID picks, if it's registered</summary>
+    public bool TryGetHitProxy(int hitId, out IHitProxy hitProxy) => HitProxies.TryGetAt(hitId, out hitProxy);
 }
