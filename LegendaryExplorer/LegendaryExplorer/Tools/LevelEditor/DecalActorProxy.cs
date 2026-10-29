@@ -107,6 +107,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
 {
     private readonly DecalActorProxy owner;
     private DecalProjection projection;
+    //the decal's material, and the one it's drawn with: the game's default decal material in place of one the game can't draw on a decal
+    private IEntry materialEntry;
     private ExportEntry material;
     private string failure;
     private string lastCoverage;
@@ -137,6 +139,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         public Matrix4x4 OriginalTransform;
         public byte[] OriginalData;
         public ModelPreview<LEVertex> Mesh;
+        public ModelPreviewLOD<LEVertex> LightingSource;
         public string Failure;
         public bool Invalidated;
     }
@@ -158,7 +161,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                 throw new NotSupportedException("Movable decal reprojection is not implemented.");
             if (export.Parent != actor.Export || export.Parent?.Parent?.ClassName != "Level")
                 throw new NotSupportedException("Prefab/template decal receiver remapping is not implemented.");
-            material = EffectiveLightingProperties.ResolveReference(export, "DecalMaterial", context.PackageCache, Properties);
+            var (reference, package) = EffectiveLightingProperties.Reference(export, "DecalMaterial", context.PackageCache);
+            UseMaterial(reference?.ResolveToEntry(package), context.PackageCache);
             if (material is null) throw new NotSupportedException("Decal material could not be resolved.");
             if (Properties.GetProp<ArrayProperty<ObjectProperty>>("ReceiverImages") is { Count: > 0 })
                 EditUnsupportedReason = "Reprojection with ReceiverImages is not supported.";
@@ -182,6 +186,24 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         originalProjection = projection;
         originalReceivers = receivers;
         originalFailure = failure;
+    }
+
+    /// <summary>
+    /// Draws the decal with <paramref name="entry"/>, as the game would (UDecalComponent::CaptureDecalState): a material it can't draw on a decal,
+    /// or none, is drawn with the engine's DefaultDecalMaterial (<see cref="MaterialUsage.DecalDrawsDefault"/>). Receiver meshes are rebuilt with it
+    /// </summary>
+    private void UseMaterial(IEntry entry, PackageCache cache)
+    {
+        materialEntry = entry;
+        var drawn = MaterialUsage.DecalDrawsDefault(entry, cache) && MaterialUsage.EngineMaterial(Export.Game, "DefaultDecalMaterial", cache) is { } fallback
+            ? fallback : EffectiveLightingProperties.Resolve(entry, cache);
+        if (drawn == material) return;
+        material = drawn;
+        foreach (var receiver in (originalReceivers ?? []).Concat(receivers).Distinct())
+        {
+            receiver.Mesh?.Dispose();
+            receiver.Mesh = null;
+        }
     }
 
     internal static bool ValidGeometry(StaticReceiverData data) => data.NumTriangles <= int.MaxValue / 3
@@ -217,6 +239,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     internal void EnsureProjection(LevelEditorRenderContext context)
     {
         if (owner.Decal is null || owner.Editor is null) return;
+        if (owner.Decal.Settings.Material != materialEntry) UseMaterial(owner.Decal.Settings.Material, context.PackageCache);
         // The original receiver snapshot stays available for exact undo until a commit.
         if (ReferenceEquals(receivers, originalReceivers)) BindReceivers(context);
         bool receiverChanged = originalReceivers.Any(Stale);
@@ -328,6 +351,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         var settings = owner.Decal.Settings;
         if (owner.Decal.FilterChanged || destination != Export)
             settings.Filter.Write(props, ProjectionPackage, destination.FileRef);
+        //a moved decal's new material is carried into its new package with the rest of it (DecalPackageMigration)
+        if (owner.Decal.MaterialChanged && destination == Export) props.AddOrReplaceProp(new ObjectProperty(settings.Material, "DecalMaterial"));
         if (HasReprojectedReceivers)
         {
             settings = settings with { Width = projection.Width, Height = projection.Height, NearPlane = projection.NearPlane, FarPlane = projection.FarPlane };
@@ -405,7 +430,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         return new(loaded > 0 ? ActorRepresentation.PartialScene : ActorRepresentation.EditorMarker,
             $"Cooked static surfaces: {loaded}/{receivers.Count} ready. " +
             (issues.Length > 0 ? string.Join(" ", issues) + " " : "") +
-            "Requires loaded receivers and game shaders. " + (HasReprojectedReceivers ? "Reprojected geometry has no baked decal lighting or shadows." : "Dynamic decal lighting/shadows are not implemented."));
+            "Requires loaded receivers and game shaders. " + (HasReprojectedReceivers ? "Reprojected geometry has no separate baked decal samples. " : "")
+            + "Uses receiver lighting, decal lightmaps and level lights.");
     }
 
     public override void Render(MeshRenderContext renderContext, RenderPass pass)
@@ -424,6 +450,11 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
             if (!context.IsActorSelected(owner) && !context.IsComponentVisible(r.Source)) continue;
             try
             {
+                if (r.Mesh is not null && !ReferenceEquals(r.LightingSource, r.Source.DecalReceiverLOD))
+                {
+                    r.Mesh.Dispose();
+                    r.Mesh = null;
+                }
                 if (r.Mesh is null) Build(r, context);
                 r.Mesh?.Render(RenderPass.Decals, context, 0);
             }
@@ -461,8 +492,11 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         MeshStaticLighting lighting = null;
         try
         {
-            lighting = MeshStaticLighting.CreateDecal(context, Export, r.Data);
+            r.LightingSource = r.Source.DecalReceiverLOD;
+            lighting = MeshStaticLighting.CreateDecal(context, Export, r.Data, r.LightingSource?.StaticLighting);
             r.Mesh = ModelPreview<LEVertex>.CreateDecal(context, mesh, material, lighting);
+            r.Mesh.LODs[0].LightEnvironment = r.LightingSource?.LightEnvironment;
+            r.Mesh.LODs[0].LightEnvironmentPrimitive = r.LightingSource?.LightEnvironmentPrimitive;
         }
         catch { mesh.Dispose(); lighting?.Dispose(); throw; }
     }
@@ -492,7 +526,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
 
     public override bool TestUIndexes(HashSet<int> exports) => base.TestUIndexes(exports)
         || receivers.Any(r => r.Export?.FileRef == Export.FileRef && (exports.Contains(r.Export.UIndex) || exports.Contains(r.Export.idxLink)))
-        || material?.FileRef == Export.FileRef && exports.Contains(material.UIndex);
+        || materialEntry?.FileRef == Export.FileRef && exports.Contains(materialEntry.UIndex);
 
     protected override void Dispose(bool disposing)
     {

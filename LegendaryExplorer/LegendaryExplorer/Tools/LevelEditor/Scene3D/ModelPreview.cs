@@ -400,7 +400,11 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
                 try
                 {
                     if (RenderSectionWithGameShaders(lod, s, context))
+                    {
+                        // Finish this decal before compositing the next one in SortOrder.
+                        if (lod.Mesh.Decal is not null) RenderLighting(lod, s, context);
                         return;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -444,7 +448,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         //and the base pass has just the directional light. (Translucency isn't darkened by them, so it keeps the SH light in the base pass)
         (Shader vertexShader, Shader pixelShader) shLightPassShaders = default;
         SHVectorRGB shIncidentLighting = default;
-        if (lightEnvironment is { UsesSHLight: true, RendersSHLightAfterModulatedShadows: true } && !DrawsInTranslucentPass && context.AreModulatedShadowsActive
+        if (lightEnvironment is { UsesSHLight: true, RendersSHLightAfterModulatedShadows: true } && !DrawsInTranslucentPass && mesh.Decal is null && context.AreModulatedShadowsActive
             && material.GetSHLightPassShaders() is ({ } shVertexShader, { } shPixelShader))
         {
             shLightPassShaders = (shVertexShader, shPixelShader);
@@ -559,7 +563,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
     {
         var material = (MaterialRenderProxy)Material;
         //UE3 renders lit translucency differently, and unlit materials have no light shaders
-        if (!context.UseGameShaders || !context.IsLevelLightingActive || context.Wireframe || DrawsInTranslucentPass
+        if (!context.UseGameShaders || !context.IsLevelLightingActive || context.Wireframe || DrawsInTranslucentPass && lod.Mesh.Decal is null
             || material.IsUnlit || !material.CanRenderWithGameShaders)
         {
             return;
@@ -595,7 +599,10 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
             (Shader vertexShader, Shader pixelShader) = material.GetLightShaders(interaction.Light.Type, interaction.Shadowing);
             if (vertexShader is not null && pixelShader is not null)
             {
-                context.QueueLightPass(interaction.Light, lightAttenuation => DrawLightPass(lod, s, context, material, interaction, vertexShader, pixelShader, lightAttenuation));
+                if (lod.Mesh.Decal is not null)
+                    context.DrawDecalLightPass(interaction.Light, lightAttenuation => DrawLightPass(lod, s, context, material, interaction, vertexShader, pixelShader, lightAttenuation));
+                else
+                    context.QueueLightPass(interaction.Light, lightAttenuation => DrawLightPass(lod, s, context, material, interaction, vertexShader, pixelShader, lightAttenuation));
             }
         }
     }
@@ -618,7 +625,13 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
             context.SetMeshRasterizerState(material.IsTwoSided, mesh.LocalToWorld.GetDeterminant() < 0);
             PixelShader ps = context.GetCachedPixelShader(pixelShader.Guid, pixelShader.ShaderByteCode);
             (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(vertexShader.Guid, vertexShader.ShaderByteCode);
-            effect.PrepDraw(context.ImmediateContext, vs, ps, inputLayout, context.GetCachedBlendState(AdditiveBlendDescription));
+            if (mesh.Decal is { } decal) context.SetDecalRasterizerState(decal, material.IsTwoSided, mesh.LocalToWorld.GetDeterminant() < 0);
+            // The base pass already applied (1 - opacity) to the receiver. Extra translucent decal passes
+            // multiply only the light contribution by opacity, preserving destination color and alpha.
+            var blend = AdditiveBlendDescription;
+            if (mesh.Decal is not null && material.BlendMode is EBlendMode.BLEND_Translucent or EBlendMode.BLEND_AlphaComposite)
+                blend.SourceBlend = BlendOption.SourceAlpha;
+            effect.PrepDraw(context.ImmediateContext, vs, ps, inputLayout, context.GetCachedBlendState(blend));
             context.ImmediateContext.InputAssembler.SetVertexBuffers(MeshStaticLighting.ShadowVertexStreamSlot,
                 new VertexBufferBinding(interaction.ShadowVertexBuffer, MeshStaticLighting.ShadowVertexStreamStride, 0));
             material.UpdateLightPassShaderParams(effect.VertexShaderConstantBuffer, effect.PixelShaderConstantBuffer, context, mesh, vertexShader, pixelShader, interaction,

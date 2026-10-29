@@ -1,4 +1,3 @@
-using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -165,36 +164,8 @@ public sealed partial class SplineActorProxy
         return EditConnections("Edit spline mesh", [this], () => { deformMesh = mesh; deformMaterials = values; });
     }
 
-    /// <summary>
-    /// Why the game won't draw a material on a spline mesh, or null. As UE3 decides (FSplineMeshSceneProxy, UMaterial::SetMaterialUsage), its base
-    /// material must not be a decal or fog volume material, and must be marked bUsedWithSplineMeshes or be a special engine material. A cooked game
-    /// can't compile the missing shaders, so it draws the engine's DefaultMaterial instead. LE1's and LE2's only such materials are engine and
-    /// debug ones
-    /// </summary>
-    public string SplineMeshMaterialProblem(int material) => SplineMeshMaterialProblem(Pcc.GetEntry(material), Editor.PackageCache);
-
-    internal static string SplineMeshMaterialProblem(IEntry material, PackageCache cache)
-    {
-        string name = material?.ObjectName.Instanced;
-        //a material instance's parents, to its base material
-        var visited = new HashSet<IEntry>();
-        for (var entry = material; entry is not null && visited.Add(entry);)
-        {
-            var export = EffectiveLightingProperties.Resolve(entry, cache);
-            if (export is null) return $"{name}'s base material couldn't be found ({entry.InstancedFullPath}), so it can't be checked.";
-            if (export.IsA("Material"))
-            {
-                bool Flag(string flag) => (export.GetProperty<BoolProperty>(flag)
-                    ?? EffectiveLightingProperties.ClassDefaultProperty<BoolProperty>(export, flag, cache))?.Value == true;
-                if (Flag("bUsedWithDecals") || Flag("bUsedWithFogVolumes")) return $"{name} is a decal or fog volume material, which the game won't draw on a spline mesh.";
-                if (Flag("bUsedWithSplineMeshes") || Flag("bUsedAsSpecialEngineMaterial")) return null;
-                return $"{name}'s base material, {export.ObjectName.Instanced}, isn't marked bUsedWithSplineMeshes. The game has no shaders to draw it on a spline mesh, so it draws its default material instead.";
-            }
-            if (!export.IsA("MaterialInstance")) return $"{name} isn't a material.";
-            entry = export.GetProperty<ObjectProperty>("Parent")?.ResolveToEntry(export.FileRef);
-        }
-        return name is null ? "It isn't a material." : $"{name} has no base material, or its parents loop.";
-    }
+    /// <summary>Why the game won't draw a material on a spline mesh, or null (<see cref="MaterialUsage.SplineMeshProblem"/>)</summary>
+    public string SplineMeshMaterialProblem(int material) => MaterialUsage.SplineMeshProblem(Pcc.GetEntry(material), Editor.PackageCache);
 
     /// <summary>
     /// The problems (<see cref="SplineMeshMaterialProblem"/>) with the materials the game would draw a mesh's sections with on this point's
@@ -207,17 +178,9 @@ public sealed partial class SplineActorProxy
             .Select(element => element.MaterialIndex >= 0 && element.MaterialIndex < overrides.Count && overrides[element.MaterialIndex] != 0
                 ? Pcc.GetEntry(overrides[element.MaterialIndex]) : meshExport.FileRef.GetEntry(element.Material))
             //a section with no material is drawn with the default material however it's drawn
-            .Where(material => material is not null).Distinct().Select(material => SplineMeshMaterialProblem(material, Editor.PackageCache))
+            .Where(material => material is not null).Distinct().Select(material => MaterialUsage.SplineMeshProblem(material, Editor.PackageCache))
             .Where(problem => problem is not null).Distinct();
     }
-
-    /// <summary>
-    /// The engine's DefaultMaterial (GEngine->DefaultMaterial: EngineMaterials.DefaultMaterial, in each LE game's Engine.pcc), which the game draws
-    /// a spline mesh's section with when it can't draw the section's material on one. Null where it isn't installed
-    /// </summary>
-    public static ExportEntry EngineDefaultMaterial(MEGame game, PackageCache cache) =>
-        game.IsLEGame() && MELoadedFiles.GetFilesLoadedInGame(game).TryGetValue("Engine.pcc", out string path)
-            ? cache.GetCachedPackage(path)?.FindExport("EngineMaterials.DefaultMaterial") : null;
 
     /// <summary>
     /// Replaces, in a spline mesh's material overrides (by section MaterialIndex), the material of each section the game can't draw on a spline
@@ -231,7 +194,7 @@ public sealed partial class SplineActorProxy
         {
             int index = section.MaterialIndex;
             var material = (index < overrides.Count ? overrides[index] : null) ?? meshPackage.GetEntry(section.Material);
-            if (material is not null && SplineMeshMaterialProblem(material, cache) is null) continue;
+            if (!MaterialUsage.SplineMeshDrawsDefault(material, cache)) continue;
             while (overrides.Count <= index) overrides.Add(null);
             overrides[index] = defaultMaterial;
         }

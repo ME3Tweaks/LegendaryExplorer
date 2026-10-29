@@ -324,35 +324,48 @@ public sealed class MeshStaticLighting : IDisposable
         Context = context;
     }
 
-    /// <summary>Cooked decal vertex lighting. Not registered as a shadow caster or independent light receiver.</summary>
-    internal static MeshStaticLighting CreateDecal(MeshRenderContext context, ExportEntry component, StaticReceiverData receiver)
+    /// <summary>A decal's own vertex lighting, or its receiver's texture lighting, as FDecalLightCache selects it.
+    /// Light eligibility belongs to the receiving primitive. The decal owns its vertex streams and never registers as a shadow caster.</summary>
+    internal static MeshStaticLighting CreateDecal(MeshRenderContext context, ExportEntry component, StaticReceiverData receiver, MeshStaticLighting source)
     {
         var lighting = new MeshStaticLighting(context);
-        var vertices = new StaticLightingVertex[receiver.Vertices.Length];
-        for (int i = 0; i < vertices.Length; i++) vertices[i].LightMapCoordinate = receiver.Vertices[i].LightMapCoordinate;
-        if (receiver.LightMap is LightMap_1D lm && lm.DirectionalSamples.Length == vertices.Length)
+        if (source is not null)
         {
-            lighting.LightMapType = ELightMapType.LMT_1D;
-            lighting.Scales = [ToVector4(lm.ScaleVector1), ToVector4(lm.ScaleVector2)];
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                vertices[i].SampleA = PackColor(lm.DirectionalSamples[i].Coefficient2);
-                vertices[i].SampleB = PackColor(lm.DirectionalSamples[i].Coefficient3);
-            }
+            lighting.LightingChannels = source.LightingChannels;
+            lighting.AcceptsLights = source.AcceptsLights;
+            lighting.AcceptsDynamicLights = source.AcceptsDynamicLights;
+            lighting.LevelName = source.LevelName;
+            lighting.HasSelfContainedLighting = source.HasSelfContainedLighting;
+            lighting.SourceAssignments = source.SourceAssignments;
+            lighting.UsesLightEnvironment = source.UsesLightEnvironment;
+            lighting.IrrelevantLights.UnionWith(source.IrrelevantLights);
         }
-        else if (receiver.LightMap is LightMap_3 lm3 && lm3.DirectionalSamples.Length == vertices.Length)
+        else
         {
-            lighting.LightMapType = ELightMapType.LMT_3;
-            lighting.Scales = [ToVector4(lm3.ScaleVector1), ToVector4(lm3.ScaleVector2)];
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                vertices[i].SampleA = PackColor(lm3.DirectionalSamples[i].Coefficient2);
-                vertices[i].SampleB = PackColor(lm3.DirectionalSamples[i].Coefficient3);
-            }
+            lighting.AcceptsLights = false;
         }
-        if (vertices.Length > 0)
-            lighting.VertexStream = Buffer.Create(context.Device, BindFlags.VertexBuffer, vertices);
-        return lighting;
+        try
+        {
+            // Load only the decal's own vertex buffers: receiver vertex indices do not match projected vertices.
+            lighting.Load(receiver.LightMap ?? new LightMap(), [], receiver.ShadowMap1D ?? [], component.FileRef,
+                receiver.Vertices.Length, receiver.Vertices.Select(v => v.LightMapCoordinate).ToArray());
+            if (lighting.LightMapType == ELightMapType.LMT_None && source is not null)
+            {
+                if (source.LightMapType is ELightMapType.LMT_2D or ELightMapType.LMT_4 or ELightMapType.LMT_6)
+                {
+                    lighting.LightMapType = source.LightMapType;
+                    lighting.Textures = source.Textures;
+                    lighting.Scales = source.Scales;
+                    lighting.Biases = source.Biases;
+                    lighting.CoordinateScaleBias = source.CoordinateScaleBias;
+                    lighting.LightMapLightGuids.UnionWith(source.LightMapLightGuids);
+                }
+                // Texture views are owned by the context cache. Never borrow the receiver's vertex shadow buffers.
+                lighting.ShadowMaps.AddRange(source.ShadowMaps);
+            }
+            return lighting;
+        }
+        catch { lighting.Dispose(); throw; }
     }
 
     /// <summary>

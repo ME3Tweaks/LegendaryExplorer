@@ -489,6 +489,10 @@ public class MeshRenderContext : RenderContext
     /// </summary>
     internal void QueueLightPass(SceneLight light, Action<ShaderResourceView> draw) => PendingLightPasses.Add((light, draw));
 
+    /// <summary>Draw a decal's light immediately after its base pass, before the next sorted decal.
+    /// Attenuation uses the opaque receiver's scene depth; decals never write depth or cast shadows.</summary>
+    internal void DrawDecalLightPass(SceneLight light, Action<ShaderResourceView> draw) => draw(GetLightAttenuation(light));
+
     //light passes that the modulated shadows don't darken, drawn after them by EndLightingPass
     private readonly List<Action> PendingPostModulatedShadowPasses = [];
 

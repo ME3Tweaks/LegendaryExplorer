@@ -241,6 +241,7 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     public string MeshIFP { get; protected set; }
     protected ModelPreview<VertexType> Mesh;
     public bool HasPreviewMesh => Mesh is not null;
+    internal ModelPreviewLOD<VertexType> DecalReceiverLOD => Mesh?.LODs[LOD];
     public int LOD;
     public List<IEntry> MaterialOverrides = [];
 
@@ -445,7 +446,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
                 if (deformation is not null)
                 {
                     SplineActorProxy.UseGameSplineMeshMaterials(stm.LODModels[LOD].Elements, meshExport.FileRef, MaterialOverrides, context.PackageCache,
-                        SplineActorProxy.EngineDefaultMaterial(Export.Game, context.PackageCache));
+                        MaterialUsage.EngineMaterial(Export.Game, "DefaultMaterial", context.PackageCache));
                 }
                 MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD, Properties, PreviewProperties is not null && !preservePreviewLighting);
                 Mesh = new ModelPreview<VertexType>(context, stm, LOD, staticLighting, MaterialOverrides, deformation);

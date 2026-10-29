@@ -20,8 +20,6 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     internal const string VERTEX_FACTORY_TYPE_NAME = "FLocalVertexFactory";
     internal const string TerrainVertexFactoryTypeName = "FTerrainVertexFactory";
     internal string VertexFactoryType { get; set; } = VERTEX_FACTORY_TYPE_NAME;
-    /// <summary>The vertex factory whose light pass shaders are used. Decals keep the local vertex factory's</summary>
-    private string LightPassVertexFactoryType = VERTEX_FACTORY_TYPE_NAME;
     /// <summary>The vertex streams the vertex factory's shaders read, for <see cref="MeshRenderContext.GetCachedVertexShader"/>. Null for FLocalVertexFactory's</summary>
     internal InputElement[] VertexInputElements { get; }
 
@@ -343,7 +341,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         : base(package.Game, name)
     {
         Context = context;
-        VertexFactoryType = LightPassVertexFactoryType = vertexFactoryType;
+        VertexFactoryType = vertexFactoryType;
         VertexInputElements = vertexInputElements;
         if (!Game.IsLEGame())
         {
@@ -755,7 +753,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         try
         {
             (_, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(LightShaderMapOwner.Package, LightShaderMapOwner.Id,
-                Context.GetSeekFreeShaderCache, vertexFactoryShaders: true, [vertexShaderType, pixelShaderType], LightPassVertexFactoryType);
+                Context.GetSeekFreeShaderCache, vertexFactoryShaders: true, [vertexShaderType, pixelShaderType], VertexFactoryType);
             Shader vertexShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == vertexShaderType);
             Shader pixelShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == pixelShaderType);
             if (vertexShader is null || pixelShader is null)

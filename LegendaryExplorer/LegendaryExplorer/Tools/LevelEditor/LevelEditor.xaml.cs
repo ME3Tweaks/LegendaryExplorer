@@ -2058,6 +2058,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void RefreshDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.RefreshFilterCandidates();
     private void ClearDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.ClearFilter();
 
+    private void DecalMaterial_Click(object sender, RoutedEventArgs e)
+    {
+        if (SelectedDecal is not { IsEditable: true } decal) return;
+        var material = EntrySelector.GetEntry<IEntry>(this, decal.Package, "Select DecalMaterial", entry => entry.IsA("MaterialInterface"));
+        if (material is not null && decal.SetMaterial(material) is { } problem) MessageBox.Show(this, problem, "DecalMaterial");
+    }
+
     private void EditLightEnvironment_Click(object sender, RoutedEventArgs e)
     {
         if (!CanEditScene || sender is not FrameworkElement { DataContext: EditableActorLighting { CanEditEnvironment: true } lighting }) return;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
@@ -12,6 +13,11 @@ public readonly record struct DecalSettings(float Width, float Height, float Nea
     float TileX, float TileY, float OffsetX, float OffsetY, float Rotation, float DepthBias, int SortOrder)
 {
     public DecalFilterSettings Filter { get; init; }
+    /// <summary>
+    /// The DecalMaterial, as the component has or inherits it (so it may be another package's entry until it's changed), or null for none. Written
+    /// by the commit only when it changes, as an entry of the component's package
+    /// </summary>
+    public IEntry Material { get; init; }
     internal static DecalSettings Read(PropertyCollection props)
     {
         float F(string name, float fallback) => props.GetProp<FloatProperty>(name)?.Value ?? fallback;
@@ -38,10 +44,33 @@ public sealed class EditableDecal : NotifyPropertyChangedBase
         || Settings.NearPlane != clean.NearPlane || Settings.FarPlane != clean.FarPlane || Settings.Rotation != clean.Rotation
         || Settings.Filter.Mode != clean.Filter.Mode || Settings.Filter.Mode != "FM_None" && !Settings.Filter.SameActors(clean.Filter);
     public bool IsEditable => !owner.IsReadOnly && owner.CanReproject;
+    internal bool MaterialChanged => Settings.Material != clean.Material;
     internal EditableDecal(DecalActorProxy owner, PropertyCollection props)
     {
         this.owner = owner;
-        Settings = clean = DecalSettings.Read(props) with { Filter = DecalFilterSettings.Read(owner.DecalComponent.Export, owner.Editor.PackageCache, props) };
+        var component = owner.DecalComponent.Export;
+        var (material, package) = EffectiveLightingProperties.Reference(component, "DecalMaterial", owner.Editor.PackageCache);
+        Settings = clean = DecalSettings.Read(props) with
+        {
+            Filter = DecalFilterSettings.Read(component, owner.Editor.PackageCache, props),
+            Material = material?.ResolveToEntry(package)
+        };
+    }
+
+    /// <summary>The package the decal's component is in, whose materials it can be given</summary>
+    public IMEPackage Package => owner.DecalComponent.Export.FileRef;
+    public string MaterialName => Settings.Material?.InstancedFullPath ?? "None";
+    /// <summary>Why the game won't draw the decal's material (<see cref="MaterialUsage.DecalProblem"/>), or null</summary>
+    public string MaterialProblem => MaterialUsage.DecalProblem(Settings.Material, owner.Editor.PackageCache);
+
+    /// <summary>Changes the DecalMaterial to a material in the decal's package, unless the game wouldn't draw it on a decal; then returns why</summary>
+    public string SetMaterial(IEntry material)
+    {
+        if (!IsEditable) return "The decal can't be edited.";
+        if (material is null || material.FileRef != Package || !material.IsA("MaterialInterface")) return "Choose a material in the decal's package.";
+        if (MaterialUsage.DecalProblem(material, owner.Editor.PackageCache) is { } problem) return problem;
+        Set(Settings with { Material = material }, "Material");
+        return null;
     }
     public static IReadOnlyList<DecalFilterModeOption> FilterModes { get; } =
         [new("FM_None", "All meshes"), new("FM_Affect", "Only checked"), new("FM_Ignore", "All except checked")];
@@ -93,6 +122,7 @@ public sealed class EditableDecal : NotifyPropertyChangedBase
         var before = Settings; Settings = settings;
         OnPropertyChanged(property);
         NotifyFilter();
+        NotifyMaterial();
         owner.OnDecalEdited(before, settings, property);
     }
     internal void Restore(DecalSettings settings)
@@ -102,9 +132,15 @@ public sealed class EditableDecal : NotifyPropertyChangedBase
         owner.RefreshDecalDirty();
     }
     internal void MarkClean(DecalSettings settings) { clean = settings; Restore(settings); }
+    private void NotifyMaterial()
+    {
+        OnPropertyChanged(nameof(MaterialName));
+        OnPropertyChanged(nameof(MaterialProblem));
+    }
     private void NotifySettings()
     {
         NotifyFilter();
+        NotifyMaterial();
         foreach (string name in new[] { nameof(Width), nameof(Height), nameof(NearPlane), nameof(FarPlane), nameof(TileX), nameof(TileY),
             nameof(OffsetX), nameof(OffsetY), nameof(Rotation), nameof(DepthBias), nameof(SortOrder), nameof(IsEditable) }) OnPropertyChanged(name);
     }
