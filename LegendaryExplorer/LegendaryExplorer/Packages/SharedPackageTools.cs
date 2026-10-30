@@ -190,6 +190,66 @@ namespace LegendaryExplorer.Packages
             }
         }
 
+        public static void ComparePackageToInstalledPackage(WPFBase wpfBase, Action<EntryStringPair> entryDoubleClickCallback, bool structuralCompare = false)
+        {
+            // no pcc no joy
+            if (wpfBase?.Pcc == null) return;
+
+            if (!wpfBase.Pcc.Game.IsMEGame())
+            {
+                MessageBox.Show(wpfBase, "Can only compare packages from the Original Trilogy or Legendary Edition.",
+                    "Can't compare", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                wpfBase.BusyText = "Finding installed candidates...";
+                wpfBase.IsBusy = true;
+
+                CaseInsensitiveDictionary<string> dlcFiles = [];
+
+                string pccFileName = Path.GetFileName(wpfBase.Pcc.FilePath);
+                foreach (string file in MELoadedFiles.GetAllGameFiles(null, wpfBase.Pcc.Game))
+                {
+                    string fileName = Path.GetFileName(file);
+                    if (fileName == null) continue;
+                    if (fileName != pccFileName) continue; // only files of same name
+                    if (file == wpfBase.Pcc.FilePath) continue; // skip same file as current opened
+
+                    string dlcFolder = file.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                        .FirstOrDefault(p => p.StartsWith("DLC_"));
+                    dlcFolder ??= "basegame";
+
+                    // save file
+                    dlcFiles.Add(dlcFolder, file);
+                }
+
+                return dlcFiles;
+            }).ContinueWithOnUIThread(foundCandidates =>
+            {
+                wpfBase.IsBusy = false;
+                if (!foundCandidates.Result.Any())
+                {
+                    MessageBox.Show(wpfBase, "Cannot find any candidates for this file!");
+                    return;
+                }
+
+                var choice = InputComboBoxDialog.GetValue(wpfBase, "Choose installation source to compare to:",
+                    "Installed file comparison", foundCandidates.Result.Keys, foundCandidates.Result.Keys.Last());
+                if (string.IsNullOrEmpty(choice)) return;
+
+                foundCandidates.Result.TryGetValue(choice, out string selectedFile);
+                if (selectedFile == null)
+                {
+                    MessageBox.Show("Selected candidate not found in the lists! This is a bug", "OH NO");
+                    return;
+                }
+
+                CompareToPackageWrapper(wpfBase, entryDoubleClickCallback, structuralCompare: structuralCompare, diskPath: selectedFile);
+            });
+        }
+
         public static bool CanCompareToUnmodded(WPFBase wpfBase) => wpfBase.Pcc != null && wpfBase.Pcc.Game != MEGame.UDK && (!(wpfBase.Pcc.IsInBasegame() || wpfBase.Pcc.IsInOfficialDLC()) || ME3TweaksBackups.GetGameBackupPath(wpfBase.Pcc.Game) != null);
 
         public static UnmoddedCandidatesLookup GetUnmoddedCandidatesForPackage(WPFBase wpfBase)
