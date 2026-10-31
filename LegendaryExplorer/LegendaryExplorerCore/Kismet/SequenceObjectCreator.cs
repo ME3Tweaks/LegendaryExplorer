@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -211,9 +212,10 @@ namespace LegendaryExplorerCore.Kismet
                 ArrayProperty<StructProperty> eventLinksProp = null;
                 ArrayProperty<StructProperty> inLinksProp = null;
                 Dictionary<string, ClassInfo> classes = GlobalUnrealObjectInfo.GetClasses(game);
+                ClassInfo classInfo = info;
+                Exception failure = null;
                 try
                 {
-                    ClassInfo classInfo = info;
                     while (classInfo != null && (varLinksProp is null || outLinksProp is null || eventLinksProp is null || inLinksProp is null))
                     {
                         string filepath = Path.Combine(MEDirectories.GetBioGamePath(game), classInfo.pccPath);
@@ -239,7 +241,13 @@ namespace LegendaryExplorerCore.Kismet
                                 loadPath = filepath;
                             }
                         }
-                        if (loadStream != null || loadPath != null || pcc.FilePath == classInfo.pccPath)
+                        IMEPackage cachedPCC = null;
+                        if (loadStream == null && loadPath == null)
+                        {
+                            // See if package is already in cache for the given class info
+                            pc.TryGetCachedPackage(classInfo.pccPath, false, out cachedPCC);
+                        }
+                        if (loadStream != null || loadPath != null || cachedPCC != null || pcc.FilePath == classInfo.pccPath)
                         {
                             IMEPackage importPCC;
                             if (loadStream != null)
@@ -249,6 +257,10 @@ namespace LegendaryExplorerCore.Kismet
                             else if (loadPath != null)
                             {
                                 pc.TryGetCachedPackage(loadPath, true, out importPCC);
+                            }
+                            else if (cachedPCC != null)
+                            {
+                                importPCC = cachedPCC;
                             }
                             else
                             {
@@ -306,7 +318,11 @@ namespace LegendaryExplorerCore.Kismet
                                     inLinksProp = ilp;
                                 }
                             }
-                            if (!pc.TryGetCachedPackage(loadPath, false, out _)) importPCC.Dispose(); // Can't do a using statement because of the pc out var - not good enough at c# to fix
+                            // Dispose of package opened only by this method
+                            if (loadStream != null)
+                            {
+                                importPCC.Dispose();
+                            }
                         }
                         classes.TryGetValue(classInfo.baseClass, out classInfo);
                         switch (classInfo.ClassName)
@@ -325,9 +341,16 @@ namespace LegendaryExplorerCore.Kismet
                     }
                 loopend:;
                 }
-                catch
+                catch (Exception e)
                 {
-                    // ignored
+                    failure = e;
+                }
+                // Log why it failed to make the default links
+                if (varLinksProp is null && outLinksProp is null && eventLinksProp is null && inLinksProp is null && info.IsA("SequenceOp", game))
+                {
+                    LECLog.Warning(failure != null
+                        ? $"No default links for new {info.ClassName} in {pcc.FileNameNoExtension}: reading {classInfo?.ClassName} (export {classInfo?.exportIndex} of {classInfo?.pccPath}) failed: {failure}"
+                        : $"No default links for new {info.ClassName} in {pcc.FileNameNoExtension}: none of its classes' packages are on disk or in the package cache (starting with export {info.exportIndex} of {info.pccPath})");
                 }
                 if (varLinksProp != null)
                 {
