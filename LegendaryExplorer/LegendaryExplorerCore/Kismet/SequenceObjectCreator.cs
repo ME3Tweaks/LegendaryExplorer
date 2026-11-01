@@ -703,6 +703,27 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
+        /// Creates a new BioSeqVar_ObjectFindByTag with the given tag name
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="tagToFind">Tag of the actor to find</param>
+        /// <param name="searchUniqueTags">Whether to search unique tags</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateFindObjectNameTag(ExportEntry sequence, string tagToFind, bool searchUniqueTags = false, PackageCache cache = null)
+        {
+            var fObj = CreateSequenceObject(sequence.FileRef, "BioSeqVar_ObjectFindByTag", cache);
+            KismetHelper.AddObjectToSequence(fObj, sequence);
+
+            fObj.WriteProperty(new NameProperty(tagToFind, "m_sObjectTagToFind"));
+            if (searchUniqueTags)
+            {
+                fObj.WriteProperty(new BoolProperty(true, "m_bSearchUniqueTag"));
+            }
+            return fObj;
+        }
+
+        /// <summary>
         /// Creates a new SeqVar_AddFloat with the specified parameters (if any)
         /// </summary>
         /// <param name="sequence">Sequence the created object will be placed into</param>

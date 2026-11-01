@@ -63,6 +63,12 @@ namespace LegendaryExplorerCore.Unreal
         public static Rotator GetRotator(StructProperty rotProp) =>
             new Rotator(rotProp.GetProp<IntProperty>("Pitch"), rotProp.GetProp<IntProperty>("Yaw"), rotProp.GetProp<IntProperty>("Roll"));
 
+        public static Rotator GetRotator(ExportEntry exp, string propName, Rotator defaultValue)
+        {
+            var rotProp = exp.GetProperty<StructProperty>(propName);
+            return rotProp != null ? GetRotator(rotProp) : defaultValue;
+        }
+
         public static StructProperty MatrixProp(Matrix4x4 m, NameReference? name = null)
         {
             return new StructProperty("Matrix", [
