@@ -43,7 +43,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             RegistryKey steamKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1328670", false);
             if (steamKey != null)
             {
-                string directory = (string) steamKey.GetValue(@"InstallLocation");
+                string directory = (string)steamKey.GetValue(@"InstallLocation");
                 if (!string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory))
                 {
                     LegendaryExplorerCoreLibSettings.Instance.LEDirectory = directory;
@@ -90,9 +90,18 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <returns>Path to Launcher folder</returns>
         public static string GetLauncherPath(string rootPathOverride = null)
         {
-            if (rootPathOverride == null) rootPathOverride = LegendaryExplorerCoreLibSettings.Instance.LEDirectory;
-            if (rootPathOverride == null) return null; // There is no usable root path
-            return Path.Combine(rootPathOverride, "Game", "Launcher");
+            // 11/1/2026 - If you're supplying a root path override you already know the path (probably)
+            if (rootPathOverride != null)
+            {
+                return rootPathOverride;
+            }
+
+            var leDirectory = LegendaryExplorerCoreLibSettings.Instance.LEDirectory;
+            if (leDirectory == null)
+            {
+                return null;
+            }
+            return Path.Combine(leDirectory, "Game", "Launcher");
         }
 
         /// <summary>
