@@ -192,22 +192,22 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // This is purposely scoped to prevent variables from leaking into scope
 
                 // 09/08/2026 - Allow porting LE3 <-> LMP as they are both based on LE3
-                bool allowedToPortShaders = destPcc.Game == sourcePcc.Game || (destPcc.Game.IsLEGame3() && sourcePcc.Game.IsLEGame3());
-            ShaderCache portingCache = null;
-
-                // Logic here needs checked
-                if (allowedToPortShaders)
-            {
-                    portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
+                var compatibleSources = rop.CrossPackageMap.Keys.OfType<ExportEntry>()
+                    .Where(e => e.Game == destPcc.Game || (e.Game.IsLEGame3() && destPcc.Game.IsLEGame3()))
+                    .GroupBy(e => e.FileRef).ToList();
+                foreach (var sources in compatibleSources)
+                {
+                    var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(sources.ToList(), rop.GamePathOverride);
                     if (portingCache is not null)
-            {
+                    {
                         ShaderCacheManipulator.AddShadersToFile(destPcc, portingCache);
                     }
-            }
-                else if (!rop.ForceAllowMaterialPorting)
-            {
-                rop.ErrorOccurredCallback?.Invoke($"You cannot port Materials from {sourcePcc.Game} into {destPcc.Game}");
-            }
+                }
+                bool allowedToPortShaders = destPcc.Game == sourcePcc.Game || (destPcc.Game.IsLEGame3() && sourcePcc.Game.IsLEGame3());
+                if (!allowedToPortShaders && compatibleSources.Count == 0 && !rop.ForceAllowMaterialPorting)
+                {
+                    rop.ErrorOccurredCallback?.Invoke($"You cannot port Materials from {sourcePcc.Game} into {destPcc.Game}");
+                }
             }
 
             // Reindex - disabled for now as it causes issues
