@@ -18,6 +18,7 @@ using LegendaryExplorer.UserControls.ExportLoaderControls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -63,6 +64,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ObservableCollectionExtended<ActorProxy> Actors { get; } = [];
     public ICollectionView ActorsView { get; }
     public ListCollectionView PendingChangesView { get; }
+    // Pending deletions, which have left Actors (and so PendingChangesView)
+    private readonly ObservableCollectionExtended<ActorProxy> pendingDeletionActors = [];
+    /// <summary>The change list: changed actors in the scene, then those pending deletion</summary>
+    public CompositeCollection PendingChanges { get; }
+    public int PendingChangeCount => PendingChangesView.Count + pendingDeletionActors.Count;
+    public bool HasPendingChanges => PendingChangeCount != 0;
     private string _actorFilterText = "";
 
     // Store expansion by group identity, not its recycled visual container.
@@ -444,10 +451,19 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         // Live filtering also updates it for viewport drags, undo, redo and commits.
         PendingChangesView = new ListCollectionView(Actors)
         {
-            Filter = actor => actor is ActorProxy { IsDirty: true }
+            Filter = actor => actor is ActorProxy { IsPendingChange: true }
         };
-        PendingChangesView.LiveFilteringProperties.Add(nameof(ActorProxy.IsDirty));
+        PendingChangesView.LiveFilteringProperties.Add(nameof(ActorProxy.IsPendingChange));
         PendingChangesView.IsLiveFiltering = true;
+        PendingChanges = [new CollectionContainer { Collection = PendingChangesView }, new CollectionContainer { Collection = pendingDeletionActors }];
+        ((INotifyCollectionChanged)PendingChangesView).CollectionChanged += (_, _) => OnPendingChangeCountChanged();
+        pendingDeletionActors.CollectionChanged += (_, _) => OnPendingChangeCountChanged();
+        OpenFiles.CollectionChanged += (_, _) =>
+        {
+            UpdatePlacementOptions();
+            RefreshCommandStates();
+        };
+        RenderContext.SceneEditingChanged += RefreshCommandStates;
 
         LoadCommands();
         InitializeComponent();
@@ -596,6 +612,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             OnPropertyChanged(nameof(SelectedSpline));
             OnPropertyChanged(nameof(IsSplineSelected));
             RefreshLightingDiagnostics();
+            RefreshCommandStates();
         }
         RenderContext.TransformWidget.Attach = selectedActor is { CanEditTransform: true, HasSpatialRepresentation: true }
             ? selectedActor : null;
@@ -706,6 +723,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         finally
         {
             loadingBakePreview = false;
+            RefreshCommandStates();
         }
     }
 
@@ -1006,47 +1024,46 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private LoadActorsResult LoadActors(Level level, OpenLevelFile owningFile)
     {
-        var actorExports = level.Actors.Where(level.Export.FileRef.IsUExport).Select(level.Export.FileRef.GetUExport);
-        var actors = new List<ActorProxy>();
-        HashSet<string> ignoredActorClasses = [];
-        foreach (var actorExport in actorExports)
-        {
-            var className = actorExport.ClassName;
-            if (className is "StaticMeshCollectionActor" or "StaticLightCollectionActor")
-            {
-                foreach (var proxy in ActorProxy.CreateCollection(this, actorExport))
-                {
-                    proxy.OwningFile = owningFile;
-                    actors.Add(proxy);
-                    if (proxy.Coverage.Representation == ActorRepresentation.Unsupported)
-                        ignoredActorClasses.Add(proxy.Export.ClassName);
-                }
-            }
-            else if (ActorProxy.Create(this, actorExport) is { } actorProxy)
-            {
-                actorProxy.OwningFile = owningFile;
-                actors.Add(actorProxy);
-                if (actorProxy.Coverage.Representation == ActorRepresentation.Unsupported)
-                    ignoredActorClasses.Add(className);
-            }
-        }
+        var actors = level.Actors.Where(level.Export.FileRef.IsUExport)
+            .SelectMany(index => CreateActorViews(level.Export.FileRef.GetUExport(index), owningFile)).ToList();
+        HashSet<string> ignoredActorClasses = actors.Where(a => a.Coverage.Representation == ActorRepresentation.Unsupported)
+            .Select(a => a.Export.ClassName).ToHashSet();
         foreach (var actor in actors)
         {
             actor.ResolveAttachment(actors);
         }
-        //The level's BSP surfaces, as one world-geometry entry
-        if (level.Export.FileRef.TryGetUExport(level.Model, out ExportEntry modelExport))
-        {
-            var bsp = new LevelModelProxy(this, modelExport, level.Export) { OwningFile = owningFile };
-            if (bsp.Components.Count > 0) actors.Add(bsp);
-            else bsp.Dispose();
-        }
+        if (CreateLevelModelView(level, owningFile) is { } bsp) actors.Add(bsp);
 
         //The level's lights, for rendering static meshes the way the game lights them. (Light actors aren't otherwise shown)
         owningFile.ReloadLights(level, RenderContext);
         //The level's BSP blocks light environments' visibility traces
         RenderContext.SetLevelModel(level.Export.FileRef, level.Model);
         return new(actors, ignoredActorClasses);
+    }
+
+    /// <summary>The views of one of a level's actors: a collection actor's are its components'</summary>
+    private List<ActorProxy> CreateActorViews(ExportEntry actorExport, OpenLevelFile owningFile)
+    {
+        List<ActorProxy> views = actorExport.ClassName is "StaticMeshCollectionActor" or "StaticLightCollectionActor"
+            ? ActorProxy.CreateCollection(this, actorExport).ToList()
+            : ActorProxy.Create(this, actorExport) is { } actor ? [actor] : [];
+        foreach (var view in views) view.OwningFile = owningFile;
+        return views;
+    }
+
+    /// <summary>
+    /// The level's BSP surfaces, as one world-geometry entry, or null if it has none (which the file notes, so that a change to the Level that
+    /// leaves its model as it was doesn't read it again: <see cref="OpenLevelFile.UndrawnModel"/>)
+    /// </summary>
+    private LevelModelProxy CreateLevelModelView(Level level, OpenLevelFile owningFile)
+    {
+        owningFile.UndrawnModel = null;
+        if (!level.Export.FileRef.TryGetUExport(level.Model, out ExportEntry modelExport)) return null;
+        var bsp = new LevelModelProxy(this, modelExport, level.Export) { OwningFile = owningFile };
+        if (bsp.Components.Count > 0) return bsp;
+        bsp.Dispose();
+        owningFile.UndrawnModel = (level.Model, level.ModelComponents.ToArray());
+        return null;
     }
 
     public void RemoveActor(ActorProxy actor)
@@ -1112,7 +1129,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand ToggleScaleCommand { get; set; }
     public ICommand ToggleUniformScaleCommand { get; set; }
     public ICommand CommitChangesCommand { get; set; }
-    public ICommand CommitSingleFileCommand { get; set; }
     public ICommand LoadRelatedLevelsCommand { get; set; }
     public ICommand FocusSelectedCommand { get; set; }
     public ICommand ToggleLocalCoordsCommand { get; set; }
@@ -1120,6 +1136,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand OpenRecentSetCommand { get; set; }
     public ICommand UndoCommand { get; set; }
     public ICommand RedoCommand { get; set; }
+    public ICommand DeleteActorCommand { get; set; }
     public ICommand ToggleOrthoViewCommand { get; set; }
     public ICommand FocusFileCommand { get; set; }
     public ICommand SelectChangedActorCommand { get; set; }
@@ -1130,14 +1147,22 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
         // Handle unmodified shortcuts after controls have had a chance to process the key.
         // Window InputBindings consume these keys even when a text editor has focus.
-        if (e.Handled || Keyboard.Modifiers != ModifierKeys.None
-            || Keyboard.FocusedElement is TextBoxBase or PasswordBox or ComboBox { IsEditable: true }) return;
+        if (e.Handled || Keyboard.Modifiers != ModifierKeys.None) return;
+        //wherever focus is, if no control used the key
+        if (e.Key is Key.Escape && placingClass is not null)
+        {
+            EndPlacement();
+            e.Handled = true;
+            return;
+        }
+        if (Keyboard.FocusedElement is TextBoxBase or PasswordBox or ComboBox { IsEditable: true }) return;
 
         ICommand command = e.Key switch
         {
             Key.F => FocusSelectedCommand,
             Key.L => ToggleLocalCoordsCommand,
             Key.NumPad5 => ToggleOrthoViewCommand,
+            Key.Delete => DeleteActorCommand,
             _ => null
         };
         if (command?.CanExecute(null) == true)
@@ -1155,6 +1180,21 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         CurrentModeName = name;
     }
 
+    /// <summary>
+    /// Tells the commands to ask again whether they can run: call when the scene's state they depend on changes (whether it can be changed, the open
+    /// files, the history, the selection). WPF asks again by itself only after input or a change of focus, which a background refresh ends without
+    /// </summary>
+    private void RefreshCommandStates()
+    {
+        //CommandManager is the UI thread's
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.BeginInvoke(RefreshCommandStates);
+            return;
+        }
+        CommandManager.InvalidateRequerySuggested();
+    }
+
     private void LoadCommands()
     {
         SetAssignmentPolicyCommand = new RelayCommand(policy => AssignmentPolicy = (LightAssignmentPolicy)policy);
@@ -1169,8 +1209,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         ToggleRotateCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.Rotate, "Rotate"), PackageIsLoaded);
         ToggleScaleCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.Scale, "Scale"), PackageIsLoaded);
         ToggleUniformScaleCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.UniformScale, "Uniform Scale"), PackageIsLoaded);
-        CommitChangesCommand = new GenericCommand(CommitChanges, () => CanMutateScene && PackageIsLoaded());
-        CommitSingleFileCommand = new RelayCommand(CommitSingleFileExecute, _ => CanMutateScene && PackageIsLoaded());
+        CommitChangesCommand = new GenericCommand(() => CommitChanges(), () => CanMutateScene && PackageIsLoaded());
         LoadRelatedLevelsCommand = new GenericCommand(LoadRelatedLevels, () => CanEditScene && PackageIsLoaded());
         FocusSelectedCommand = new GenericCommand(() =>
         {
@@ -1194,6 +1233,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         OpenRecentSetCommand = new RelayCommand(obj => { if (obj is RecentFileSet set) OpenRecentFileSet(set); });
         UndoCommand = new GenericCommand(Undo, () => UndoHistory.CanUndo && CanMutateScene);
         RedoCommand = new GenericCommand(Redo, () => UndoHistory.CanRedo && CanMutateScene);
+        DeleteActorCommand = new RelayCommand(DeleteActor, parameter => CanMutateScene
+            && (parameter as ActorProxy ?? SelectedActor) is { DeleteRefusal: null });
         ToggleOrthoViewCommand = new GenericCommand(() => IsOrthographicView = !IsOrthographicView);
         FocusFileCommand = new RelayCommand(parameter =>
         {
@@ -1206,7 +1247,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             if (parameter is ActorProxy actor)
             {
-                SelectAndRevealActor(actor);
+                //a pending deletion isn't in the scene to select
+                if (Actors.Contains(actor)) SelectAndRevealActor(actor);
             }
         });
         SelectLightCommand = new RelayCommand(parameter =>
@@ -1233,6 +1275,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     {
         OnPropertyChanged(nameof(CanUndo));
         OnPropertyChanged(nameof(CanRedo));
+        RefreshCommandStates();
     }
 
     /// <summary>
@@ -1284,6 +1327,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         finally
         {
             _isApplyingUndoRedo = false;
+            RefreshCommandStates();
             if (SelectedActor is not null)
             {
                 _preEditSnapshot = SelectedActor.SnapshotTransform();
@@ -1381,14 +1425,33 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         return false;
     }
 
-    private void CommitChanges()
+    private async void DeleteActor(object parameter)
     {
-        if (!PackageIsLoaded() || Actors.Count is 0) return;
-
-        CommitChangesForFiles(OpenFiles.Where(f => !f.IsReadOnly));
+        if (!CanMutateScene || (parameter as ActorProxy ?? SelectedActor) is not { } actor || actor.DeleteRefusal is not null) return;
+        try
+        {
+            if (actor.IsDraft)
+            {
+                UndoHistory.Push(actor.DeleteDraft());
+                return;
+            }
+            ActorDeletionPlan plan;
+            SetBusy($"Checking references to {actor.ActorName}...");
+            try { plan = await ActorDeletionPlan.PrepareAsync(actor.Export, actor.OwningFile.LevelExport, actor.GetDeletionRepairs()); }
+            finally { EndBusy(); }
+            if (!CanMutateScene) throw new InvalidOperationException("The editor state changed during reference inspection. Retry deletion.");
+            UndoHistory.Push(actor.Delete(plan));
+        }
+        catch (Exception error) when (error is not OutOfMemoryException)
+        {
+            MessageBox.Show(this, error.Message, "Delete actor");
+        }
     }
 
-    private bool CommitChangesForFile(OpenLevelFile file) => CommitChangesForFiles([file]);
+    /// <summary>
+    /// Commits every writable file's changes at once: never some files' alone, since a commit clears the undo history, which would lose the others'
+    /// </summary>
+    private bool CommitChanges() => PackageIsLoaded() && CommitChangesForFiles(OpenFiles.Where(f => !f.IsReadOnly));
 
     private bool CommitChangesForFiles(IEnumerable<OpenLevelFile> requested)
     {
@@ -1428,11 +1491,17 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
         using (migration)
         {
-            // The decal migration and every actor write are one package edit: a failure anywhere restores all the files and leaves every edit pending
+            // The decal migration and every actor write are one package edit: a failure anywhere restores all the files and leaves every edit pending.
+            // It's made on this thread, and with pending deletions it includes a scan of each package for references. Only the cursor shows it: drawing
+            // the busy overlay first would mean running the dispatcher's queue in the middle of the commit
+            Exception failure = null;
+            Mouse.OverrideCursor = Cursors.Wait;
             try { ActorCommit.Commit(OpenFiles.Where(files.Contains).ToList(), migration.Apply, migration.Moves.Select(m => (ActorProxy)m.Actor).ToHashSet()); }
-            catch (Exception error) when (error is not OutOfMemoryException)
+            catch (Exception error) when (error is not OutOfMemoryException) { failure = error; }
+            finally { Mouse.OverrideCursor = null; }
+            if (failure is not null)
             {
-                MessageBox.Show(this, $"Nothing was committed: {error.Message}", "Commit Changes");
+                MessageBox.Show(this, $"Nothing was committed: {failure.Message}", "Commit Changes");
                 return false;
             }
             var selectedMove = migration.Moves.FirstOrDefault(m => m.Actor == SelectedActor);
@@ -1461,15 +1530,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         UndoHistory.Clear();
         _preEditSnapshot = selectedActor?.SnapshotTransform();
         _preEditLightSettings = SelectedLight?.Settings;
-    }
-
-    private void CommitSingleFileExecute(object parameter)
-    {
-        OpenLevelFile file = ResolveFileParameter(parameter);
-        if (file is not null && !file.IsReadOnly)
-        {
-            CommitChangesForFile(file);
-        }
     }
 
     private async void SaveAllFiles()
@@ -1507,10 +1567,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
         if (file.IsDirty)
         {
-            switch (MessageBox.Show($"Do you want to commit changes to {file.FileName} before saving?", "Uncommitted changes", MessageBoxButton.YesNoCancel))
+            switch (MessageBox.Show($"Do you want to commit your Level Editor changes (to every file) before saving {file.FileName}?", "Uncommitted changes", MessageBoxButton.YesNoCancel))
             {
                 case MessageBoxResult.Yes:
-                    if (!CommitChangesForFile(file)) return;
+                    if (!CommitChanges()) return;
                     break;
                 case MessageBoxResult.No:
                     break;
@@ -1565,10 +1625,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
         if (fileToSave.IsDirty)
         {
-            switch (MessageBox.Show($"Do you want to commit changes to {fileToSave.FileName} before saving?", "Uncommitted changes", MessageBoxButton.YesNoCancel))
+            switch (MessageBox.Show($"Do you want to commit your Level Editor changes (to every file) before saving {fileToSave.FileName}?", "Uncommitted changes", MessageBoxButton.YesNoCancel))
             {
                 case MessageBoxResult.Yes:
-                    if (!CommitChangesForFile(fileToSave)) return;
+                    if (!CommitChanges()) return;
                     break;
                 case MessageBoxResult.No:
                     break;
@@ -1629,7 +1689,16 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private readonly PreviewUpdateQueue PendingPreviewUpdates = new();
     private readonly DispatcherTimer PreviewUpdateTimer;
-    private bool PreviewRefreshInProgress;
+    private bool previewRefreshInProgress;
+    private bool PreviewRefreshInProgress
+    {
+        get => previewRefreshInProgress;
+        set
+        {
+            previewRefreshInProgress = value;
+            RefreshCommandStates();
+        }
+    }
     private bool PreviewShaderPreparationRequested;
     private bool PreviewClosed;
 
@@ -1739,20 +1808,42 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private bool ApplyPreviewUpdate(IMEPackage package, HashSet<int> updatedExports, List<string> errors)
     {
+        var file = OpenFiles.FirstOrDefault(open => open.Package == package);
         bool changed = RenderContext.InvalidatePreviewResources(package, updatedExports, out PreviewRebuild rebuild);
         // Meshes that must be rebuilt to reacquire released resources, whether or not they depend on the edited exports
         bool MustRebuild(ActorProxy actor) => rebuild is PreviewRebuild.AllMeshes
             || rebuild is PreviewRebuild.LightEnvironmentMeshes && MeshComponents(actor).Any(mesh => mesh.IsLitByLightEnvironment);
-        var file = OpenFiles.FirstOrDefault(open => open.Package == package);
-        bool reloadLevel = file is not null && updatedExports.Contains(file.LevelExport.UIndex);
         // Decided against the old dependency snapshots, but reloaded after the actors, so rebuilt light proxies' discarded edits aren't reapplied.
-        var lightFiles = OpenFiles.Where(openFile => !(openFile == file && reloadLevel)
-            && openFile.Lighting?.IsAffectedBy(package, updatedExports) == true).ToList();
-        changed |= lightFiles.Count > 0;
+        var lightFiles = OpenFiles.Where(openFile => openFile.Lighting?.IsAffectedBy(package, updatedExports) == true).ToList();
         foreach (var actor in Actors.Where(actor => actor.OwningFile != file).ToList())
             changed |= TryRefresh(actor.DisplayText, errors, () => actor.TryRefreshPreview(package, updatedExports, MustRebuild(actor)));
+        // Views out of the scene that undo can bring back (pending deletions, undone placements) mustn't come back with released resources
+        var inScene = Actors.ToHashSet();
+        List<PendingActorDeletion> cancelled = [];
+        foreach (var actor in OpenFiles.SelectMany(f => f.RetainedActors).Where(actor => !inScene.Contains(actor) && !actor.IsDisposed).ToList())
+        {
+            // A pending deletion of an actor another tool changed is cancelled (once the file's update below has passed over it), as is one that
+            // can't be checked: the other tool's change wins
+            if (actor.PendingDeletion is { } deletion && actor.Package == package)
+            {
+                bool overtaken = true;
+                TryRefresh(actor.DisplayText, errors, () => { overtaken = !deletion.MatchesSnapshot(); return false; });
+                if (overtaken)
+                {
+                    cancelled.Add(deletion);
+                    continue;
+                }
+            }
+            TryRefresh(actor.DisplayText, errors, () => actor.TryRefreshPreview(package, updatedExports, MustRebuild(actor)));
+        }
         if (file is not null)
-            changed |= ApplyLevelActorUpdate(file, reloadLevel, updatedExports, MustRebuild, errors);
+        {
+            changed |= ApplyLevelActorUpdate(file, updatedExports, MustRebuild, errors, out bool levelActorsChanged);
+            //the level's lights are read from its actors
+            if (levelActorsChanged && !lightFiles.Contains(file)) lightFiles.Add(file);
+            changed |= CancelDeletions(file, cancelled, errors);
+        }
+        changed |= lightFiles.Count > 0;
         if (lightFiles.Count > 0) RenderContext.InvalidateLightFunctions();
         foreach (var openFile in lightFiles)
             TryRefresh($"{openFile.FileName} lights", errors, () =>
@@ -1763,95 +1854,180 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         return changed;
     }
 
-    private bool ApplyLevelActorUpdate(OpenLevelFile file, bool reloadLevel, HashSet<int> updatedExports, Func<ActorProxy, bool> mustRebuild, List<string> errors)
+    /// <param name="levelActorsChanged">Whether the level gained or lost actors</param>
+    private bool ApplyLevelActorUpdate(OpenLevelFile file, HashSet<int> updatedExports, Func<ActorProxy, bool> mustRebuild, List<string> errors,
+        out bool levelActorsChanged)
     {
-        bool changed = false;
-        if (reloadLevel)
+        // A change to the Level (another tool's, or a commit's) is followed in place: views of the actors it no longer has go, and those it gained are
+        // added, so the file's other actors keep their uncommitted edits, undo steps and pending creations and deletions
+        Level level = updatedExports.Contains(file.LevelExport.UIndex) ? file.LevelExport.GetBinaryData<Level>() : null;
+        levelActorsChanged = level is not null && RemoveActorsGoneFromLevel(file, level);
+        bool changed = levelActorsChanged;
+        bool updated = levelActorsChanged;
+        int reselectUIndex = 0;
+        (Vector3, float, float) savedCamPOV = default;
+        Vector3 savedActorPos = default;
+        HashSet<ExportEntry> collectionActorsToUpdate = [];
+        for (int i = file.Actors.Count - 1; i >= 0; i--)
         {
-            changed = true;
-            ReloadFile(file);
-        }
-        else
-        {
-            bool updated = false;
-            int reselectUIndex = 0;
-            (Vector3, float, float) savedCamPOV = default;
-            Vector3 savedActorPos = default;
-            HashSet<ExportEntry> collectionActorsToUpdate = [];
-            for (int i = file.Actors.Count - 1; i >= 0; i--)
+            ActorProxy alteredActor = file.Actors[i];
+            if (TryRefresh(alteredActor.DisplayText, errors, () => alteredActor.TryRefreshPreview(file.Package, updatedExports, mustRebuild(alteredActor))))
             {
-                ActorProxy alteredActor = file.Actors[i];
-                if (TryRefresh(alteredActor.DisplayText, errors, () => alteredActor.TryRefreshPreview(file.Package, updatedExports, mustRebuild(alteredActor))))
+                changed = true;
+                continue;
+            }
+            if (alteredActor.TestUIndexes(updatedExports))
+            {
+                changed = updated = true;
+                if (alteredActor == SelectedActor)
                 {
-                    changed = true;
+                    reselectUIndex = alteredActor.Export.UIndex;
+                    savedCamPOV = (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw);
+                    savedActorPos = SelectedActor.Location;
+                }
+                if (alteredActor.Export.ClassName is "StaticMeshCollectionActor" or "StaticLightCollectionActor")
+                {
+                    collectionActorsToUpdate.Add(alteredActor.Export);
                     continue;
                 }
-                if (alteredActor.TestUIndexes(updatedExports))
+                if (alteredActor.CollectionOwner is { } collectionOwner)
                 {
-                    changed = updated = true;
-                    if (alteredActor == SelectedActor)
-                    {
-                        reselectUIndex = alteredActor.Export.UIndex;
-                        savedCamPOV = (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw);
-                        savedActorPos = SelectedActor.Location;
-                    }
-                    if (alteredActor.Export.ClassName is "StaticMeshCollectionActor" or "StaticLightCollectionActor")
-                    {
-                        collectionActorsToUpdate.Add(alteredActor.Export);
-                        continue;
-                    }
-                    if (alteredActor.CollectionOwner is { } collectionOwner)
-                    {
-                        // The whole collection is reloaded, including previously failed components.
-                        collectionActorsToUpdate.Add(collectionOwner);
-                        continue;
-                    }
-                    //another tool changed it: the rebuilt proxy is the same actor (so connections to it still resolve), but its earlier undo steps are orphaned with the old one
-                    RenderContext.Registry.Invalidate(alteredActor.Export);
-                    RemoveActor(alteredActor);
-                    if (file.Package.GetEntry(alteredActor.Export.UIndex) is ExportEntry actorExport
-                        && ActorProxy.Create(this, actorExport) is { } actorProxy)
-                    {
-                        actorProxy.OwningFile = file;
-                        AddActor(actorProxy);
-                    }
+                    // The whole collection is reloaded, including previously failed components.
+                    collectionActorsToUpdate.Add(collectionOwner);
+                    continue;
+                }
+                //another tool changed it: the rebuilt proxy is the same actor (so connections to it still resolve), but its earlier undo steps are orphaned with the old one
+                RenderContext.Registry.Invalidate(alteredActor.Export);
+                RemoveActor(alteredActor);
+                if (file.Package.GetEntry(alteredActor.Export.UIndex) is ExportEntry actorExport)
+                {
+                    foreach (var view in CreateActorViews(actorExport, file)) AddActor(view);
                 }
             }
-            foreach (var collectionActor in collectionActorsToUpdate)
+        }
+        foreach (var collectionActor in collectionActorsToUpdate)
+        {
+            for (int i = file.Actors.Count - 1; i >= 0; i--)
             {
-                for (int i = file.Actors.Count - 1; i >= 0; i--)
+                if (file.Actors[i].Export == collectionActor || file.Actors[i].CollectionOwner == collectionActor)
                 {
-                    if (file.Actors[i].Export == collectionActor || file.Actors[i].CollectionOwner == collectionActor)
-                    {
-                        RenderContext.Registry.Invalidate(file.Actors[i].Export);
-                        RemoveActor(file.Actors[i]);
-                    }
-                }
-                if (file.Package.GetEntry(collectionActor.UIndex) is ExportEntry newCollectionActor)
-                {
-                    foreach (var proxy in ActorProxy.CreateCollection(this, newCollectionActor))
-                    {
-                        proxy.OwningFile = file;
-                        AddActor(proxy, false);
-                    }
+                    RenderContext.Registry.Invalidate(file.Actors[i].Export);
+                    RemoveActor(file.Actors[i]);
                 }
             }
-            if (updated)
+            if (file.Package.GetEntry(collectionActor.UIndex) is ExportEntry newCollectionActor)
             {
-                Actors.Sort(a => a.SortIndex);
-                UpdateGlobalDirtyState();
+                foreach (var view in CreateActorViews(newCollectionActor, file)) AddActor(view, false);
             }
-            if (reselectUIndex is not 0)
+        }
+        if (level is not null && AddActorsNewToLevel(file, level))
+        {
+            changed = updated = levelActorsChanged = true;
+        }
+        if (updated)
+        {
+            Actors.Sort(a => a.SortIndex);
+            //views with uncommitted edits may have been replaced or taken out
+            file.RecalculateDirty();
+            UpdateGlobalDirtyState();
+        }
+        if (reselectUIndex is not 0)
+        {
+            SelectedActor = Actors.FirstOrDefault(a => a.Export?.UIndex == reselectUIndex && a.Package == file.Package);
+            if (SelectedActor is not null)
             {
-                SelectedActor = Actors.FirstOrDefault(a => a.Export?.UIndex == reselectUIndex && a.Package == file.Package);
-                if (SelectedActor is not null)
-                {
-                    (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw)
-                    = (savedCamPOV.Item1 + SelectedActor.Location - savedActorPos, savedCamPOV.Item2, savedCamPOV.Item3);
-                }
+                (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw)
+                = (savedCamPOV.Item1 + SelectedActor.Location - savedActorPos, savedCamPOV.Item2, savedCamPOV.Item3);
             }
         }
         return changed;
+    }
+
+    /// <summary>
+    /// Cancels the file's pending deletions that another tool's change overtook (<see cref="PendingActorDeletion.Cancel"/>): the
+    /// <paramref name="overtaken"/> deletions of actors it changed, and those whose undo step's other actors (a spline point's neighbours, still
+    /// referring to it in the package) it rebuilt, which orphans that step. Each actor is shown as the package now has it, if its Level still lists it.
+    /// The other committed actors their undo steps changed are shown as the package has them too, as when another tool changes them: with the
+    /// cancelled step, nothing else would take back what it did to them. Rebuilding them can overtake another deletion in turn
+    /// </summary>
+    /// <returns>Whether any was cancelled</returns>
+    private bool CancelDeletions(OpenLevelFile file, List<PendingActorDeletion> overtaken, List<string> errors)
+    {
+        var queue = new Queue<PendingActorDeletion>(overtaken);
+        HashSet<int> listed = null;
+        bool cancelled = false;
+        while (queue.TryDequeue(out var deletion) || (deletion = file.PendingDeletions.FirstOrDefault(d => d.AlsoChanged.Any(a => a.IsDisposed))) is not null)
+        {
+            if (!file.PendingDeletions.Contains(deletion)) continue;
+            cancelled = true;
+            var export = deletion.Actor.Export;
+            deletion.Cancel();
+            listed ??= file.LevelExport.GetBinaryData<Level>().Actors.ToHashSet();
+            if (file.Package.GetEntry(export.UIndex) == export && listed.Contains(export.UIndex)) Rebuild(export, file);
+            foreach (var other in deletion.AlsoChanged.Where(a => a.Export is not null && Actors.Contains(a)))
+            {
+                var (otherExport, owner) = (other.Export, other.OwningFile);
+                if (other == SelectedActor) SelectedActor = null;
+                RemoveActor(other);
+                if (owner.Package.GetEntry(otherExport.UIndex) == otherExport) Rebuild(otherExport, owner);
+                owner.RecalculateDirty();
+            }
+        }
+        if (cancelled) UpdateGlobalDirtyState();
+        return cancelled;
+
+        void Rebuild(ExportEntry export, OpenLevelFile owner) => TryRefresh(export.ObjectName.Instanced, errors, () =>
+        {
+            RenderContext.Registry.Invalidate(export);
+            foreach (var view in CreateActorViews(export, owner)) AddActor(view);
+            return true;
+        });
+    }
+
+    /// <summary>
+    /// Takes out the views of the actors <paramref name="level"/> no longer lists, and of its BSP if it isn't what the level has (which
+    /// <see cref="AddActorsNewToLevel"/> adds). Not drafts, which it doesn't list until they're committed, nor pending deletions, which are already
+    /// out of the scene and checked again when committed
+    /// </summary>
+    /// <returns>Whether any were taken out</returns>
+    private bool RemoveActorsGoneFromLevel(OpenLevelFile file, Level level)
+    {
+        var listed = level.Actors.ToHashSet();
+        var gone = file.Actors.Where(actor => actor is LevelModelProxy bsp
+            ? !bsp.IsReadFrom(level)
+            : actor.Export is { } export && !listed.Contains((actor.CollectionOwner ?? export).UIndex)).ToList();
+        foreach (var actor in gone)
+        {
+            if (actor == SelectedActor) SelectedActor = null;
+            RemoveActor(actor);
+        }
+        if (gone.OfType<LevelModelProxy>().Any()) RenderContext.SetLevelModel(file.Package, level.Model);
+        return gone.Count > 0;
+    }
+
+    /// <summary>Adds views of the actors <paramref name="level"/> lists that the file doesn't show, and of its BSP if it has none</summary>
+    /// <returns>Whether any were added</returns>
+    private bool AddActorsNewToLevel(OpenLevelFile file, Level level)
+    {
+        var shown = file.Actors.Where(actor => actor.Export is not null).Select(actor => (actor.CollectionOwner ?? actor.Export).UIndex)
+            .Concat(file.PendingDeletions.Select(deletion => deletion.Actor.Export.UIndex)).ToHashSet();
+        var added = level.Actors.Distinct().Where(index => !shown.Contains(index) && file.Package.IsUExport(index))
+            .SelectMany(index => CreateActorViews(file.Package.GetUExport(index), file)).ToList();
+        foreach (var view in added) AddActor(view, false);
+        //actors whose base was added with or after them
+        if (added.Count > 0)
+        {
+            foreach (var actor in file.Actors.Where(actor => actor.Base is null)) actor.ResolveAttachment(added);
+        }
+        if (!file.Actors.OfType<LevelModelProxy>().Any()
+            && !(file.UndrawnModel is { } undrawn && undrawn.Model == level.Model && undrawn.Components.SequenceEqual(level.ModelComponents))
+            && CreateLevelModelView(level, file) is { } bsp)
+        {
+            AddActor(bsp, false);
+            RenderContext.SetLevelModel(file.Package, level.Model);
+            added.Add(bsp);
+        }
+        return added.Count > 0;
     }
 
     private void ReloadFile(OpenLevelFile file)
@@ -1877,6 +2053,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             actor.Dispose();
         }
         file.Actors.Clear();
+        file.ClearPendingDeletions();
+        file.DisposeRetainedActors();
         //reloaded from the package, so these are new actors: undo steps recorded against the old ones are orphaned, and drafts are gone
         RenderContext.Registry.Forget(file.Package);
 
@@ -1906,6 +2084,22 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public void UpdateGlobalDirtyState()
     {
         IsDirty = OpenFiles.Any(f => f.IsDirty);
+        RefreshCommandStates();
+    }
+
+    private void ActorContextMenu_Opened(object sender, RoutedEventArgs e) => ((sender as FrameworkElement)?.DataContext as ActorProxy)?.NotifyDeleteRefusal();
+
+    /// <summary>Lists or unlists an actor pending deletion in the change list</summary>
+    internal void ShowPendingDeletion(ActorProxy actor, bool pending)
+    {
+        if (pending) pendingDeletionActors.Add(actor);
+        else pendingDeletionActors.Remove(actor);
+    }
+
+    private void OnPendingChangeCountChanged()
+    {
+        OnPropertyChanged(nameof(PendingChangeCount));
+        OnPropertyChanged(nameof(HasPendingChanges));
     }
 
     private bool PackageIsLoaded() => OpenFiles.Count > 0;
@@ -2836,7 +3030,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public bool IsBusy
     {
         get => _isBusy;
-        private set => SetProperty(ref _isBusy, value);
+        private set
+        {
+            if (SetProperty(ref _isBusy, value)) RefreshCommandStates();
+        }
     }
 
     private bool _isBusyTaskbar;

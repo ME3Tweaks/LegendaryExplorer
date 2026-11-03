@@ -75,8 +75,11 @@ public sealed partial class SplineActorProxy : ActorProxy
         initialized = true;
     }
 
-    /// <summary>A draft point, drawn from its own values alone. Its package is untouched</summary>
-    private SplineActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties) : base(context, draft, properties)
+    /// <summary>
+    /// A draft point, drawn from its own values alone: a copy, or a new point made from its class's defaults (<see cref="ActorCreation"/>), unconnected,
+    /// and a loft with no mesh. Its package is untouched
+    /// </summary>
+    internal SplineActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties) : base(context, draft, properties)
     {
         IsLoft = draft.IsLoft;
         defaults = ReadDefaults(context, draft.Class, null);
@@ -95,7 +98,7 @@ public sealed partial class SplineActorProxy : ActorProxy
     {
         // As a commit writes them: only where they differ from the defaults
         var props = new PropertyCollection();
-        if (source.location != Vector3.Zero) props.Add(CommonStructs.Vector3Prop(source.location, source.Pcc.Game.IsGame3() ? "location" : "Location"));
+        if (source.location != Vector3.Zero) props.Add(CommonStructs.Vector3Prop(source.location, LocationPropertyName(source.Pcc.Game)));
         if (!source.rotation.IsZero) props.Add(CommonStructs.RotatorProp(source.rotation, "Rotation"));
         if (source.drawScale != 1) props.Add(new FloatProperty(source.drawScale, "DrawScale"));
         if (source.drawScale3D != source.defaultDrawScale3D) props.Add(CommonStructs.Vector3Prop(source.drawScale3D, "DrawScale3D"));
@@ -115,6 +118,8 @@ public sealed partial class SplineActorProxy : ActorProxy
         ActorRecord record = registry.CreateDraft(source.Pcc, actorClass, name, isSpline: true, source.IsLoft);
         return new SplineActorProxy(context, record, props) { OwningFile = source.OwningFile };
     }
+
+    private protected override bool WritesAllValuesWhenCreated => true;
 
     private static SplineLoftSettings ReadDefaults(IActorEditorContext context, IEntry actorClass, ExportEntry actorExport)
     {
@@ -291,7 +296,7 @@ public sealed partial class SplineActorProxy : ActorProxy
     }
 
     //a draft is wholly uncommitted
-    protected override bool HasUncommittedChanges() => IsDraft || base.HasUncommittedChanges() || settings != cleanSettings || connections.Any(c => c.IsRebuilt)
+    protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || settings != cleanSettings || connections.Any(c => c.IsRebuilt)
         || TopologyDirty || MeshConfigurationDirty;
 
     public string EditingStatus
@@ -366,11 +371,6 @@ public sealed partial class SplineActorProxy : ActorProxy
     {
         committed = null;
         base.AbandonCommit();
-        if (materialized)
-        {
-            materialized = false;
-            BindExport(null);
-        }
     }
 
     public override void MarkClean()
@@ -384,11 +384,6 @@ public sealed partial class SplineActorProxy : ActorProxy
         cleanSettings = settings;
         AcceptConnections();
         base.MarkClean();
-        if (materialized)
-        {
-            materialized = false;
-            OnCommittedAsNew();
-        }
         Point.NotifySettings();
         OnPropertyChanged(nameof(EditingStatus));
     }

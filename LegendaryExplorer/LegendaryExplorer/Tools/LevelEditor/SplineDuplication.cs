@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
@@ -171,6 +170,7 @@ public sealed partial class SplineActorProxy
         private readonly SplineActorProxy copy;
         private readonly ActorProxy selection;
         private readonly (ActorRef Point, TopologyState State)[] before, after;
+        private readonly IDisposable retainedCopy;
 
         public DuplicateAction(IActorEditorContext editor, SplineActorProxy copy, ActorProxy selection,
             (SplineActorProxy Point, TopologyState State)[] before, (SplineActorProxy Point, TopologyState State)[] after)
@@ -180,6 +180,7 @@ public sealed partial class SplineActorProxy
             this.selection = selection;
             this.before = [.. before.Select(s => (new ActorRef(s.Point), s.State))];
             this.after = [.. after.Select(s => (new ActorRef(s.Point), s.State))];
+            retainedCopy = copy.RetainForHistory();
         }
 
         public string Description => "Duplicate spline point";
@@ -212,38 +213,7 @@ public sealed partial class SplineActorProxy
 
         public void Dispose()
         {
-            if (!editor.RenderContext.DrawList_3D.Contains(copy)) copy.Dispose();
+            retainedCopy.Dispose();
         }
-    }
-
-    // A new point's export has what every LE3 spline point in a shipping level has: these flags, its class (an import), no archetype, the Level as
-    // its outer, a Class_N name, a state frame for its class, no binary after its properties, no Components, and one entry in Level.Actors.
-    // LE1's and LE2's levels have no spline points, but their placed actors made from their class have the same flags, class, state frame and membership
-    private const EObjectFlags NewPointFlags = EObjectFlags.Transactional | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer
-        | EObjectFlags.LoadForEdit | EObjectFlags.HasStack;
-
-    //a commit created this draft's export, which it gives back if the commit is abandoned
-    private bool materialized;
-
-    /// <summary>
-    /// For a commit of a draft, inside its package edit: creates the export, in <paramref name="level"/> and its actors, so that every reference
-    /// to the point (connections, backlinks) can be written. Its values are written by <see cref="CommitChanges"/>
-    /// </summary>
-    internal void Materialize(ExportEntry level)
-    {
-        if (!IsDraft) throw new InvalidOperationException($"{DisplayText} already has an export.");
-        var name = NameReference.FromInstancedString(Registry.NameOf(Id));
-        //the package may have gained the proposed name since
-        if (Pcc.Exports.Any(e => e.Parent == level && e.ObjectName.Instanced == name.Instanced)) name = Pcc.GetNextIndexedName(ClassName);
-        // UE3 registers an object with a NetIndex as one of its package's net objects, and reports one that's another's or out of range
-        // (UObject::SetNetIndex, UPackage::AddNetObject). INDEX_NONE registers nothing, so it can't collide
-        byte[] stack = [.. StateFrame.Create(ActorClass.UIndex).ToBytes(Pcc), .. BitConverter.GetBytes(-1)];
-        var export = new ExportEntry(Pcc, level, name, stack) { Class = ActorClass, ObjectFlags = NewPointFlags };
-        Pcc.AddExport(export);
-        var levelBinary = ObjectBinary.From<Level>(level);
-        levelBinary.Actors.Add(export.UIndex);
-        level.WriteBinary(levelBinary);
-        BindExport(export);
-        materialized = true;
     }
 }

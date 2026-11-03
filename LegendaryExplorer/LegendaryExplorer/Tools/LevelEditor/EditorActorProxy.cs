@@ -30,6 +30,7 @@ public class EditorActorProxy : ActorProxy
     public override bool HasSpatialRepresentation => hasPosition;
     public override int HitPriority => IHitProxy.WireFramePriority;
     public override ExportEntry CollectionOwner => failedCollectionOwner;
+    private protected override bool WritesAllValuesWhenCreated => true;
 
     internal EditorActorProxy(IActorEditorContext context, ExportEntry export, ActorClassInfo info) : base(export)
     {
@@ -38,6 +39,19 @@ public class EditorActorProxy : ActorProxy
         this.info = info;
         previewContext = context;
         ReadPreview();
+    }
+
+    /// <summary>A new marker actor (a draft), drawn from its own values alone. Its package is untouched until a commit writes it</summary>
+    internal EditorActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, ActorClassInfo info)
+        : base(context, draft, properties)
+    {
+        category = info.Category;
+        this.info = info;
+        previewContext = context;
+        hasPosition = true;
+        coverage = new(ActorRepresentation.EditorMarker, info.Reason);
+        //a draft is wholly uncommitted
+        UpdateDirty();
     }
 
     private void ReadPreview()
@@ -85,7 +99,8 @@ public class EditorActorProxy : ActorProxy
 
     private void EnsureBounds()
     {
-        if (boundsLoaded || !hasPosition || info is null) return;
+        //a draft has only its own values, and no cylinder of its own
+        if (boundsLoaded || !hasPosition || info is null || IsDraft) return;
         boundsLoaded = true;
         // Bounds are only used for selection/focus. Avoid loading class-default packages for every hidden node.
         try
@@ -139,12 +154,18 @@ public class EditorActorProxy : ActorProxy
 
     public override void CommitChanges(PackageCache packageCache = null)
     {
+        // A new actor's own values are all it has: written whole, with its transform
+        if (Materialized)
+        {
+            base.CommitChanges(packageCache);
+            return;
+        }
         if (IsReadOnly || !IsTransformDirty) return;
         // Write only edited transforms to the instance. Condensed properties contain inherited
         // gameplay values that must not be flattened into the actor when moving its helper.
         var props = Export.GetProperties();
         if (Location != _cleanSnapshot.Location)
-            props.AddOrReplaceProp(CommonStructs.Vector3Prop(Location, Export.Game.IsGame3() ? "location" : "Location"));
+            props.AddOrReplaceProp(CommonStructs.Vector3Prop(Location, LocationPropertyName(Export.Game)));
         if (Rotation != _cleanSnapshot.Rotation)
             props.AddOrReplaceProp(CommonStructs.RotatorProp(Rotation, "Rotation"));
         if (DrawScale != _cleanSnapshot.DrawScale)
@@ -160,6 +181,8 @@ public class EditorActorProxy : ActorProxy
 
     public override bool TryRefreshPreview(IMEPackage package, HashSet<int> updatedExports, bool force = false)
     {
+        // A draft has nothing in the package to refresh from
+        if (IsDraft) return false;
         // Own edits rebuild through the same factory as the initial load.
         if (package == Pcc && updatedExports.Contains(Export.UIndex)) return false;
         if (info is null || info.DataOnly || !(force || dependencies.Any(e => e.FileRef == package && updatedExports.Contains(e.UIndex)))) return false;
@@ -215,7 +238,7 @@ public class EditorActorProxy : ActorProxy
         {
             EnsureBounds();
             if (context.WorldToPixel(position, out var pixel))
-                context.ScreenLabels.Add(new(pixel.X, pixel.Y - 18, $"#{Export.UIndex}"));
+                context.ScreenLabels.Add(new(pixel.X, pixel.Y - 18, IsDraft ? "new" : $"#{Export.UIndex}"));
             Vector3 direction = Vector3.TransformNormal(Vector3.UnitX, LocalToWorld);
             if (direction.LengthSquared() > 0)
                 context.WorldPrimitives.AddLine(position, position + Vector3.Normalize(direction) * size * 3, color, hitId);

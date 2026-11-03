@@ -1063,8 +1063,12 @@ namespace LegendaryExplorerCore.Packages
             });
         }
 
+        private int changeCount;
+        public int ChangeCount => Volatile.Read(ref changeCount);
+
         private void UpdateTools(PackageChange change, int index)
         {
+            Interlocked.Increment(ref changeCount);
             if (_users.Count == 0 && WeakUsers.Count == 0)
             {
                 return;

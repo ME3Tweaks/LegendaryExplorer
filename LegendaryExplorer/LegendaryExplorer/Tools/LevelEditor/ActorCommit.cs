@@ -18,13 +18,33 @@ public static class ActorCommit
     /// <param name="skipped">Actors neither written nor accepted (decals the migration moved to another package)</param>
     public static void Commit(IReadOnlyList<OpenLevelFile> files, Action beforeActors = null, IReadOnlySet<ActorProxy> skipped = null)
     {
+        var deletions = files.SelectMany(f => f.PendingDeletions).ToArray();
         var written = new List<(OpenLevelFile File, ActorProxy Actor)>();
+        var created = new HashSet<ActorProxy>();
         using (var scope = PackageEditScope.Begin(files.Select(f => f.Package)))
         {
             try
             {
                 beforeActors?.Invoke();
-                foreach (var file in files) Write(file, skipped, written);
+                // Allocate every draft across the batch before writing any references, regardless of proxy family.
+                foreach (var file in files)
+                {
+                    var drafts = file.PendingCreations.Where(a => skipped?.Contains(a) != true).ToArray();
+                    if (drafts.Length == 0) continue;
+                    var level = file.LevelExport.GetBinaryData<Level>();
+                    foreach (var draft in drafts)
+                    {
+                        draft.BeginCommit();
+                        written.Add((file, draft));
+                        created.Add(draft);
+                        draft.Materialize(file.LevelExport, level);
+                    }
+                    file.LevelExport.WriteBinary(level);
+                }
+                foreach (var file in files) Write(file, skipped, written, created);
+                // Include references written by other participants in this commit before approving any deletion.
+                var deletionPlans = PendingActorDeletion.Revalidate(deletions);
+                ActorDeletionPlan.Apply(deletionPlans);
                 scope.Complete();
             }
             catch
@@ -42,22 +62,16 @@ public static class ActorCommit
         {
             //a receiving file's decals take on the receivers written for them, whether or not they were edited themselves
             foreach (var decal in file.Actors.OfType<DecalActorProxy>().Where(d => skipped?.Contains(d) != true)) decal.MarkClean();
+            file.ClearPendingDeletions();
             file.IsDirty = false;
         }
+        //after the files have let go of them, so nothing is told about a disposed view
+        foreach (var deletion in deletions) deletion.Accept();
     }
 
-    private static void Write(OpenLevelFile file, IReadOnlySet<ActorProxy> skipped, List<(OpenLevelFile, ActorProxy)> written)
+    private static void Write(OpenLevelFile file, IReadOnlySet<ActorProxy> skipped, List<(OpenLevelFile, ActorProxy)> written, HashSet<ActorProxy> created)
     {
         Dictionary<int, StaticCollectionActor> collectionActorMap = [];
-        // New points get their exports first, so that every reference to one (another point's connection, a backlink) can be written
-        var created = new HashSet<ActorProxy>();
-        foreach (var draft in file.Actors.OfType<SplineActorProxy>().Where(a => a.IsDraft).ToList())
-        {
-            draft.BeginCommit();
-            written.Add((file, draft));
-            created.Add(draft);
-            draft.Materialize(file.LevelExport);
-        }
         foreach (ActorProxy actor in file.Actors)
         {
             if (!created.Contains(actor))
@@ -87,7 +101,7 @@ public static class ActorCommit
             else
             {
                 // A loft point can be dirty without moving: its spline values, or a connection rebuilt because the next point moved
-                if (actor.IsTransformDirty || actor is ILightProxy or DecalActorProxy or SplineActorProxy) actor.CommitChanges();
+                if (created.Contains(actor) || actor.IsTransformDirty || actor is ILightProxy or DecalActorProxy or SplineActorProxy) actor.CommitChanges();
             }
             foreach (var mesh in actor.LightingMeshes) mesh.ExistingLighting?.Write();
         }

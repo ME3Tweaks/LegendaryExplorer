@@ -88,6 +88,83 @@ public sealed class TerrainHeightField
         new(Math.Clamp(x, 0, NumVerticesX - 1), Math.Clamp(y, 0, NumVerticesY - 1), (Height(x, y) - 32768f) * ZScale);
 
     /// <summary>
+    /// Where a ray in terrain-local space (from <paramref name="origin"/> along <paramref name="direction"/>, to <paramref name="maxT"/> of it)
+    /// first meets the height field at maximum tessellation as <paramref name="sections"/> draw it (<see cref="Draws"/>), as a multiple of
+    /// <paramref name="direction"/>; null if it doesn't. Each quad is split as its orientation flag says. The quads the ray passes over are tested in
+    /// order, from where it enters the grid
+    /// </summary>
+    public float? RayHit(Vector3 origin, Vector3 direction, float maxT, IReadOnlyList<TerrainSection> sections)
+    {
+        float near = 0, far = maxT;
+        for (int axis = 0; axis < 2; axis++)
+        {
+            float start = origin[axis], step = direction[axis], max = (axis == 0 ? NumVerticesX : NumVerticesY) - 1;
+            if (step == 0)
+            {
+                if (start < 0 || start > max) return null;
+                continue;
+            }
+            float t1 = -start / step, t2 = (max - start) / step;
+            near = MathF.Max(near, MathF.Min(t1, t2));
+            far = MathF.Min(far, MathF.Max(t1, t2));
+            if (near > far) return null;
+        }
+        //walks the quads under the ray (Amanatides & Woo), so the first that it meets is the nearest
+        Vector3 entry = origin + direction * near;
+        int x = Math.Clamp((int)MathF.Floor(entry.X), 0, NumVerticesX - 2), y = Math.Clamp((int)MathF.Floor(entry.Y), 0, NumVerticesY - 2);
+        int stepX = Math.Sign(direction.X), stepY = Math.Sign(direction.Y);
+        float deltaX = stepX != 0 ? 1 / MathF.Abs(direction.X) : float.PositiveInfinity, deltaY = stepY != 0 ? 1 / MathF.Abs(direction.Y) : float.PositiveInfinity;
+        float nextX = stepX > 0 ? near + (x + 1 - entry.X) / direction.X : stepX < 0 ? near + (x - entry.X) / direction.X : float.PositiveInfinity;
+        float nextY = stepY > 0 ? near + (y + 1 - entry.Y) / direction.Y : stepY < 0 ? near + (y - entry.Y) / direction.Y : float.PositiveInfinity;
+        while (true)
+        {
+            if (sections.Any(section => Draws(section, x, y)) && QuadHit(x, y, origin, direction, maxT) is { } hit) return hit;
+            if (nextX < nextY)
+            {
+                if (nextX > far) return null;
+                x += stepX;
+                nextX += deltaX;
+            }
+            else
+            {
+                if (nextY > far) return null;
+                y += stepY;
+                nextY += deltaY;
+            }
+            if (x < 0 || y < 0 || x > NumVerticesX - 2 || y > NumVerticesY - 2) return null;
+        }
+    }
+
+    //where a ray meets the quad whose first vertex is (x, y), split as AddQuad splits it
+    private float? QuadHit(int x, int y, Vector3 origin, Vector3 direction, float maxT)
+    {
+        Vector3 v00 = LocalVertex(x, y), v10 = LocalVertex(x + 1, y), v01 = LocalVertex(x, y + 1), v11 = LocalVertex(x + 1, y + 1);
+        bool flipped = IsQuadFlipped(x, y);
+        float? first = flipped ? RayTriangle(origin, direction, v00, v01, v10) : RayTriangle(origin, direction, v00, v01, v11);
+        float? second = flipped ? RayTriangle(origin, direction, v10, v01, v11) : RayTriangle(origin, direction, v00, v11, v10);
+        float? nearest = null;
+        if (first is { } t1 && t1 >= 0 && t1 <= maxT) nearest = t1;
+        if (second is { } t2 && t2 >= 0 && t2 <= maxT && (nearest is null || t2 < nearest)) nearest = t2;
+        return nearest;
+    }
+
+    //Möller-Trumbore, from either side
+    private static float? RayTriangle(Vector3 origin, Vector3 direction, Vector3 v0, Vector3 v1, Vector3 v2)
+    {
+        Vector3 edge1 = v1 - v0, edge2 = v2 - v0, p = Vector3.Cross(direction, edge2);
+        float determinant = Vector3.Dot(edge1, p);
+        if (determinant == 0) return null;
+        float inverse = 1 / determinant;
+        Vector3 s = origin - v0;
+        float u = Vector3.Dot(s, p) * inverse;
+        if (u < 0 || u > 1) return null;
+        Vector3 q = Vector3.Cross(s, edge1);
+        float v = Vector3.Dot(direction, q) * inverse;
+        if (v < 0 || u + v > 1) return null;
+        return Vector3.Dot(edge2, q) * inverse;
+    }
+
+    /// <summary>
     /// dZ/dX and dZ/dY at a vertex in terrain-local units, from the neighbouring heights as FTerrainVertexBuffer::FillData takes them at maximum
     /// tessellation (the clamped neighbour at an edge)
     /// </summary>
@@ -177,6 +254,14 @@ public sealed class TerrainHeightField
             }
         }
         return indices;
+    }
+
+    /// <summary>Whether <see cref="SectionIndices"/> draws the quad whose first vertex is (<paramref name="x"/>, <paramref name="y"/>): it's in one of the section's patches, whose first quad is visible</summary>
+    public bool Draws(TerrainSection section, int x, int y)
+    {
+        int sx = x - section.BaseX, sy = y - section.BaseY, step = section.Step;
+        return sx >= 0 && sy >= 0 && sx < section.TrueSizeX && sy < section.TrueSizeY && sx / step < section.SizeX && sy / step < section.SizeY
+               && IsQuadVisible(section.BaseX + sx / step * step, section.BaseY + sy / step * step);
     }
 
     /// <summary><see cref="SectionIndices"/> of a section without holes or flipped quads</summary>

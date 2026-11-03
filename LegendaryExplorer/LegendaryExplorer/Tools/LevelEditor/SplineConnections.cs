@@ -331,6 +331,8 @@ public sealed partial class SplineActorProxy
             connection.MeshDefect = null;
             connection.Mesh.ActorPropertyName = $"SplineMeshComps[{connections.IndexOf(connection)}]";
         }
+        //a mesh made for a point out of the scene (one kept for undo) joined the scene's lighting
+        LeaveSceneIfOutOfIt();
     }
 
     private ExportEntry NewComponent(string type, PropertyCollection props, ObjectBinary binary = null)

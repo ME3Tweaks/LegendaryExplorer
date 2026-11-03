@@ -143,6 +143,15 @@ public sealed class ActorRegistry
     }
 
     /// <summary>
+    /// Forgets a draft that won't be shown again (one that couldn't be placed, or that history let go of while it was out of the scene), so that its
+    /// proposed name is free again
+    /// </summary>
+    internal void Discard(ActorId draft)
+    {
+        if (records.TryGetValue(draft, out ActorRecord record) && record.IsDraft) records.Remove(draft);
+    }
+
+    /// <summary>
     /// A name for a new actor of a class, as the editor names placed actors (Class_N): one no export of the package or other draft has.
     /// A commit names its export this unless the package has since gained it
     /// </summary>

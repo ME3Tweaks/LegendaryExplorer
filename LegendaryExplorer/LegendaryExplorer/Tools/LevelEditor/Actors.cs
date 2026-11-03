@@ -9,9 +9,11 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
@@ -80,6 +82,8 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         OnPropertyChanged(nameof(ExportLabel));
         OnPropertyChanged(nameof(SortIndex));
     }
+    /// <summary>What an actor's Location property is called: Game 3 serializes it as "location"</summary>
+    internal static string LocationPropertyName(MEGame game) => game.IsGame3() ? "location" : "Location";
     /// <summary>The actor's class name, as <see cref="ExportEntry.ClassName"/> is for its export</summary>
     public string ClassName => Export?.ClassName ?? actorClass?.ObjectName.Name ?? "Class";
     /// <summary>The actor's object name: its export's, or the one proposed for a draft. Use this rather than <see cref="Export"/> for labels</summary>
@@ -90,6 +94,41 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     public int SortIndex => Export?.UIndex ?? int.MaxValue;
     /// <summary>For the outliner and pending changes: the export's UIndex, or "new" for a draft</summary>
     public string IndexLabel => Export?.UIndex.ToString() ?? "new";
+    private PendingActorDeletion pendingDeletion;
+    internal PendingActorDeletion PendingDeletion
+    {
+        get => pendingDeletion;
+        set { pendingDeletion = value; NotifyPendingChange(); }
+    }
+    public bool IsPendingChange => IsDraft || IsDirty || PendingDeletion is not null;
+    public string ChangeKind => PendingDeletion is not null ? "Delete" : IsDraft ? "Create" : "Edit";
+    public string PendingChangeStatus => PendingDeletion?.Status ?? $"{ChangeKind} {ActorName}";
+    /// <summary>Why Delete can't remove this actor now, or null</summary>
+    public virtual string DeleteRefusal => IsDraft ? ActorDeletionPlan.RemovalRefusal(this) : ActorDeletionPlan.Refusal(this);
+    /// <summary>Asks for <see cref="DeleteRefusal"/> again: it depends on more than the actor (its file, the scene), which don't notify it</summary>
+    internal void NotifyDeleteRefusal() => OnPropertyChanged(nameof(DeleteRefusal));
+
+    /// <summary>
+    /// For a committed actor's reference check (<see cref="ActorDeletionPlan.Prepare(ExportEntry, ExportEntry, DeletionRepairs)"/>): what the commit
+    /// that deletes it also changes. It trashes what's already pending deletion in its file. Found now, so the check can run off the dispatcher
+    /// </summary>
+    public virtual DeletionRepairs GetDeletionRepairs() =>
+        DeletionRepairs.None with { Trashed = OwningFile.PendingDeletions.SelectMany(d => d.Entries).ToHashSet<IEntry>() };
+
+    /// <summary>
+    /// Takes the actor out of the scene as one undo step for the caller to record: a draft outright, a committed actor as a pending deletion, with its
+    /// reference check (<paramref name="plan"/>, made with <see cref="GetDeletionRepairs"/>). Its package is untouched until Commit Changes
+    /// </summary>
+    public virtual IUndoAction Delete(ActorDeletionPlan plan) => PendingActorDeletion.Delete(this, plan);
+
+    /// <summary>Takes a draft out of the scene (<see cref="Delete"/>), which needs no reference check</summary>
+    public IUndoAction DeleteDraft() => IsDraft ? Delete(null) : throw new InvalidOperationException("Only an uncommitted actor can be deleted without a reference check.");
+    internal void NotifyPendingChange()
+    {
+        OnPropertyChanged(nameof(IsPendingChange));
+        OnPropertyChanged(nameof(ChangeKind));
+        OnPropertyChanged(nameof(PendingChangeStatus));
+    }
     /// <summary>For the details panel</summary>
     public string ExportLabel => Export is null ? "New: no export until committed" : $"Export {Export.UIndex}";
 
@@ -121,6 +160,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         {
             if (SetProperty(ref isDirty, value))
             {
+                NotifyPendingChange();
                 if (OwningFile is not null)
                 {
                     if (isDirty)
@@ -139,6 +179,11 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         propertiesBeforeCommit = null;
         _cleanSnapshot = SnapshotTransform();
         IsDirty = false;
+        if (Materialized)
+        {
+            Materialized = false;
+            OnCommittedAsNew();
+        }
     }
 
     //a commit writes its values into Properties too (replacing top-level properties, never editing one in place), so a shallow copy restores them
@@ -149,6 +194,53 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// then puts back what the commit changed in this view, and <see cref="MarkClean"/> accepts it
     /// </summary>
     internal virtual void BeginCommit() => propertiesBeforeCommit = [.. Properties];
+
+    // A new actor's export is made as every placed Note and TargetPoint in LE1-LE3's shipping levels, and every spline point in LE3's (the only game
+    // whose levels have them), is: these flags, its class as an import, no archetype, the Level as its outer, a Class_N name, a state frame for its
+    // class, no binary after its properties, no owned objects, and one entry in Level.Actors. Theirs have assigned NetIndexes; see Materialize
+    private const EObjectFlags NewActorFlags = EObjectFlags.Transactional | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer
+        | EObjectFlags.LoadForEdit | EObjectFlags.HasStack;
+
+    /// <summary>
+    /// Whether committing it as a draft writes all its values (its properties, not only its transform), so that its export can be made from them:
+    /// the views of the classes with a recipe (<see cref="ActorCreation.RecipeClasses"/>)
+    /// </summary>
+    private protected virtual bool WritesAllValuesWhenCreated => false;
+
+    /// <summary>A commit created this draft's export (<see cref="Materialize"/>), which it gives back if the commit is abandoned</summary>
+    private protected bool Materialized { get; private set; }
+
+    /// <summary>
+    /// For a commit of a draft, inside its package edit: creates the export, in <paramref name="level"/> and its actors, so that every reference to the
+    /// actor can be written, importing its class if the package has none. Its values are written by <see cref="CommitChanges"/>
+    /// </summary>
+    /// <param name="levelBinary"><paramref name="level"/>'s, which the new export is added to the Actors of. The caller writes it</param>
+    internal void Materialize(ExportEntry level, Level levelBinary)
+    {
+        if (!IsDraft) throw new InvalidOperationException($"{DisplayText} already has an export.");
+        // Not a universal factory: only the classes whose placed actors are known to be made this way, drawn by a view that writes all their values
+        if (!ActorCreation.RecipeClasses.Contains(ClassName) || !WritesAllValuesWhenCreated)
+            throw new InvalidOperationException($"{ClassName} has no validated construction recipe.");
+        IEntry actorClass = ActorClass;
+        if (actorClass.FileRef != Pcc)
+        {
+            // Not EntryImporter.EnsureClassIsInFile, which would copy the class into a package that can't import it, and swallows every failure,
+            // which a commit must see to roll back
+            if (ActorCreation.ImportRefusal(actorClass, Pcc) is { } refusal) throw new InvalidOperationException(refusal);
+            actorClass = Pcc.GetEntryOrAddImport($"{Path.GetFileNameWithoutExtension(actorClass.FileRef.FilePath)}.{actorClass.InstancedFullPath}", "Class");
+        }
+        var name = NameReference.FromInstancedString(Editor.RenderContext.Registry.NameOf(Id));
+        //the package may have gained the proposed name since
+        if (Pcc.Exports.Any(e => e.Parent == level && e.ObjectName.Instanced == name.Instanced)) name = Pcc.GetNextIndexedName(ClassName);
+        // UE3 registers an object with a NetIndex as one of its package's net objects, and reports one that's another's or out of range
+        // (UObject::SetNetIndex, UPackage::AddNetObject). INDEX_NONE registers nothing, so it can't collide
+        byte[] stack = [.. StateFrame.Create(actorClass.UIndex).ToBytes(Pcc), .. BitConverter.GetBytes(-1)];
+        var export = new ExportEntry(Pcc, level, name, stack) { Class = actorClass, ObjectFlags = NewActorFlags };
+        Pcc.AddExport(export);
+        levelBinary.Actors.Add(export.UIndex);
+        BindExport(export);
+        Materialized = true;
+    }
 
     /// <summary>
     /// Takes on the Components array a commit wrote to <paramref name="owner"/> (registering a new component), if it's this actor's export. Replaced
@@ -166,6 +258,11 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// <summary>Undoes what a commit begun with <see cref="BeginCommit"/> changed in this view, leaving its pending edits as they were</summary>
     internal virtual void AbandonCommit()
     {
+        if (Materialized)
+        {
+            Materialized = false;
+            BindExport(null);
+        }
         if (propertiesBeforeCommit is null) return;
         Properties.Clear();
         Properties.AddRange(propertiesBeforeCommit);
@@ -177,7 +274,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// </summary>
     public bool IsTransformDirty => !SnapshotTransform().Equals(_cleanSnapshot);
 
-    protected virtual bool HasUncommittedChanges() => IsTransformDirty
+    protected virtual bool HasUncommittedChanges() => IsDraft || IsTransformDirty
         || Components.OfType<MeshComponentProxy>().Any(mesh => mesh.ExistingLighting?.HasChanges == true);
 
     internal void RefreshLightingDirty() => UpdateDirty();
@@ -641,6 +738,13 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         }
     }
 
+    /// <summary>
+    /// Where a ray in world space (from <paramref name="origin"/> along a unit <paramref name="direction"/>) first meets this actor's surface, within
+    /// <paramref name="maxDistance"/>, for an actor whose surface the level's geometry (<see cref="LevelGeometry"/>) doesn't include; null if it
+    /// doesn't, or if the actor can't tell
+    /// </summary>
+    public virtual float? RayHit(Vector3 origin, Vector3 direction, float maxDistance) => null;
+
     public virtual BoxSphereBounds GetBounds()
     {
         if (Components.Count is 0)
@@ -667,7 +771,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         if (IsDraft) throw new InvalidOperationException($"{DisplayText} is a draft: it has no export to commit to.");
         var props = Properties;
 
-        string locationPropName = Export.Game.IsGame3() ? "location" : "Location";
+        string locationPropName = LocationPropertyName(Export.Game);
         if (props.ContainsNamedProp(locationPropName) || Location != Vector3.Zero)
         {
             props.AddOrReplaceProp(CommonStructs.Vector3Prop(Location, locationPropName));
@@ -691,6 +795,19 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         Export.WriteProperties(props);
     }
 
+    /// <summary>Whether it was taken out of the scene and not put back (<see cref="LevelEditorRenderContext.RemoveActor"/>): a view kept for undo</summary>
+    internal bool IsOutOfScene { get; set; }
+
+    /// <summary>
+    /// Takes its meshes out of the scene's lighting and visibility-trace registries if it's out of the scene: a mesh made or reloaded meanwhile
+    /// joined them, as loading does
+    /// </summary>
+    internal void LeaveSceneIfOutOfIt()
+    {
+        if (!IsOutOfScene) return;
+        foreach (var mesh in Components.OfType<MeshComponentProxy>()) mesh.SetSceneMembership(false);
+    }
+
     /// <summary>
     /// Applies mesh dependency edits without replacing the actor that selection and undo actions refer to.
     /// Structural actor/collection edits and non-mesh components still use the existing rebuild path.
@@ -705,8 +822,19 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
             return false;
 
         bool refreshed = false;
-        foreach (var component in Components.OfType<MeshComponentProxy>())
-            refreshed |= component.RefreshPreview(package, updatedExports, force);
+        try
+        {
+            foreach (var component in Components.OfType<MeshComponentProxy>())
+                refreshed |= component.RefreshPreviewJoiningScene(package, updatedExports, force);
+        }
+        catch (Exception refreshing) when (IsOutOfScene)
+        {
+            //(leaving can't hide why the refresh failed)
+            try { LeaveSceneIfOutOfIt(); }
+            catch (Exception leaving) { throw new AggregateException(refreshing, leaving); }
+            throw;
+        }
+        LeaveSceneIfOutOfIt();
         // ParentAnimComponent transforms must propagate even to children whose own settings did not change.
         if (refreshed)
             foreach (var component in Components) component.UpdateLocalToWorld();
@@ -771,6 +899,36 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// Replaced or closed. Undo actions that refer to it are orphaned
     /// </summary>
     public bool IsDisposed => isDisposed;
+
+    private int historyOwners;
+
+    /// <summary>Several lifecycle steps can retain the same view; only the last one releases an absent view.</summary>
+    internal IDisposable RetainForHistory()
+    {
+        ObjectDisposedException.ThrowIf(IsDisposed, this);
+        historyOwners++;
+        OwningFile?.RetainedActors.Add(this);
+        return new HistoryLease(this);
+    }
+
+    private sealed class HistoryLease(ActorProxy actor) : IDisposable
+    {
+        private ActorProxy retained = actor;
+
+        public void Dispose()
+        {
+            if (retained is not { } view) return;
+            retained = null;
+            if (--view.historyOwners != 0) return;
+            view.OwningFile?.RetainedActors.Remove(view);
+            if (view.Editor?.RenderContext.DrawList_3D.Contains(view) != true)
+            {
+                view.Dispose();
+                //an undone placement or copy that history has let go of: its proposed name is free again
+                if (view.IsDraft) view.Editor?.RenderContext.Registry.Discard(view.Id);
+            }
+        }
+    }
 
     protected virtual void Dispose(bool disposing)
     {
@@ -1176,7 +1334,7 @@ public class PrefabInstanceProxy : ActorProxy
     {
         var props = Properties;
 
-        string locationPropName = Export.Game.IsGame3() ? "location" : "Location";
+        string locationPropName = LocationPropertyName(Export.Game);
         if (props.ContainsNamedProp(locationPropName) || Location != Vector3.Zero)
         {
             props.AddOrReplaceProp(CommonStructs.Vector3Prop(Location, locationPropName));

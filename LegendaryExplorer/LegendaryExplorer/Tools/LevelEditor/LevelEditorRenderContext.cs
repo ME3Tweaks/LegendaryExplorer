@@ -31,7 +31,20 @@ public class LevelEditorRenderContext : MeshRenderContext
     /// A <see cref="SceneEdit"/> is open. It's the only change of which views are drawn in progress: another can't start, and the editor holds back
     /// preview refreshes, history steps and commits until it ends
     /// </summary>
-    public bool IsEditingScene { get; internal set; }
+    private bool isEditingScene;
+    public bool IsEditingScene
+    {
+        get => isEditingScene;
+        internal set
+        {
+            if (isEditingScene == value) return;
+            isEditingScene = value;
+            SceneEditingChanged?.Invoke();
+        }
+    }
+
+    /// <summary>A <see cref="SceneEdit"/> began or ended, so what the window can do may have changed</summary>
+    public event Action SceneEditingChanged;
     private Dictionary<LegendaryExplorerCore.Packages.ExportEntry, MeshComponentProxy> decalReceivers;
     internal MeshComponentProxy FindDecalReceiver(LegendaryExplorerCore.Packages.ExportEntry export)
     {
@@ -168,6 +181,87 @@ public class LevelEditorRenderContext : MeshRenderContext
         return (origin, direction.LengthSquared() > 0 ? Vector3.Normalize(direction) : Camera.CameraForward);
     }
 
+    /// <summary>Where UE3's editor puts an actor created by a click at a pixel: see <see cref="PlacementLocation((Vector3, Vector3), bool, BoxSphereBounds?)"/></summary>
+    public Vector3 PlacementLocation(int x, int y)
+    {
+        IHitProxy clicked = HitBufferView is not null ? GetHitProxy(x, y) : null;
+        var ray = GetPixelRay(x, y);
+        //a handle drawn over the scene is clicked as the actor it's for, which it's drawn on or around
+        var actor = clicked switch
+        {
+            ActorProxy view => view,
+            AxisHitProxy => TransformWidget.Attach,
+            LightHandleHitProxy => LightGizmo.Attach as ActorProxy,
+            SplineTangentHitProxy => SplineGizmo.Attach,
+            SplinePointHitProxy point => point.Point,
+            _ => null
+        };
+        //the clicked actor's own surface if it can tell, else its bounding box
+        float? surface = actor?.RayHit(ray.Origin, ray.Direction, HalfWorldMax);
+        return PlacementLocation(ray, clicked is not null, surface is null ? actor?.GetBounds() : null, surface);
+    }
+
+    //UE3's HALF_WORLD_MAX, how far a click's line check reaches
+    private const float HalfWorldMax = 262144;
+
+    /// <summary>
+    /// Where UE3's editor puts an actor created by a click along <paramref name="ray"/> (UEditorEngine::UseActorFactory and PrivateAddActor, with
+    /// GEditor->ClickLocation as ClickActor, ClickSurface and ClickBackdrop leave it). A click on something (a surface or an actor) places it where the
+    /// line first meets the level's geometry within HALF_WORLD_MAX; if it meets none, at the depth the click was unprojected to (2 x UE3's 10 unit near
+    /// plane). A click on the backdrop places it in front of the camera (MoveActorInFrontOfCamera), as far as its bounding cylinder's radius, 50 for an
+    /// actor with none, as every class with a recipe is. In an orthographic view UE3's camera is at the edge of the world, so its backdrop click
+    /// (HALF_WORLD_MAX along the line) is on the world's middle plane: Z = 0 in this top view. Here the level's geometry is its BSP and the meshes
+    /// with static shadowing (<see cref="LevelGeometry.FirstHit"/>), in place of the actors' collision. An actor clicked that isn't part of it is
+    /// met at <paramref name="clickedSurface"/>, the distance to its own surface (a terrain's), if it's nearer; or else, if the line meets what's
+    /// behind it (outside its <paramref name="clickedBounds"/>: a moving mesh, say), at its bounding box. Not pushed out along the surface's
+    /// normal: FBoxPushOut of no collision extent, 0.1 units
+    /// </summary>
+    public Vector3 PlacementLocation((Vector3 Origin, Vector3 Direction) ray, bool clickedSomething, BoxSphereBounds? clickedBounds = null, float? clickedSurface = null)
+    {
+        (Vector3 origin, Vector3 direction) = ray;
+        if (clickedSomething)
+        {
+            Vector3 end = origin + direction * HalfWorldMax;
+            Vector3? hit = GetLevelGeometry(out _, current: true).FirstHit(origin, end) is { } fraction ? Vector3.Lerp(origin, end, fraction) : null;
+            if (clickedSurface is { } surface && !(hit is { } geometry && Vector3.Distance(origin, geometry) < surface)) return origin + direction * surface;
+            //(not an actor whose box the camera is inside, a sky dome say, which the line enters where it starts)
+            if (clickedBounds is { } bounds && !(hit is { } point && IsWithin(bounds, point)) && BoxEntry(origin, direction, bounds) is > 0 and var distance)
+                return origin + direction * distance;
+            return hit ?? origin + direction * 20;
+        }
+        return Camera.IsOrthographic ? origin with { Z = 0 } : origin + direction * 50;
+
+        //within a unit of the box, as a surface it bounds is
+        static bool IsWithin(BoxSphereBounds box, Vector3 point) =>
+            Vector3.Abs(point - box.Origin) is var offset && offset.X <= box.BoxExtent.X + 1 && offset.Y <= box.BoxExtent.Y + 1 && offset.Z <= box.BoxExtent.Z + 1;
+    }
+
+    /// <summary>How far along a ray (from <paramref name="origin"/>, a unit <paramref name="direction"/>) it enters a box, within HALF_WORLD_MAX: 0 from inside it</summary>
+    private static float? BoxEntry(Vector3 origin, Vector3 direction, BoxSphereBounds box)
+    {
+        float near = 0, far = HalfWorldMax;
+        for (int axis = 0; axis < 3; axis++)
+        {
+            float start = origin[axis], step = direction[axis], min = box.Origin[axis] - box.BoxExtent[axis], max = box.Origin[axis] + box.BoxExtent[axis];
+            if (step == 0)
+            {
+                if (start < min || start > max) return null;
+                continue;
+            }
+            float t1 = (min - start) / step, t2 = (max - start) / step;
+            near = MathF.Max(near, MathF.Min(t1, t2));
+            far = MathF.Min(far, MathF.Max(t1, t2));
+            if (near > far) return null;
+        }
+        return near;
+    }
+
+    /// <summary>
+    /// While set, the window is placing an actor (one-shot): a left click in the viewport calls it with the pixel instead of selecting. The camera's
+    /// controls, left drags included, are unchanged. (Escape, unhandled here, reaches the window, which cancels it)
+    /// </summary>
+    public Action<int, int> PlaceAt { get; set; }
+
     private readonly Dictionary<string, OutlinerCategoryState> _categories = [];
 
     public OutlinerCategoryState GetCategoryState(string category)
@@ -280,6 +374,12 @@ public class LevelEditorRenderContext : MeshRenderContext
             if (button is MouseButtons.Left) EndDrag(DragEndReason.Completed);
             return true;
         }
+        if (button is MouseButtons.Left && PlaceAt is { } place)
+        {
+            //a camera drag isn't a placement
+            if (!base.MouseUp(button, x, y)) place(x, y);
+            return true;
+        }
         if (base.MouseUp(button, x, y)) return true;
 
         if (HitBufferView is not null)
@@ -330,6 +430,13 @@ public class LevelEditorRenderContext : MeshRenderContext
             }
         }
         if (button is MouseButtons.Left) clickModifiers = modifiers;
+        //a placement click neither selects nor drags a widget; dragging still moves the camera
+        if (button is MouseButtons.Left && PlaceAt is not null)
+        {
+            //the click is the placement's, whether or not it starts a camera drag
+            base.MouseDown(button, x, y);
+            return true;
+        }
         if (HitBufferView is not null)
         {
             IHitProxy selected = GetHitProxy(x, y);
@@ -614,6 +721,8 @@ public class LevelEditorRenderContext : MeshRenderContext
         decalReceivers = null;
         if (DrawList_3D.Remove(actor))
         {
+            actor.IsOutOfScene = true;
+            foreach (var mesh in actor.Components.OfType<MeshComponentProxy>()) mesh.SetSceneMembership(false);
             HitProxies.RemoveAt(actor.HitID);
             if (actor is SplineActorProxy spline)
             {
@@ -639,6 +748,8 @@ public class LevelEditorRenderContext : MeshRenderContext
         if (!DrawList_3D.Contains(actor))
         {
             DrawList_3D.Insert(Math.Clamp(index, 0, DrawList_3D.Count), actor);
+            actor.IsOutOfScene = false;
+            foreach (var mesh in actor.Components.OfType<MeshComponentProxy>()) mesh.SetSceneMembership(true);
             foreach (var decal in DrawList_3D.OfType<DecalActorProxy>()) decal.BindReceivers(this);
             AddHitProxies(actor);
             (actor as SplineActorProxy)?.OnSceneMembershipChanged();

@@ -62,13 +62,20 @@
                 <Border Background="{StaticResource EditorChrome}" Padding="6,4" Margin="0,3,0,1">
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <ToggleButton Padding="4" IsEnabled="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}}" IsChecked="{Binding Name.IsReadOnly, Mode=TwoWay}" ToolTip="Read-only: prevent actor edits" AutomationProperties.Name="Read-only package">
+                            <Border IsEnabled="{Binding Name.CanChangeReadOnly}">
+                            <ToggleButton Padding="4" IsEnabled="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}}" IsChecked="{Binding Name.IsReadOnly, Mode=TwoWay}" ToolTipService.ShowOnDisabled="True" AutomationProperties.Name="Read-only package">
+                                <ToggleButton.Style>
+                                    <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                                        <Setter Property="ToolTip" Value="Read-only: prevent actor edits"/>
+                                        <Style.Triggers><DataTrigger Binding="{Binding Name.CanChangeReadOnly}" Value="False"><Setter Property="ToolTip" Value="Read-only is unavailable while the file has new or deleted actors to commit"/></DataTrigger></Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
                                 <Grid Width="11" Height="12">
                                     <fa:ImageAwesome Icon="Solid_Lock" Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}, Converter={StaticResource BoolToVisibilityConverter}}" Foreground="{StaticResource EditorText}"/>
                                     <fa:ImageAwesome Icon="Solid_LockOpen" Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}" Foreground="{StaticResource EditorText}"/>
                                 </Grid>
                             </ToggleButton>
-                            <Button Command="{Binding Data.CommitSingleFileCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding Name}" Style="{StaticResource EditorCompactButton}" ToolTip="Commit this package" AutomationProperties.Name="Commit package"><fa:ImageAwesome Icon="Solid_Check" Width="11" Foreground="{StaticResource EditorText}"/></Button>
+                            </Border>
                             <Button Command="{Binding Data.SaveSingleFileCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding Name}" Style="{StaticResource EditorCompactButton}" ToolTip="Save this package" AutomationProperties.Name="Save package"><fa:ImageAwesome Icon="Regular_Save" Width="11" Foreground="{StaticResource EditorText}"/></Button>
                             <Button Command="{Binding Data.CloseFileCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding Name}" Style="{StaticResource EditorCompactButton}" ToolTip="Close this package" AutomationProperties.Name="Close package"><fa:ImageAwesome Icon="Solid_Times" Width="10" Foreground="{StaticResource EditorText}"/></Button>
                         </StackPanel>
@@ -92,7 +99,8 @@
                     </DockPanel>
                 </Border>
             </DataTemplate>
-            <ContextMenu x:Key="ActorContextMenu">
+            <ContextMenu x:Key="ActorContextMenu" Opened="ActorContextMenu_Opened">
+                <MenuItem Header="Delete Actor" Command="{Binding Data.DeleteActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" InputGestureText="Delete" ToolTip="{Binding DeleteRefusal}" ToolTipService.ShowOnDisabled="True"/>
                 <MenuItem Header="Focus Camera" Command="{Binding Data.FocusSelectedCommand, Source={StaticResource bindingProxy}}" InputGestureText="F"/>
                 <MenuItem Header="Open in Package Editor" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}" Command="{Binding Data.OpenInPackageEditorCommand, Source={StaticResource bindingProxy}}"/>
             </ContextMenu>
@@ -255,6 +263,22 @@
                             <xctk:WatermarkTextBox x:Name="Goto_TextBox" Grid.Column="1" Watermark="#ID" Margin="5,0,0,0" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding HasAnyFileOpen}" AutomationProperties.Name="Export index" ToolTip="Export index"/>
                             <Button Grid.Column="2" Content="Go to" Click="GotoButton_Clicked" IsEnabled="{Binding HasAnyFileOpen}" Padding="8,3" Margin="5,0,0,0"/>
                         </Grid>
+                        <Expander DockPanel.Dock="Top" Header="Place actor" IsExpanded="False" Margin="8,0,8,8" IsEnabled="{Binding HasAnyFileOpen}" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel Margin="0,6,0,0">
+                                <DockPanel>
+                                    <TextBlock Text="Level" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource EditorMuted}"/>
+                                    <ComboBox ItemsSource="{Binding OpenFiles}" SelectedItem="{Binding PlacementFile}" DisplayMemberPath="FileName" ToolTip="The level new actors are placed in" AutomationProperties.Name="Level to place actors in"/>
+                                </DockPanel>
+                                <ItemsControl ItemsSource="{Binding PlacementOptions}" Margin="0,6,0,0">
+                                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate><DataTemplate>
+                                        <Button Content="{Binding ClassName}" Command="{Binding Data.BeginPlacementCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}"
+                                                ToolTip="{Binding Description}" ToolTipService.ShowOnDisabled="True" Padding="8,3" Margin="0,0,5,5"/>
+                                    </DataTemplate></ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <TextBlock Text="{Binding PlacementStatus}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}"/>
+                            </StackPanel>
+                        </Expander>
                         <TextBlock DockPanel.Dock="Bottom" Text="{Binding Actors.BindableCount, StringFormat='{}{0} actors loaded'}" Margin="9,7" Foreground="{StaticResource EditorMuted}" FontSize="11"/>
                         <ListBox x:Name="MeshExportsList" ItemsSource="{Binding ActorsView}" SelectedItem="{Binding SelectedActor}" ItemContainerStyle="{StaticResource ActorRow}"
                                  VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True">
@@ -666,9 +690,9 @@
                     <DockPanel DockPanel.Dock="Top" Background="{StaticResource EditorChrome}">
                         <Button DockPanel.Dock="Right" Command="{Binding SaveAllCommand}" Content="Save All" Padding="10,5"/>
                         <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" Content="Commit Changes" Padding="10,5" Style="{StaticResource CommitButton}"/>
-                        <Border Style="{StaticResource EditorDockTitle}"><StackPanel Orientation="Horizontal"><TextBlock Text="Changes" FontWeight="SemiBold"/><TextBlock Text="{Binding PendingChangesView.Count, StringFormat=' ({0})'}" Foreground="{StaticResource EditorMuted}"/></StackPanel></Border>
+                        <Border Style="{StaticResource EditorDockTitle}"><StackPanel Orientation="Horizontal"><TextBlock Text="Changes" FontWeight="SemiBold"/><TextBlock Text="{Binding PendingChangeCount, StringFormat=' ({0})'}" Foreground="{StaticResource EditorMuted}"/></StackPanel></Border>
                     </DockPanel>
-                    <TextBlock DockPanel.Dock="Top" Text="Commit applies transforms and light settings to loaded packages. Save writes packages to disk." Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="10,6,10,3"/>
+                    <TextBlock DockPanel.Dock="Top" Text="Commit writes every change, new actor and deletion to the loaded packages. Save writes packages to disk." Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="10,6,10,3"/>
                     <Expander DockPanel.Dock="Bottom" Header="Rendering notes" IsExpanded="False" Margin="0" Padding="10,4">
                         <Expander.Style>
                             <Style TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
@@ -681,13 +705,13 @@
                         <ScrollViewer MaxHeight="70" VerticalScrollBarVisibility="Auto"><TextBlock Text="{Binding TextBelowActors}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11"/></ScrollViewer>
                     </Expander>
                     <Grid>
-                        <TextBlock Text="No uncommitted changes." Foreground="{StaticResource EditorMuted}" Margin="10,6" Visibility="{Binding PendingChangesView.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        <ListBox ItemsSource="{Binding PendingChangesView}" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" Visibility="{Binding PendingChangesView.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}">
+                        <TextBlock Text="No uncommitted changes." Foreground="{StaticResource EditorMuted}" Margin="10,6" Visibility="{Binding HasPendingChanges, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}"/>
+                        <ListBox ItemsSource="{Binding PendingChanges}" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" Visibility="{Binding HasPendingChanges, Converter={StaticResource BoolToVisibilityConverter}}">
                             <ListBox.ItemTemplate><DataTemplate>
-                                <Button Command="{Binding Data.SelectChangedActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" HorizontalContentAlignment="Stretch" Padding="3,0" ToolTip="Select and frame this changed actor">
+                                <Button Command="{Binding Data.SelectChangedActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" HorizontalContentAlignment="Stretch" Padding="3,0" ToolTip="{Binding PendingChangeStatus}">
                                     <Grid>
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="55"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="240"/></Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding IndexLabel}" Foreground="{StaticResource EditorDirty}"/>
+                                        <TextBlock Text="{Binding ChangeKind}" Foreground="{StaticResource EditorDirty}"/>
                                         <TextBlock Grid.Column="1" Text="{Binding ActorName}" TextTrimming="CharacterEllipsis"/>
                                         <TextBlock Grid.Column="2" Text="{Binding OwningFileName}" TextTrimming="CharacterEllipsis" Foreground="{StaticResource EditorMuted}"/>
                                         <TextBlock Grid.Column="3" HorizontalAlignment="Right" Foreground="{StaticResource EditorMuted}"><Run Text="X "/><Run Text="{Binding XPos, StringFormat=F1}"/><Run Text="  Y "/><Run Text="{Binding YPos, StringFormat=F1}"/><Run Text="  Z "/><Run Text="{Binding ZPos, StringFormat=F1}"/></TextBlock>

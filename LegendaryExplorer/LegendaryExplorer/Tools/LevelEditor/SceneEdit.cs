@@ -29,12 +29,13 @@ public sealed class SceneEdit : IDisposable
     }
 
     /// <summary>Draws a view, as one of its owning file's actors</summary>
-    public void Attach(ActorProxy view)
+    public void Attach(ActorProxy view, int? sceneIndex = null, int? fileIndex = null)
     {
         ObjectDisposedException.ThrowIf(finished, this);
         ObjectDisposedException.ThrowIf(view.IsDisposed, view);
         if (scene.DrawList_3D.Contains(view)) throw new InvalidOperationException($"{view.DisplayText} is already in the scene.");
         var file = view.OwningFile;
+        RequireWritable(file);
         //recorded first, so a failure part way through adding it still removes it
         undo.Add(() =>
         {
@@ -42,13 +43,21 @@ public sealed class SceneEdit : IDisposable
             if (file?.Actors.Remove(view) == true) file.RecalculateDirty();
             editor.OnViewDetached(view);
         });
-        scene.AddActor(view);
+        if (sceneIndex is { } index) scene.InsertActor(index, view);
+        else scene.AddActor(view);
         if (file is not null && !file.Actors.Contains(view))
         {
-            file.Actors.Add(view);
+            file.Actors.Insert(Math.Clamp(fileIndex ?? file.Actors.Count, 0, file.Actors.Count), view);
             file.RecalculateDirty();
         }
         editor.OnViewAttached(view);
+    }
+
+    // A read-only file's actors aren't added or taken out, whether by an edit or by undoing or redoing one: a commit leaves its new or deleted actors
+    // out, but clears the history, which holds a pending deletion's only way back (see OpenLevelFile.IsReadOnly)
+    private static void RequireWritable(OpenLevelFile file)
+    {
+        if (file?.IsReadOnly == true) throw new InvalidOperationException($"{file.FileName} is read-only.");
     }
 
     /// <summary>Stops drawing a view and removes it from its owning file's actors</summary>
@@ -58,6 +67,7 @@ public sealed class SceneEdit : IDisposable
         int index = scene.DrawList_3D.IndexOf(view);
         if (index < 0) throw new InvalidOperationException($"{view.DisplayText} isn't in the scene.");
         var file = view.OwningFile;
+        RequireWritable(file);
         int fileIndex = file?.Actors.IndexOf(view) ?? -1;
         undo.Add(() =>
         {
@@ -78,6 +88,9 @@ public sealed class SceneEdit : IDisposable
         }
         editor.OnViewDetached(view);
     }
+
+    /// <summary>Selects <paramref name="view"/> if it's still drawn, or else nothing: for an undo step putting back the selection it began with</summary>
+    public void Reselect(ActorProxy view) => Select(view is { IsDisposed: false } && scene.DrawList_3D.Contains(view) ? view : null);
 
     /// <summary>Selects a view (or nothing) through the editor; abandoning the edit restores the selection it began with</summary>
     public void Select(ActorProxy view)

@@ -21,6 +21,8 @@ public sealed class LevelModelProxy : ActorProxy
     private readonly IActorEditorContext PreviewContext;
     private readonly ExportEntry LevelExport;
     private PreviewMeshDependencies Dependencies;
+    //the Level's ModelComponents it was read from: what of the Level it depends on
+    private int[] LoadedComponents = [];
     private string LoadError;
     private int MissingMaterialElements;
 
@@ -42,11 +44,12 @@ public sealed class LevelModelProxy : ActorProxy
         Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
         MissingMaterialElements = 0;
         LoadError = null;
+        LoadedComponents = [];
         try
         {
             var model = Export.GetBinaryData<Model>();
-            var level = LevelExport.GetBinaryData<Level>();
-            foreach (int componentIndex in level.ModelComponents)
+            LoadedComponents = LevelExport.GetBinaryData<Level>().ModelComponents.ToArray();
+            foreach (int componentIndex in LoadedComponents)
             {
                 if (!Pcc.TryGetUExport(componentIndex, out var componentExport) || componentExport.ClassName != "ModelComponent") continue;
                 Dependencies.Track(componentExport);
@@ -93,16 +96,21 @@ public sealed class LevelModelProxy : ActorProxy
 
     public override void CommitChanges(PackageCache packageCache = null) { }
 
+    /// <summary>
+    /// Whether it's what <paramref name="level"/> has: its model, read from the ModelComponents it lists. A change to the Level (an actor added or
+    /// removed) needs no other refresh; the editor replaces it if this is false
+    /// </summary>
+    public bool IsReadFrom(Level level) => level.Model == Export.UIndex && level.ModelComponents.SequenceEqual(LoadedComponents);
+
+    /// <summary>Read again if the model, its components or their materials changed. (Not the Level, which <see cref="IsReadFrom"/> is for)</summary>
     public override bool TryRefreshPreview(IMEPackage package, HashSet<int> updatedExports, bool force = false)
     {
-        if (!force && !(package == Pcc && updatedExports.Contains(LevelExport.UIndex)) && !Dependencies.IsAffectedBy(package, updatedExports)) return false;
+        if (!force && !Dependencies.IsAffectedBy(package, updatedExports)) return false;
         Components.DisposeAndClear();
         Load();
         NotifyCoverageChanged();
         return true;
     }
-
-    public override bool TestUIndexes(HashSet<int> uIndexes) => base.TestUIndexes(uIndexes) || uIndexes.Contains(LevelExport.UIndex);
 }
 
 /// <summary>One ModelComponent element: the nodes drawn with one material and light-map</summary>

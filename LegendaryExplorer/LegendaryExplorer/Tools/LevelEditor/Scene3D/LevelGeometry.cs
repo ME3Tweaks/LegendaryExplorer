@@ -103,6 +103,7 @@ public sealed class LevelGeometry
     /// <summary>
     /// Whether a light environment's visibility trace to <paramref name="light"/>, from <paramref name="start"/> to <paramref name="end"/>, is blocked by the level's geometry:
     /// the meshes that block traces to that light (<see cref="MeshStaticLighting.BlocksVisibilityTraceTo"/>), except <paramref name="ignoredActor"/>'s.
+    /// With no light, every mesh blocks it
     /// </summary>
     public bool IsSegmentBlocked(Vector3 start, Vector3 end, SceneLight light, ExportEntry ignoredActor)
     {
@@ -121,12 +122,30 @@ public sealed class LevelGeometry
         return InstanceHierarchy.AnyHit(start, end, (index, _, _) =>
         {
             Instance instance = Instances[index];
-            if (ignoredActor is not null && instance.Owner.OwnerActor == ignoredActor || !instance.Owner.BlocksVisibilityTraceTo(light))
+            if (ignoredActor is not null && instance.Owner.OwnerActor == ignoredActor || light is not null && !instance.Owner.BlocksVisibilityTraceTo(light))
             {
                 return false;
             }
             return instance.Mesh.IntersectsSegment(Vector3.Transform(start, instance.WorldToLocal), Vector3.Transform(end, instance.WorldToLocal));
         });
+    }
+
+    /// <summary>
+    /// Where the segment from <paramref name="start"/> to <paramref name="end"/> first meets the level's geometry (its BSP and every mesh in it, whichever
+    /// lights they block), as a fraction of the way along it; null if it meets none. Found by halving the part of the segment it's known to be in
+    /// </summary>
+    public float? FirstHit(Vector3 start, Vector3 end)
+    {
+        if (!IsSegmentBlocked(start, end, null, null)) return null;
+        float clear = 0, blocked = 1;
+        //to a float's precision: 2^-24 of the segment, a 64th of a unit along the longest placement ray (HALF_WORLD_MAX)
+        for (int i = 0; i < 24; i++)
+        {
+            float middle = (clear + blocked) / 2;
+            if (IsSegmentBlocked(start, Vector3.Lerp(start, end, middle), null, null)) blocked = middle;
+            else clear = middle;
+        }
+        return blocked;
     }
 
     //BSP node flags (UE3's EBspNodeFlags)

@@ -19,6 +19,13 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// </summary>
 public sealed class TerrainProxy : ActorProxy
 {
+    /// <summary>Its height field's surface as its sections draw it, in the terrain's frame (which the sections are placed in)</summary>
+    public override float? RayHit(Vector3 origin, Vector3 direction, float maxDistance) =>
+        HeightField is { IsValid: true } field && Matrix4x4.Invert(LocalToWorld, out Matrix4x4 worldToLocal)
+            ? field.RayHit(Vector3.Transform(origin, worldToLocal), Vector3.TransformNormal(direction, worldToLocal), maxDistance,
+                Components.OfType<TerrainComponentProxy>().Select(c => c.Mesh.Section).ToList())
+            : null;
+
     private TerrainHeightField HeightField;
     private string LoadError;
     private int HoleQuads;

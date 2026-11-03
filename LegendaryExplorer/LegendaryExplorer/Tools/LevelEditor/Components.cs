@@ -408,6 +408,52 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
         Mesh = null;
     }
 
+    // Retained undo views keep their GPU resources, but detached meshes must leave lighting and visibility-trace registries just as they leave the
+    // draw list. Undo registers the same resources. Loading a mesh registers it, as a mesh in the scene must be, so a mesh loaded while its actor is
+    // out of the scene leaves them again (ActorProxy.LeaveSceneIfOutOfIt)
+    private bool sceneResourcesAttached = true;
+
+    /// <summary>
+    /// <see cref="RefreshPreview"/>, noting that reloading joins the scene's lighting (even part way, if it fails), whether or not the mesh is in the
+    /// scene: a view kept for undo is refreshed too, so that undo doesn't bring back released resources
+    /// </summary>
+    internal bool RefreshPreviewJoiningScene(IMEPackage package, IReadOnlySet<int> updatedExports, bool force)
+    {
+        try
+        {
+            if (!RefreshPreview(package, updatedExports, force)) return false;
+        }
+        catch
+        {
+            //(leaving what it didn't join is harmless)
+            sceneResourcesAttached = true;
+            throw;
+        }
+        sceneResourcesAttached = true;
+        return true;
+    }
+    internal void SetSceneMembership(bool attached)
+    {
+        if (sceneResourcesAttached == attached) return;
+        if (StaticLighting is not null)
+        {
+            if (attached) RenderContext.RegisterStaticLighting(StaticLighting);
+            else RenderContext.UnregisterStaticLighting(StaticLighting);
+        }
+        if (LightEnvironmentPrimitive is not null)
+        {
+            if (attached)
+            {
+                LightEnvironment = RenderContext.AddLightEnvironmentPrimitive(LightEnvironment, LightEnvironmentPrimitive);
+                if (StaticLighting is not null) StaticLighting.LightEnvironment = LightEnvironment;
+                if (Mesh is not null && Mesh.LODs.Count > LOD) Mesh.LODs[LOD].LightEnvironment = LightEnvironment;
+            }
+            else RenderContext.RemoveLightEnvironmentPrimitive(LightEnvironment, LightEnvironmentPrimitive);
+        }
+        RenderContext.InvalidateLevelGeometry();
+        sceneResourcesAttached = attached;
+    }
+
     protected override void Dispose(bool disposing)
     {
         ReleaseMesh();

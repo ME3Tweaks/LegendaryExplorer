@@ -118,6 +118,13 @@ namespace LegendaryExplorerCore.Packages
         EPackageFlags Flags { get; }
         bool IsCompressed { get; }
         int NameCount { get; }
+        /// <summary>
+        /// A number that changes whenever the package's names, imports or exports change, for something reading it over time to tell whether it
+        /// changed meanwhile. It can also change when nothing did (an edit scope's edits count again when it completes, and even if it's abandoned),
+        /// so it can only show that nothing changed. It counts the changes the package tells its users about, so like those notifications it needs
+        /// <see cref="MEPackageHandler.GlobalSharedCacheEnabled"/>: without it, edits of the entries loaded from disk aren't seen
+        /// </summary>
+        int ChangeCount { get; }
         int ExportCount { get; }
         int ImportCount { get; }
         int ImportOffset { get; }

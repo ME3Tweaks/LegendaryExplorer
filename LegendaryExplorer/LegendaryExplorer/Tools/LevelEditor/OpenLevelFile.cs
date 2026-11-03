@@ -23,6 +23,52 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
     public string FilePath => Package.FilePath;
 
     public ObservableCollectionExtended<ActorProxy> Actors { get; } = [];
+    private readonly List<PendingActorDeletion> pendingDeletions = [];
+    /// <summary>The new actors a commit creates: the drafts in the scene (not those that undo took out of it, which history keeps)</summary>
+    public IEnumerable<ActorProxy> PendingCreations => Actors.Where(a => a.IsDraft);
+    public IReadOnlyList<PendingActorDeletion> PendingDeletions => pendingDeletions.AsReadOnly();
+    public bool HasPendingLifecycleChanges => pendingDeletions.Count != 0 || PendingCreations.Any();
+
+    internal void AddDeletion(PendingActorDeletion deletion)
+    {
+        if (pendingDeletions.Contains(deletion)) throw new InvalidOperationException("Deletion is already pending.");
+        deletion.Retain();
+        pendingDeletions.Add(deletion);
+        deletion.Actor.PendingDeletion = deletion;
+        RecalculateDirty();
+        Owner?.ShowPendingDeletion(deletion.Actor, true);
+    }
+
+    internal void RemoveDeletion(PendingActorDeletion deletion)
+    {
+        if (!pendingDeletions.Remove(deletion)) return;
+        deletion.Actor.PendingDeletion = null;
+        //unlisted before it's let go, which disposes the view if nothing else holds it
+        Owner?.ShowPendingDeletion(deletion.Actor, false);
+        deletion.Release();
+        RecalculateDirty();
+    }
+
+    /// <summary>
+    /// Drops the pending deletions: after a commit, which made them (its drafts have exports then, so they're no longer pending), or before the file's
+    /// actors are reloaded or closed (its drafts go with its actors)
+    /// </summary>
+    internal void ClearPendingDeletions()
+    {
+        foreach (var deletion in pendingDeletions.ToArray()) RemoveDeletion(deletion);
+    }
+
+    /// <summary>The Level's model and ModelComponents when they were last found to have no drawable BSP surfaces, or null</summary>
+    internal (int Model, int[] Components)? UndrawnModel { get; set; }
+
+    // Includes views absent from Actors that history can restore. Closing/reloading invalidates them too.
+    internal HashSet<ActorProxy> RetainedActors { get; } = [];
+
+    internal void DisposeRetainedActors()
+    {
+        foreach (var actor in RetainedActors) actor.Dispose();
+        RetainedActors.Clear();
+    }
 
     /// <summary>
     /// The level's lights, which are in the render context's lights while the file is open
@@ -99,17 +145,38 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
         }
     }
 
-    /// <summary>A new actor (a draft) is one of the file's actors, and wholly uncommitted, so it makes the file dirty</summary>
+    /// <summary>
+    /// A new actor (a draft) is one of the file's actors, and wholly uncommitted, so it makes the file dirty. Called whenever pending changes change
+    /// </summary>
     public void RecalculateDirty()
     {
-        IsDirty = Actors.Any(a => a.IsDirty);
+        IsDirty = pendingDeletions.Count != 0 || Actors.Any(a => a.IsDraft || a.IsDirty);
+        OnPropertyChanged(nameof(CanChangeReadOnly));
     }
+
+    /// <summary>Whether <see cref="IsReadOnly"/> can be changed now: not made read-only while the file has new or deleted actors</summary>
+    public bool CanChangeReadOnly => IsReadOnly || !HasPendingLifecycleChanges;
 
     private bool isReadOnly;
     public bool IsReadOnly
     {
         get => Owner?.IsBakePreview == true || isReadOnly;
-        set { if (Owner?.IsBakePreview != true) SetProperty(ref isReadOnly, value); }
+        set
+        {
+            // Not while it has new or deleted actors: a commit leaves a read-only file's out, but clears the history, which holds a pending deletion's
+            // only way back
+            if (value && HasPendingLifecycleChanges)
+            {
+                //tells a binding that set it that it's unchanged
+                OnPropertyChanged();
+                return;
+            }
+            if (Owner?.IsBakePreview != true && SetProperty(ref isReadOnly, value))
+            {
+                OnPropertyChanged(nameof(CanChangeReadOnly));
+                Owner?.UpdatePlacementOptions();
+            }
+        }
     }
 
     public OpenLevelFile(LevelEditor owner, IMEPackage package, ExportEntry levelExport)
@@ -147,6 +214,8 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
 
     public void Dispose()
     {
+        ClearPendingDeletions();
+        DisposeRetainedActors();
         foreach (var actor in Actors)
         {
             actor.Dispose();

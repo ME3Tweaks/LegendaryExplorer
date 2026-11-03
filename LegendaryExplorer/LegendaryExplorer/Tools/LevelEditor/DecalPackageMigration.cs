@@ -56,16 +56,13 @@ internal sealed class DecalPackageMigration : IDisposable
         if (actor.Decal.MaterialChanged) donorComponent.WriteProperty(new ObjectProperty(actor.Decal.Settings.Material.UIndex, "DecalMaterial"));
         donorComponent.WriteBinary(DecalComponent.Create());
         var subtree = donorActor.GetAllDescendants().Append(donorActor).ToHashSet();
-        foreach (var entry in subtree)
-        {
-            if (entry.GetEntriesThatReferenceThisOne().Keys.Any(e => !subtree.Contains(e) && e.UIndex != sourceLevel.UIndex))
-                throw new InvalidOperationException($"Cannot move {actor.Export.ObjectName}: another object references its actor or components.");
-        }
+        if (subtree.GetEntriesThatReferenceThese().Values.Any(referrers => referrers.Keys.Any(e => !subtree.Contains(e) && e.UIndex != sourceLevel.UIndex)))
+            throw new InvalidOperationException($"Cannot move {actor.Export.ObjectName}: another object references its actor or components.");
         // Avoid reusing an unrelated actor with the same path in the destination.
         donorActor.ObjectName = destination.Staged.GetNextIndexedName(donorActor.ObjectName.Name);
         var pose = actor.SnapshotTransform();
         var props = donorActor.GetProperties();
-        props.AddOrReplaceProp(CommonStructs.Vector3Prop(pose.Location, actor.Export.Game.IsGame3() ? "location" : "Location"));
+        props.AddOrReplaceProp(CommonStructs.Vector3Prop(pose.Location, ActorProxy.LocationPropertyName(actor.Export.Game)));
         props.AddOrReplaceProp(CommonStructs.RotatorProp(pose.Rotation, "Rotation"));
         props.AddOrReplaceProp(new FloatProperty(pose.DrawScale, "DrawScale"));
         props.AddOrReplaceProp(CommonStructs.Vector3Prop(pose.DrawScale3D, "DrawScale3D"));

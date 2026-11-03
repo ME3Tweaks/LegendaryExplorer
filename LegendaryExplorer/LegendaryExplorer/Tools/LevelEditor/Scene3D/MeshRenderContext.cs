@@ -892,13 +892,14 @@ public class MeshRenderContext : RenderContext
     /// The level's geometry, for light environments' visibility traces. Rebuilt when it's needed after it changes, at most every <see cref="MinLevelGeometryRebuildInterval"/>
     /// </summary>
     /// <param name="generation">Changes whenever the returned geometry does</param>
-    internal LevelGeometry GetLevelGeometry(out int generation)
+    /// <param name="current">Rebuilt if it changed, however recently it was: for a one-off question (where a click meets the level), not a frame's</param>
+    internal LevelGeometry GetLevelGeometry(out int generation, bool current = false)
     {
         lock (LevelGeometryLock)
         {
             int version = levelGeometryVersion;
-            if (LevelGeometry is null
-                || BuiltLevelGeometryVersion != version && System.Diagnostics.Stopwatch.GetElapsedTime(LastLevelGeometryBuildTimestamp) >= MinLevelGeometryRebuildInterval)
+            if (LevelGeometry is null || BuiltLevelGeometryVersion != version
+                && (current || System.Diagnostics.Stopwatch.GetElapsedTime(LastLevelGeometryBuildTimestamp) >= MinLevelGeometryRebuildInterval))
             {
                 LevelGeometry = new LevelGeometry(GetStaticLightings(), [.. LevelModels.Values]);
                 BuiltLevelGeometryVersion = version;

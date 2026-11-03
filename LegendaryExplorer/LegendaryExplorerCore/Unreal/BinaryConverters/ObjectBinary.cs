@@ -69,6 +69,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "FracturedSkinnedMeshComponent":
                 case "StaticMeshComponent":
                     return From<StaticMeshComponent>(export, packageCache, dataOffsetOverride);
+                case "BioDecalComponent":
                 case "DecalComponent":
                     return From<DecalComponent>(export, packageCache, dataOffsetOverride);
                 case "Terrain":
@@ -315,6 +316,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "FracturedSkinnedMeshComponent":
                 case "StaticMeshComponent":
                     return StaticMeshComponent.Create();
+                case "BioDecalComponent":
                 case "DecalComponent":
                     return DecalComponent.Create();
                 case "Terrain":
