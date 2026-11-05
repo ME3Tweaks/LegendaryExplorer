@@ -1143,6 +1143,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand UndoCommand { get; set; }
     public ICommand RedoCommand { get; set; }
     public ICommand DeleteActorCommand { get; set; }
+    public ICommand UpgradeActorCommand { get; set; }
     public ICommand ToggleOrthoViewCommand { get; set; }
     public ICommand FocusFileCommand { get; set; }
     public ICommand SelectChangedActorCommand { get; set; }
@@ -1215,7 +1216,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         ToggleRotateCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.Rotate, "Rotate"), PackageIsLoaded);
         ToggleScaleCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.Scale, "Scale"), PackageIsLoaded);
         ToggleUniformScaleCommand = new GenericCommand(() => SetWidgetMode(EWidgetMode.UniformScale, "Uniform Scale"), PackageIsLoaded);
-        CommitChangesCommand = new GenericCommand(() => CommitChanges(), () => CanMutateScene && PackageIsLoaded());
+        // Commit, undo and redo are enabled by notifying properties (IsDirty, CanUndo, CanRedo), which a command's CanExecute would override: WPF asks it
+        // only when it chooses to, and leaves the buttons as it last found them. What they run checks that the scene can change
+        CommitChangesCommand = new GenericCommand(() => CommitChanges());
         LoadRelatedLevelsCommand = new GenericCommand(LoadRelatedLevels, () => CanEditScene && PackageIsLoaded());
         FocusSelectedCommand = new GenericCommand(() =>
         {
@@ -1237,10 +1240,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
         }, () => CanEditScene && PackageIsLoaded() && SelectedActor is { IsDraft: false });
         OpenRecentSetCommand = new RelayCommand(obj => { if (obj is RecentFileSet set) OpenRecentFileSet(set); });
-        UndoCommand = new GenericCommand(Undo, () => UndoHistory.CanUndo && CanMutateScene);
-        RedoCommand = new GenericCommand(Redo, () => UndoHistory.CanRedo && CanMutateScene);
+        UndoCommand = new GenericCommand(Undo);
+        RedoCommand = new GenericCommand(Redo);
         DeleteActorCommand = new RelayCommand(DeleteActor, parameter => CanMutateScene
             && (parameter as ActorProxy ?? SelectedActor) is { DeleteRefusal: null });
+        UpgradeActorCommand = new RelayCommand(UpgradeActor, parameter => CanMutateScene
+            && (parameter as ActorProxy ?? SelectedActor) is CollectionActorComponentProxy { UpgradeRefusal: null });
         ToggleOrthoViewCommand = new GenericCommand(() => IsOrthographicView = !IsOrthographicView);
         FocusFileCommand = new RelayCommand(parameter =>
         {
@@ -1452,6 +1457,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             MessageBox.Show(this, error.Message, "Delete actor");
         }
+    }
+
+    private void UpgradeActor(object parameter)
+    {
+        if (!CanMutateScene || (parameter as ActorProxy ?? SelectedActor) is not CollectionActorComponentProxy member) return;
+        try { UndoHistory.Push(CollectionMemberUpgrade.Upgrade(member)); }
+        catch (Exception error) when (error is not OutOfMemoryException) { MessageBox.Show(this, error.Message, "Upgrade to actor"); }
     }
 
     /// <summary>
@@ -1927,7 +1939,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
         if (reselectUIndex is not 0)
         {
-            SelectedActor = Actors.FirstOrDefault(a => a.Export?.UIndex == reselectUIndex && a.Package == file.Package);
+            SelectedActor = Actors.FirstOrDefault(a => a.Export?.UIndex == reselectUIndex && a.Package == file.Package)
+                // A collection's member that was upgraded is its new actor's component now
+                ?? Actors.FirstOrDefault(a => a.Export is not null && a.Export == file.Package.GetEntry(reselectUIndex)?.Parent);
             if (SelectedActor is not null)
             {
                 (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw)

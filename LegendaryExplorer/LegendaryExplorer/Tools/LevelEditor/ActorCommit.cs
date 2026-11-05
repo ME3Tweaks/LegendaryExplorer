@@ -42,6 +42,7 @@ public static class ActorCommit
                     file.LevelExport.WriteBinary(level);
                 }
                 foreach (var file in files) Write(file, skipped, written, created);
+                foreach (var file in files) CollectionMemberUpgrade.Apply(file);
                 // Include references written by other participants in this commit before approving any deletion.
                 var deletionPlans = PendingActorDeletion.Revalidate(deletions);
                 ActorDeletionPlan.Apply(deletionPlans);

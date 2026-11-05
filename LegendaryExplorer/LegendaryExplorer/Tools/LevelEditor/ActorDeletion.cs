@@ -103,7 +103,7 @@ public sealed class ActorDeletionPlan
     }
 
     /// <summary>A collection member's transform in its collection, or null if the collection doesn't list it once, with a transform</summary>
-    private static Matrix4x4? MemberTransform(ExportEntry member)
+    internal static Matrix4x4? MemberTransform(ExportEntry member)
     {
         if (member.Parent is not ExportEntry collection || ObjectBinary.From(collection) is not StaticCollectionActor binary
             || collection.GetProperty<ArrayProperty<ObjectProperty>>(binary.ComponentPropName) is not { } list
@@ -323,6 +323,15 @@ public sealed class ActorDeletionPlan
         return (properties, binary);
     }
 
+    /// <summary>Takes <paramref name="members"/> out of <paramref name="collection"/>'s component list and transforms</summary>
+    internal static void RemoveMembers(ExportEntry collection, IReadOnlySet<int> members)
+    {
+        var (properties, binary) = WithoutMembers(collection, members);
+        // Its binary has a transform for each entry of its component list as its properties have it, so they're written first
+        collection.WriteProperties(properties);
+        collection.WriteBinary(binary);
+    }
+
     private static int Depth(IEntry entry)
     {
         int depth = 0;
@@ -357,12 +366,7 @@ public sealed class ActorDeletionPlan
             level.Key.WriteBinary(binary);
         }
         foreach (var collection in plans.Where(p => p.Collection is not null).GroupBy(p => p.Collection))
-        {
-            var (properties, binary) = WithoutMembers(collection.Key, collection.Select(p => p.Actor.UIndex).ToHashSet());
-            // Its binary has a transform for each entry of its component list as its properties have it, so they're written first
-            collection.Key.WriteProperties(properties);
-            collection.Key.WriteBinary(binary);
-        }
+            RemoveMembers(collection.Key, collection.Select(p => p.Actor.UIndex).ToHashSet());
         foreach (var package in plans.GroupBy(p => p.Actor.FileRef))
         {
             // Materialize the order before trashing changes outers; descendants must go first.

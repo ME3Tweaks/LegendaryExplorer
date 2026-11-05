@@ -27,7 +27,8 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
     /// <summary>The new actors a commit creates: the drafts in the scene (not those that undo took out of it, which history keeps)</summary>
     public IEnumerable<ActorProxy> PendingCreations => Actors.Where(a => a.IsDraft);
     public IReadOnlyList<PendingActorDeletion> PendingDeletions => pendingDeletions.AsReadOnly();
-    public bool HasPendingLifecycleChanges => pendingDeletions.Count != 0 || PendingCreations.Any();
+    public bool HasPendingLifecycleChanges => pendingDeletions.Count != 0 || PendingCreations.Any()
+        || Actors.OfType<CollectionActorComponentProxy>().Any(member => member.UpgradePending);
 
     internal void AddDeletion(PendingActorDeletion deletion)
     {

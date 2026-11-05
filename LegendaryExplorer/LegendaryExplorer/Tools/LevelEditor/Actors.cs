@@ -101,12 +101,22 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         set { pendingDeletion = value; NotifyPendingChange(); }
     }
     public bool IsPendingChange => IsDraft || IsDirty || PendingDeletion is not null;
-    public string ChangeKind => PendingDeletion is not null ? "Delete" : IsDraft ? "Create" : "Edit";
+    public string ChangeKind => PendingDeletion is not null ? "Delete" : IsDraft ? "Create" : EditKind;
+    /// <summary>What <see cref="ChangeKind"/> calls an uncommitted change to a committed actor</summary>
+    private protected virtual string EditKind => "Edit";
     public string PendingChangeStatus => PendingDeletion?.Status ?? $"{ChangeKind} {ActorName}";
     /// <summary>Why Delete can't remove this actor now, or null</summary>
     public virtual string DeleteRefusal => IsDraft ? ActorDeletionPlan.RemovalRefusal(this) : ActorDeletionPlan.Refusal(this);
-    /// <summary>Asks for <see cref="DeleteRefusal"/> again: it depends on more than the actor (its file, the scene), which don't notify it</summary>
-    internal void NotifyDeleteRefusal() => OnPropertyChanged(nameof(DeleteRefusal));
+    /// <summary>Whether it's one of a collection's members, which can be upgraded to an actor</summary>
+    public bool IsCollectionMember => this is CollectionActorComponentProxy;
+    /// <summary>Why it can't be upgraded to an actor now, or null</summary>
+    public virtual string UpgradeRefusal => "Only a collection's member can be upgraded to an actor.";
+    /// <summary>Asks for <see cref="DeleteRefusal"/> and <see cref="UpgradeRefusal"/> again: they depend on more than the actor (its file, the scene), which don't notify them</summary>
+    internal void NotifyDeleteRefusal()
+    {
+        OnPropertyChanged(nameof(DeleteRefusal));
+        OnPropertyChanged(nameof(UpgradeRefusal));
+    }
 
     /// <summary>
     /// For a committed actor's reference check (<see cref="ActorDeletionPlan.Prepare(ExportEntry, ExportEntry, DeletionRepairs)"/>): what the commit
@@ -225,14 +235,22 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         var name = NameReference.FromInstancedString(Editor.RenderContext.Registry.NameOf(Id));
         //the package may have gained the proposed name since
         if (Pcc.Exports.Any(e => e.Parent == level && e.ObjectName.Instanced == name.Instanced)) name = Pcc.GetNextIndexedName(ClassName);
+        BindExport(NewActorExport(Pcc, level, name, actorClass, levelBinary));
+        Materialized = true;
+    }
+
+    /// <summary>A new actor's export, with no properties yet, as one of <paramref name="level"/>'s actors</summary>
+    /// <param name="actorClass">An entry of <paramref name="package"/>'s</param>
+    /// <param name="levelBinary"><paramref name="level"/>'s, which the new export is added to the Actors of. The caller writes it</param>
+    internal static ExportEntry NewActorExport(IMEPackage package, ExportEntry level, NameReference name, IEntry actorClass, Level levelBinary)
+    {
         // UE3 registers an object with a NetIndex as one of its package's net objects, and reports one that's another's or out of range
         // (UObject::SetNetIndex, UPackage::AddNetObject). INDEX_NONE registers nothing, so it can't collide
-        byte[] stack = [.. StateFrame.Create(actorClass.UIndex).ToBytes(Pcc), .. BitConverter.GetBytes(-1)];
-        var export = new ExportEntry(Pcc, level, name, stack) { Class = actorClass, ObjectFlags = NewActorFlags };
-        Pcc.AddExport(export);
+        byte[] stack = [.. StateFrame.Create(actorClass.UIndex).ToBytes(package), .. BitConverter.GetBytes(-1)];
+        var export = new ExportEntry(package, level, name, stack) { Class = actorClass, ObjectFlags = NewActorFlags };
+        package.AddExport(export);
         levelBinary.Actors.Add(export.UIndex);
-        BindExport(export);
-        Materialized = true;
+        return export;
     }
 
     // A placed actor's own component, in LE1-LE3's shipping levels (static mesh actors' and standalone lights'): the actor's subobject Class_N, an
@@ -1195,6 +1213,26 @@ public abstract class CollectionActorComponentProxy : ActorProxy
     /// </summary>
     public Matrix4x4 SavedLocalToWorld { get; private set; }
 
+    private bool upgradePending;
+
+    /// <summary>Whether the commit makes it an actor of its own (<see cref="CollectionMemberUpgrade"/>). It looks the same until then, and can be edited as ever</summary>
+    internal bool UpgradePending
+    {
+        get => upgradePending;
+        set
+        {
+            upgradePending = value;
+            UpdateDirty();
+            NotifyPendingChange();
+            NotifyDeleteRefusal();
+        }
+    }
+
+    private protected override string EditKind => upgradePending ? "Upgrade" : base.EditKind;
+    public override string UpgradeRefusal => CollectionMemberUpgrade.Refusal(this);
+    public override string DeleteRefusal => base.DeleteRefusal ?? (upgradePending ? "Its upgrade to an actor is pending: undo that first." : null);
+    protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || upgradePending;
+
     protected CollectionActorComponentProxy(IActorEditorContext context, StaticCollectionActor collectionActor, ExportEntry componentActor, int index) : base(componentActor)
     {
         Editor = context;
@@ -1230,6 +1268,7 @@ public abstract class CollectionActorComponentProxy : ActorProxy
     {
         //the transform the commit wrote, if it was moved
         if (IsTransformDirty) SavedLocalToWorld = ComposedLocalToWorld;
+        upgradePending = false;
         base.MarkClean();
     }
 

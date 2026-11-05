@@ -33,7 +33,7 @@ public static class ActorCreation
     public static string Refusal(OpenLevelFile file, string className, PackageCache cache) => Refusal(file, className, cache, out _);
 
     /// <param name="actorClass">Its class, if it can be placed</param>
-    private static string Refusal(OpenLevelFile file, string className, PackageCache cache, out IEntry actorClass)
+    internal static string Refusal(OpenLevelFile file, string className, PackageCache cache, out IEntry actorClass)
     {
         actorClass = null;
         if (!RecipeClasses.Contains(className)) return $"There's no recipe for a new {className}.";

@@ -25,6 +25,7 @@
             <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="LevelEditorStyles.xaml"/></ResourceDictionary.MergedDictionaries>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+            <converters:BoolEnabledConverter x:Key="BoolEnabledConverter"/>
             <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
             <converters:GameToImageIconConverter x:Key="GameToImageIconConverter"/>
             <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
@@ -101,6 +102,7 @@
             </DataTemplate>
             <ContextMenu x:Key="ActorContextMenu" Opened="ActorContextMenu_Opened">
                 <MenuItem Header="Delete Actor" Command="{Binding Data.DeleteActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" InputGestureText="Delete" ToolTip="{Binding DeleteRefusal}" ToolTipService.ShowOnDisabled="True"/>
+                <MenuItem Header="Upgrade to Actor" Command="{Binding Data.UpgradeActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" Visibility="{Binding IsCollectionMember, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="{Binding UpgradeRefusal}" ToolTipService.ShowOnDisabled="True"/>
                 <MenuItem Header="Focus Camera" Command="{Binding Data.FocusSelectedCommand, Source={StaticResource bindingProxy}}" InputGestureText="F"/>
                 <MenuItem Header="Open in Package Editor" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}" Command="{Binding Data.OpenInPackageEditorCommand, Source={StaticResource bindingProxy}}"/>
             </ContextMenu>
@@ -132,10 +134,10 @@
                     <MenuItem x:Name="Recents_MenuItem" Header="Recent" IsEnabled="False"/>
                 </MenuItem>
                 <MenuItem Header="_Edit">
-                    <MenuItem Header="Undo" Command="{Binding UndoCommand}" InputGestureText="Ctrl+Z"/>
-                    <MenuItem Header="Redo" Command="{Binding RedoCommand}" InputGestureText="Ctrl+Y"/>
+                    <MenuItem Header="Undo" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo, Converter={StaticResource BoolEnabledConverter}}" InputGestureText="Ctrl+Z"/>
+                    <MenuItem Header="Redo" Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo, Converter={StaticResource BoolEnabledConverter}}" InputGestureText="Ctrl+Y"/>
                     <Separator/>
-                    <MenuItem Header="Commit Changes" Command="{Binding CommitChangesCommand}"/>
+                    <MenuItem Header="Commit Changes" Command="{Binding CommitChangesCommand}" IsEnabled="{Binding IsDirty, Converter={StaticResource BoolEnabledConverter}}"/>
                     <MenuItem Header="Reset Uncommitted Changes..." Click="ResetUncommittedChanges_Click" IsEnabled="{Binding IsDirty}"/>
                 </MenuItem>
                 <MenuItem Header="_View">
@@ -168,14 +170,14 @@
 
             <Border DockPanel.Dock="Top" Background="{StaticResource EditorPanel}" Padding="6" Margin="0,0,0,4" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <DockPanel>
-                    <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" Style="{StaticResource CommitButton}" ToolTip="Apply editor transforms and light settings to the loaded packages. Use Save All to write them to disk.">
+                    <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" IsEnabled="{Binding IsDirty, Converter={StaticResource BoolEnabledConverter}}" Style="{StaticResource CommitButton}" ToolTip="Apply editor transforms and light settings to the loaded packages. Use Save All to write them to disk.">
                         <StackPanel Orientation="Horizontal"><fa:ImageAwesome Icon="Solid_Check" Width="13" Margin="0,0,7,0" Foreground="{StaticResource EditorText}"/><TextBlock Text="Commit Changes"/></StackPanel>
                     </Button>
                     <WrapPanel VerticalAlignment="Center">
                         <Button Command="{Binding OpenFileCommand}" ToolTip="Open a level (Ctrl+O)"><StackPanel Orientation="Horizontal"><fa:ImageAwesome Icon="Regular_FolderOpen" Width="14" Margin="0,0,7,0" Foreground="{StaticResource EditorText}"/><TextBlock Text="Open"/></StackPanel></Button>
                         <Button Command="{Binding SaveAllCommand}" ToolTip="Save all open packages (Ctrl+S)"><StackPanel Orientation="Horizontal"><fa:ImageAwesome Icon="Regular_Save" Width="14" Margin="0,0,7,0" Foreground="{StaticResource EditorText}"/><TextBlock Text="Save All"/></StackPanel></Button>
-                        <Button x:Name="UndoMenuItem" Command="{Binding UndoCommand}" ToolTip="Undo (Ctrl+Z)" AutomationProperties.Name="Undo"><fa:ImageAwesome Icon="Solid_Undo" Width="14" Foreground="{StaticResource EditorText}"/></Button>
-                        <Button x:Name="RedoMenuItem" Command="{Binding RedoCommand}" ToolTip="Redo (Ctrl+Y)" AutomationProperties.Name="Redo"><fa:ImageAwesome Icon="Solid_Redo" Width="14" Foreground="{StaticResource EditorText}"/></Button>
+                        <Button x:Name="UndoMenuItem" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo, Converter={StaticResource BoolEnabledConverter}}" ToolTip="Undo (Ctrl+Z)" AutomationProperties.Name="Undo"><fa:ImageAwesome Icon="Solid_Undo" Width="14" Foreground="{StaticResource EditorText}"/></Button>
+                        <Button x:Name="RedoMenuItem" Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo, Converter={StaticResource BoolEnabledConverter}}" ToolTip="Redo (Ctrl+Y)" AutomationProperties.Name="Redo"><fa:ImageAwesome Icon="Solid_Redo" Width="14" Foreground="{StaticResource EditorText}"/></Button>
                         <Border Style="{StaticResource EditorToolbarSeparator}"/>
                         <Border Background="{StaticResource EditorInput}" CornerRadius="2" Padding="2">
                             <StackPanel Orientation="Horizontal">
@@ -693,7 +695,7 @@
                 <DockPanel Grid.Row="2" Background="{StaticResource EditorPanel}" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                     <DockPanel DockPanel.Dock="Top" Background="{StaticResource EditorChrome}">
                         <Button DockPanel.Dock="Right" Command="{Binding SaveAllCommand}" Content="Save All" Padding="10,5"/>
-                        <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" Content="Commit Changes" Padding="10,5" Style="{StaticResource CommitButton}"/>
+                        <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" IsEnabled="{Binding IsDirty, Converter={StaticResource BoolEnabledConverter}}" Content="Commit Changes" Padding="10,5" Style="{StaticResource CommitButton}"/>
                         <Border Style="{StaticResource EditorDockTitle}"><StackPanel Orientation="Horizontal"><TextBlock Text="Changes" FontWeight="SemiBold"/><TextBlock Text="{Binding PendingChangeCount, StringFormat=' ({0})'}" Foreground="{StaticResource EditorMuted}"/></StackPanel></Border>
                     </DockPanel>
                     <TextBlock DockPanel.Dock="Top" Text="Commit writes every change, new actor and deletion to the loaded packages. Save writes packages to disk." Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="10,6,10,3"/>
