@@ -230,28 +230,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         set => SetProperty(ref _useFrustumCulling, value);
     }
 
-    private bool _useGameShaders = true;
-    public bool UseGameShaders
-    {
-        get => _useGameShaders;
-        set
-        {
-            if (SetProperty(ref _useGameShaders, value))
-            {
-                if (value)
-                {
-                    EnableGameShaders();
-                }
-                else
-                {
-                    RenderContext.UseGameShaders = false;
-                    LightDiagnosticsStale = true;
-                }
-                OnPropertyChanged(nameof(CanConfigureLevelLighting));
-            }
-        }
-    }
-
     private ViewportLightingMode _lightingMode = ViewportLightingMode.Level;
     public ViewportLightingMode LightingMode
     {
@@ -265,12 +243,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 OnPropertyChanged(nameof(IsNeutralLighting));
                 OnPropertyChanged(nameof(IsUnlit));
                 OnPropertyChanged(nameof(LightingMenuHeader));
-                OnPropertyChanged(nameof(CanConfigureLevelLighting));
                 OnPropertyChanged(nameof(LightingRulesNote));
                 LightDiagnosticsStale = true;
-                if (value is (ViewportLightingMode.Level or ViewportLightingMode.Preview) && RenderContext.UseGameShaders)
+                if (value is ViewportLightingMode.Level or ViewportLightingMode.Preview)
                 {
-                    EnableGameShaders();
+                    PrepareGameShaders();
                 }
                 else
                 {
@@ -292,7 +269,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             OnPropertyChanged(nameof(RecomputeAssignments));
             OnPropertyChanged(nameof(LightingRulesNote));
             LightDiagnosticsStale = true;
-            if (IsPreviewLighting && UseGameShaders) EnableGameShaders();
+            if (IsPreviewLighting) PrepareGameShaders();
         }
     }
     public bool PreserveAssignments => AssignmentPolicy == LightAssignmentPolicy.PreserveExistingAssignments;
@@ -303,7 +280,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public bool IsNeutralLighting => LightingMode == ViewportLightingMode.Neutral;
     public bool IsPreviewLighting => LightingMode == ViewportLightingMode.Preview;
     public bool IsUnlit => LightingMode == ViewportLightingMode.Unlit;
-    public bool CanConfigureLevelLighting => IsLevelLighting && UseGameShaders;
     public string LightingMenuHeader => LightingMode switch
     {
         ViewportLightingMode.Unlit => "Unlit ▾",
@@ -335,13 +311,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand SetLightingModeCommand { get; private set; }
 
     // Mode switches share the same serialized shader worker as package refreshes.
-    private void EnableGameShaders()
+    private void PrepareGameShaders()
     {
         // Switching to a mode that's already prepared needn't suspend rendering, or wait for anything but loads and refreshes,
         // which read the scene in the background. (Saves don't)
         if (OpenFiles.Count == 0 || _busyCount == 0 && !PreviewRefreshInProgress && !RenderContext.NeedsGameShaderPreparation(_lightingMode))
         {
-            RenderContext.UseGameShaders = _useGameShaders;
             RenderContext.LightingMode = _lightingMode;
             return;
         }
@@ -422,7 +397,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         IsBakePreview = readOnlyPreview;
         RenderContext = new LevelEditorRenderContext(readOnlyPreview)
         {
-            UseGameShaders = _useGameShaders
+            UseGameShaders = true
         };
         // Not Background: continuous rendering of a slow scene (such as preview lighting) never leaves the dispatcher idle,
         // so a Background timer could starve and leave lighting-mode switches and package refreshes pending indefinitely.
@@ -513,9 +488,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         UpdateLightHighlights();
         // Meshes created outside a load or refresh (Matinee's actors, a reset) queue their materials too.
         // They use LEX's shader until the next preparation batch, which suspends rendering and shows the busy overlay while loading shaders.
-        if (_useGameShaders && _busyCount == 0 && !PreviewRefreshInProgress && !PreviewShaderPreparationRequested && RenderContext.HasPendingGameShaderLoads)
+        if (_busyCount == 0 && !PreviewRefreshInProgress && !PreviewShaderPreparationRequested && RenderContext.HasPendingGameShaderLoads)
         {
-            EnableGameShaders();
+            PrepareGameShaders();
         }
         if (LightDiagnosticsStale && !RenderContext.LightGizmo.IsDragging && !RenderContext.TransformWidget.IsDragging
             && LightDiagnosticsThrottle.ElapsedMilliseconds > 250)
@@ -778,22 +753,18 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         string fileProgress = FileLoadProgress(path, fileNumber, fileCount);
         BusyText = $"{fileProgress}\nLoading actors...";
 
-        bool loadGameShaders = RenderContext.UseGameShaders;
         var (actors, ignoredClasses) = await Task.Run(() =>
         {
             RenderContext.CaptureAssignments(pcc, opening: true);
             var result = LoadActors(levelBin, openFile);
-            if (loadGameShaders)
+            try
             {
-                try
-                {
-                    RenderContext.LoadPendingGameShaders((loaded, total) => ReportGameShaderLoadProgress(loaded, total, fileProgress));
-                }
-                catch (AggregateException e)
-                {
-                    //the level still loads: those materials are retried when rendered, falling back to LEX's shader
-                    RecordGameShaderLoadFailures(e);
-                }
+                RenderContext.LoadPendingGameShaders((loaded, total) => ReportGameShaderLoadProgress(loaded, total, fileProgress));
+            }
+            catch (AggregateException e)
+            {
+                //the level still loads: those materials are retried when rendered, falling back to LEX's shader
+                RecordGameShaderLoadFailures(e);
             }
             return result;
         }).ConfigureAwait(true);
@@ -1788,7 +1759,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             foreach (var (package, exports) in PendingPreviewUpdates.Drain())
                 changed |= TryRefresh(Path.GetFileName(package.FilePath), errors, () => ApplyPreviewUpdate(package, exports, errors));
             var mode = LightingMode;
-            if (changed && UseGameShaders)
+            if (changed)
                 await Task.Run(() => RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress, mode));
         }
         catch (AggregateException ex)
@@ -1807,7 +1778,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             LightDiagnosticsStale = true;
             //actors rebuilt by other tools' edits
             UndoHistory.RemoveOrphaned();
-            RenderContext.UseGameShaders = _useGameShaders;
             RenderContext.LightingMode = _lightingMode;
             PreviewRefreshInProgress = false;
             EndBusy();
@@ -2670,18 +2640,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
             if (selectedActor?.OwningFile?.IsReadOnly == true)
                 notes.Add("Context-only level: it contributes geometry and lights, but its mappings are not baked in the editor handoff.");
-            if (!UseGameShaders)
+            foreach (var material in meshes.SelectMany(mesh => mesh.GameShaderMaterials).Distinct())
             {
-                notes.Add("Game shaders are off, so every mesh uses LEX's neutral shader.");
-            }
-            else
-            {
-                foreach (var material in meshes.SelectMany(mesh => mesh.GameShaderMaterials).Distinct())
+                if (material.LoadedGameShaderError is { } error)
                 {
-                    if (material.LoadedGameShaderError is { } error)
-                    {
-                        notes.Add($"{material.InstancedFullPath} uses LEX's neutral shader: {error}");
-                    }
+                    notes.Add($"{material.InstancedFullPath} uses LEX's neutral shader: {error}");
                 }
             }
         }

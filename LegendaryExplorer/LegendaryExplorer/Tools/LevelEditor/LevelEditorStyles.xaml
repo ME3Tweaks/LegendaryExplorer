@@ -230,6 +230,42 @@
     <Style TargetType="Separator"><Setter Property="Margin" Value="4"/><Setter Property="Background" Value="{StaticResource EditorBorder}"/></Style>
     <Style x:Key="EditorToolbarSeparator" TargetType="Border"><Setter Property="Width" Value="1"/><Setter Property="Height" Value="22"/><Setter Property="Background" Value="{StaticResource EditorBorder}"/><Setter Property="Margin" Value="8,0"/></Style>
     <Style x:Key="EditorDockTitle" TargetType="Border"><Setter Property="Background" Value="{StaticResource EditorPanel}"/><Setter Property="Padding" Value="12,7"/><Setter Property="CornerRadius" Value="3,3,0,0"/><Setter Property="HorizontalAlignment" Value="Left"/><Setter Property="MinWidth" Value="120"/></Style>
+    <Style x:Key="EditorDockTabs" TargetType="TabControl">
+        <Setter Property="Background" Value="{StaticResource EditorPanel}"/>
+        <Setter Property="Template"><Setter.Value>
+            <ControlTemplate TargetType="TabControl">
+                <Grid Background="{TemplateBinding Background}" KeyboardNavigation.TabNavigation="Local">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <Border Background="{StaticResource EditorChrome}">
+                        <TabPanel IsItemsHost="True" KeyboardNavigation.TabIndex="1"/>
+                    </Border>
+                    <ContentPresenter x:Name="PART_SelectedContentHost" Grid.Row="1" ContentSource="SelectedContent" KeyboardNavigation.TabIndex="2"/>
+                </Grid>
+            </ControlTemplate>
+        </Setter.Value></Setter>
+    </Style>
+    <Style x:Key="EditorDockTab" TargetType="TabItem">
+        <Setter Property="Foreground" Value="{StaticResource EditorMuted}"/>
+        <Setter Property="Background" Value="{StaticResource EditorChrome}"/>
+        <Setter Property="Padding" Value="12,7"/>
+        <Setter Property="Template"><Setter.Value>
+            <ControlTemplate TargetType="TabItem">
+                <Border x:Name="Surface" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="0,0,0,2" CornerRadius="3,3,0,0">
+                    <ContentPresenter ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorHover}"/></Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorPanel}"/>
+                        <Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource EditorAccent}"/>
+                        <Setter Property="Foreground" Value="{StaticResource EditorText}"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                    </Trigger>
+                    <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource EditorText}"/></Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value></Setter>
+    </Style>
     <Style x:Key="EditorSectionLabel" TargetType="TextBlock"><Setter Property="Foreground" Value="{StaticResource EditorMuted}"/><Setter Property="Margin" Value="0,9,0,5"/><Setter Property="FontSize" Value="11"/></Style>
     <Style x:Key="EditorAxisLabel" TargetType="TextBlock"><Setter Property="Foreground" Value="White"/><Setter Property="Padding" Value="5,0"/><Setter Property="TextAlignment" Value="Center"/><Setter Property="MinWidth" Value="21"/><Setter Property="LineHeight" Value="26"/><Setter Property="LineStackingStrategy" Value="BlockLineHeight"/></Style>
     <Style TargetType="Expander">
