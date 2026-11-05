@@ -107,12 +107,17 @@ public sealed class EditableLight : NotifyPropertyChangedBase
     /// </summary>
     internal event Action Changed;
 
-    internal EditableLight(ActorProxy owner, ExportEntry component, SceneLightType type, PackageCache packageCache)
+    //a draft's: all of its component's values until a commit makes it. Null for a component's
+    private readonly PropertyCollection draftValues;
+
+    /// <param name="draftValues">For a draft, whose <paramref name="component"/> only stands for the one its commit makes: that component's values</param>
+    internal EditableLight(ActorProxy owner, ExportEntry component, SceneLightType type, PackageCache packageCache, PropertyCollection draftValues = null)
     {
         Owner = owner;
         Component = component;
         Type = type;
         PackageCache = packageCache;
+        this.draftValues = draftValues;
         settings = cleanSettings = ReadComponent();
         //only offer the channels this game's struct has, so that every checked channel can be saved.
         //Matched by instanced name, since names like Unnamed_3 are stored as a name and a number
@@ -130,7 +135,7 @@ public sealed class EditableLight : NotifyPropertyChangedBase
     /// <returns>The component's saved settings</returns>
     private LightSettings ReadComponent()
     {
-        PropertyCollection props = EffectiveLightingProperties.Read(Component, PackageCache);
+        PropertyCollection props = draftValues ?? EffectiveLightingProperties.Read(Component, PackageCache);
         ComponentTranslation = props.GetProp<StructProperty>("Translation") is { } translation ? CommonStructs.GetVector3(translation) : Vector3.Zero;
         ResolvedChannels = props.GetProp<StructProperty>("LightingChannels");
         return LightSettings.Read(props);
@@ -356,12 +361,23 @@ public sealed class EditableLight : NotifyPropertyChangedBase
     public LightPreviewOverride GetPreviewOverride(Matrix4x4? editedOwnerTransform) =>
         editedOwnerTransform is null && !HasChanges ? null : new LightPreviewOverride(editedOwnerTransform, GetChangedProperties());
 
+    /// <summary>Whether <see cref="Component"/> only stands for the component a draft's commit makes</summary>
+    internal bool IsDraft => draftValues is not null;
+
+    /// <summary>For a draft: a copy of its component's values, without its uncommitted settings (<see cref="GetChangedProperties"/>)</summary>
+    internal PropertyCollection CopyDraftValues() => draftValues.DeepClone();
+
+    /// <summary>For a draft: the properties its commit makes its component with, its GUIDs and the settings it changed from its template's</summary>
+    internal PropertyCollection NewComponentProperties() =>
+        [draftValues.GetProp<StructProperty>("LightGuid"), draftValues.GetProp<StructProperty>("LightmapGuid"), .. GetChangedProperties()];
+
     /// <summary>
     /// Writes the edited settings to the component. They're still pending until <see cref="MarkClean"/>, so an abandoned commit leaves them as they were
     /// </summary>
     /// <param name="parentToWorld">If the owner was moved, its new transform, which updates the component's cached copy of it (if it has one)</param>
     public void Commit(Matrix4x4? parentToWorld)
     {
+        if (IsDraft) throw new InvalidOperationException("A new light's component is made by its actor's commit.");
         List<Property> changed = GetChangedProperties();
         PropertyCollection props = Component.GetProperties();
         if (parentToWorld is { } transform && props.GetProp<StructProperty>("CachedParentToWorld") is not null)
@@ -553,6 +569,42 @@ public class LightActorProxy : ActorProxy, ILightProxy
 {
     public EditableLight Light { get; }
 
+    /// <summary>
+    /// The light classes placed on their own, with one light component: not StaticLightCollectionActors (whose lights are their components),
+    /// dominant lights or sky lights
+    /// </summary>
+    internal static IReadOnlyList<string> StandaloneClasses { get; } = ["PointLight", "PointLightMovable", "PointLightToggleable", "SpotLight",
+        "SpotLightMovable", "SpotLightToggleable", "DirectionalLight", "DirectionalLightToggleable"];
+
+    //a draft's: the class default's light component its own is made from
+    private readonly ExportEntry componentTemplate;
+
+    /// <summary>
+    /// A new standalone light (a draft). Its light is drawn as its commit makes its component: with <paramref name="componentTemplate"/>'s values
+    /// and new GUIDs. Its package is untouched until then
+    /// </summary>
+    internal LightActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, ExportEntry componentTemplate)
+        : base(context, draft, properties)
+    {
+        IsHidden = false;
+        if (SceneLight.GetLightType(componentTemplate) is not { } type)
+            throw new ArgumentException($"{componentTemplate.InstancedFullPath} isn't a light that previews support.", nameof(componentTemplate));
+        this.componentTemplate = componentTemplate;
+        // Its references are indices into the template's package. The standalone classes' templates have none (ActorCreationGameDataTests)
+        var values = EffectiveLightingProperties.ReadValues(componentTemplate, context.PackageCache);
+        //shadow-maps and light-maps refer to it by these
+        values.AddOrReplaceProp(CommonStructs.GuidProp(Guid.NewGuid(), "LightGuid"));
+        values.AddOrReplaceProp(CommonStructs.GuidProp(Guid.NewGuid(), "LightmapGuid"));
+        // Stands for its component (identifying its light in the scene) without being added to the package, as a draft mesh's does
+        var standIn = new ExportEntry(Pcc, null, "None", new byte[8], binary: LightComponent.Create());
+        Light = new EditableLight(this, standIn, type, context.PackageCache, values);
+        Light.Changed += OnLightChanged;
+        //a draft is wholly uncommitted
+        UpdateDirty();
+    }
+
+    private protected override bool WritesAllValuesWhenCreated => true;
+
     public LightActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         //bHidden doesn't stop a light from lighting, and lights aren't otherwise drawn
@@ -602,6 +654,15 @@ public class LightActorProxy : ActorProxy, ILightProxy
 
     public override void CommitChanges(PackageCache packageCache = null)
     {
+        // Its export was just made (Materialize): its component is made with it, as shipping levels' are (see NewComponent), with an empty
+        // LightComponent binary. The actor refers to it as its LightComponent
+        if (Materialized && componentTemplate is not null)
+        {
+            var component = NewComponent(componentTemplate, Light.NewComponentProperties(), LightComponent.Create());
+            Properties.AddOrReplaceProp(new ObjectProperty(component, "LightComponent"));
+            base.CommitChanges(packageCache);
+            return;
+        }
         bool moved = IsTransformDirty;
         if (moved)
         {
@@ -643,6 +704,8 @@ internal static class LightProxyRefresh
     /// <param name="owner">The actor, or for a collection's light, its component. Edits of it, or of a light's collection, can't be applied in place</param>
     public static bool TryRefresh(ActorProxy owner, EditableLight light, IMEPackage package, HashSet<int> updatedExports)
     {
+        //a draft has nothing in the package to refresh from
+        if (owner.IsDraft) return false;
         bool Updated(ExportEntry export) => export.FileRef == package && updatedExports.Contains(export.UIndex);
         if (owner.Export != light.Component && Updated(owner.Export)
             || owner is CollectionActorComponentProxy collection && Updated(collection.CollectionActorExport)

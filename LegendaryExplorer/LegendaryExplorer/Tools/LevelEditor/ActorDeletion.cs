@@ -29,14 +29,17 @@ public sealed class ActorDeletionPlan
     private readonly List<string> blockers;
     public IReadOnlyList<ExportEntry> Entries { get; }
     public string Repairs => $"Committing removes it from the level{(cleansDestroyedContent ? " and from the world's destroyed-actor list" : "")}, and trashes it"
-                             + (Entries.Count > 1 ? $" with the {Entries.Count - 1} objects it owns." : ".");
+                             + (Entries.Count > 1 ? $" with the {Entries.Count - 1} objects it owns." : ".")
+                             // Light-maps and shadow-maps refer to a light by its GUIDs, not by reference
+                             + (LightClasses.Contains(Actor.ClassName) ? " What it lit stays lit by it in the level's baked lighting until a rebake." : "");
     // Whether BioWorldInfo's ClientDestroyedActorContent refers to it, which TrashEntries cleans. Found by CheckReferences, which makes the plan with Inspect
     private bool cleansDestroyedContent;
     private readonly (ExportEntry Entry, int Index, byte[] Header, byte[] Data)[] snapshots;
     private readonly ExportEntry worldInfo;
     private readonly bool canCleanDestroyedContent;
 
-    private static readonly string[] SupportedClasses = ["Note", "TargetPoint", "StaticMeshActor", "InterpActor", "SplineActor", "SplineLoftActor"];
+    private static IReadOnlyList<string> LightClasses => LightActorProxy.StandaloneClasses;
+    private static readonly string[] SupportedClasses = ["Note", "TargetPoint", "StaticMeshActor", "InterpActor", "SplineActor", "SplineLoftActor", .. LightClasses];
     private static bool Supports(MEGame game, string className) => game.IsLEGame() && SupportedClasses.Contains(className);
 
     /// <summary>Why an actor can't be taken out of the scene now, or null: all a draft (which has nothing in its package to check) needs</summary>
@@ -86,11 +89,14 @@ public sealed class ActorDeletionPlan
         return header;
     }
 
+    private static bool IsLightComponent(ExportEntry e) => e.ClassName is "PointLightComponent" or "SpotLightComponent" or "DirectionalLightComponent";
+
     private static List<ExportEntry> CollectOwnedEntries(ExportEntry actor, List<string> blockers)
     {
         var entries = new List<ExportEntry> { actor };
         bool meshActor = actor.ClassName is "StaticMeshActor" or "InterpActor";
         bool splineActor = actor.ClassName is "SplineActor" or "SplineLoftActor";
+        bool lightActor = LightClasses.Contains(actor.ClassName);
         foreach (var child in actor.GetAllDescendants())
         {
             // Ownership comes from the outer chain, never from an asset/property reference. Unknown
@@ -100,9 +106,20 @@ public sealed class ActorDeletionPlan
                         || e.Parent?.ClassName == "StaticMeshComponent" && e.ClassName is ("RB_BodyInstance" or "ShadowMap1D" or "ShadowMap2D"))
                     // A point's outgoing connections: their curves and loft meshes (and the meshes' light/shadow data)
                     || splineActor && (e.Parent == actor && e.ClassName is ("SplineComponent" or "SplineMeshComponent" or "DynamicLightEnvironmentComponent")
-                        || e.Parent?.ClassName == "SplineMeshComponent" && e.ClassName is ("RB_BodyInstance" or "ShadowMap1D" or "ShadowMap2D")));
+                        || e.Parent?.ClassName == "SplineMeshComponent" && e.ClassName is ("RB_BodyInstance" or "ShadowMap1D" or "ShadowMap2D"))
+                    // A light's component, and its light function
+                    || lightActor && (e.Parent == actor && IsLightComponent(e) || e.Parent is ExportEntry owner && IsLightComponent(owner) && e.ClassName == "LightFunction"));
             if (supported) entries.Add((ExportEntry)child);
             else blockers.Add($"#{child.UIndex} {child.InstancedFullPath}: unsupported owned subobject.");
+        }
+        if (lightActor)
+        {
+            foreach (var prop in actor.GetProperties().Where(p => p.Name == "LightComponent"))
+            {
+                if (prop is not ObjectProperty reference || reference.Value != 0
+                    && !entries.Any(e => e.Parent == actor && e.UIndex == reference.Value && IsLightComponent(e)))
+                    blockers.Add("LightComponent must refer to a light component owned by this actor.");
+            }
         }
         if (meshActor)
         {

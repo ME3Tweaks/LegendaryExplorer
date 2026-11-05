@@ -3,8 +3,11 @@ using System.Linq;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
+using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
@@ -43,6 +46,8 @@ public partial class LevelEditor
     }
 
     private string placingClass;
+    //the mesh chosen for the actor being placed, for a class that needs one
+    private IEntry placingMesh;
 
     private ICommand beginPlacementCommand;
     public ICommand BeginPlacementCommand => beginPlacementCommand ??= new RelayCommand(
@@ -79,11 +84,21 @@ public partial class LevelEditor
             UpdatePlacementOptions();
             return;
         }
+        IEntry mesh = null;
+        if (ActorCreation.NeedsMesh(className))
+        {
+            mesh = EntrySelector.GetEntry<IEntry>(this, placementFile.Package, $"Select the new {className}'s StaticMesh", entry => entry.IsA("StaticMesh"));
+            //(the scene may have become busy, or the file read-only, while the dialog was open)
+            if (mesh is null || !CanMutateScene || ActorCreation.FileRefusal(placementFile) is not null) return;
+        }
         CancelViewportDrag();
+        EndPlacement();
         placingClass = className;
+        placingMesh = mesh;
         RenderContext.PlaceAt = PlaceAt;
         SceneViewer.Cursor = Cursors.Cross;
-        PlacementStatus = $"Click where the {className} goes in {placementFile.FileName}: on a surface, or anywhere else to place it in front of the camera. Esc cancels.";
+        string what = mesh is null ? className : $"{className} of {mesh.ObjectName.Instanced}";
+        PlacementStatus = $"Click where the {what} goes in {placementFile.FileName}: on a surface, or anywhere else to place it in front of the camera. Esc cancels.";
     }
 
     /// <summary>
@@ -100,13 +115,14 @@ public partial class LevelEditor
             return;
         }
         string className = placingClass;
+        IEntry mesh = placingMesh;
         EndPlacement();
         //from a viewport click: finding where it goes reads the level's geometry and the class, which mustn't escape the mouse handler if they fail
         try
         {
             var widget = RenderContext.TransformWidget;
             UndoHistory.Push(ActorCreation.Place(this, placementFile, className, RenderContext.PlacementLocation(x, y),
-                widget.TranslateSnapEnabled ? widget.TranslateSnapValue : 0));
+                widget.TranslateSnapEnabled ? widget.TranslateSnapValue : 0, mesh));
         }
         catch (Exception error) when (error is not OutOfMemoryException)
         {
@@ -118,6 +134,7 @@ public partial class LevelEditor
     {
         if (placingClass is null) return;
         placingClass = null;
+        placingMesh = null;
         RenderContext.PlaceAt = null;
         SceneViewer.Cursor = null;
         PlacementStatus = null;

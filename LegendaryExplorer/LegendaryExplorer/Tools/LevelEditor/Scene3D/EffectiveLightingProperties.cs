@@ -47,6 +47,9 @@ internal static class EffectiveLightingProperties
 
     internal static ExportEntry ClassDefault(ExportEntry export, PackageCache cache) => ClassDefaultOf(export.Class, cache);
 
+    /// <summary>The class default object of <paramref name="type"/>, which may be another package's class (a draft's)</summary>
+    internal static ExportEntry ClassDefault(IEntry type, PackageCache cache) => ClassDefaultOf(type, cache);
+
     private static ExportEntry ClassDefaultOf(IEntry type, PackageCache cache) =>
         type is not null ? Cached(cache, d => d.Objects, type, () => Resolve(type, cache) is { } resolved
             ? resolved.FileRef.FindExport("Default__" + resolved.ObjectName.Instanced) : null) : null;
@@ -85,6 +88,17 @@ internal static class EffectiveLightingProperties
         ClassDefaultOf(type, cache) is { } cdo && cdo != export ? ClassDefaultProperties(cdo, cache).GetProp<T>(name)?.DeepClone() as T : null;
 
     public static PropertyCollection Read(ExportEntry export, PackageCache cache) => Read(export, cache, static _ => true);
+
+    /// <summary>
+    /// <see cref="Read"/> without the properties that hold references, which are indices into the object's own package: the values an object of
+    /// another package (a draft) takes from it, its template
+    /// </summary>
+    internal static PropertyCollection ReadValues(ExportEntry export, PackageCache cache)
+    {
+        var props = Read(export, cache);
+        props.RemoveAll(ContainsReference);
+        return props;
+    }
 
     public static PropertyCollection ReadPrimitive(ExportEntry export, PackageCache cache) =>
         Read(export, cache, static p => p.Name.Name is "LightingChannels" or "bAcceptsLights" or "bAcceptsDynamicLights"

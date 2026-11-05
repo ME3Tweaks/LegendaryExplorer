@@ -479,6 +479,13 @@ public class StaticMeshComponentProxy : MeshComponentProxy
         var context = RenderContext;
         Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
         var meshReference = PreviewProperties?.GetProp<ObjectProperty>("StaticMesh")?.ResolveToEntry(Export.FileRef);
+        //a preview's mesh and materials are its pending properties' (its export, which the package doesn't have, has none of its own)
+        if (PreviewProperties is not null)
+        {
+            Dependencies.Track(meshReference);
+            foreach (var material in PreviewProperties.GetProp<ArrayProperty<ObjectProperty>>("Materials") ?? Enumerable.Empty<ObjectProperty>())
+                Dependencies.Track(material.ResolveToEntry(Export.FileRef));
+        }
         if ((PreviewProperties is not null ? EffectiveLightingProperties.Resolve(meshReference, context.PackageCache)
             : EffectiveLightingProperties.ResolveReference(Export, "StaticMesh", context.PackageCache)) is { } meshExport)
         {

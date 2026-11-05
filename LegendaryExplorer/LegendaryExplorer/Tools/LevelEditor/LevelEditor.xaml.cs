@@ -1099,6 +1099,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         Actors.Add(view);
         view.ResolveAttachment(Actors);
         Actors.Sort(a => a.SortIndex);
+        //back in the scene, its light is too
+        if (view is ILightProxy light) OnLightEdited(light);
         UpdateGlobalDirtyState();
     }
 
@@ -1108,6 +1110,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (!Actors.Remove(view)) return;
         if (SelectedActor == view) SelectedActor = null;
         view.Detach();
+        //out of the scene (pending deletion), its light no longer lights it
+        if (view is ILightProxy light) OnLightEdited(light);
         UpdateGlobalDirtyState();
     }
 
@@ -1896,6 +1900,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                     collectionActorsToUpdate.Add(collectionOwner);
                     continue;
                 }
+                // A new light its commit just made: the Level gained it, though its view already had its export (so it isn't new to the file), and the
+                // scene has its draft's light until the level's lights are reloaded
+                if (alteredActor is LightActorProxy { Light.IsDraft: true }) levelActorsChanged = true;
                 //another tool changed it: the rebuilt proxy is the same actor (so connections to it still resolve), but its earlier undo steps are orphaned with the old one
                 RenderContext.Registry.Invalidate(alteredActor.Export);
                 RemoveActor(alteredActor);
@@ -1979,7 +1986,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         void Rebuild(ExportEntry export, OpenLevelFile owner) => TryRefresh(export.ObjectName.Instanced, errors, () =>
         {
             RenderContext.Registry.Invalidate(export);
-            foreach (var view in CreateActorViews(export, owner)) AddActor(view);
+            foreach (var view in CreateActorViews(export, owner))
+            {
+                AddActor(view);
+                //a light whose deletion was pending had left the scene's lights
+                if (view is ILightProxy light) OnLightEdited(light);
+            }
             return true;
         });
     }
@@ -2333,8 +2345,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (PendingLightEdits.Count == 0 || PreviewRefreshInProgress) return;
         foreach (ILightProxy light in PendingLightEdits)
         {
-            // Proxies replaced by a reload or closed with their file are skipped.
-            if (light is ActorProxy { OwningFile: { } file } actor && OpenFiles.Contains(file) && file.Actors.Contains(actor))
+            // Proxies replaced by a reload or closed with their file are skipped. One out of the scene that undo can bring back (a pending deletion) isn't
+            if (light is ActorProxy { OwningFile: { } file, IsDisposed: false } actor && OpenFiles.Contains(file)
+                && (file.Actors.Contains(actor) || file.RetainedActors.Contains(actor)))
             {
                 file.UpdateLight(light, RenderContext);
             }

@@ -379,11 +379,23 @@ public sealed class SceneLight
     public static SceneLight Create(ExportEntry lightComponent, string ownerClass, PackageCache packageCache, Matrix4x4? ownerTransform = null,
         IReadOnlyList<Property> overrides = null)
     {
-        if (GetLightType(lightComponent) is not SceneLightType type)
-        {
-            return null;
-        }
-        var props = EffectiveLightingProperties.Read(lightComponent, packageCache);
+        return GetLightType(lightComponent) is SceneLightType type
+            ? Create(lightComponent, type, EffectiveLightingProperties.Read(lightComponent, packageCache), ownerClass, packageCache, ownerTransform, overrides)
+            : null;
+    }
+
+    /// <summary>
+    /// The light of a component with no export yet (a draft's), which <paramref name="standIn"/> identifies. Null if it's disabled
+    /// </summary>
+    /// <param name="values">All of the component's values (it inherits none), which are modified</param>
+    internal static SceneLight CreateDraft(ExportEntry standIn, SceneLightType type, PropertyCollection values, string ownerClass, PackageCache packageCache,
+        Matrix4x4 ownerTransform, IReadOnlyList<Property> overrides) =>
+        Create(standIn, type, values, ownerClass, packageCache, ownerTransform, overrides);
+
+    /// <param name="props">The component's resolved properties, which are modified</param>
+    private static SceneLight Create(ExportEntry lightComponent, SceneLightType type, PropertyCollection props, string ownerClass, PackageCache packageCache,
+        Matrix4x4? ownerTransform, IReadOnlyList<Property> overrides)
+    {
         foreach (Property property in overrides ?? [])
         {
             props.AddOrReplaceProp(property);

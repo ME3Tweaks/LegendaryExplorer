@@ -78,17 +78,22 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
     public Scene3D.LevelLightSet Lighting { get; private set; }
 
     /// <summary>
-    /// Rereads the level's lights. Uncommitted edits of the file's light proxies are kept
+    /// Rereads the level's lights. Uncommitted edits of the file's light proxies are kept, and a light out of the scene (pending deletion) is left out
     /// </summary>
     internal void ReloadLights(LegendaryExplorerCore.Unreal.BinaryConverters.Level level, Scene3D.MeshRenderContext context)
     {
         Dictionary<ExportEntry, Scene3D.LightPreviewOverride> edits = [];
-        foreach (ILightProxy light in Actors.OfType<ILightProxy>())
+        // A view a refresh replaced is disposed, though history still holds it: its replacement draws its light
+        foreach (ILightProxy light in Actors.Concat(RetainedActors).Distinct().Where(a => !a.IsDisposed).OfType<ILightProxy>())
         {
-            if (light.Light.GetPreviewOverride(light.EditedOwnerTransform) is { } edit)
+            if (PreviewOverride(light) is { } edit)
                 edits[light.Light.Component] = edit;
         }
         var replacement = Scene3D.LevelLightSet.Load(level, context.PackageCache, edits.Count > 0 ? component => edits.GetValueOrDefault(component) : null);
+        foreach (LightActorProxy draft in Actors.OfType<LightActorProxy>().Where(a => a.IsDraft))
+        {
+            if (DraftLight(draft, context.PackageCache) is { } light) replacement.ReplaceLight(draft.Light.Component, light);
+        }
         context.ReplaceLights(Lights, replacement.Lights);
         Lighting = replacement;
     }
@@ -103,15 +108,7 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
         Scene3D.SceneLight rebuilt = null;
         try
         {
-            Scene3D.LightPreviewOverride edit = light.Light.GetPreviewOverride(light.EditedOwnerTransform);
-            //the same owner transform the level's loader uses when the light isn't moved: a collection's is read from the level's collection by index
-            Matrix4x4? ownerTransform = edit?.OwnerTransform ?? light switch
-            {
-                CollectionActorComponentProxy collectionLight => collectionLight.SavedLocalToWorld,
-                ActorProxy { Export: var owner } when owner != component => LegendaryExplorerCore.Unreal.ActorUtils.GetLocalToWorld(owner),
-                _ => (Matrix4x4?)null
-            };
-            rebuilt = Scene3D.SceneLight.Create(component, OwnerClass(light), context.PackageCache, ownerTransform, edit?.Properties);
+            rebuilt = light is LightActorProxy { Light.IsDraft: true } draft ? DraftLight(draft, context.PackageCache) : PackageLight(light, context.PackageCache);
         }
         catch (Exception e)
         {
@@ -121,6 +118,38 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
         if (previous is not null || rebuilt is not null)
             context.ReplaceLights(previous is null ? [] : [previous], rebuilt is null ? [] : [rebuilt]);
     }
+
+    /// <summary>A light of the package, with its proxy's pending edits</summary>
+    private Scene3D.SceneLight PackageLight(ILightProxy light, PackageCache cache)
+    {
+        ExportEntry component = light.Light.Component;
+        Scene3D.LightPreviewOverride edit = PreviewOverride(light);
+        //the same owner transform the level's loader uses when the light isn't moved: a collection's is read from the level's collection by index
+        Matrix4x4? ownerTransform = edit?.OwnerTransform ?? light switch
+        {
+            CollectionActorComponentProxy collectionLight => collectionLight.SavedLocalToWorld,
+            ActorProxy { Export: var owner } when owner != component => LegendaryExplorerCore.Unreal.ActorUtils.GetLocalToWorld(owner),
+            _ => (Matrix4x4?)null
+        };
+        return Scene3D.SceneLight.Create(component, OwnerClass(light), cache, ownerTransform, edit?.Properties);
+    }
+
+    /// <summary>
+    /// A new light's, which isn't in the package: made from its values while it's a draft in the scene. Once its commit has made its component,
+    /// the package's light is the one drawn (its view is rebuilt from it), so this is null
+    /// </summary>
+    private Scene3D.SceneLight DraftLight(LightActorProxy draft, PackageCache cache) => draft.IsDraft && Actors.Contains(draft)
+        ? Scene3D.SceneLight.CreateDraft(draft.Light.Component, draft.Light.Type, draft.Light.CopyDraftValues(), draft.ClassName, cache, draft.LocalToWorld,
+            draft.Light.GetChangedProperties())
+        : null;
+
+    /// <summary>
+    /// How the preview draws the light instead of as the package has it: with its pending edits, or, while it's out of the scene (pending deletion),
+    /// disabled, which SceneLight leaves out
+    /// </summary>
+    private Scene3D.LightPreviewOverride PreviewOverride(ILightProxy light) => light is ActorProxy view && !Actors.Contains(view)
+        ? new(null, [new LegendaryExplorerCore.Unreal.BoolProperty(false, "bEnabled")])
+        : light.Light.GetPreviewOverride(light.EditedOwnerTransform);
 
     private static string OwnerClass(ILightProxy light) => light switch
     {

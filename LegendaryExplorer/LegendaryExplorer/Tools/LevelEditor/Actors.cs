@@ -221,14 +221,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         // Not a universal factory: only the classes whose placed actors are known to be made this way, drawn by a view that writes all their values
         if (!ActorCreation.RecipeClasses.Contains(ClassName) || !WritesAllValuesWhenCreated)
             throw new InvalidOperationException($"{ClassName} has no validated construction recipe.");
-        IEntry actorClass = ActorClass;
-        if (actorClass.FileRef != Pcc)
-        {
-            // Not EntryImporter.EnsureClassIsInFile, which would copy the class into a package that can't import it, and swallows every failure,
-            // which a commit must see to roll back
-            if (ActorCreation.ImportRefusal(actorClass, Pcc) is { } refusal) throw new InvalidOperationException(refusal);
-            actorClass = Pcc.GetEntryOrAddImport($"{Path.GetFileNameWithoutExtension(actorClass.FileRef.FilePath)}.{actorClass.InstancedFullPath}", "Class");
-        }
+        IEntry actorClass = ActorCreation.ImportOf(ActorClass, Pcc);
         var name = NameReference.FromInstancedString(Editor.RenderContext.Registry.NameOf(Id));
         //the package may have gained the proposed name since
         if (Pcc.Exports.Any(e => e.Parent == level && e.ObjectName.Instanced == name.Instanced)) name = Pcc.GetNextIndexedName(ClassName);
@@ -240,6 +233,29 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         levelBinary.Actors.Add(export.UIndex);
         BindExport(export);
         Materialized = true;
+    }
+
+    // A placed actor's own component, in LE1-LE3's shipping levels (static mesh actors' and standalone lights'): the actor's subobject Class_N, an
+    // instance of its class default's (its archetype), with these flags, and no template owner class or template name
+    private const EObjectFlags NewComponentFlags = EObjectFlags.Transactional | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit;
+
+    /// <summary>
+    /// For a commit of a draft, after <see cref="Materialize"/>: makes the new export's component from <paramref name="template"/>, its class default's,
+    /// with <paramref name="properties"/> (its own values) and <paramref name="binary"/>, importing its class and template
+    /// </summary>
+    private protected ExportEntry NewComponent(ExportEntry template, PropertyCollection properties, ObjectBinary binary)
+    {
+        if (!Materialized) throw new InvalidOperationException($"{DisplayText}'s export wasn't just made.");
+        //no template owner class, and INDEX_NONE as its NetIndex, as a new actor has (see Materialize)
+        byte[] prePropertyData = [0, 0, 0, 0, .. BitConverter.GetBytes(-1)];
+        var component = new ExportEntry(Pcc, Export, Pcc.GetNextIndexedName(template.ClassName), prePropertyData, properties, binary)
+        {
+            Class = ActorCreation.ImportOf(template.Class, Pcc),
+            Archetype = ActorCreation.ImportOf(template, Pcc),
+            ObjectFlags = NewComponentFlags
+        };
+        Pcc.AddExport(component);
+        return component;
     }
 
     /// <summary>
@@ -961,6 +977,50 @@ public class StaticMeshActorProxy : ActorProxy
     {
         AddComponent(context.RenderContext, ref StaticMeshComponent);
         IsVolumetricMesh = StaticMeshComponent?.IsVolumetric == true;
+    }
+
+    //a draft's: the class default's component its own is made from, and the mesh it draws
+    private readonly ExportEntry componentTemplate;
+    private readonly IEntry mesh;
+
+    /// <summary>
+    /// A new static mesh actor (a draft) drawing <paramref name="mesh"/>, an entry of its package. Its component is drawn as the commit makes it: from
+    /// <paramref name="componentTemplate"/>'s values with the mesh. Its package is untouched until then
+    /// </summary>
+    internal StaticMeshActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, IEntry mesh, ExportEntry componentTemplate)
+        : base(context, draft, properties)
+    {
+        this.componentTemplate = componentTemplate;
+        this.mesh = mesh;
+        var componentProperties = EffectiveLightingProperties.ReadValues(componentTemplate, context.PackageCache);
+        componentProperties.AddOrReplaceProp(new ObjectProperty(mesh, "StaticMesh"));
+        // None already exists in every package. Pending properties bypass serialization, so even the package's name table stays untouched
+        var preview = new ExportEntry(Pcc, null, "None", new byte[8], binary: LegendaryExplorerCore.Unreal.BinaryConverters.StaticMeshComponent.Create());
+        StaticMeshComponent = new StaticMeshComponentProxy(context.RenderContext, preview, this, componentProperties) { ActorPropertyName = nameof(StaticMeshComponent) };
+        Components.Add(StaticMeshComponent);
+        IsVolumetricMesh = StaticMeshComponent.IsVolumetric;
+        //a draft is wholly uncommitted
+        UpdateDirty();
+    }
+
+    private protected override bool WritesAllValuesWhenCreated => true;
+
+    //a draft's mesh lighting is written to the component its commit makes
+    internal override IEnumerable<MeshComponentProxy> LightingMeshes => componentTemplate is null ? base.LightingMeshes : [];
+
+    public override void CommitChanges(PackageCache packageCache = null)
+    {
+        // Its export was just made (Materialize): its component is made with it, as shipping levels' are (see NewComponent), with a StaticMeshComponent
+        // binary (no light-maps until a bake). The actor refers to it as its StaticMeshComponent and CollisionComponent; neither has a Components array
+        if (Materialized && componentTemplate is not null)
+        {
+            var component = NewComponent(componentTemplate, [new ObjectProperty(mesh, "StaticMesh")],
+                LegendaryExplorerCore.Unreal.BinaryConverters.StaticMeshComponent.Create());
+            StaticMeshComponent.ExistingLighting?.Write(component);
+            Properties.AddOrReplaceProp(new ObjectProperty(component, nameof(StaticMeshComponent)));
+            Properties.AddOrReplaceProp(new ObjectProperty(component, "CollisionComponent"));
+        }
+        base.CommitChanges(packageCache);
     }
 }
 

@@ -20,9 +20,14 @@ public static class ActorCreation
 {
     /// <summary>
     /// The classes with a recipe. A new one has its location and its Tag (its class's name, as UE3's UWorld::SpawnActor sets it) and nothing else
-    /// of its own; spline points start unconnected, and a loft with no DeformMesh until one is assigned
+    /// of its own; spline points start unconnected, and a loft with no DeformMesh until one is assigned. A static mesh actor has the mesh chosen for
+    /// it, in a component made from its class default's (<see cref="ComponentTemplate"/>), and a standalone light has its class default's light
     /// </summary>
-    public static IReadOnlyList<string> RecipeClasses { get; } = ["Note", "TargetPoint", "SplineActor", "SplineLoftActor"];
+    public static IReadOnlyList<string> RecipeClasses { get; } =
+        ["Note", "TargetPoint", "SplineActor", "SplineLoftActor", "StaticMeshActor", .. LightActorProxy.StandaloneClasses];
+
+    /// <summary>Whether a new <paramref name="className"/> needs a mesh chosen for it</summary>
+    public static bool NeedsMesh(string className) => className is "StaticMeshActor";
 
     /// <summary>Why a new <paramref name="className"/> can't be placed in <paramref name="file"/> now, or null</summary>
     public static string Refusal(OpenLevelFile file, string className, PackageCache cache) => Refusal(file, className, cache, out _);
@@ -36,8 +41,23 @@ public static class ActorCreation
         try { actorClass = FindClass(file.Package, className, cache); }
         catch (Exception error) when (error is not OutOfMemoryException) { return $"Its class couldn't be read: {error.Message}"; }
         if (actorClass is null) return $"{file.Package.Game} has no {className} class.";
+        if (NeedsMesh(className) && ComponentTemplate(actorClass, "StaticMeshComponent", cache) is null)
+            return $"{className}'s class default has no StaticMeshComponent to make its component from.";
+        if (LightActorProxy.StandaloneClasses.Contains(className)
+            && (ComponentTemplate(actorClass, "LightComponent", cache) is not { } light || SceneLight.GetLightType(light) is null))
+            return $"{className}'s class default has no light component to make its own from.";
         return ImportRefusal(actorClass, file.Package);
     }
+
+    /// <summary>
+    /// The subobject of <paramref name="actorClass"/>'s class default that its <paramref name="property"/> refers to: the template a new actor's
+    /// component is made from, as an instance of the class is (UObject::InstanceComponentTemplates). Null if it has none
+    /// </summary>
+    internal static ExportEntry ComponentTemplate(IEntry actorClass, string property, PackageCache cache) =>
+        EffectiveLightingProperties.ClassDefault(actorClass, cache) is { } cdo
+        && cdo.GetProperty<ObjectProperty>(property)?.ResolveToEntry(cdo.FileRef) is ExportEntry template && template.Parent == cdo
+            ? template
+            : null;
 
     /// <summary>Why nothing can be placed in <paramref name="file"/> now, or null</summary>
     public static string FileRefusal(OpenLevelFile file)
@@ -58,8 +78,38 @@ public static class ActorCreation
             : $"{actorClass.ObjectName} is defined in {Path.GetFileName(actorClass.FileRef.FilePath)}, which {package.FileNameNoExtension} can't import from.";
 
     /// <summary>
-    /// Whether a new actor of <paramref name="actorClass"/> snaps to the grid where it's placed: its class default's bEdShouldSnap (only SplineLoftActor's
-    /// is set), as UE3's Constraints.Snap reads it. (ClassDefaultProperty is the general lookup of a class default's property through its superclasses)
+    /// <paramref name="package"/>'s entry for <paramref name="source"/>, an object of a package it can import from (a class, or a class default's
+    /// subobject): the object itself if it's the package's own, else its import, added with its outers if the package has none. Nothing is copied.
+    /// Not EntryImporter.EnsureClassIsInFile, which would copy a class into a package that can't import it, and swallows every failure, which a
+    /// commit must see to roll back
+    /// </summary>
+    internal static IEntry ImportOf(IEntry source, IMEPackage package)
+    {
+        if (source.FileRef == package) return source;
+        if (ImportRefusal(source, package) is { } refusal) throw new InvalidOperationException(refusal);
+        IEntry outer = source.Parent is { } parent ? ImportOf(parent, package)
+            : package.GetEntryOrAddImport(Path.GetFileNameWithoutExtension(source.FileRef.FilePath), "Package");
+        if (package.Imports.FirstOrDefault(i => i.Parent == outer && i.ObjectName == source.ObjectName && i.ClassName == source.ClassName) is { } existing)
+            return existing;
+        var import = new ImportEntry(package, outer, source.ObjectName)
+        {
+            ClassName = source.ClassName,
+            //the package its class is in: Core for a class
+            PackageFile = (source as ExportEntry)?.Class switch
+            {
+                ImportEntry classImport => classImport.GetRootName(),
+                ExportEntry classExport => Path.GetFileNameWithoutExtension(classExport.FileRef.FilePath),
+                _ => "Core"
+            }
+        };
+        package.AddImport(import);
+        return import;
+    }
+
+    /// <summary>
+    /// Whether a new actor of <paramref name="actorClass"/> snaps to the grid where it's placed: its class default's bEdShouldSnap (of the recipe
+    /// classes', SplineLoftActor's and StaticMeshActorBase's set it), as UE3's Constraints.Snap reads it. (ClassDefaultProperty is the general lookup
+    /// of a class default's property through its superclasses)
     /// </summary>
     private static bool SnapsToGrid(IEntry actorClass, PackageCache cache) =>
         EffectiveLightingProperties.ClassDefaultProperty<BoolProperty>(actorClass, null, "bEdShouldSnap", cache)?.Value == true;
@@ -89,10 +139,13 @@ public static class ActorCreation
     /// caller to record. Its package is untouched until Commit Changes
     /// </summary>
     /// <param name="gridSize">The grid it's snapped to if its class asks to be (<see cref="SnapsToGrid(IEntry, PackageCache)"/>), or 0 for none</param>
-    public static IUndoAction Place(IActorEditorContext editor, OpenLevelFile file, string className, Vector3 location, float gridSize = 0)
+    /// <param name="mesh">For a class that <see cref="NeedsMesh"/>: the StaticMesh it draws, an entry of <paramref name="file"/>'s package</param>
+    public static IUndoAction Place(IActorEditorContext editor, OpenLevelFile file, string className, Vector3 location, float gridSize = 0, IEntry mesh = null)
     {
         var cache = editor.RenderContext.PackageCache;
         if (Refusal(file, className, cache, out var actorClass) is { } refusal) throw new InvalidOperationException(refusal);
+        if (NeedsMesh(className) && (mesh is null || mesh.FileRef != file.Package || !mesh.IsA("StaticMesh")))
+            throw new ArgumentException($"A {className} needs a StaticMesh of {file.FileName}.", nameof(mesh));
         if (editor.RenderContext.IsDragging || editor.RenderContext.IsEditingScene) throw new InvalidOperationException("Finish the current scene operation first.");
         if (!float.IsFinite(location.X) || !float.IsFinite(location.Y) || !float.IsFinite(location.Z)) throw new ArgumentException("The location isn't finite.", nameof(location));
         //appRound, which rounds halves up
@@ -112,8 +165,9 @@ public static class ActorCreation
         ActorProxy draft = null;
         try
         {
-            draft = spline
-                ? new SplineActorProxy(editor, record, props)
+            draft = spline ? new SplineActorProxy(editor, record, props)
+                : NeedsMesh(className) ? new StaticMeshActorProxy(editor, record, props, mesh, ComponentTemplate(actorClass, "StaticMeshComponent", cache))
+                : LightActorProxy.StandaloneClasses.Contains(className) ? new LightActorProxy(editor, record, props, ComponentTemplate(actorClass, "LightComponent", cache))
                 : new EditorActorProxy(editor, record, props, ActorClassification.Get(className, package.Game));
             draft.OwningFile = file;
             using var edit = new SceneEdit(editor);
