@@ -185,7 +185,7 @@ public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
             if ((matPackage == null || texObjectName.StartsWith(matPackage)) && texObjectName.Contains("diff"))
             {
                 // we have found the diffuse texture!
-                Debug.WriteLine("Diffuse texture of new material <" + matName + "> is " + textureEntry.InstancedFullPath);
+                //Debug.WriteLine("Diffuse texture of new material <" + matName + "> is " + textureEntry.InstancedFullPath);
                 return textureEntry;
             }
         }
@@ -196,7 +196,7 @@ public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
             if (texObjectName.Contains("diff") || texObjectName.Contains("tex"))
             {
                 // we have found the diffuse texture!
-                Debug.WriteLine("Diffuse texture of new material <" + matName + "> is " + textureEntry.InstancedFullPath);
+                //Debug.WriteLine("Diffuse texture of new material <" + matName + "> is " + textureEntry.InstancedFullPath);
                 return textureEntry;
             }
         }
@@ -207,7 +207,7 @@ public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
             if (texObjectName.Contains("detail"))
             {
                 // I guess a detail texture is good enough if we didn't return for a diffuse texture earlier...
-                Debug.WriteLine("Diffuse (Detail) texture of new material <" + matName + "> is " + texparam.InstancedFullPath);
+                //Debug.WriteLine("Diffuse (Detail) texture of new material <" + matName + "> is " + texparam.InstancedFullPath);
                 return texparam;
             }
         }
@@ -217,7 +217,7 @@ public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
             if (!texObjectName.Contains("norm") && !texObjectName.Contains("opac"))
             {
                 //Anything is better than nothing I suppose
-                Debug.WriteLine("Using first found texture (last resort)  of new material <" + matName + "> as diffuse: " + texparam.InstancedFullPath);
+                //Debug.WriteLine("Using first found texture (last resort)  of new material <" + matName + "> as diffuse: " + texparam.InstancedFullPath);
                 return texparam;
             }
         }

@@ -1041,13 +1041,44 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         return new(actors, ignoredActorClasses);
     }
 
-    /// <summary>The views of one of a level's actors: a collection actor's are its components'</summary>
+    /// <summary>
+    /// The views of one of a level's actors: a collection actor's are its components', but not those whose deletion is pending (their views are out of
+    /// the scene, which undo can bring back)
+    /// </summary>
     private List<ActorProxy> CreateActorViews(ExportEntry actorExport, OpenLevelFile owningFile)
     {
         List<ActorProxy> views = actorExport.ClassName is "StaticMeshCollectionActor" or "StaticLightCollectionActor"
             ? ActorProxy.CreateCollection(this, actorExport).ToList()
             : ActorProxy.Create(this, actorExport) is { } actor ? [actor] : [];
+        var pending = owningFile.PendingDeletions.Select(d => d.Actor.Export).ToHashSet();
+        foreach (var view in views.Where(v => v.CollectionOwner is not null && pending.Contains(v.Export)).ToList())
+        {
+            views.Remove(view);
+            view.Dispose();
+        }
         foreach (var view in views) view.OwningFile = owningFile;
+        return views;
+    }
+
+    /// <summary>
+    /// Replaces the views of a collection and its members with views of them as the package has them, if it still has it. Members' uncommitted edits
+    /// and undo steps go with their views
+    /// </summary>
+    /// <returns>The new views</returns>
+    private List<ActorProxy> RebuildCollection(ExportEntry collection, OpenLevelFile file)
+    {
+        for (int i = file.Actors.Count - 1; i >= 0; i--)
+        {
+            if (file.Actors[i].Export == collection || file.Actors[i].CollectionOwner == collection)
+            {
+                //(a caller that reselects it does so by its export)
+                if (file.Actors[i] == SelectedActor) SelectedActor = null;
+                RenderContext.Registry.Invalidate(file.Actors[i].Export);
+                RemoveActor(file.Actors[i]);
+            }
+        }
+        var views = file.Package.GetEntry(collection.UIndex) is ExportEntry newCollection ? CreateActorViews(newCollection, file) : [];
+        foreach (var view in views) AddActor(view, false);
         return views;
     }
 
@@ -1912,21 +1943,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 }
             }
         }
-        foreach (var collectionActor in collectionActorsToUpdate)
-        {
-            for (int i = file.Actors.Count - 1; i >= 0; i--)
-            {
-                if (file.Actors[i].Export == collectionActor || file.Actors[i].CollectionOwner == collectionActor)
-                {
-                    RenderContext.Registry.Invalidate(file.Actors[i].Export);
-                    RemoveActor(file.Actors[i]);
-                }
-            }
-            if (file.Package.GetEntry(collectionActor.UIndex) is ExportEntry newCollectionActor)
-            {
-                foreach (var view in CreateActorViews(newCollectionActor, file)) AddActor(view, false);
-            }
-        }
+        foreach (var collectionActor in collectionActorsToUpdate) RebuildCollection(collectionActor, file);
         if (level is not null && AddActorsNewToLevel(file, level))
         {
             changed = updated = levelActorsChanged = true;
@@ -1967,10 +1984,24 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             if (!file.PendingDeletions.Contains(deletion)) continue;
             cancelled = true;
-            var export = deletion.Actor.Export;
+            var (export, collection) = (deletion.Actor.Export, deletion.Actor.CollectionOwner);
             deletion.Cancel();
             listed ??= file.LevelExport.GetBinaryData<Level>().Actors.ToHashSet();
-            if (file.Package.GetEntry(export.UIndex) == export && listed.Contains(export.UIndex)) Rebuild(export, file);
+            if (collection is not null)
+            {
+                // A collection's member is shown with the rest of its collection, which is shown as the package has it, as when another tool changes one
+                if (file.Package.GetEntry(collection.UIndex) == collection && listed.Contains(collection.UIndex))
+                    TryRefresh(collection.ObjectName.Instanced, errors, () =>
+                    {
+                        RenderContext.Registry.Invalidate(export);
+                        foreach (var light in RebuildCollection(collection, file).OfType<ILightProxy>()) OnLightEdited(light);
+                        Actors.Sort(a => a.SortIndex);
+                        //the other members' uncommitted edits went with their views
+                        file.RecalculateDirty();
+                        return true;
+                    });
+            }
+            else if (file.Package.GetEntry(export.UIndex) == export && listed.Contains(export.UIndex)) Rebuild(export, file);
             foreach (var other in deletion.AlsoChanged.Where(a => a.Export is not null && Actors.Contains(a)))
             {
                 var (otherExport, owner) = (other.Export, other.OwningFile);

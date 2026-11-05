@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
@@ -25,22 +26,38 @@ public sealed class ActorDeletionPlan
 {
     public ExportEntry Actor { get; }
     public ExportEntry Level { get; }
+    /// <summary>For one of a static mesh or light collection's members: the collection, whose component list and transforms the commit removes it from</summary>
+    public ExportEntry Collection { get; }
     public IReadOnlyList<string> Blockers => blockers;
     private readonly List<string> blockers;
     public IReadOnlyList<ExportEntry> Entries { get; }
-    public string Repairs => $"Committing removes it from the level{(cleansDestroyedContent ? " and from the world's destroyed-actor list" : "")}, and trashes it"
+    public string Repairs => $"Committing removes it from {(Collection is null ? "the level" : Collection.ObjectName.Instanced)}"
+                             + $"{(cleansDestroyedContent ? " and from the world's destroyed-actor list" : "")}, and trashes it"
                              + (Entries.Count > 1 ? $" with the {Entries.Count - 1} objects it owns." : ".")
                              // Light-maps and shadow-maps refer to a light by its GUIDs, not by reference
-                             + (LightClasses.Contains(Actor.ClassName) ? " What it lit stays lit by it in the level's baked lighting until a rebake." : "");
+                             + (LightClasses.Contains(Actor.ClassName) || Collection is not null && IsLightComponent(Actor)
+                                 ? " What it lit stays lit by it in the level's baked lighting until a rebake." : "");
     // Whether BioWorldInfo's ClientDestroyedActorContent refers to it, which TrashEntries cleans. Found by CheckReferences, which makes the plan with Inspect
     private bool cleansDestroyedContent;
     private readonly (ExportEntry Entry, int Index, byte[] Header, byte[] Data)[] snapshots;
+    // A collection member's transform in its collection when the deletion was prepared, which is its as much as its own export is
+    private readonly Matrix4x4? memberTransform;
     private readonly ExportEntry worldInfo;
     private readonly bool canCleanDestroyedContent;
 
     private static IReadOnlyList<string> LightClasses => LightActorProxy.StandaloneClasses;
     private static readonly string[] SupportedClasses = ["Note", "TargetPoint", "StaticMeshActor", "InterpActor", "SplineActor", "SplineLoftActor", .. LightClasses];
-    private static bool Supports(MEGame game, string className) => game.IsLEGame() && SupportedClasses.Contains(className);
+    private static bool Supports(ExportEntry actor) => actor.Game.IsLEGame() && (SupportedClasses.Contains(actor.ClassName) || CollectionOf(actor) is not null);
+
+    /// <summary>
+    /// The collection <paramref name="member"/> is one of, if it's a kind whose deletion is supported: a StaticMeshCollectionActor's static mesh
+    /// component, or a StaticLightCollectionActor's point, spot or directional light (as standalone lights are; not its sky lights). Null otherwise
+    /// </summary>
+    private static ExportEntry CollectionOf(ExportEntry member) => member.Parent is ExportEntry collection && !member.IsDefaultObject && !member.IsArchetype
+        && (collection.ClassName == "StaticMeshCollectionActor" && member.ClassName == "StaticMeshComponent"
+            || collection.ClassName == "StaticLightCollectionActor" && IsLightComponent(member))
+            ? collection
+            : null;
 
     /// <summary>Why an actor can't be taken out of the scene now, or null: all a draft (which has nothing in its package to check) needs</summary>
     public static string RemovalRefusal(ActorProxy actor)
@@ -56,20 +73,23 @@ public sealed class ActorDeletionPlan
     public static string Refusal(ActorProxy actor)
     {
         if (RemovalRefusal(actor) is { } refusal) return refusal;
-        if (!Supports(actor.Package.Game, actor.ClassName))
-            return $"Committed deletion supports only the Legendary Edition's {string.Join(", ", SupportedClasses)}.";
+        if (!Supports(actor.Export))
+            return $"Committed deletion supports only the Legendary Edition's {string.Join(", ", SupportedClasses)}, and static mesh and light collections' "
+                   + "meshes and point, spot and directional lights.";
         if (actor.Base is not null || actor.Attached.Count != 0) return "Attached actors need a separate detach operation.";
         return null;
     }
 
-    private ActorDeletionPlan(ExportEntry actor, ExportEntry level, List<ExportEntry> entries, List<string> blockers, ExportEntry worldInfo,
-        bool canCleanDestroyedContent)
+    private ActorDeletionPlan(ExportEntry actor, ExportEntry level, ExportEntry collection, List<ExportEntry> entries, List<string> blockers,
+        ExportEntry worldInfo, bool canCleanDestroyedContent)
     {
         Actor = actor;
         Level = level;
+        Collection = collection;
         this.blockers = blockers;
         Entries = entries.AsReadOnly();
         snapshots = entries.Select(e => (e, e.UIndex, Header(e), e.DataReadOnly.ToArray())).ToArray();
+        memberTransform = collection is not null ? MemberTransform(actor) : null;
         this.worldInfo = worldInfo;
         this.canCleanDestroyedContent = canCleanDestroyedContent;
     }
@@ -78,7 +98,18 @@ public sealed class ActorDeletionPlan
     {
         var current = Actor.GetAllDescendants().Prepend(Actor).ToHashSet();
         return current.SetEquals(Entries) && snapshots.All(s => Actor.FileRef.GetEntry(s.Index) == s.Entry
-            && Header(s.Entry).SequenceEqual(s.Header) && s.Entry.DataReadOnly.SequenceEqual(s.Data));
+            && Header(s.Entry).SequenceEqual(s.Header) && s.Entry.DataReadOnly.SequenceEqual(s.Data))
+            && (Collection is null || Actor.Parent == Collection && MemberTransform(Actor) == memberTransform);
+    }
+
+    /// <summary>A collection member's transform in its collection, or null if the collection doesn't list it once, with a transform</summary>
+    private static Matrix4x4? MemberTransform(ExportEntry member)
+    {
+        if (member.Parent is not ExportEntry collection || ObjectBinary.From(collection) is not StaticCollectionActor binary
+            || collection.GetProperty<ArrayProperty<ObjectProperty>>(binary.ComponentPropName) is not { } list
+            || list.Count(o => o.Value == member.UIndex) != 1 || binary.LocalToWorldTransforms.Count != list.Count)
+            return null;
+        return binary.LocalToWorldTransforms[list.Values.FindIndex(o => o.Value == member.UIndex)];
     }
 
     /// <summary>An export's header without its DataOffset, which saving the package rewrites without changing the export</summary>
@@ -91,12 +122,12 @@ public sealed class ActorDeletionPlan
 
     private static bool IsLightComponent(ExportEntry e) => e.ClassName is "PointLightComponent" or "SpotLightComponent" or "DirectionalLightComponent";
 
-    private static List<ExportEntry> CollectOwnedEntries(ExportEntry actor, List<string> blockers)
+    private static List<ExportEntry> CollectOwnedEntries(ExportEntry actor, bool member, List<string> blockers)
     {
         var entries = new List<ExportEntry> { actor };
-        bool meshActor = actor.ClassName is "StaticMeshActor" or "InterpActor";
-        bool splineActor = actor.ClassName is "SplineActor" or "SplineLoftActor";
-        bool lightActor = LightClasses.Contains(actor.ClassName);
+        bool meshActor = !member && actor.ClassName is "StaticMeshActor" or "InterpActor";
+        bool splineActor = !member && actor.ClassName is "SplineActor" or "SplineLoftActor";
+        bool lightActor = !member && LightClasses.Contains(actor.ClassName);
         foreach (var child in actor.GetAllDescendants())
         {
             // Ownership comes from the outer chain, never from an asset/property reference. Unknown
@@ -104,6 +135,8 @@ public sealed class ActorDeletionPlan
             bool supported = child is ExportEntry e && !e.IsDefaultObject && !e.IsArchetype && !e.IsClass
                 && (meshActor && (e.Parent == actor && e.ClassName is ("StaticMeshComponent" or "DynamicLightEnvironmentComponent")
                         || e.Parent?.ClassName == "StaticMeshComponent" && e.ClassName is ("RB_BodyInstance" or "ShadowMap1D" or "ShadowMap2D"))
+                    // A collection's mesh's shadow maps: all that shipping levels' members own
+                    || member && e.Parent == actor && actor.ClassName == "StaticMeshComponent" && e.ClassName is ("ShadowMap1D" or "ShadowMap2D")
                     // A point's outgoing connections: their curves and loft meshes (and the meshes' light/shadow data)
                     || splineActor && (e.Parent == actor && e.ClassName is ("SplineComponent" or "SplineMeshComponent" or "DynamicLightEnvironmentComponent")
                         || e.Parent?.ClassName == "SplineMeshComponent" && e.ClassName is ("RB_BodyInstance" or "ShadowMap1D" or "ShadowMap2D"))
@@ -195,24 +228,29 @@ public sealed class ActorDeletionPlan
     internal static ActorDeletionPlan Inspect(ExportEntry actor, ExportEntry level)
     {
         var blockers = new List<string>();
-        if (actor is null || level is null || actor.FileRef != level.FileRef || actor.Parent != level
-            || actor.IsDefaultObject || actor.IsArchetype || actor.IsClass || !Supports(actor.Game, actor.ClassName) || level.ClassName != "Level")
+        var collection = actor is null ? null : CollectionOf(actor);
+        // A collection's member is in the level as its collection is
+        var levelActor = collection ?? actor;
+        if (actor is null || level is null || actor.FileRef != level.FileRef || levelActor.Parent != level
+            || actor.IsDefaultObject || actor.IsArchetype || actor.IsClass || !Supports(actor) || level.ClassName != "Level")
             throw new InvalidOperationException("This is not a supported level actor instance.");
         if (actor.FileRef.GetEntry(actor.UIndex) != actor || level.FileRef.GetEntry(level.UIndex) != level
-            || actor.IsTrash())
+            || actor.IsTrash() || levelActor.IsTrash())
             throw new InvalidOperationException("The actor or its Level was removed or replaced.");
-        var entries = CollectOwnedEntries(actor, blockers);
+        var entries = CollectOwnedEntries(actor, collection is not null, blockers);
         if (actor.GetProperty<ObjectProperty>("Base") is { Value: not 0 })
             blockers.Add("Attached actors need a separate detach operation.");
+        if (collection is not null && MemberTransform(actor) is null)
+            blockers.Add($"{collection.ObjectName.Instanced} must list it once, with a transform for each of its components.");
         var binary = level.GetBinaryData<Level>();
-        if (!binary.Actors.Contains(actor.UIndex)) blockers.Add("The actor no longer belongs to its Level.Actors array.");
-        if (binary.Actors.Take(2).Contains(actor.UIndex)) blockers.Add("Reserved leading Level.Actors entries cannot be deleted.");
+        if (!binary.Actors.Contains(levelActor.UIndex)) blockers.Add("The actor no longer belongs to its Level.Actors array.");
+        if (binary.Actors.Take(2).Contains(levelActor.UIndex)) blockers.Add("Reserved leading Level.Actors entries cannot be deleted.");
         var worldInfo = binary.Actors.Count > 0 ? actor.FileRef.GetEntry(binary.Actors[0]) as ExportEntry : null;
         if (level.InstancedFullPath != "TheWorld.PersistentLevel" || worldInfo?.ClassName != "BioWorldInfo")
             blockers.Add("Deletion requires a PersistentLevel with a valid leading BioWorldInfo entry.");
         var destroyedContentProperties = worldInfo?.GetProperties().Where(p => p.Name == "ClientDestroyedActorContent").ToArray();
         bool canCleanDestroyedContent = destroyedContentProperties is [ArrayProperty<ObjectProperty>];
-        return new ActorDeletionPlan(actor, level, entries, blockers, worldInfo, canCleanDestroyedContent);
+        return new ActorDeletionPlan(actor, level, collection, entries, blockers, worldInfo, canCleanDestroyedContent);
     }
 
     /// <param name="references">For each of <see cref="Entries"/>, what refers to it and where (which is only reported)</param>
@@ -244,6 +282,11 @@ public sealed class ActorDeletionPlan
     {
         properties = null;
         binary = null;
+        if (referrer == Collection)
+        {
+            (properties, binary) = WithoutMembers(Collection, new HashSet<int> { Actor.UIndex });
+            return true;
+        }
         if (referrer == Level)
         {
             var level = Level.GetBinaryData<Level>();
@@ -260,6 +303,24 @@ public sealed class ActorDeletionPlan
             return true;
         }
         return repairs.WrittenProperties.TryGetValue(referrer, out properties);
+    }
+
+    /// <summary>A collection's properties and binary without <paramref name="members"/>: their entries in its component list, and their transforms</summary>
+    private static (PropertyCollection Properties, StaticCollectionActor Binary) WithoutMembers(ExportEntry collection, IReadOnlySet<int> members)
+    {
+        var binary = (StaticCollectionActor)ObjectBinary.From(collection);
+        var properties = collection.GetProperties();
+        var list = properties.GetProp<ArrayProperty<ObjectProperty>>(binary.ComponentPropName);
+        //(an empty or missing list has no binary to read: nothing to remove)
+        if (list is null || binary.Components is null) return (properties, binary);
+        for (int i = list.Count - 1; i >= 0; i--)
+        {
+            if (!members.Contains(list[i].Value)) continue;
+            list.RemoveAt(i);
+            binary.Components.RemoveAt(i);
+            binary.LocalToWorldTransforms.RemoveAt(i);
+        }
+        return (properties, binary);
     }
 
     private static int Depth(IEntry entry)
@@ -288,12 +349,19 @@ public sealed class ActorDeletionPlan
         {
             if (!plan.Actor.FileRef.IsInEditScope) throw new InvalidOperationException("Actor deletion requires a package edit scope.");
         }
-        foreach (var level in plans.GroupBy(p => p.Level))
+        foreach (var level in plans.Where(p => p.Collection is null).GroupBy(p => p.Level))
         {
             var deleted = level.Select(p => p.Actor.UIndex).ToHashSet();
             var binary = level.Key.GetBinaryData<Level>();
             binary.Actors.RemoveAll(deleted.Contains);
             level.Key.WriteBinary(binary);
+        }
+        foreach (var collection in plans.Where(p => p.Collection is not null).GroupBy(p => p.Collection))
+        {
+            var (properties, binary) = WithoutMembers(collection.Key, collection.Select(p => p.Actor.UIndex).ToHashSet());
+            // Its binary has a transform for each entry of its component list as its properties have it, so they're written first
+            collection.Key.WriteProperties(properties);
+            collection.Key.WriteBinary(binary);
         }
         foreach (var package in plans.GroupBy(p => p.Actor.FileRef))
         {
