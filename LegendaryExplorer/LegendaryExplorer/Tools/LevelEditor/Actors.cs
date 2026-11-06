@@ -98,8 +98,14 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     internal PendingActorDeletion PendingDeletion
     {
         get => pendingDeletion;
-        set { pendingDeletion = value; NotifyPendingChange(); }
+        set
+        {
+            pendingDeletion = value;
+            OnPendingDeletionChanged();
+            NotifyPendingChange();
+        }
     }
+    private protected virtual void OnPendingDeletionChanged() { }
     public bool IsPendingChange => IsDraft || IsDirty || PendingDeletion is not null;
     public string ChangeKind => PendingDeletion is not null ? "Delete" : IsDraft ? "Create" : EditKind;
     /// <summary>What <see cref="ChangeKind"/> calls an uncommitted change to a committed actor</summary>
@@ -1253,7 +1259,8 @@ public abstract class CollectionActorComponentProxy : ActorProxy
     private protected override string EditKind => UpgradePending ? "Upgrade" : base.EditKind;
     public override string UpgradeRefusal => CollectionMemberUpgrade.Refusal(this);
     public override string DeleteRefusal => base.DeleteRefusal ?? (upgradeRequested ? "Its upgrade to an actor is pending: undo that first."
-        : neededBy.Count != 0 ? "A decal's uncommitted changes need it to be an actor." : null);
+        // A projection that only lands on it moves off it, as it does a mesh with an actor of its own. A Filter is the user's, and would be left listing nothing
+        : neededBy.Any(d => d.Decal?.Settings.Filter.Actors.Contains(Export) == true) ? "A decal's uncommitted Filter lists it: uncheck it there first." : null);
     protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || UpgradePending;
 
     protected CollectionActorComponentProxy(IActorEditorContext context, StaticCollectionActor collectionActor, ExportEntry componentActor, int index) : base(componentActor)

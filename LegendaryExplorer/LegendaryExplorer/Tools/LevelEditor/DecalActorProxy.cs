@@ -88,6 +88,7 @@ public sealed class DecalActorProxy : EditorActorProxy
         decal?.CommitProjection();
         base.CommitChanges(packageCache);
     }
+    private protected override void OnPendingDeletionChanged() => decal?.UpdateNeededMembers();
     /// <summary>Lets go of what a commit deleted, which it took out of this decal's receivers and Filter (<see cref="ActorDeletionPlan"/>)</summary>
     internal void ForgetDeleted(IReadOnlySet<IEntry> deleted) => decal?.ForgetDeleted(deleted);
     public override void MarkClean()
@@ -136,6 +137,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     public bool HasReprojectedReceivers => originalReceivers is not null && !ReferenceEquals(receivers, originalReceivers);
     public bool HasReceiverChanges => originalReceivers?.Any(Stale) == true;
     public IMEPackage ProjectionPackage => HasReprojectedReceivers && receivers.Count > 0 ? receivers[0].Export.FileRef : Export.FileRef;
+    /// <summary>The components it lands on as it's shown, committed or not</summary>
+    internal IEnumerable<ExportEntry> Receivers => receivers.Select(r => r.Export);
     public string EditUnsupportedReason { get; private set; }
     public string EditingStatus => EditUnsupportedReason ?? reprojectionError ?? FilterPackageProblem ?? (HasReprojectedReceivers
         ? receivers.Count == 0 ? "No receiving triangles in the projection volume. Committing removes the old projected surfaces."
@@ -351,7 +354,9 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     internal void UpdateNeededMembers()
     {
         IEnumerable<CollectionActorComponentProxy> landedOn = HasReprojectedReceivers ? receivers.Select(r => r.Source?.Actor).OfType<CollectionActorComponentProxy>() : [];
-        HashSet<CollectionActorComponentProxy> members = [.. landedOn, .. owner.Decal.Settings.Filter.Actors.Select(owner.Decal.MemberOf).OfType<CollectionActorComponentProxy>()];
+        // A decal pending deletion doesn't need anything, until that's undone
+        HashSet<CollectionActorComponentProxy> members = owner.PendingDeletion is not null ? []
+            : [.. landedOn, .. owner.Decal.Settings.Filter.Actors.Select(owner.Decal.MemberOf).OfType<CollectionActorComponentProxy>()];
         foreach (var member in neededMembers.Except(members)) member.SetNeededBy(owner, false);
         foreach (var member in members.Except(neededMembers)) member.SetNeededBy(owner, true);
         neededMembers = members;
@@ -418,6 +423,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     }
     internal void ForgetDeleted(IReadOnlySet<IEntry> deleted)
     {
+        neededMembers.RemoveWhere(member => deleted.Contains(member.Export));
         foreach (var receiver in originalReceivers.Concat(receivers).Distinct().Where(r => deleted.Contains(r.Export))) receiver.Mesh?.Dispose();
         bool same = ReferenceEquals(receivers, originalReceivers);
         originalReceivers.RemoveAll(r => deleted.Contains(r.Export));

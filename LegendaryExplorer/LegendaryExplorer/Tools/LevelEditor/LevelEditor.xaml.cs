@@ -1462,12 +1462,54 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             try { plan = await ActorDeletionPlan.PrepareAsync(actor.Export, actor.OwningFile.LevelExport, actor.GetDeletionRepairs()); }
             finally { EndBusy(); }
             if (!CanMutateScene) throw new InvalidOperationException("The editor state changed during reference inspection. Retry deletion.");
-            UndoHistory.Push(actor.Delete(plan));
+            var decals = await ChooseEmptiedDecals(actor, plan);
+            if (decals is null) return;
+            if (decals.Count > 0)
+            {
+                // Nothing needs taking out of a decal that's going too, which what the deletion says should show
+                var repairs = actor.GetDeletionRepairs();
+                repairs = repairs with { Trashed = repairs.Trashed.Concat(decals.SelectMany(d => d.Plan.Entries)).ToHashSet() };
+                SetBusy($"Checking references to {actor.ActorName}...");
+                try { plan = await ActorDeletionPlan.PrepareAsync(actor.Export, actor.OwningFile.LevelExport, repairs); }
+                finally { EndBusy(); }
+            }
+            if (!CanMutateScene) throw new InvalidOperationException("The editor state changed during reference inspection. Retry deletion.");
+            UndoHistory.Push(decals.Count == 0 ? actor.Delete(plan) : PendingActorDeletion.DeleteTogether([(actor, plan), .. decals]));
         }
         catch (Exception error) when (error is not OutOfMemoryException)
         {
             MessageBox.Show(this, error.Message, "Delete actor");
         }
+    }
+
+    /// <summary>
+    /// Asks whether to delete the decals that deleting <paramref name="actor"/> would leave with nothing to project onto, if there are any that can be
+    /// </summary>
+    /// <returns>The decals to delete with it, with their plans, or null if its deletion was cancelled</returns>
+    private async Task<List<(ActorProxy Actor, ActorDeletionPlan Plan)>> ChooseEmptiedDecals(ActorProxy actor, ActorDeletionPlan plan)
+    {
+        var deletable = new List<(ActorProxy Actor, ActorDeletionPlan Plan)>();
+        var emptied = ActorDeletionPlan.EmptiedDecals(actor, plan);
+        if (emptied.Count == 0) return deletable;
+        SetBusy($"Checking references to {actor.ActorName}'s decals...");
+        try
+        {
+            foreach (var decal in emptied)
+            {
+                var decalPlan = await ActorDeletionPlan.PrepareAsync(decal.Export, decal.OwningFile.LevelExport, decal.GetDeletionRepairs());
+                if (decalPlan.Blockers.Count == 0) deletable.Add((decal, decalPlan));
+            }
+        }
+        finally { EndBusy(); }
+        if (deletable.Count == 0) return deletable;
+        string decals = deletable.Count == 1 ? $"the decal {deletable[0].Actor.ActorName} with nothing to project onto. Delete it too?"
+            : $"{deletable.Count} decals with nothing to project onto. Delete them too?\n\n{string.Join("\n", deletable.Select(d => d.Actor.ActorName))}";
+        return MessageBox.Show(this, $"Deleting {actor.ActorName} leaves {decals}", "Delete actor", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) switch
+        {
+            MessageBoxResult.Yes => deletable,
+            MessageBoxResult.No => [],
+            _ => null
+        };
     }
 
     private void UpgradeActor(object parameter)

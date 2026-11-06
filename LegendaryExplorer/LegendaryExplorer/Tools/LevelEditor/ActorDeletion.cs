@@ -42,6 +42,9 @@ public sealed class ActorDeletionPlan
     private bool cleansDestroyedContent;
     // The decals that land on it or list it in their Filters, which the commit takes it out of. Found by CheckReferences too
     private readonly List<ExportEntry> decals = [];
+    private readonly List<ExportEntry> decalsLeftEmpty = [];
+    /// <summary>The decals that land on it and, with it and what's already pending deletion gone, on nothing else</summary>
+    public IReadOnlyList<ExportEntry> DecalsLeftEmpty => decalsLeftEmpty;
     private readonly (ExportEntry Entry, int Index, byte[] Header, byte[] Data)[] snapshots;
     // A collection member's transform in its collection when the deletion was prepared, which is its as much as its own export is
     private readonly Matrix4x4? memberTransform;
@@ -49,7 +52,7 @@ public sealed class ActorDeletionPlan
     private readonly bool canCleanDestroyedContent;
 
     private static IReadOnlyList<string> LightClasses => LightActorProxy.StandaloneClasses;
-    private static readonly string[] SupportedClasses = ["Note", "TargetPoint", "Emitter", "StaticMeshActor", "InterpActor", "SplineActor", "SplineLoftActor", .. LightClasses];
+    private static readonly string[] SupportedClasses = ["Note", "TargetPoint", "Emitter", "DecalActor", "StaticMeshActor", "InterpActor", "SplineActor", "SplineLoftActor", .. LightClasses];
     private static bool Supports(ExportEntry actor) => actor.Game.IsLEGame() && (SupportedClasses.Contains(actor.ClassName) || CollectionOf(actor) is not null);
 
     /// <summary>
@@ -132,6 +135,7 @@ public sealed class ActorDeletionPlan
         bool splineActor = !member && actor.ClassName is "SplineActor" or "SplineLoftActor";
         bool lightActor = !member && LightClasses.Contains(actor.ClassName);
         bool emitter = !member && actor.ClassName == "Emitter";
+        bool decalActor = !member && actor.ClassName == "DecalActor";
         foreach (var child in actor.GetAllDescendants())
         {
             // Ownership comes from the outer chain, never from an asset/property reference. Unknown
@@ -147,7 +151,9 @@ public sealed class ActorDeletionPlan
                     // A light's component, and its light function
                     || lightActor && (e.Parent == actor && IsLightComponent(e) || e.Parent is ExportEntry owner && IsLightComponent(owner) && e.ClassName == "LightFunction")
                     // Its component, and in a few of LE2's, the light environment that lights its particles. Its template is an asset of the package, not under it
-                    || emitter && e.Parent == actor && e.ClassName is ("ParticleSystemComponent" or "ParticleLightEnvironmentComponent"));
+                    || emitter && e.Parent == actor && e.ClassName is ("ParticleSystemComponent" or "ParticleLightEnvironmentComponent")
+                    // Its component, and the shadow maps of its surfaces. Its material is an asset of the package, not under it
+                    || decalActor && e.Parent == actor && (IsDecal(e) || e.ClassName == "ShadowMap1D"));
             if (supported) entries.Add((ExportEntry)child);
             else blockers.Add($"#{child.UIndex} {child.InstancedFullPath}: unsupported owned subobject.");
         }
@@ -162,6 +168,7 @@ public sealed class ActorDeletionPlan
             }
         }
         if (lightActor) RequireOwned("LightComponent", IsLightComponent, "a light component");
+        if (decalActor) RequireOwned("Decal", IsDecal, "a supported component");
         if (emitter)
         {
             RequireOwned("ParticleSystemComponent", e => e.ClassName == "ParticleSystemComponent", "a supported component");
@@ -270,7 +277,11 @@ public sealed class ActorDeletionPlan
                 && !export.WouldReferenceAny(targets, properties, binary))
             {
                 cleansDestroyedContent |= export == worldInfo;
-                if (IsDecal(export)) decals.Add(export);
+                if (IsDecal(export))
+                {
+                    decals.Add(export);
+                    if (LeftEmpty(export, targets, repairs)) decalsLeftEmpty.Add(export);
+                }
                 continue;
             }
             foreach (var target in Entries)
@@ -317,6 +328,27 @@ public sealed class ActorDeletionPlan
     }
 
     private static bool IsDecal(ExportEntry export) => export.IsA("DecalComponent");
+
+    // A decal's surfaces are in its binary. DecalReceivers can list components it has none on, which it doesn't draw on
+    private static bool LeftEmpty(ExportEntry decal, IReadOnlySet<int> targets, DeletionRepairs repairs)
+    {
+        var receivers = decal.GetBinaryData<DecalComponent>().StaticReceivers;
+        return receivers.Any(r => targets.Contains(r.Component))
+            && receivers.All(r => targets.Contains(r.Component) || repairs.Trashed.Contains(decal.FileRef.GetEntry(r.Component)));
+    }
+
+    /// <summary>
+    /// The decals deleting <paramref name="actor"/> would leave with nothing to project onto, which could be deleted with it. A decal with an uncommitted
+    /// reprojection lands where it shows, which isn't what its binary says: it may have moved off the actor, or onto it from another package
+    /// </summary>
+    public static IReadOnlyList<DecalActorProxy> EmptiedDecals(ActorProxy actor, ActorDeletionPlan plan)
+    {
+        var gone = plan.Entries.Concat(actor.OwningFile.PendingDeletions.SelectMany(d => d.Entries)).ToHashSet();
+        return actor.Editor.RenderContext.DrawList_3D.OfType<DecalActorProxy>().Where(d => d.DecalComponent is { } component && Refusal(d) is null
+            && (component.HasReprojectedReceivers
+                ? component.Receivers.Any(plan.Entries.Contains) && component.Receivers.All(gone.Contains)
+                : plan.DecalsLeftEmpty.Contains(component.Export))).ToArray();
+    }
 
     /// <summary>
     /// A decal's properties and binary without <paramref name="entries"/>: their receivers, and their entries in its Filter. It keeps its other surfaces,
@@ -454,6 +486,45 @@ public sealed class PendingActorDeletion
             || !plan.MatchesSnapshot())
             throw new InvalidOperationException("The actor or its owned subobjects changed during deletion preparation. Retry deletion.");
         return new PendingActorDeletion(actor, plan, alsoChanged ?? []);
+    }
+
+    /// <summary>Deletes several actors as one undo step, each with its plan. If one can't be, none is</summary>
+    public static IUndoAction DeleteTogether(IReadOnlyList<(ActorProxy Actor, ActorDeletionPlan Plan)> deletions)
+    {
+        var steps = new List<IUndoAction>();
+        try
+        {
+            foreach (var (actor, plan) in deletions) steps.Add(actor.Delete(plan));
+        }
+        catch
+        {
+            foreach (var step in Enumerable.Reverse(steps))
+            {
+                step.Undo();
+                (step as IDisposable)?.Dispose();
+            }
+            throw;
+        }
+        return new GroupedDeletionAction(steps);
+    }
+
+    private sealed class GroupedDeletionAction(IReadOnlyList<IUndoAction> steps) : IUndoAction, IDisposable
+    {
+        public string Description => $"{steps[0].Description} and {(steps.Count == 2 ? "1 other actor" : $"{steps.Count - 1} other actors")}";
+        public bool IsOrphaned => steps.Any(s => s.IsOrphaned);
+        public IReadOnlyCollection<ActorId> Subjects => steps.SelectMany(s => s.Subjects).ToArray();
+        public void Undo()
+        {
+            foreach (var step in Enumerable.Reverse(steps)) step.Undo();
+        }
+        public void Redo()
+        {
+            foreach (var step in steps) step.Redo();
+        }
+        public void Dispose()
+        {
+            foreach (var step in steps) (step as IDisposable)?.Dispose();
+        }
     }
 
     /// <summary>
