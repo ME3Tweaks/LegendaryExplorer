@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
@@ -312,7 +313,7 @@ public sealed class MeshStaticLighting : IDisposable
     internal Action<SharpDX.Direct3D11.DeviceContext, ShadowDepthPass> DrawShadowCaster;
     internal Func<Matrix4x4> GetLocalToWorld;
 
-    private readonly object InteractionsLock = new();
+    private readonly Lock InteractionsLock = new();
     private LightInteraction[] Interactions = [];
     private SkyLighting SkyLight;
     private int InteractionsLightsVersion = -1;

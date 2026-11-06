@@ -86,14 +86,29 @@ public sealed class EditableDecal : NotifyPropertyChangedBase
         get => filterSearch;
         set { if (SetProperty(ref filterSearch, value ?? "")) OnPropertyChanged(nameof(FilterCandidates)); }
     }
-    public IEnumerable<DecalFilterCandidate> FilterCandidates => filterCandidates.Where(c =>
-        c.Label.Contains(FilterSearch, StringComparison.OrdinalIgnoreCase) || c.Path.Contains(FilterSearch, StringComparison.OrdinalIgnoreCase));
-    public string FilterSummary => $"{Settings.Filter.Actors.Count} checked. Collections apply to all their meshes.";
+    public IEnumerable<DecalFilterCandidate> FilterCandidates => filterCandidates.Where(c => c.Matches(FilterSearch));
+    public string FilterSummary => $"{Settings.Filter.Actors.Count} checked. Checked collection meshes become actors when committed.";
+    /// <summary>The collection member <paramref name="entry"/> of a Filter is, or null</summary>
+    internal CollectionActorComponentProxy MemberOf(IEntry entry) => entry is ExportEntry component && DecalFilterSettings.IsMember(component)
+        ? owner.Editor?.RenderContext.FindDecalReceiver(component)?.Actor as CollectionActorComponentProxy : null;
+    /// <summary>Why <paramref name="entry"/> can't be checked in the Filter, or null</summary>
+    internal string FilterRefusal(IEntry entry)
+    {
+        if (MemberOf(entry) is not { } member) return null;
+        if (!owner.DecalComponent.CanFilter(member)) return owner.DecalComponent.FilterPackageRefusal(entry);
+        return member.UpgradePending ? null : CollectionMemberUpgrade.ActorRefusal(member);
+    }
+    internal void RefreshFilterCandidateStates()
+    {
+        foreach (var candidate in filterCandidates) candidate.Refresh();
+    }
     public void RefreshFilterCandidates()
     {
-        var loaded = owner.Editor.RenderContext.DrawList_3D.SelectMany(a => a.Components).OfType<StaticMeshComponentProxy>()
-            .Where(c => c.Actor.Editor is not null).Select(c => c.Export.Parent).OfType<ExportEntry>()
-            .Where(e => e.ClassName == "StaticMeshCollectionActor" || e.IsA("StaticMeshActor"));
+        var meshes = owner.Editor.RenderContext.DrawList_3D.SelectMany(a => a.Components).OfType<StaticMeshComponentProxy>()
+            .Where(c => c.Actor.Editor is not null).ToArray();
+        // A collection's meshes one by one, as a Filter of actors lists them once they're actors: never the whole collection, which a shipping Filter never lists
+        var loaded = meshes.Where(c => c.Actor is CollectionActorComponentProxy).Select(c => c.Export)
+            .Concat(meshes.Select(c => c.Export.Parent).OfType<ExportEntry>().Where(e => e.IsA("StaticMeshActor")));
         filterCandidates = Settings.Filter.Actors.Concat(loaded).Distinct().Select(e => new DecalFilterCandidate(this, e))
             .OrderByDescending(c => c.IsChecked).ThenBy(c => c.Label).ToList();
         OnPropertyChanged(nameof(FilterCandidates));

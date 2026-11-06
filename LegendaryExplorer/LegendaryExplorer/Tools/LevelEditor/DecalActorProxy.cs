@@ -59,7 +59,15 @@ public sealed class DecalActorProxy : EditorActorProxy
 
     protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || Decal?.HasChanges == true
         || decal?.HasReprojectedReceivers == true || decal?.HasReceiverChanges == true;
-    internal void RefreshDecalDirty() { UpdateDirty(); NotifyCoverageChanged(); OnPropertyChanged(nameof(DecalEditingStatus)); }
+    internal void RefreshDecalDirty()
+    {
+        decal?.UpdateNeededMembers();
+        // Which meshes the Filter can list depends on where the projection lands
+        Decal?.RefreshFilterCandidateStates();
+        UpdateDirty();
+        NotifyCoverageChanged();
+        OnPropertyChanged(nameof(DecalEditingStatus));
+    }
     internal void OnDecalEdited(DecalSettings before, DecalSettings after, string property)
     {
         RefreshDecalDirty();
@@ -120,12 +128,13 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     private TransformSnapshot? projectedTransform;
     private DecalSettings projectedSettings;
     private readonly Dictionary<ExportEntry, StaticMesh> sourceMeshes = [];
+    private HashSet<CollectionActorComponentProxy> neededMembers = [];
     private List<(MeshComponentProxy Source, Matrix4x4 Transform)> projectedSources = [];
     public bool HasReprojectedReceivers => originalReceivers is not null && !ReferenceEquals(receivers, originalReceivers);
     public bool HasReceiverChanges => originalReceivers?.Any(Stale) == true;
     public IMEPackage ProjectionPackage => HasReprojectedReceivers && receivers.Count > 0 ? receivers[0].Export.FileRef : Export.FileRef;
     public string EditUnsupportedReason { get; private set; }
-    public string EditingStatus => EditUnsupportedReason ?? reprojectionError ?? (HasReprojectedReceivers
+    public string EditingStatus => EditUnsupportedReason ?? reprojectionError ?? FilterPackageProblem ?? (HasReprojectedReceivers
         ? receivers.Count == 0 ? "No receiving triangles in the projection volume. Committing removes the old projected surfaces."
         : (ProjectionPackage != Export.FileRef ? $"Committing moves this actor to {System.IO.Path.GetFileName(ProjectionPackage.FilePath)}. " : "")
           + "Reprojected onto loaded static meshes. Committing clears baked decal lighting and shadows; decal rebaking is not yet supported."
@@ -292,7 +301,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                     if (!staticMeshes || !projection.Intersects(source.GetBounds())) continue;
                     if (source.Export.Parent is not ExportEntry parent || !(parent.IsA("StaticMeshActor") || parent.ClassName == "StaticMeshCollectionActor")) continue;
                     if (!hidden && (source.HiddenGame || source.Actor.IsHidden)) continue;
-                    if (!settings.Filter.Allows(parent)) continue;
+                    if (!settings.Filter.Allows(source.Export)) continue;
                     var sourceProps = EffectiveLightingProperties.Read(source.Export, context.PackageCache);
                     if (sourceProps.GetProp<BoolProperty>("bAcceptsStaticDecals") is { Value: false }) continue;
                     var geometry = EffectiveLightingProperties.ResolveReference(source.Export, "StaticMesh", context.PackageCache)
@@ -302,6 +311,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                     int uv = geometry.GetCondensedProperties().GetProp<IntProperty>("LightMapCoordinateIndex")?.Value ?? 0;
                     var data = DecalReprojection.Project(projection, mesh.LODModels[0], source.LocalToWorld, source.Export.UIndex, uv, backfaces, angle, noClip);
                     if (data.NumTriangles == 0) continue;
+                    if (source.Actor is CollectionActorComponentProxy member && CollectionMemberUpgrade.ActorRefusal(member) is { } refusal)
+                        throw new NotSupportedException($"{member.ActorName} needs to become an actor to receive this decal, but can't: {refusal}");
                     if (rebuilt.Count > 0 && rebuilt[0].Export.FileRef != source.Export.FileRef)
                         throw new NotSupportedException("The projection spans meshes in multiple packages. A decal must project onto meshes in a single package.");
                     rebuilt.Add(new Receiver(data, source.Export) { Source = source, Geometry = geometry,
@@ -315,6 +326,30 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         catch (Exception e) when (e is not OutOfMemoryException) { reprojectionError = e.Message; }
         UpdateMeshProjection();
         owner.RefreshDecalDirty();
+    }
+
+    /// <summary>
+    /// Whether the Filter can list <paramref name="member"/>. A commit lists it as its new actor, which has to be in the decal's own package, so that's
+    /// the package it lands in. With nothing to land on yet (Only checked, with none checked), a mesh in its volume could be what takes it to another
+    /// </summary>
+    internal bool CanFilter(CollectionActorComponentProxy member) => member.Export.FileRef == ProjectionPackage
+        || receivers.Count == 0 && projection is not null && member.Components.OfType<MeshComponentProxy>().Any(mesh => projection.Intersects(mesh.GetBounds()));
+
+    /// <summary>Why the Filter can't list the collection member <paramref name="member"/> where the decal is ending up</summary>
+    internal string FilterPackageRefusal(IEntry member) => $"{member.ObjectName.Instanced} is in {member.FileRef.FileNameNoExtension}, and this decal's projection is in "
+        + $"{ProjectionPackage.FileNameNoExtension}. A decal's Filter can only list collection meshes in the package its projection is in.";
+
+    private string FilterPackageProblem => owner.Decal.Settings.Filter.Actors.FirstOrDefault(e => DecalFilterSettings.IsMember(e) && e.FileRef != ProjectionPackage) is { } member
+        ? FilterPackageRefusal(member) : null;
+
+    /// <summary>Tells the collection members that the uncommitted projection lands on or the Filter lists that they need to be actors, and the others that they don't</summary>
+    internal void UpdateNeededMembers()
+    {
+        IEnumerable<CollectionActorComponentProxy> landedOn = HasReprojectedReceivers ? receivers.Select(r => r.Source?.Actor).OfType<CollectionActorComponentProxy>() : [];
+        HashSet<CollectionActorComponentProxy> members = [.. landedOn, .. owner.Decal.Settings.Filter.Actors.Select(owner.Decal.MemberOf).OfType<CollectionActorComponentProxy>()];
+        foreach (var member in neededMembers.Except(members)) member.SetNeededBy(owner, false);
+        foreach (var member in members.Except(neededMembers)) member.SetNeededBy(owner, true);
+        neededMembers = members;
     }
 
     private void ReleaseGenerated()
@@ -338,6 +373,14 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         owner.Decal.Settings.Filter.Validate(Export.FileRef);
         if (EditUnsupportedReason is not null || reprojectionError is not null)
             throw new InvalidOperationException($"Cannot commit {owner.Export.ObjectName}: {EditUnsupportedReason ?? reprojectionError}");
+        if (FilterPackageProblem is { } foreign) throw new InvalidOperationException($"Cannot commit {owner.Export.ObjectName}: {foreign}");
+        foreach (var listed in owner.Decal.Settings.Filter.Actors.Where(DecalFilterSettings.IsMember))
+        {
+            if (owner.Decal.MemberOf(listed) is not { } member)
+                throw new InvalidOperationException($"Cannot commit {owner.Export.ObjectName}: its Filter lists {listed.ObjectName.Instanced}, which isn't loaded.");
+            if (CollectionMemberUpgrade.ActorRefusal(member) is { } refusal)
+                throw new InvalidOperationException($"Cannot commit {owner.Export.ObjectName}: its Filter lists {member.ActorName}, which can't become an actor. {refusal}");
+        }
         if (ProjectionPackage != Export.FileRef && owner.Editor.GetDecalDestinationLevel(ProjectionPackage) is null)
             throw new InvalidOperationException("The receiving package must be open and writable before moving the decal into it.");
     }
@@ -374,7 +417,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         if (HasReprojectedReceivers) foreach (var original in originalReceivers) original.Mesh?.Dispose();
         originalReceivers = receivers; originalProjection = projection; originalFailure = failure;
         foreach (var receiver in receivers) receiver.OriginalData = receiver.Export.Data.ToArray();
-        var settings = owner.Decal.Settings with { Width = projection.Width, Height = projection.Height, NearPlane = projection.NearPlane, FarPlane = projection.FarPlane };
+        var settings = owner.Decal.Settings with { Width = projection.Width, Height = projection.Height, NearPlane = projection.NearPlane, FarPlane = projection.FarPlane,
+            Filter = owner.Decal.Settings.Filter.WithActors() };
         settings.Write(Properties); projection.WriteFrame(Properties);
         owner.Decal.MarkClean(settings);
         projectedTransform = null; projectedSources.Clear();
@@ -530,7 +574,13 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
 
     protected override void Dispose(bool disposing)
     {
-        if (disposing) { foreach (var r in originalReceivers.Concat(receivers).Distinct()) r.Mesh?.Dispose(); receivers.Clear(); sourceMeshes.Clear(); }
+        if (disposing)
+        {
+            foreach (var r in originalReceivers.Concat(receivers).Distinct()) r.Mesh?.Dispose();
+            receivers.Clear(); sourceMeshes.Clear();
+            foreach (var member in neededMembers) member.SetNeededBy(owner, false);
+            neededMembers = [];
+        }
         base.Dispose(disposing);
     }
 }

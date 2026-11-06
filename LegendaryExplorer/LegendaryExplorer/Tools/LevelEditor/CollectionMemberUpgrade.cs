@@ -5,6 +5,7 @@ using System.Numerics;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
@@ -25,6 +26,12 @@ public static class CollectionMemberUpgrade
     {
         if (ActorDeletionPlan.RemovalRefusal(member) is { } refusal) return refusal;
         if (member.UpgradePending) return "Its upgrade is already pending.";
+        return ActorRefusal(member);
+    }
+
+    /// <summary>Why <paramref name="member"/> can't become an actor at all, or null: unlike <see cref="Refusal"/>, this doesn't depend on what the scene is doing now</summary>
+    internal static string ActorRefusal(CollectionActorComponentProxy member)
+    {
         if (Origin(member.Export) is not { } origin) return "Its archetype doesn't show what actor it came from.";
         bool remade = member is StaticLightCollectionComponentProxy ? LightActorProxy.StandaloneClasses.Contains(origin.ClassName) : origin.ClassName == "StaticMeshActor";
         if (!remade) return $"It came from a {origin.ClassName}, which can't be made again.";
@@ -53,6 +60,28 @@ public static class CollectionMemberUpgrade
         file.LevelExport.WriteBinary(level);
         foreach (var collection in members.GroupBy(m => m.CollectionActorExport))
             ActorDeletionPlan.RemoveMembers(collection.Key, collection.Select(m => m.Export.UIndex).ToHashSet());
+        UpdateFilters(file.Package, members);
+    }
+
+    /// <summary>
+    /// Lists <paramref name="members"/> in decals' Filters as the actors they are now. A Filter the commit wrote, here or moved here, lists a member by its
+    /// component, since its actor didn't exist yet (<see cref="DecalFilterSettings.Write"/>). One that lists a collection means its meshes, so those that left it stay listed
+    /// </summary>
+    private static void UpdateFilters(IMEPackage package, CollectionActorComponentProxy[] members)
+    {
+        foreach (var decal in package.Exports.Where(e => e.IsA("DecalComponent")))
+        {
+            if (decal.GetProperty<ArrayProperty<ObjectProperty>>("Filter") is not { Count: > 0 } filter) continue;
+            bool changed = false;
+            foreach (var member in members)
+            {
+                if (filter.FirstOrDefault(entry => entry.Value == member.Export.UIndex) is { } listed) listed.Value = member.Export.idxLink;
+                else if (filter.Any(entry => entry.Value == member.CollectionActorExport.UIndex)) filter.Add(new ObjectProperty(member.Export.idxLink));
+                else continue;
+                changed = true;
+            }
+            if (changed) decal.WriteProperty(filter);
+        }
     }
 
     private static void MakeActor(CollectionActorComponentProxy member, OpenLevelFile file, Level level)
@@ -101,7 +130,7 @@ public static class CollectionMemberUpgrade
         private void SetPending(bool pending)
         {
             if (member.OwningFile is not { IsReadOnly: false }) throw new InvalidOperationException("Its file is read-only or closed.");
-            member.UpgradePending = pending;
+            member.UpgradeRequested = pending;
         }
     }
 }

@@ -1213,25 +1213,48 @@ public abstract class CollectionActorComponentProxy : ActorProxy
     /// </summary>
     public Matrix4x4 SavedLocalToWorld { get; private set; }
 
-    private bool upgradePending;
+    private bool upgradeRequested;
+    private readonly HashSet<DecalActorProxy> neededBy = [];
 
-    /// <summary>Whether the commit makes it an actor of its own (<see cref="CollectionMemberUpgrade"/>). It looks the same until then, and can be edited as ever</summary>
-    internal bool UpgradePending
+    /// <summary>Whether Upgrade to Actor was used on it, and not undone</summary>
+    internal bool UpgradeRequested
     {
-        get => upgradePending;
+        get => upgradeRequested;
         set
         {
-            upgradePending = value;
-            UpdateDirty();
-            NotifyPendingChange();
-            NotifyDeleteRefusal();
+            upgradeRequested = value;
+            OnUpgradeChanged();
         }
     }
 
-    private protected override string EditKind => upgradePending ? "Upgrade" : base.EditKind;
+    /// <summary>
+    /// Whether the commit makes it an actor of its own (<see cref="CollectionMemberUpgrade"/>): because it was asked to, or because a decal needs one.
+    /// It looks the same until then, and can be edited as ever
+    /// </summary>
+    internal bool UpgradePending => upgradeRequested || neededBy.Count != 0;
+
+    /// <summary>
+    /// Says whether <paramref name="decal"/>'s uncommitted changes need it to be an actor: its Filter lists it, which only an actor can be, or its projection
+    /// lands on it (in LE1-LE3's shipping levels, every static mesh a decal lands on has an actor of its own). This follows the decal, so it's no undo
+    /// step of its own: the decal moving off, its Filter dropping it or its edit being undone ends it
+    /// </summary>
+    internal void SetNeededBy(DecalActorProxy decal, bool needed)
+    {
+        if (needed ? neededBy.Add(decal) : neededBy.Remove(decal)) OnUpgradeChanged();
+    }
+
+    private void OnUpgradeChanged()
+    {
+        UpdateDirty();
+        NotifyPendingChange();
+        NotifyDeleteRefusal();
+    }
+
+    private protected override string EditKind => UpgradePending ? "Upgrade" : base.EditKind;
     public override string UpgradeRefusal => CollectionMemberUpgrade.Refusal(this);
-    public override string DeleteRefusal => base.DeleteRefusal ?? (upgradePending ? "Its upgrade to an actor is pending: undo that first." : null);
-    protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || upgradePending;
+    public override string DeleteRefusal => base.DeleteRefusal ?? (upgradeRequested ? "Its upgrade to an actor is pending: undo that first."
+        : neededBy.Count != 0 ? "A decal's uncommitted changes need it to be an actor." : null);
+    protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || UpgradePending;
 
     protected CollectionActorComponentProxy(IActorEditorContext context, StaticCollectionActor collectionActor, ExportEntry componentActor, int index) : base(componentActor)
     {
@@ -1268,7 +1291,8 @@ public abstract class CollectionActorComponentProxy : ActorProxy
     {
         //the transform the commit wrote, if it was moved
         if (IsTransformDirty) SavedLocalToWorld = ComposedLocalToWorld;
-        upgradePending = false;
+        upgradeRequested = false;
+        neededBy.Clear();
         base.MarkClean();
     }
 

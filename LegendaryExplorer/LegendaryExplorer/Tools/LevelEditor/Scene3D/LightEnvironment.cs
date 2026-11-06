@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using LegendaryExplorerCore.Coalesced;
 using LegendaryExplorerCore.Coalesced.Config;
 using LegendaryExplorerCore.GameFilesystem;
@@ -569,7 +570,7 @@ public sealed class BioRimLight
     private readonly BoxSphereBounds Bounds;
     private readonly Vector4 Color;
     private readonly bool CastsShadow;
-    private readonly object CacheLock = new();
+    private readonly Lock CacheLock = new();
     private Vector3 CachedViewLocation;
     private SceneLight CachedLight;
     private bool HasCachedLight;
@@ -792,7 +793,7 @@ public sealed class DynamicLightEnvironment
 
     //guarded by CacheLock, since primitives are added on the loading thread while the render thread reads them
     private readonly List<LightEnvironmentPrimitive> Primitives = [];
-    private readonly object CacheLock = new();
+    private readonly Lock CacheLock = new();
     //null if computing it failed
     private LightEnvironmentLighting CachedLighting;
     private bool HasCachedLighting;

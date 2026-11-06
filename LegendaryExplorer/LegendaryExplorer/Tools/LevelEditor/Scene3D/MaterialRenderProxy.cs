@@ -289,7 +289,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     private volatile bool AttemptedShaderLoad;
     //set while the material waits in its context's queue, see CanRenderWithGameShaders
     private volatile bool QueuedForGameShaderLoad;
-    private readonly object ShaderLoadLock = new();
+    private readonly Lock ShaderLoadLock = new();
     private readonly MeshRenderContext Context;
 
     private string gameShaderError;

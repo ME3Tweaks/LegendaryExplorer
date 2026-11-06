@@ -473,12 +473,12 @@
                                                       SelectedValue="{Binding FilterMode}" AutomationProperties.Name="Decal filter mode" ToolTip="FilterMode: all meshes, only actors in Filter, or all actors except those in Filter."/>
                                             <TextBlock Text="{Binding FilterSummary}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,6,0,4"/>
                                             <TextBlock Text="Search actors or packages" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,2,0,3"/>
-                                            <TextBox Text="{Binding FilterSearch, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Search decal receiving meshes" ToolTip="Search loaded mesh actors by name or package" Margin="0,0,0,4"/>
+                                            <TextBox Text="{Binding FilterSearch, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Search decal receiving meshes" ToolTip="Search loaded mesh actors and collection meshes by name, mesh or package" Margin="0,0,0,4"/>
                                             <ListBox ItemsSource="{Binding FilterCandidates}" MaxHeight="210" Background="{StaticResource EditorInput}" BorderBrush="{StaticResource EditorBorder}"
                                                      ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
                                                      VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" HorizontalContentAlignment="Stretch">
                                                     <ListBox.ItemTemplate><DataTemplate>
-                                                        <CheckBox IsChecked="{Binding IsChecked}" Margin="0,3" ToolTip="{Binding Path}" HorizontalContentAlignment="Stretch">
+                                                        <CheckBox IsChecked="{Binding IsChecked}" IsEnabled="{Binding CanChange, Converter={StaticResource BoolEnabledConverter}}" Margin="0,3" ToolTip="{Binding Path}" ToolTipService.ShowOnDisabled="True" HorizontalContentAlignment="Stretch">
                                                             <StackPanel>
                                                                 <TextBlock Text="{Binding Label}" TextWrapping="Wrap"/>
                                                                 <TextBlock Text="{Binding Detail}" Foreground="{StaticResource EditorMuted}" FontSize="10" TextWrapping="Wrap"/>

@@ -12,6 +12,7 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 public sealed class DecalFilterSettings : IEquatable<DecalFilterSettings>
 {
     public string Mode { get; }
+    /// <summary>The actors, with a collection's member as its component: it has no actor until the commit that upgrades it (<see cref="IsMember"/>)</summary>
     public IReadOnlyList<IEntry> Actors { get; }
     public DecalFilterSettings(string mode, IEnumerable<IEntry> actors)
     {
@@ -28,11 +29,17 @@ public sealed class DecalFilterSettings : IEquatable<DecalFilterSettings>
         return new(properties.GetProp<EnumProperty>("FilterMode")?.Value.Name ?? "FM_None",
             filter?.Select(p => package.GetEntry(p.Value)).Select(e => EffectiveLightingProperties.Resolve(e, cache) ?? e) ?? []);
     }
-    internal bool Allows(ExportEntry actor) => Mode switch
+    /// <summary>Whether <paramref name="entry"/> in <see cref="Actors"/> is a mesh component: a collection's member, which a commit makes an actor</summary>
+    internal static bool IsMember(IEntry entry) => entry.ClassName == "StaticMeshComponent";
+    /// <summary>This filter once its members are the actors a commit made them</summary>
+    internal DecalFilterSettings WithActors() => new(Mode, Actors.Select(e => IsMember(e) ? e.Parent : e));
+    private bool Lists(ExportEntry component) => Actors.Contains(component) || Actors.Contains(component.Parent);
+    /// <summary>Whether the decal can land on the mesh <paramref name="component"/></summary>
+    internal bool Allows(ExportEntry component) => Mode switch
     {
         "FM_None" => true,
-        "FM_Affect" => Actors.Contains(actor),
-        "FM_Ignore" => !Actors.Contains(actor),
+        "FM_Affect" => Lists(component),
+        "FM_Ignore" => !Lists(component),
         _ => throw new InvalidOperationException("Unknown decal receiver filter mode.")
     };
     internal void Validate(IMEPackage package)
@@ -43,6 +50,8 @@ public sealed class DecalFilterSettings : IEquatable<DecalFilterSettings>
     internal void Write(PropertyCollection properties, IMEPackage logicalPackage, IMEPackage destination)
     {
         Validate(logicalPackage);
+        // A member is written as its component, which keeps its UIndex: CollectionMemberUpgrade.Apply replaces it with the actor it makes.
+        // It's in this package, which the commit has checked (DecalComponentProxy.ValidateCommit)
         properties.AddOrReplaceProp(new EnumProperty(Mode, "EFilterMode", destination.Game, "FilterMode"));
         properties.AddOrReplaceProp(new ArrayProperty<ObjectProperty>(Actors.Select(e => new ObjectProperty(
             e.FileRef == logicalPackage ? e.UIndex : ImportReference(e, destination).UIndex)), "Filter"));
@@ -66,10 +75,24 @@ public sealed record DecalFilterModeOption(string Value, string Label);
 public sealed class DecalFilterCandidate(EditableDecal decal, IEntry actor) : NotifyPropertyChangedBase
 {
     public IEntry Actor { get; } = actor;
+    private string description;
     public string Label => $"{Actor.ObjectName.Instanced} — {System.IO.Path.GetFileName(Actor.FileRef.FilePath)}";
-    public string Detail => Actor.ClassName == "StaticMeshCollectionActor" ? "Mesh collection — applies to every mesh in this collection"
+    private string Description => description ??= DecalFilterSettings.IsMember(Actor) ? $"{MeshName} — collection mesh, becomes an actor if checked when committed"
+        : Actor.ClassName == "StaticMeshCollectionActor" ? "Mesh collection — applies to every mesh in this collection"
         : Actor is ImportEntry ? "Unresolved actor reference" : Actor.ClassName;
+    private string MeshName => (Actor as ExportEntry)?.GetProperty<ObjectProperty>("StaticMesh")?.ResolveToEntry(Actor.FileRef)?.ObjectName.Instanced ?? "No mesh";
+    private string Refusal => decal.FilterRefusal(Actor);
+    public string Detail => Refusal is { } refusal ? $"{Description}. Can't be checked: {refusal}" : Description;
     public string Path => Actor.InstancedFullPath;
     public bool IsChecked { get => decal.Settings.Filter.Actors.Contains(Actor); set => decal.SetFilterActor(Actor, value); }
-    internal void Refresh() => OnPropertyChanged(nameof(IsChecked));
+    /// <summary>A checked member that can't be an actor can still be unchecked</summary>
+    public bool CanChange => IsChecked || Refusal is null;
+    internal bool Matches(string text) => Label.Contains(text, StringComparison.OrdinalIgnoreCase) || Path.Contains(text, StringComparison.OrdinalIgnoreCase)
+        || Description.Contains(text, StringComparison.OrdinalIgnoreCase);
+    internal void Refresh()
+    {
+        OnPropertyChanged(nameof(IsChecked));
+        OnPropertyChanged(nameof(CanChange));
+        OnPropertyChanged(nameof(Detail));
+    }
 }
