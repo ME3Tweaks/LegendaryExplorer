@@ -46,7 +46,7 @@ public sealed class ActorDeletionPlan
     private readonly bool canCleanDestroyedContent;
 
     private static IReadOnlyList<string> LightClasses => LightActorProxy.StandaloneClasses;
-    private static readonly string[] SupportedClasses = ["Note", "TargetPoint", "StaticMeshActor", "InterpActor", "SplineActor", "SplineLoftActor", .. LightClasses];
+    private static readonly string[] SupportedClasses = ["Note", "TargetPoint", "Emitter", "StaticMeshActor", "InterpActor", "SplineActor", "SplineLoftActor", .. LightClasses];
     private static bool Supports(ExportEntry actor) => actor.Game.IsLEGame() && (SupportedClasses.Contains(actor.ClassName) || CollectionOf(actor) is not null);
 
     /// <summary>
@@ -128,6 +128,7 @@ public sealed class ActorDeletionPlan
         bool meshActor = !member && actor.ClassName is "StaticMeshActor" or "InterpActor";
         bool splineActor = !member && actor.ClassName is "SplineActor" or "SplineLoftActor";
         bool lightActor = !member && LightClasses.Contains(actor.ClassName);
+        bool emitter = !member && actor.ClassName == "Emitter";
         foreach (var child in actor.GetAllDescendants())
         {
             // Ownership comes from the outer chain, never from an asset/property reference. Unknown
@@ -141,33 +142,34 @@ public sealed class ActorDeletionPlan
                     || splineActor && (e.Parent == actor && e.ClassName is ("SplineComponent" or "SplineMeshComponent" or "DynamicLightEnvironmentComponent")
                         || e.Parent?.ClassName == "SplineMeshComponent" && e.ClassName is ("RB_BodyInstance" or "ShadowMap1D" or "ShadowMap2D"))
                     // A light's component, and its light function
-                    || lightActor && (e.Parent == actor && IsLightComponent(e) || e.Parent is ExportEntry owner && IsLightComponent(owner) && e.ClassName == "LightFunction"));
+                    || lightActor && (e.Parent == actor && IsLightComponent(e) || e.Parent is ExportEntry owner && IsLightComponent(owner) && e.ClassName == "LightFunction")
+                    // Its component, and in a few of LE2's, the light environment that lights its particles. Its template is an asset of the package, not under it
+                    || emitter && e.Parent == actor && e.ClassName is ("ParticleSystemComponent" or "ParticleLightEnvironmentComponent"));
             if (supported) entries.Add((ExportEntry)child);
             else blockers.Add($"#{child.UIndex} {child.InstancedFullPath}: unsupported owned subobject.");
         }
-        if (lightActor)
+        // That a property of the actor's refers to a component of this kind that the actor owns, or to nothing
+        void RequireOwned(string name, Func<ExportEntry, bool> isKind, string kind)
         {
-            foreach (var prop in actor.GetProperties().Where(p => p.Name == "LightComponent"))
+            foreach (var prop in actor.GetProperties().Where(p => p.Name == name))
             {
                 if (prop is not ObjectProperty reference || reference.Value != 0
-                    && !entries.Any(e => e.Parent == actor && e.UIndex == reference.Value && IsLightComponent(e)))
-                    blockers.Add("LightComponent must refer to a light component owned by this actor.");
+                    && !entries.Any(e => e.Parent == actor && e.UIndex == reference.Value && isKind(e)))
+                    blockers.Add($"{name} must refer to {kind} owned by this actor.");
             }
+        }
+        if (lightActor) RequireOwned("LightComponent", IsLightComponent, "a light component");
+        if (emitter)
+        {
+            RequireOwned("ParticleSystemComponent", e => e.ClassName == "ParticleSystemComponent", "a supported component");
+            RequireOwned("LightEnvironment", e => e.ClassName == "ParticleLightEnvironmentComponent", "a supported component");
         }
         if (meshActor)
         {
-            var props = actor.GetProperties();
-            foreach (string name in new[] { "StaticMeshComponent", "CollisionComponent", "LightEnvironment" })
-            {
-                foreach (var prop in props.Where(p => p.Name == name))
-                {
-                    if (prop is not ObjectProperty reference || reference.Value != 0
-                        && !entries.Any(e => e.Parent == actor && e.UIndex == reference.Value
-                            && e.ClassName == (name == "LightEnvironment" ? "DynamicLightEnvironmentComponent" : "StaticMeshComponent")))
-                        blockers.Add($"{name} must refer to a supported component owned by this actor.");
-                }
-            }
-            foreach (var prop in props.Where(p => p.Name == "Components"))
+            RequireOwned("StaticMeshComponent", e => e.ClassName == "StaticMeshComponent", "a supported component");
+            RequireOwned("CollisionComponent", e => e.ClassName == "StaticMeshComponent", "a supported component");
+            RequireOwned("LightEnvironment", e => e.ClassName == "DynamicLightEnvironmentComponent", "a supported component");
+            foreach (var prop in actor.GetProperties().Where(p => p.Name == "Components"))
             {
                 if (prop is not ArrayProperty<ObjectProperty> components
                     || components.Any(c => c.Value != 0 && !entries.Any(e => e.Parent == actor && e.UIndex == c.Value)))
