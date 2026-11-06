@@ -27,7 +27,7 @@ public unsafe class LEEffect : IDisposable
     private readonly DepthStencilState HitProxyDepthState;
     private const int HIT_PROXY_CONSTANT_BUFFER_SLOT = 3;
 
-    // Reset at each mesh section, since other effects can change the context's bindings.
+    // Reset whenever something else changes the context's bindings, see PixelShaderResourceBindings.
     public readonly PixelShaderResourceBindings PixelShaderResources = new();
 
     public Matrix4x4 ViewMatrix { get; private set; }

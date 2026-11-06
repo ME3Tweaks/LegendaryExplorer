@@ -1559,6 +1559,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             Func<ExportEntry, bool> unsafeLoadDelegate = null, string instancedFullPathOverride = null)
         {
             var entryFullPath = instancedFullPathOverride ?? entry.InstancedFullPath;
+            if (IsNativeClassImport(entry, entryFullPath)) return null;
             cache ??= new PackageCache();
             //if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
             //{
@@ -1652,6 +1653,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return FindExportInPackage(package, packagePath, entryFullPath);
             }
         }
+
+        /// <summary>
+        /// Whether an import is of a class defined only in native code, which has no export in any package to find
+        /// </summary>
+        internal static bool IsNativeClassImport(ImportEntry entry, string fullPath) =>
+            entry.ClassName == "Class" && GlobalUnrealObjectInfo.IsAKnownNativeClass(fullPath, entry.Game);
 
         /// <summary>
         /// Finds an export in a package based on its full path. This can change depending on if it's forced export or not.
