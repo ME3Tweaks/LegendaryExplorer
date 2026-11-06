@@ -65,7 +65,7 @@ public sealed class TerrainProxy : ActorProxy
             {
                 //Track imports too, including unresolved ones, so relinking a layer retries it.
                 Dependencies.Track(entry);
-                return entry as ExportEntry ?? cache.ResolveImport((ImportEntry)entry);
+                return entry as ExportEntry ?? EntryImporter.ResolveImport((ImportEntry)entry, cache);
             });
             GameShadingError = !Export.Game.IsLEGame() ? "game shaders are only supported for Legendary Edition games"
                 : HeightField.Binary.MaxCollisionDisplacement != 0 ? "the terrain has displacement, which isn't supported"

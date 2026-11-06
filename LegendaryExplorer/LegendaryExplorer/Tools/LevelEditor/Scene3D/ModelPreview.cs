@@ -1040,7 +1040,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
         {
             if (matEntry is not ExportEntry matExport)
             {
-                matExport = renderContext.PackageCache.ResolveImport((ImportEntry)matEntry);
+                matExport = EntryImporter.ResolveImport((ImportEntry)matEntry, renderContext.PackageCache);
                 if (matExport is null)
                 {
                     Debug.WriteLine("Could not find import material.");

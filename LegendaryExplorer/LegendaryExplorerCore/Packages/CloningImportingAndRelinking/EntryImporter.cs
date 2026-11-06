@@ -1536,6 +1536,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
+        /// Attempts to resolve the import through <paramref name="cache"/>, which by default does what the overload with more options does.
+        /// </summary>
+        /// <param name="entry">The import to resolve</param>
+        /// <param name="cache">Package cache that is used to improve performnace by not having to open all packages from disk. A <see cref="TieredPackageCache"/> is preferred.</param>
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache) =>
+            cache is null ? ResolveImport(entry, null, "INT") : cache.ResolveImport(entry);
+
+        /// <summary>
         /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
         /// </summary>
         /// <param name="entry">The import to resolve</param>

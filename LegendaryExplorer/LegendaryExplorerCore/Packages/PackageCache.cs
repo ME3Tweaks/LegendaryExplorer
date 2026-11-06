@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using System.Threading;
 
 namespace LegendaryExplorerCore.Packages
@@ -36,6 +37,12 @@ namespace LegendaryExplorerCore.Packages
         public readonly CaseInsensitiveConcurrentDictionary<DateTime> LastAccessMap = new();
 
         public PackageCache() { }
+
+        /// <summary>
+        /// Resolves an import with this cache's packages. <see cref="EntryImporter.ResolveImport(ImportEntry, PackageCache)"/> calls this,
+        /// so that a subclass that knows more about its packages can answer for it
+        /// </summary>
+        public virtual ExportEntry ResolveImport(ImportEntry import) => EntryImporter.ResolveImport(import, this, "INT");
 
         /// <summary>
         /// The list of packages that will not be dropped from last access staleness

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
@@ -35,10 +34,8 @@ public sealed class PreviewPackageCache : PackageCache
     /// </summary>
     internal void SetLoading(bool loading) => LoadImports = loading ? new() : null;
 
-    /// <summary>Resolves an import with this cache's packages</summary>
-    public ExportEntry ResolveImport(ImportEntry import) => LoadImports is { } resolved
-        ? resolved.GetOrAdd(import, i => EntryImporter.ResolveImport(i, this))
-        : EntryImporter.ResolveImport(import, this);
+    public override ExportEntry ResolveImport(ImportEntry import) =>
+        LoadImports is { } resolved ? resolved.GetOrAdd(import, base.ResolveImport) : base.ResolveImport(import);
 
     public override IMEPackage GetCachedPackage(string packagePath, bool openIfNotInCache = true,
         Func<string, IMEPackage> openPackageMethod = null)
