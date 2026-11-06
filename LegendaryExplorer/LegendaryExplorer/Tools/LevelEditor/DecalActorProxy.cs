@@ -127,6 +127,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     private string reprojectionError;
     private TransformSnapshot? projectedTransform;
     private DecalSettings projectedSettings;
+    //reprojection reads parsed meshes on every move, long after any load has ended
     private readonly Dictionary<ExportEntry, StaticMesh> sourceMeshes = [];
     private HashSet<CollectionActorComponentProxy> neededMembers = [];
     private List<(MeshComponentProxy Source, Matrix4x4 Transform)> projectedSources = [];
@@ -306,7 +307,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                     if (sourceProps.GetProp<BoolProperty>("bAcceptsStaticDecals") is { Value: false }) continue;
                     var geometry = EffectiveLightingProperties.ResolveReference(source.Export, "StaticMesh", context.PackageCache)
                         ?? throw new InvalidOperationException("A receiving static mesh could not be resolved.");
-                    if (!sourceMeshes.TryGetValue(geometry, out var mesh)) sourceMeshes[geometry] = mesh = geometry.GetBinaryData<StaticMesh>();
+                    if (!sourceMeshes.TryGetValue(geometry, out var mesh)) sourceMeshes[geometry] = mesh = context.GetStaticMesh(geometry);
                     if (mesh.LODModels.Length == 0) throw new InvalidOperationException("A receiving static mesh has no render LOD.");
                     int uv = geometry.GetCondensedProperties().GetProp<IntProperty>("LightMapCoordinateIndex")?.Value ?? 0;
                     var data = DecalReprojection.Project(projection, mesh.LODModels[0], source.LocalToWorld, source.Export.UIndex, uv, backfaces, angle, noClip);

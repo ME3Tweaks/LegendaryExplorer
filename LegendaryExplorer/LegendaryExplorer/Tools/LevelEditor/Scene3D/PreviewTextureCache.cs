@@ -1,4 +1,5 @@
-﻿using LegendaryExplorerCore.Helpers;
+﻿using LegendaryExplorerCore.DebugTools;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -10,7 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Texture2D = SharpDX.Direct3D11.Texture2D;
+using UnrealTexture = LegendaryExplorerCore.Unreal.Classes.Texture2D;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
@@ -32,20 +35,82 @@ public class PreviewTextureCache : IDisposable
         public ExportEntry Export { get; }
 
         /// <summary>
-        /// The Direct3D ShaderResourceView for binding to shaders. Reads raw texel values.
+        /// What's resident, reading raw texel values. This requests no detail, so draws of a texture that can stream use <see cref="GetView"/>.
         /// </summary>
-        public ShaderResourceView TextureView { get; private set; }
+        public ShaderResourceView ResidentView => resources?.View;
 
         /// <summary>
         /// For textures holding sRGB-encoded color, a view that converts to linear when sampled, as the game's shaders expect.
-        /// Otherwise, the same as <see cref="TextureView"/>.
+        /// Otherwise, the same as <see cref="ResidentView"/>.
         /// </summary>
-        public ShaderResourceView LinearTextureView { get; private set; }
+        public ShaderResourceView ResidentLinearView => resources?.LinearView;
+
+        /// <summary>
+        /// <see cref="ResidentView"/>, for a draw to bind. This requests the detail the draw needs.
+        /// </summary>
+        /// <param name="pixels">The draw's size, from <see cref="MeshRenderContext.TexturePixels"/></param>
+        public ShaderResourceView GetView(float pixels)
+        {
+            RequestDetail(pixels, pixels);
+            return ResidentView;
+        }
+
+        /// <summary>
+        /// <see cref="ResidentLinearView"/>, for a draw to bind. This requests the detail the draw needs.
+        /// </summary>
+        /// <param name="pixels">The draw's size, from <see cref="MeshRenderContext.TexturePixels"/></param>
+        public ShaderResourceView GetLinearView(float pixels)
+        {
+            RequestDetail(pixels, pixels);
+            return ResidentLinearView;
+        }
+
+        /// <summary>
+        /// <see cref="ResidentLinearView"/>, for a draw to bind from an atlas such as a light-map page. A draw's size says nothing about
+        /// the detail its part of an atlas needs, so this requests the whole mip chain, though only as urgently as the draw is large.
+        /// </summary>
+        /// <param name="pixels">The draw's size, from <see cref="MeshRenderContext.TexturePixels"/></param>
+        public ShaderResourceView GetLinearAtlasView(float pixels)
+        {
+            RequestDetail(MeshRenderContext.FullChainPixels, pixels);
+            return ResidentLinearView;
+        }
 
         /// <summary>
         /// The Direct3D texture for ShaderResourceView creation.
         /// </summary>
-        public Texture2D Texture { get; private set; }
+        public Texture2D Texture => resources?.Texture;
+
+        private readonly MeshRenderContext context;
+        private TextureResources resources;
+        internal StreamedTextureSource StreamingSource;
+        internal int ResidentMip;
+        internal int RequestedMip;
+        internal long RequestedFrame = -1;
+        internal float Priority;
+        internal long RetryFrame;
+        internal int StreamingFailures;
+
+        private void RequestDetail(float pixels, float priority)
+        {
+            if (!context.Wireframe) context.TextureCache.RequestDetail(this, pixels, priority);
+        }
+
+        internal void Adopt(TextureResources replacement, int mip)
+        {
+            var previous = resources;
+            resources = replacement;
+            ResidentMip = mip;
+            StreamingFailures = 0;
+            if (mip == 0) StreamingSource = null;
+            previous?.Dispose();
+        }
+
+        /// <summary>
+        /// Whether a replacement whose largest mip is <paramref name="mip"/> stops above the smallest mip that's resident
+        /// </summary>
+        internal bool WouldLoseMips(TextureResources replacement, int mip) =>
+            mip + replacement.Texture.Description.MipLevels < ResidentMip + resources.Texture.Description.MipLevels;
 
         /// <summary>
         /// The time this object was last accessed.
@@ -65,11 +130,13 @@ public class PreviewTextureCache : IDisposable
         /// </summary>
         public TextureEntry(MeshRenderContext renderContext, ExportEntry export)
         {
+            context = renderContext;
             MemoryAnalyzer.AddTrackedMemoryItem($"PreviewTexture {export.ObjectName}", new WeakReference(this));
             Export = export;
             InstanceFullPath = export.InstancedFullPath;
             IsTextureCube = export.ClassName == "TextureCube";
-            Load(renderContext);
+            try { Load(renderContext); }
+            catch { Dispose(); throw; }
         }
 
         private void Load(MeshRenderContext renderContext)
@@ -81,10 +148,30 @@ public class PreviewTextureCache : IDisposable
                 AddressV = GetAddressMode(props.GetProp<EnumProperty>("AddressY"));
             }
 
-            MeshRenderContext.LoadedTexture loaded = IsTextureCube ? renderContext.LoadUnrealTextureCube(Export) : renderContext.LoadUnrealTexture(Export);
-            Texture = loaded.Texture;
-            TextureView = CreateView(renderContext, loaded.ViewFormat);
-            LinearTextureView = loaded.SRGBViewFormat is Format srgbFormat ? CreateView(renderContext, srgbFormat) : TextureView;
+            UnrealTexture parsed = null;
+            if (renderContext.TextureStreamingEnabled && renderContext.TextureDataOverride is null)
+            {
+                StreamingSource = StreamedTextureSource.TryCreate(Export, out parsed);
+            }
+            if (StreamingSource is { } source)
+            {
+                try
+                {
+                    resources = source.Load(renderContext.Device, source.InitialMip, CancellationToken.None);
+                    ResidentMip = source.InitialMip;
+                    return;
+                }
+                catch (Exception e)
+                {
+                    //this is the mip streaming starts from, but a full load can still show the ones above it
+                    Debug.WriteLine($"Could not stream texture {InstanceFullPath}: {e.Message}");
+                    StreamingSource = null;
+                }
+            }
+            MeshRenderContext.LoadedTexture loaded = IsTextureCube ? renderContext.LoadUnrealTextureCube(Export)
+                : parsed is null ? renderContext.LoadUnrealTexture(Export) : renderContext.LoadUnrealTexture(parsed);
+            resources = TextureResources.Create(renderContext.Device, loaded, IsTextureCube);
+            ResidentMip = 0;
         }
 
         /// <summary>
@@ -104,36 +191,18 @@ public class PreviewTextureCache : IDisposable
             _ => TextureAddressMode.Wrap //TA_Wrap is the default
         };
 
-        private ShaderResourceView CreateView(MeshRenderContext renderContext, Format format)
-        {
-            var desc = new ShaderResourceViewDescription { Format = format };
-            if (IsTextureCube)
-            {
-                desc.Dimension = SharpDX.Direct3D.ShaderResourceViewDimension.TextureCube;
-                desc.TextureCube.MipLevels = -1;
-            }
-            else
-            {
-                desc.Dimension = SharpDX.Direct3D.ShaderResourceViewDimension.Texture2D;
-                desc.Texture2D.MipLevels = -1;
-            }
-            return new ShaderResourceView(renderContext.Device, Texture, desc);
-        }
-
         /// <summary>
-        /// Disposes <see cref="TextureView"/> and <see cref="Texture"/> if they have been loaded.
+        /// Disposes <see cref="ResidentView"/> and <see cref="Texture"/> if they have been loaded.
         /// </summary>
         public void Dispose()
         {
-            if (LinearTextureView != TextureView)
-            {
-                LinearTextureView?.Dispose();
-            }
-            LinearTextureView = null;
-            TextureView?.Dispose();
-            TextureView = null;
-            Texture?.Dispose();
-            Texture = null;
+            context.TextureCache.CancelStreaming(this);
+            StreamingSource = null;
+            RequestedFrame = -1;
+            RetryFrame = 0;
+            StreamingFailures = 0;
+            resources?.Dispose();
+            resources = null;
         }
     }
 
@@ -364,6 +433,129 @@ public class PreviewTextureCache : IDisposable
 
     public MeshRenderContext RenderContext { get; }
 
+    //a failed read may pass, such as another tool having the archive locked, but a missing or corrupt archive won't
+    private const int MaxStreamingAttempts = 3;
+    private const int StreamingRetryFrames = 600;
+
+    private long streamingFrame;
+    private StreamingJob streamingJob;
+    //the entries requested since the last EndStreamingFrame. Only touched between and during frames, so it needs no lock
+    private readonly HashSet<TextureEntry> requested = [];
+
+    private sealed class StreamingJob
+    {
+        public TextureEntry Entry;
+        public StreamedTextureSource Source;
+        public int Mip;
+        public readonly CancellationTokenSource Cancellation = new();
+        public Task<TextureResources> Task;
+    }
+
+    /// <param name="pixels">The size that decides the mip</param>
+    /// <param name="priority">Among a frame's requests, the largest is streamed first</param>
+    internal void RequestDetail(TextureEntry entry, float pixels, float priority)
+    {
+        if (entry.StreamingSource is not { } source) return;
+        int mip = source.MipForPixels(pixels);
+        if (entry.RequestedFrame != streamingFrame)
+        {
+            entry.RequestedFrame = streamingFrame;
+            entry.RequestedMip = mip;
+            entry.Priority = priority;
+            requested.Add(entry);
+        }
+        else
+        {
+            entry.RequestedMip = Math.Min(entry.RequestedMip, mip);
+            entry.Priority = Math.Max(entry.Priority, priority);
+        }
+    }
+
+    /// <summary>Publishes at most one completed replacement, strictly between frames. Never waits for I/O.</summary>
+    internal void BeginStreamingFrame()
+    {
+        streamingFrame++;
+        if (streamingJob?.Task.IsCompleted != true) return;
+        var job = streamingJob;
+        var entry = job.Entry;
+        streamingJob = null;
+        try
+        {
+            var ready = job.Task.GetAwaiter().GetResult();
+            if (job.Cancellation.IsCancellationRequested || entry.StreamingSource != job.Source) ready.Dispose();
+            else if (!entry.WouldLoseMips(ready, job.Mip)) entry.Adopt(ready, job.Mip);
+            else if (TryScheduleRetry(entry)) ready.Dispose();
+            else
+            {
+                //the mips it lacks only matter when minified, while the mip that was asked for matters up close
+                LECLog.Warning($"Could not read all the mips of texture {entry.InstanceFullPath}, so it will alias when minified");
+                entry.Adopt(ready, job.Mip);
+            }
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception e)
+        {
+            // Keep the resident texture, and don't retry every frame.
+            if (entry.StreamingSource == job.Source && !TryScheduleRetry(entry))
+            {
+                entry.StreamingSource = null;
+                LECLog.Warning($"Could not stream texture {entry.InstanceFullPath}, so it stays at low resolution: {e.Message}");
+            }
+        }
+        finally { job.Cancellation.Dispose(); }
+    }
+
+    /// <returns>False if that was the entry's last attempt</returns>
+    private bool TryScheduleRetry(TextureEntry entry)
+    {
+        if (++entry.StreamingFailures >= MaxStreamingAttempts) return false;
+        entry.RetryFrame = streamingFrame + StreamingRetryFrames;
+        return true;
+    }
+
+    /// <summary>
+    /// Chooses among this frame's requests, deduplicated across all materials using an entry.
+    /// One worker and at most one completed texture bound the CPU memory, I/O and driver pressure of work in flight.
+    /// Resident detail is never dropped again, so VRAM grows towards the cost of full loads until the level closes.
+    /// </summary>
+    internal void EndStreamingFrame()
+    {
+        TextureEntry next = null;
+        if (streamingJob is null)
+        {
+            foreach (var entry in requested)
+            {
+                if (entry.StreamingSource is null || entry.RequestedFrame != streamingFrame || entry.RequestedMip >= entry.ResidentMip
+                    || streamingFrame < entry.RetryFrame) continue;
+                if (next is null || entry.Priority > next.Priority) next = entry;
+            }
+        }
+        requested.Clear();
+        if (next is null) return;
+        var job = new StreamingJob { Entry = next, Source = next.StreamingSource, Mip = next.RequestedMip };
+        var device = RenderContext.Device;
+        job.Task = Task.Run(() => job.Source.Load(device, job.Mip, job.Cancellation.Token));
+        streamingJob = job;
+    }
+
+    private void CancelStreaming(TextureEntry entry)
+    {
+        if (streamingJob?.Entry == entry) streamingJob.Cancellation.Cancel();
+    }
+
+    /// <summary>Called only at scene teardown/cache reset, before the device is released.</summary>
+    private void StopStreaming()
+    {
+        var job = streamingJob;
+        streamingJob = null;
+        if (job is null) return;
+        job.Cancellation.Cancel();
+        try { job.Task.GetAwaiter().GetResult().Dispose(); }
+        catch (OperationCanceledException) { }
+        catch (Exception e) { Debug.WriteLine($"Texture streaming stopped: {e.Message}"); }
+        finally { job.Cancellation.Dispose(); }
+    }
+
     /// <summary>
     /// Creates a new PreviewTextureCache.
     /// </summary>
@@ -394,15 +586,19 @@ public class PreviewTextureCache : IDisposable
     }
 
     /// <summary>
-    /// Disposes all the textures and resource views.
+    /// Stops streaming and disposes all the textures and resource views. The cache can be used again afterwards.
     /// </summary>
-    public void Dispose()
+    public void Clear()
     {
         lock (textureLoadLock)
         {
+            StopStreaming();
+            requested.Clear();
             AssetCache.DisposeValuesAndClear();
         }
     }
+
+    public void Dispose() => Clear();
 
     /// <summary>
     /// Reloads the cached textures read from edited exports in place. Call between frames.

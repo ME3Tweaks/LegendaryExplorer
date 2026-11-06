@@ -397,7 +397,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         IsBakePreview = readOnlyPreview;
         RenderContext = new LevelEditorRenderContext(readOnlyPreview)
         {
-            UseGameShaders = true
+            UseGameShaders = true,
+            TextureStreamingEnabled = true
         };
         // Not Background: continuous rendering of a slow scene (such as preview lighting) never leaves the dispatcher idle,
         // so a Background timer could starve and leave lighting-mode switches and package refreshes pending indefinitely.
@@ -955,6 +956,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (OpenFiles.Count == 0)
         {
             SceneViewer.SetShouldRender(false);
+            // No scene still references the caches. This also joins the texture worker and releases its uploads/readers.
+            RenderContext.UnloadLevel();
             TextBelowActors = "";
             UndoHistory.Clear();
             _preEditSnapshot = null;
@@ -1768,8 +1771,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             bool changed = PreviewShaderPreparationRequested;
             PreviewShaderPreparationRequested = false;
             // Each package is applied separately, so that one failing doesn't drop the others' updates
-            foreach (var (package, exports) in PendingPreviewUpdates.Drain())
-                changed |= TryRefresh(Path.GetFileName(package.FilePath), errors, () => ApplyPreviewUpdate(package, exports, errors));
+            using (RenderContext.BeginLoad())
+            {
+                foreach (var (package, exports) in PendingPreviewUpdates.Drain())
+                    changed |= TryRefresh(Path.GetFileName(package.FilePath), errors, () => ApplyPreviewUpdate(package, exports, errors));
+            }
             var mode = LightingMode;
             if (changed)
                 await Task.Run(() => RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress, mode));
@@ -2323,6 +2329,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void ApplyActorLightingEdits()
     {
         if (PendingActorLightingEdits.Count == 0 || PreviewRefreshInProgress) return;
+        using var load = RenderContext.BeginLoad();
         foreach (var lighting in PendingActorLightingEdits)
         {
             var mesh = lighting.Mesh;
@@ -3119,16 +3126,19 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private readonly struct RenderGuard : IDisposable
     {
         private readonly LevelEditor levelEditor;
+        private readonly IDisposable load;
 
         public RenderGuard(LevelEditor levEd)
         {
             levelEditor = levEd;
+            load = levEd.RenderContext.BeginLoad();
             levelEditor.SceneViewer.SetShouldRender(false);
             levelEditor.SetBusy();
         }
 
         public readonly void Dispose()
         {
+            load.Dispose();
             levelEditor.SceneViewer.SetShouldRender(true);
             levelEditor.EndBusy();
         }

@@ -489,7 +489,8 @@ public class StaticMeshComponentProxy : MeshComponentProxy
         if ((PreviewProperties is not null ? EffectiveLightingProperties.Resolve(meshReference, context.PackageCache)
             : EffectiveLightingProperties.ResolveReference(Export, "StaticMesh", context.PackageCache)) is { } meshExport)
         {
-            StaticMesh stm = meshExport.GetBinaryData<StaticMesh>();
+            StaticMesh stm = context.GetStaticMesh(meshExport);
+            Dependencies.TrackData(meshExport.FileRef.GetEntry(stm.BodySetup) as ExportEntry);
             SplineMeshDeformation deformation = ReadDeformation(stm);
             if (stm.LODModels.Length > LOD)
             {
@@ -529,7 +530,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
             }
             //a spline mesh's collision isn't deformed (and UE3 doesn't collide with it)
             if (deformation is null)
-                CollisionMesh = context.GetMeshFromAggGeom(stm.GetCollisionMeshProperty(Export.FileRef));
+                CollisionMesh = context.GetStaticMeshCollision(stm);
             UpdateSelfLocalToWorld();
         }
     }

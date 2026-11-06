@@ -233,7 +233,7 @@ public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
     {
         context.DefaultEffect.PrepDraw(context.ImmediateContext, context.AlphaBlendState, context.GetWorldConstants(lod.Mesh.LocalToWorld));
 
-        ShaderResourceView diffTextureView = DiffTexture?.TextureView ?? context.DefaultTextureView;
+        ShaderResourceView diffTextureView = DiffTexture?.GetView(context.TexturePixels(lod.Mesh.TransformedBounds)) ?? context.DefaultTextureView;
 
         context.DefaultEffect.RenderObject(
             context.ImmediateContext,
@@ -420,7 +420,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         }
         // A diffuse-only rectangle is not a valid fallback for a decal's opacity/projection.
         if (lod.Mesh.Decal is null)
-            context.RenderMeshWithDefaultEffect(lod.Mesh, s, FallbackDiffTexture?.TextureView);
+            context.RenderMeshWithDefaultEffect(lod.Mesh, s, FallbackDiffTexture?.GetView(context.TexturePixels(lod.Mesh.TransformedBounds)));
     }
 
     /// <summary>
@@ -802,27 +802,23 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
 
         // STEP 1: MESH
         var lodModel = m.LODModels[selectedLOD];
-        var triangles = new List<Triangle>(lodModel.IndexBuffer.Length / 3);
-        var vertices = new List<TVertex>((int)lodModel.NumVertices);
         if (deformation is not null) DeformedSource = lodModel;
-        AddVertices(lodModel, deformation, vertices);
 
-        // Sometimes there might not be an index buffer.
-        // If there is one, use that. 
-        // Otherwise, assume that each vertex is used exactly once.
-        // Note that this is based on the earlier implementation which didn't take LODs into consideration, which is odd considering that both the hit testing and the skeletalmesh class do.
-        if (lodModel.IndexBuffer.Length > 0)
+        Mesh<TVertex> CreateGeometry()
         {
-            // Hey, we have indices all set up for us. How considerate.
-            for (int i = 0; i < lodModel.IndexBuffer.Length; i += 3)
+            var triangles = new List<Triangle>(lodModel.IndexBuffer.Length / 3);
+            var vertices = new List<TVertex>((int)lodModel.NumVertices);
+            AddVertices(lodModel, deformation, vertices);
+
+            // Fall back to the collision tree when a cooked mesh has no render indices.
+            if (lodModel.IndexBuffer.Length > 0)
             {
-                triangles.Add(new Triangle(lodModel.IndexBuffer[i], lodModel.IndexBuffer[i + 1], lodModel.IndexBuffer[i + 2]));
+                for (int i = 0; i < lodModel.IndexBuffer.Length; i += 3)
+                {
+                    triangles.Add(new Triangle(lodModel.IndexBuffer[i], lodModel.IndexBuffer[i + 1], lodModel.IndexBuffer[i + 2]));
+                }
             }
-        }
-        else
-        {
-            // Gather all the vertex data from the raw triangles, not the Mesh.Vertices.Point list.
-            if (m.Export.Game <= MEGame.ME2)
+            else if (m.Export.Game <= MEGame.ME2)
             {
                 var kdop = m.kDOPTreeME1ME2;
                 for (int i = 0; i < kdop.Triangles.Length; i++)
@@ -838,6 +834,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
                     triangles.Add(new Triangle(kdop.Triangles[i].Vertex1, kdop.Triangles[i].Vertex2, kdop.Triangles[i].Vertex3));
                 }
             }
+            return new Mesh<TVertex>(renderContext.Device, triangles, vertices);
         }
 
         // STEP 3: SECTIONS
@@ -861,17 +858,26 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
                 sections.Add(new ModelPreviewSection(matEntry.InstancedFullPath, element.FirstIndex, element.NumTriangles, element.bEnableShadowCasting));
             }
         }
-        var mesh = new Mesh<TVertex>(renderContext.Device, triangles, vertices);
+        // Deformation edits vertices in place. Ordinary instances share geometry, but own their
+        // transforms, sections, material overrides and static lighting independently.
+        var mesh = deformation is null
+            ? renderContext.StaticMeshes.GetGeometry(m, selectedLOD, CreateGeometry)
+            : CreateGeometry();
         LODs.Add(new ModelPreviewLOD<TVertex>(mesh, sections) { StaticLighting = staticLighting });
-        if (staticLighting is not null)
-        {
-            staticLighting.GetBounds = () => mesh.TransformedBounds;
-            staticLighting.GetLocalToWorld = () => mesh.LocalToWorld;
-            staticLighting.Materials = Materials.Values.Cast<object>().OfType<LEShaderPreviewMaterial>().Select(mat => mat.RenderProxy).ToArray();
-            staticLighting.ShadowCastingMaterials = ShadowCastingMaterials(sections);
-            staticLighting.DrawShadowCaster = (ctx, pass) => DrawShadowCasterSections(ctx, pass, mesh, sections);
-            staticLighting.DrawModShadowReceiver = (ctx, pass) => DrawModShadowReceiverSections(ctx, pass, mesh, sections);
-        }
+        if (staticLighting is not null) ConnectStaticLighting(staticLighting, mesh, sections);
+    }
+
+    /// <summary>
+    /// A method of its own because the lighting outlives the constructor: lambdas there would share a closure that keeps the parsed mesh alive
+    /// </summary>
+    private void ConnectStaticLighting(MeshStaticLighting staticLighting, Mesh<TVertex> mesh, List<ModelPreviewSection> sections)
+    {
+        staticLighting.GetBounds = () => mesh.TransformedBounds;
+        staticLighting.GetLocalToWorld = () => mesh.LocalToWorld;
+        staticLighting.Materials = Materials.Values.Cast<object>().OfType<LEShaderPreviewMaterial>().Select(mat => mat.RenderProxy).ToArray();
+        staticLighting.ShadowCastingMaterials = ShadowCastingMaterials(sections);
+        staticLighting.DrawShadowCaster = (ctx, pass) => DrawShadowCasterSections(ctx, pass, mesh, sections);
+        staticLighting.DrawModShadowReceiver = (ctx, pass) => DrawModShadowReceiverSections(ctx, pass, mesh, sections);
     }
 
     /// <summary>

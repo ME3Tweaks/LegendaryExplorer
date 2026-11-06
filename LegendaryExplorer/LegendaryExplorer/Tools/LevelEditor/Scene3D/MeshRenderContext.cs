@@ -301,6 +301,42 @@ public class MeshRenderContext : RenderContext
     private readonly Dictionary<IMEPackage, ShaderCache> SeekFreeShaderCaches = [];
     public readonly PreviewTextureCache TextureCache;
     public readonly PreviewPackageCache PackageCache;
+    internal readonly StaticMeshPreviewCache StaticMeshes = new();
+
+    /// <summary>
+    /// A read-only parsed snapshot. A load shares one until it ends or this mesh export is invalidated.
+    /// Outside a load, every call parses it, so a caller that repeats should keep the result.
+    /// </summary>
+    public StaticMesh GetStaticMesh(ExportEntry export) => StaticMeshes.GetMesh(export);
+
+    /// <summary>
+    /// The mesh's collision geometry, sharing its buffers with other users of the mesh. Null if it has none. The caller disposes it.
+    /// </summary>
+    internal Mesh<WorldVertex> GetStaticMeshCollision(StaticMesh mesh) =>
+        StaticMeshes.GetCollision(mesh, () => this.GetMeshFromAggGeom(mesh.GetCollisionMeshProperty(mesh.Export.FileRef)));
+
+    /// <summary>Opt-in for interactive level views. Material captures and other previews load full textures.</summary>
+    public bool TextureStreamingEnabled { get; init; }
+    //no texture's second mip is this large, so it selects the whole chain
+    internal const float FullChainPixels = 16384;
+
+    /// <summary>
+    /// The size, in pixels, of a draw with these bounds, which decides how much of a texture's mip chain it needs
+    /// </summary>
+    public float TexturePixels(BoxSphereBounds bounds) => EstimateTexturePixels(Camera, Width, Height, bounds);
+
+    internal static float EstimateTexturePixels(SceneCamera camera, int width, int height, BoxSphereBounds bounds)
+    {
+        float radius = bounds.SphereRadius;
+        // Light functions have no mesh to estimate from, and are few enough to afford their whole mip chains.
+        if (radius <= 0) return FullChainPixels;
+        // Use the near side of the bounding sphere and one extra mip of detail to anticipate approach.
+        // Material UV scaling isn't known here, so a mesh that samples part of a texture (a trim sheet) stays softer than it should until it's closer.
+        float pixels = camera.IsOrthographic
+            ? 2 * radius * Math.Max(1, width) / Math.Max(1, camera.OrthoWidth)
+            : radius * Math.Max(1, height) / (Math.Max(1, Vector3.Distance(camera.EyePosition, bounds.Origin) - radius) * MathF.Tan(camera.FOV * 0.5f));
+        return float.IsFinite(pixels) ? Math.Clamp(pixels * 2, 1, FullChainPixels) : FullChainPixels;
+    }
 
     /// <summary>
     /// Render meshes with the game's shaders. Materials that can't be rendered with them fall back to LEX's shader.
@@ -1000,10 +1036,11 @@ public class MeshRenderContext : RenderContext
 
     /// <summary>
     /// Forgets what's cached for a level that's been closed: its WorldInfo's light environment settings, and its own meshes' collision triangles, in case it's
-    /// edited and reopened. (Other packages' meshes' triangles are freed once all their instances are unloaded)
+    /// edited and reopened. (Other packages' meshes stay cached while other levels use them)
     /// </summary>
     public void ForgetLevel(IMEPackage level)
     {
+        StaticMeshes.Forget(level);
         //the level's imports key the class defaults
         EffectiveLightingProperties.InvalidateDefaults(PackageCache);
         lock (LightsLock)
@@ -1283,6 +1320,7 @@ public class MeshRenderContext : RenderContext
 
     public override void Render()
     {
+        TextureCache.BeginStreamingFrame();
         NumFrames++;
         // Clear the color and depth buffers
         if (BackbufferView != null)
@@ -1351,6 +1389,7 @@ public class MeshRenderContext : RenderContext
             RenderTarget2D.EndDraw();
         }
 
+        TextureCache.EndStreamingFrame();
         base.Render();
     }
 
@@ -1803,6 +1842,7 @@ public class MeshRenderContext : RenderContext
     {
         //before the affected meshes are refreshed, so that they follow their materials' new dependencies
         PackageCache.MaterialDependencies.Invalidate(package, exports);
+        StaticMeshes.Invalidate(package, exports);
         InvalidateLevelGeometryMeshes(package, exports);
         bool textures = TextureCache.Invalidate(package, exports);
         bool shaders = exports.Any(index => package.GetEntry(index)?.ClassName == "ShaderCache");
@@ -1854,6 +1894,7 @@ public class MeshRenderContext : RenderContext
 
     public override void EmptyCaches()
     {
+        StaticMeshes.Clear();
         PackageCache?.ReleasePackages();
         //they're keyed by the levels' imports, and hold the released packages' class default objects
         EffectiveLightingProperties.InvalidateDefaults(PackageCache);
@@ -2123,16 +2164,72 @@ public class MeshRenderContext : RenderContext
     /// <summary>Optional per-preview mip reader. Null results use the package's usual texture lookup.</summary>
     public Func<LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo, byte[]> TextureDataOverride { get; set; }
 
+    private readonly Lock loadSync = new();
+    private LegendaryExplorerCore.Unreal.Classes.TextureDataReadCache textureDataReads;
+    private int loadDepth;
+
+    /// <summary>
+    /// Starts a load, which ends when the result is disposed. Texture archive readers and parsed meshes
+    /// are reused until the outermost load ends, including on failure.
+    /// </summary>
+    public IDisposable BeginLoad()
+    {
+        lock (loadSync)
+        {
+            if (loadDepth++ == 0)
+            {
+                textureDataReads = new();
+                StaticMeshes.SetLoading(true);
+            }
+            return new LoadScope(this);
+        }
+    }
+
+    private sealed class LoadScope(MeshRenderContext owner) : IDisposable
+    {
+        private MeshRenderContext context = owner;
+        public void Dispose()
+        {
+            var current = Interlocked.Exchange(ref context, null);
+            if (current is null) return;
+            lock (current.loadSync)
+            {
+                if (--current.loadDepth == 0)
+                {
+                    current.textureDataReads.Dispose();
+                    current.textureDataReads = null;
+                    current.StaticMeshes.SetLoading(false);
+                }
+            }
+        }
+    }
+
+    internal byte[] ReadTextureMip(LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip)
+    {
+        // Bake previews may supply unsaved mip data. Only a null override result reads disk.
+        if (TextureDataOverride?.Invoke(mip) is { } data) return data;
+        lock (loadSync)
+        {
+            if (textureDataReads is not null) return textureDataReads.ReadMip(mip, mip.Export.Game);
+        }
+        return LECTexture2D.GetTextureData(mip, mip.Export.Game);
+    }
+
     public LoadedTexture LoadUnrealTexture(ExportEntry texture2DExport)
     {
         if (texture2DExport.ClassName is "TextureRenderTarget2D" or "TextureMovie")
         {
             return new LoadedTexture(CreateWhiteTexture(), Format.R8G8B8A8_UNorm, null);
         }
-        var unrealTexture = new LECTexture2D(texture2DExport);
-        var pixelFormat = LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperty<EnumProperty>("Format").Value.Name);
+        return LoadUnrealTexture(new LECTexture2D(texture2DExport));
+    }
+
+    /// <summary>Loads an already parsed texture, for callers that had to parse it to decide how to load it.</summary>
+    internal LoadedTexture LoadUnrealTexture(LECTexture2D unrealTexture)
+    {
+        var pixelFormat = LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.TextureFormat);
         var format = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
-        var srgbFormats = IsSRGB(texture2DExport) ? RenderContextExtensions.GetSRGBFormats(format) : null;
+        var srgbFormats = unrealTexture.SRGB ? RenderContextExtensions.GetSRGBFormats(format) : null;
         Texture2D texture = this.LoadUnrealMipChain(unrealTexture.Mips, unrealTexture.GetTopMip(), pixelFormat, typelessResource: srgbFormats is not null);
         return new LoadedTexture(texture, srgbFormats?.UNorm ?? format, srgbFormats?.SRGB);
     }
@@ -2179,14 +2276,11 @@ public class MeshRenderContext : RenderContext
             var mip = faceTextures[i].Mips.First(mip => mip.storageType != StorageTypes.empty && mip.width == size && mip.height == size);
             pixelData[i] = this.ReadTextureData(mip);
         }
-        var srgbFormats = IsSRGB(faceTextures[0].Export) ? RenderContextExtensions.GetSRGBFormats(format) : null;
+        var srgbFormats = faceTextures[0].SRGB ? RenderContextExtensions.GetSRGBFormats(format) : null;
         uint textureSize = (uint)(format.IsCompressed() ? Math.Max(4, size) : size);
         Texture2D texture = this.LoadTextureCube(textureSize, format, pixelData, srgbFormats?.Typeless);
         return new LoadedTexture(texture, srgbFormats?.UNorm ?? format, srgbFormats?.SRGB);
     }
-
-    //UTexture.SRGB defaults to true
-    private static bool IsSRGB(ExportEntry textureExport) => textureExport.GetProperty<BoolProperty>("SRGB")?.Value ?? true;
 
     private Texture2D CreateWhiteTexture()
     {

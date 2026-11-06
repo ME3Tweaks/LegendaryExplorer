@@ -75,12 +75,12 @@ internal static class ShaderParameterSetters
             //A light-map holds all the static lighting, except for any sky lights that weren't baked into it
             case TBasePassPixelShader<FLightMapTexturePolicy.PixelParametersType> lightMapTextureShader:
                 lightMapTextureShader.WriteValues(buffer, context, mesh, mat, usePreviewSky: false, skyLighting);
-                SetLightMapTextures(context, lightMapTextureShader.PixelParams.LightMapTextures, RequireLightMap(staticLighting));
+                SetLightMapTextures(context, lightMapTextureShader.PixelParams.LightMapTextures, RequireLightMap(staticLighting), context.TexturePixels(mesh.Bounds));
                 buffer.WriteArray(lightMapTextureShader.PixelParams.LightMapScale, staticLighting.Scales);
                 break;
             case TBasePassPixelShader<FCustomLightMapTexturePolicy.PixelParametersType> customLightMapTextureShader:
                 customLightMapTextureShader.WriteValues(buffer, context, mesh, mat, usePreviewSky: false, skyLighting);
-                SetLightMapTextures(context, customLightMapTextureShader.PixelParams.LightMapTextures, RequireLightMap(staticLighting));
+                SetLightMapTextures(context, customLightMapTextureShader.PixelParams.LightMapTextures, RequireLightMap(staticLighting), context.TexturePixels(mesh.Bounds));
                 buffer.WriteArray(customLightMapTextureShader.PixelParams.LightMapScale, staticLighting.Scales);
                 buffer.WriteArray(customLightMapTextureShader.PixelParams.LightMapBias, staticLighting.Biases);
                 break;
@@ -129,12 +129,13 @@ internal static class ShaderParameterSetters
     /// <summary>
     /// Binds a light-map's textures to the consecutive slots of an array parameter (LightMapTextures[N])
     /// </summary>
-    private static void SetLightMapTextures(MeshRenderContext context, FShaderResourceParameter param, MeshStaticLighting lightMap)
+    /// <param name="pixels">The draw's size</param>
+    private static void SetLightMapTextures(MeshRenderContext context, FShaderResourceParameter param, MeshStaticLighting lightMap, float pixels)
     {
         for (int i = 0; i < param.NumResources; i++)
         {
             PreviewTextureCache.TextureEntry texture = i < lightMap.Textures.Length ? lightMap.Textures[i] : null;
-            context.LEEffect.PixelShaderResources.Set(param.BaseIndex + i, texture?.LinearTextureView ?? context.WhiteTexView);
+            context.LEEffect.PixelShaderResources.Set(param.BaseIndex + i, texture?.GetLinearAtlasView(pixels) ?? context.WhiteTexView);
             //UE3 samples light-maps bilinearly with the default (wrap) addressing
             context.LEEffect.PixelShaderResources.SetSampler(param.SamplerIndex + i, context.GetSamplerState(TextureAddressMode.Wrap, TextureAddressMode.Wrap));
         }
@@ -316,8 +317,8 @@ internal static class ShaderParameterSetters
 
         static void SetShadowTexture(MeshRenderContext context, FShaderResourceParameter param, LightInteraction interaction)
         {
-            //shadow maps hold linear values
-            context.LEEffect.PixelShaderResources.Set(param.BaseIndex, interaction.ShadowMap?.Texture.TextureView ?? context.WhiteTexView);
+            //shadow maps hold linear values, and don't stream
+            context.LEEffect.PixelShaderResources.Set(param.BaseIndex, interaction.ShadowMap?.Texture.ResidentView ?? context.WhiteTexView);
             context.LEEffect.PixelShaderResources.SetSampler(param.SamplerIndex, context.GetSamplerState(TextureAddressMode.Wrap, TextureAddressMode.Wrap));
         }
     }
@@ -518,6 +519,7 @@ internal static class ShaderParameterSetters
     public static void WriteValues(this ref FMaterialPixelShaderParameters p, Span<byte> buffer, MeshRenderContext context, MaterialRenderProxy mat,
         BoxSphereBounds bounds, Matrix4x4 localToWorld, Matrix4x4 worldToLocal)
     {
+        float texturePixels = context.TexturePixels(bounds);
         //MaterialTemplate's WorldPosition is the translated pixel position plus this, so it must be the PreViewTranslation's view origin
         buffer.WriteVal(p.CameraWorldPosition, context.LEEffect.ViewOrigin);
         buffer.WriteVal(p.ObjectWorldPositionAndRadius, new Vector4(bounds.Origin, bounds.SphereRadius));
@@ -542,7 +544,7 @@ internal static class ShaderParameterSetters
         foreach (TUniformParameter<FShaderResourceParameter> texParam in p.UniformPixel2DShaderResourceParameters)
         {
             PreviewTextureCache.TextureEntry texture = tex2dParamValues[texParam.Index];
-            context.LEEffect.PixelShaderResources.Set(texParam.Param.BaseIndex, texture?.LinearTextureView ?? context.WhiteTexView);
+            context.LEEffect.PixelShaderResources.Set(texParam.Param.BaseIndex, texture?.GetLinearView(texturePixels) ?? context.WhiteTexView);
             if (texture is not null)
             {
                 //materials can rely on clamping, e.g. to confine a decal-like texture to one region of the UVs
@@ -551,7 +553,7 @@ internal static class ShaderParameterSetters
         }
         foreach (TUniformParameter<FShaderResourceParameter> cubeParam in p.UniformPixelCubeShaderResourceParameters)
         {
-            ShaderResourceView view = cubeMapParamValues[cubeParam.Index]?.LinearTextureView ?? context.WhiteTextureCubeView;
+            ShaderResourceView view = cubeMapParamValues[cubeParam.Index]?.GetLinearView(texturePixels) ?? context.WhiteTextureCubeView;
             context.LEEffect.PixelShaderResources.Set(cubeParam.Param.BaseIndex, view);
         }
 

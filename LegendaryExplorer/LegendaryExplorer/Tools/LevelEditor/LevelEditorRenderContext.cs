@@ -684,6 +684,7 @@ public class LevelEditorRenderContext : MeshRenderContext
     public void UnloadLevel()
     {
         decalReceivers = null;
+        TextureCache.Clear();
         EmptyCaches();
         ClearLights();
         HitProxies.Reset();

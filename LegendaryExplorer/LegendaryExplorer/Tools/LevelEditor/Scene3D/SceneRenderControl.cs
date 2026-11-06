@@ -116,7 +116,7 @@ public static class RenderContextExtensions
     }
 
     public static byte[] ReadTextureData(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip)
-        => (renderContext as MeshRenderContext)?.TextureDataOverride?.Invoke(mip) ?? LECTexture2D.GetTextureData(mip, mip.Export.Game);
+        => renderContext is MeshRenderContext meshContext ? meshContext.ReadTextureMip(mip) : LECTexture2D.GetTextureData(mip, mip.Export.Game);
 
     public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat, bool typelessResource = false)
     {
@@ -138,7 +138,7 @@ public static class RenderContextExtensions
     /// Loads <paramref name="topMip"/> and as many of the mips below it as are available, so the texture can be minified without aliasing.
     /// </summary>
     /// <param name="mips">All of the texture's mips, largest first</param>
-    public static unsafe Texture2D LoadUnrealMipChain(this RenderContext renderContext, IReadOnlyList<LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo> mips,
+    public static Texture2D LoadUnrealMipChain(this RenderContext renderContext, IReadOnlyList<LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo> mips,
         LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo topMip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat, bool typelessResource = false)
     {
         var format = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
@@ -151,46 +151,68 @@ public static class RenderContextExtensions
             return renderContext.LoadUnrealMip(topMip, pixelFormat, typelessResource);
         }
 
-        var levels = new List<byte[]>();
         int topIndex = -1;
         for (int i = 0; i < mips.Count; i++)
         {
             if (mips[i] == topMip) topIndex = i;
         }
-        for (int i = topIndex; i >= 0 && i < mips.Count; i++)
+        List<byte[]> levels = ReadMipChain(format, topWidth, topHeight, topIndex < 0 ? 0 : mips.Count - topIndex, level =>
         {
-            var mip = mips[i];
-            int level = levels.Count;
-            int expectedWidth = Math.Max(1, topWidth >> level);
-            int expectedHeight = Math.Max(1, topHeight >> level);
-            if (mip.storageType is StorageTypes.empty || mip.width != expectedWidth || mip.height != expectedHeight)
-            {
-                break;
-            }
+            var mip = mips[topIndex + level];
+            return IsChainLevel(mip, level, topMip) ? renderContext.ReadTextureData(mip) : null;
+        });
+        if (levels.Count == 0)
+        {
+            return renderContext.LoadUnrealMip(topMip, pixelFormat, typelessResource);
+        }
+        return CreateMipChain(renderContext.Device, format, typelessResource ? GetSRGBFormats(format)?.Typeless : null, topWidth, topHeight, levels);
+    }
+
+    /// <summary>
+    /// Whether a mip is the given level of the chain below <paramref name="top"/>
+    /// </summary>
+    internal static bool IsChainLevel(LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, int level, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo top) =>
+        mip.storageType is not StorageTypes.empty && mip.width == Math.Max(1, top.width >> level) && mip.height == Math.Max(1, top.height >> level);
+
+    /// <summary>
+    /// Reads as many levels of a mip chain as are available. The top level is what a draw shows up close, so a missing
+    /// or bad level below it only costs the levels from there on, which only matters when the texture is minified.
+    /// </summary>
+    /// <param name="read">Reads a level of the chain. Null ends the chain</param>
+    /// <returns>The complete levels, largest first. Empty if the top level's data is missing or too short. An exception reading it isn't caught</returns>
+    internal static List<byte[]> ReadMipChain(Format format, int topWidth, int topHeight, int levelCount, Func<int, byte[]> read)
+    {
+        var levels = new List<byte[]>(levelCount);
+        for (int level = 0; level < levelCount; level++)
+        {
             byte[] data;
             try
             {
-                data = renderContext.ReadTextureData(mip);
+                data = read(level);
             }
-            catch when (level > 0)
+            catch (Exception e) when (level > 0 && e is not OperationCanceledException)
             {
-                //a missing lower mip shouldn't prevent the texture from loading
+                Debug.WriteLine($"Could not read level {level} of a {topWidth}x{topHeight} mip chain: {e}");
                 break;
             }
-            if (data is null || data.Length < GetMipByteSize(format, expectedWidth, expectedHeight, out _))
+            if (data is null || data.Length < GetMipByteSize(format, Math.Max(1, topWidth >> level), Math.Max(1, topHeight >> level), out _))
             {
-                if (level == 0) return renderContext.LoadUnrealMip(topMip, pixelFormat, typelessResource);
                 break;
             }
             levels.Add(data);
         }
+        return levels;
+    }
 
-        Texture2DDescription desc = GetTextureDescription((uint)topWidth, (uint)topHeight, format, false, out _);
+    /// <summary>
+    /// Creates a texture from complete mips, largest first. Only uses the device, so this is safe on a worker thread.
+    /// </summary>
+    /// <param name="resourceFormat">Format to create the texture with, if different from <paramref name="format"/></param>
+    internal static Texture2D CreateMipChain(Device device, Format format, Format? resourceFormat, int width, int height, IReadOnlyList<byte[]> levels)
+    {
+        Texture2DDescription desc = GetTextureDescription((uint)width, (uint)height, format, false, out _);
         desc.MipLevels = levels.Count;
-        if (typelessResource && GetSRGBFormats(format) is { } srgbFormats)
-        {
-            desc.Format = srgbFormats.Typeless;
-        }
+        desc.Format = resourceFormat ?? format;
 
         var handles = new System.Runtime.InteropServices.GCHandle[levels.Count];
         var rects = new SharpDX.DataRectangle[levels.Count];
@@ -199,10 +221,10 @@ public static class RenderContextExtensions
             for (int level = 0; level < levels.Count; level++)
             {
                 handles[level] = System.Runtime.InteropServices.GCHandle.Alloc(levels[level], System.Runtime.InteropServices.GCHandleType.Pinned);
-                GetMipByteSize(format, Math.Max(1, topWidth >> level), Math.Max(1, topHeight >> level), out int pitch);
+                GetMipByteSize(format, Math.Max(1, width >> level), Math.Max(1, height >> level), out int pitch);
                 rects[level] = new SharpDX.DataRectangle(handles[level].AddrOfPinnedObject(), pitch);
             }
-            return new Texture2D(renderContext.Device, desc, rects);
+            return new Texture2D(device, desc, rects);
         }
         finally
         {
@@ -213,7 +235,7 @@ public static class RenderContextExtensions
         }
     }
 
-    private static int GetMipByteSize(Format format, int width, int height, out int pitch)
+    internal static int GetMipByteSize(Format format, int width, int height, out int pitch)
     {
         if (format.IsCompressed())
         {
@@ -320,7 +342,8 @@ public abstract class RenderContext
 
     public virtual void CreateResources()
     {
-        DeviceCreationFlags deviceFlags = DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded;
+        // Keep device resource creation thread-safe; the immediate context remains render-thread owned.
+        DeviceCreationFlags deviceFlags = DeviceCreationFlags.BgraSupport;
 #if D3D11_DEBUG
         deviceFlags |= DeviceCreationFlags.Debug;
 #endif

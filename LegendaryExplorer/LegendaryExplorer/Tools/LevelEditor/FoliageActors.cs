@@ -97,7 +97,7 @@ public sealed class FoliageComponentProxy : MeshComponentProxy
         Dependencies.Track(meshExport);
         IEntry material = Properties.GetProp<ObjectProperty>("Material")?.ResolveToEntry(Export.FileRef);
         if (material is not null) Dependencies.Track(material);
-        StaticMesh stm = meshExport.GetBinaryData<StaticMesh>();
+        StaticMesh stm = context.GetStaticMesh(meshExport);
         if (stm.LODModels.Length == 0 || context.Device is null) return;
         var (vertices, triangles) = BuildInstances(stm.LODModels[0], instances);
         if (triangles.Count == 0) return;

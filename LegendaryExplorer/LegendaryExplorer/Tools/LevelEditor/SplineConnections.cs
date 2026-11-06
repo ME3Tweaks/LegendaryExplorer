@@ -174,7 +174,7 @@ public sealed partial class SplineActorProxy
     public IEnumerable<string> SplineMeshMaterialProblems(int mesh, IReadOnlyList<int> overrides)
     {
         if (EffectiveLightingProperties.Resolve(Pcc.GetEntry(mesh), Editor.PackageCache) is not { } meshExport) return [];
-        return meshExport.GetBinaryData<StaticMesh>().LODModels.SelectMany(lod => lod.Elements)
+        return Editor.RenderContext.GetStaticMesh(meshExport).LODModels.SelectMany(lod => lod.Elements)
             .Select(element => element.MaterialIndex >= 0 && element.MaterialIndex < overrides.Count && overrides[element.MaterialIndex] != 0
                 ? Pcc.GetEntry(overrides[element.MaterialIndex]) : meshExport.FileRef.GetEntry(element.Material))
             //a section with no material is drawn with the default material however it's drawn

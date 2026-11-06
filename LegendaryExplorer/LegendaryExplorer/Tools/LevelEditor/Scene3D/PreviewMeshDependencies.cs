@@ -98,6 +98,12 @@ public sealed class PreviewMeshDependencies
         if (entry is ImportEntry import) Imports.Add(import);
     }
 
+    /// <summary>A directly read asset, without inheriting its class/archetype settings (for example AggGeom).</summary>
+    internal void TrackData(ExportEntry export)
+    {
+        if (export is not null) Exports.Add(export);
+    }
+
     /// <param name="updatedExports">Updated entries' UIndexes: imports' are negative</param>
     public bool IsAffectedBy(IMEPackage package, IReadOnlySet<int> updatedExports) =>
         Exports.Any(export => export.FileRef == package && updatedExports.Contains(export.UIndex))

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Device = SharpDX.Direct3D11.Device;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
@@ -28,15 +29,34 @@ internal interface IShaderPrimitive
     TerrainVertexFactoryValues Terrain => null;
 }
 
-public class Mesh<TVertex> : IDisposable, IShaderPrimitive where TVertex : IVertexBase
+/// <summary>
+/// Geometry a cache owns and hands out instances of. Disposing it releases the cache's reference
+/// </summary>
+internal interface ISharedGeometry : IDisposable
+{
+    /// <summary>Whether anything but the cache still uses it</summary>
+    bool HasInstances { get; }
+}
+
+public class Mesh<TVertex> : IDisposable, IShaderPrimitive, ISharedGeometry where TVertex : IVertexBase
 {
     BoxSphereBounds IShaderPrimitive.Bounds => TransformedBounds;
     DecalProjection IShaderPrimitive.Decal => Decal;
 
+    // Shared instances must treat these as read-only. Only private dynamic/deformed meshes edit them.
     public readonly List<Triangle> Triangles;
     public readonly List<TVertex> Vertices;
-    public SharpDX.Direct3D11.Buffer VertexBuffer { get; private set; }
-    public SharpDX.Direct3D11.Buffer IndexBuffer { get; private set; }
+    public SharpDX.Direct3D11.Buffer VertexBuffer => geometryOwner is null ? vertexBuffer : geometryOwner.VertexBuffer;
+    public SharpDX.Direct3D11.Buffer IndexBuffer => geometryOwner is null ? indexBuffer : geometryOwner.IndexBuffer;
+    private SharpDX.Direct3D11.Buffer vertexBuffer;
+    private SharpDX.Direct3D11.Buffer indexBuffer;
+
+    // A cached mesh owns immutable geometry; each instance owns only its transform/bounds.
+    // Evicting the cache releases its reference, but live instances keep the buffers usable.
+    private readonly Mesh<TVertex> geometryOwner;
+    private int geometryReferences = 1;
+    public bool HasInstances => Volatile.Read(ref geometryReferences) > 1;
+    private int disposed;
 
     private bool _isDynamic;
 
@@ -70,13 +90,39 @@ public class Mesh<TVertex> : IDisposable, IShaderPrimitive where TVertex : IVert
         Triangles = triangles;
         Vertices = vertices;
         _isDynamic = isDynamic;
-        RebuildBuffer(device);
+        try
+        {
+            RebuildBuffer(device);
+        }
+        catch
+        {
+            Dispose();
+            throw;
+        }
     }
+
+    private Mesh(Mesh<TVertex> owner)
+    {
+        geometryOwner = owner;
+        Triangles = owner.Triangles;
+        Vertices = owner.Vertices;
+        BaseBounds = TransformedBounds = owner.BaseBounds;
+        Interlocked.Increment(ref owner.geometryReferences);
+    }
+
+    /// <summary>Shares immutable CPU geometry and GPU buffers, with an independent transform and bounds.</summary>
+    internal Mesh<TVertex> CreateSharedInstance()
+    {
+        ObjectDisposedException.ThrowIf(disposed != 0, this);
+        return new Mesh<TVertex>(this);
+    }
+
     public void RebuildBuffer(Device device)
     {
         // Dispose all the old stuff
-        VertexBuffer?.Dispose();
-        IndexBuffer?.Dispose();
+        vertexBuffer?.Dispose();
+        indexBuffer?.Dispose();
+        vertexBuffer = indexBuffer = null;
 
 
         // Update the AABB
@@ -92,7 +138,7 @@ public class Mesh<TVertex> : IDisposable, IShaderPrimitive where TVertex : IVert
         }
         TransformedBounds = BaseBounds = new BoxSphereBounds(boundingBox);
 
-        IndexBuffer = SharpDX.Direct3D11.Buffer.Create(device, BindFlags.IndexBuffer, Triangles.ToArray());
+        indexBuffer = SharpDX.Direct3D11.Buffer.Create(device, BindFlags.IndexBuffer, Triangles.ToArray());
 
         int stride = TVertex.Stride;
         if (!_isDynamic)
@@ -104,11 +150,11 @@ public class Mesh<TVertex> : IDisposable, IShaderPrimitive where TVertex : IVert
             {
                 Vertices[vertIdx].ToFloats(vertexDataSpan[floatIdx..]);
             }
-            VertexBuffer = SharpDX.Direct3D11.Buffer.Create(device, BindFlags.VertexBuffer, vertexdata);
+            vertexBuffer = SharpDX.Direct3D11.Buffer.Create(device, BindFlags.VertexBuffer, vertexdata);
         }
         else
         {
-            VertexBuffer = new SharpDX.Direct3D11.Buffer(device, new BufferDescription(
+            vertexBuffer = new SharpDX.Direct3D11.Buffer(device, new BufferDescription(
                 stride * Vertices.Count,
                 ResourceUsage.Dynamic,
                 BindFlags.VertexBuffer,
@@ -144,8 +190,14 @@ public class Mesh<TVertex> : IDisposable, IShaderPrimitive where TVertex : IVert
 
     public void Dispose()
     {
-        VertexBuffer?.Dispose();
-        IndexBuffer?.Dispose();
+        if (Interlocked.Exchange(ref disposed, 1) != 0) return;
+        var owner = geometryOwner ?? this;
+        if (Interlocked.Decrement(ref owner.geometryReferences) == 0)
+        {
+            owner.vertexBuffer?.Dispose();
+            owner.indexBuffer?.Dispose();
+            owner.vertexBuffer = owner.indexBuffer = null;
+        }
     }
 }
 
