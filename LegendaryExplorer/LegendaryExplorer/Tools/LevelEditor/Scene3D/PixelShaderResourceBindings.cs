@@ -4,8 +4,8 @@ using SharpDX.Direct3D11;
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
 /// <summary>
-/// Batches material texture and sampler bindings, skipping unchanged bindings between a section's light passes.
-/// Reset before drawing a new section or after any other code changes pixel shader resources or samplers.
+/// Batches material texture and sampler bindings, skipping what's already bound, which most of a frame's draws share.
+/// Reset after any other code changes pixel shader resources, and at the start of a frame. Samplers are only ever bound through this.
 /// Only material textures are tracked; render-target bindings can be implicitly unbound by D3D11
 /// and must not be cached across a change to the output targets.
 /// </summary>
@@ -61,6 +61,13 @@ public sealed class PixelShaderResourceBindings
         DirtySamplers[slot] = true;
         FirstDirtySampler = Math.Min(FirstDirtySampler, slot);
         LastDirtySampler = Math.Max(LastDirtySampler, slot);
+    }
+
+    /// <summary>Binds <paramref name="sampler"/> to every slot now, along with anything already set</summary>
+    public void ApplySamplers(PixelShaderStage stage, SamplerState sampler)
+    {
+        for (int slot = 0; slot < SamplerSlotCount; slot++) SetSampler(slot, sampler);
+        Apply(stage);
     }
 
     public void Apply(PixelShaderStage stage)

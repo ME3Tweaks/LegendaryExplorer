@@ -19,6 +19,8 @@ public sealed class GenericEffect<ConstantBufferData> : IDisposable where Consta
     public PixelShader PixelShader { get; }
     public Buffer ConstantBuffer { get; }
     public InputLayout InputLayout { get; }
+    /// <summary>Called before each draw, which can bind textures</summary>
+    internal Action BeforeDraw { get; set; }
 
     public GenericEffect(SharpDX.Direct3D11.Device device, string shaderCode)
     {
@@ -49,6 +51,7 @@ public sealed class GenericEffect<ConstantBufferData> : IDisposable where Consta
     /// <param name="blendState"></param>
     public void PrepDraw(DeviceContext context, BlendState blendState, ConstantBufferData constantData)
     {
+        BeforeDraw?.Invoke();
         context.OutputMerger.SetBlendState(blendState);
         context.InputAssembler.InputLayout = InputLayout;
         context.VertexShader.Set(VertexShader);

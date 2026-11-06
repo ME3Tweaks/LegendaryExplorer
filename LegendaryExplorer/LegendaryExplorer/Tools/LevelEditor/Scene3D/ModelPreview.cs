@@ -435,7 +435,6 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         Mesh<LEVertex> mesh = lod.Mesh;
         var material = (MaterialRenderProxy)Material;
         LEEffect effect = context.LEEffect;
-        effect.PixelShaderResources.Reset();
         bool usesLevelLighting = UsesLevelLighting(lod, material, context);
         //sky lights that aren't baked into the light-map are added in the base pass
         SkyLighting skyLighting = usesLevelLighting && context.IsLevelLightingActive ? lod.StaticLighting.GetSkyLighting(mesh.TransformedBounds) : default;
@@ -517,7 +516,6 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         LEEffect effect = context.LEEffect;
         try
         {
-            effect.PixelShaderResources.Reset();
             context.ImmediateContext.InputAssembler.SetVertexBuffers(MeshStaticLighting.VertexStreamSlot,
                 new VertexBufferBinding(lod.StaticLighting?.VertexStream, MeshStaticLighting.VertexStreamStride, 0));
             context.ImmediateContext.OutputMerger.SetDepthStencilState(context.LightPassDepthState);
@@ -618,7 +616,6 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         LEEffect effect = context.LEEffect;
         try
         {
-            effect.PixelShaderResources.Reset();
             context.ImmediateContext.InputAssembler.SetVertexBuffers(MeshStaticLighting.VertexStreamSlot,
                 new VertexBufferBinding(lod.StaticLighting?.VertexStream, MeshStaticLighting.VertexStreamStride, 0));
             context.ImmediateContext.OutputMerger.SetDepthStencilState(context.LightPassDepthState);

@@ -101,7 +101,6 @@ internal sealed class TerrainSectionShading : IShaderPrimitive
         try
         {
             LEEffect effect = context.LEEffect;
-            effect.PixelShaderResources.Reset();
             bool usesLevelLighting = UsesLevelLighting(context);
             //sky lights that aren't baked into the light-map are added in the base pass
             SkyLighting skyLighting = usesLevelLighting && context.IsLevelLightingActive ? Lighting.GetSkyLighting(Bounds) : default;
@@ -160,7 +159,6 @@ internal sealed class TerrainSectionShading : IShaderPrimitive
         LEEffect effect = context.LEEffect;
         try
         {
-            effect.PixelShaderResources.Reset();
             context.ImmediateContext.OutputMerger.SetDepthStencilState(context.LightPassDepthState);
             context.SetMeshRasterizerState(isTwoSided: false, reverseCulling: LocalToWorld.GetDeterminant() < 0);
             PixelShader ps = context.GetCachedPixelShader(pixelShader.Guid, pixelShader.ShaderByteCode);

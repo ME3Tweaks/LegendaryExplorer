@@ -205,21 +205,10 @@ public class MeshRenderContext : RenderContext
         ImmediateContext.Rasterizer.State = Wireframe ? WireframeRasterizerState : FillRasterizerState;
     }
 
-    private const int NUM_SAMPLER_SLOTS = 16;
-    private SamplerState[] DefaultSamplers;
-
     /// <summary>
     /// Sets every pixel shader sampler slot to <see cref="SampleState"/>, which LEX's shaders expect
     /// </summary>
-    public void RestoreDefaultSamplers()
-    {
-        if (DefaultSamplers is null)
-        {
-            DefaultSamplers = new SamplerState[NUM_SAMPLER_SLOTS];
-            Array.Fill(DefaultSamplers, SampleState);
-        }
-        ImmediateContext.PixelShader.SetSamplers(0, DefaultSamplers);
-    }
+    public void RestoreDefaultSamplers() => LEEffect.PixelShaderResources.ApplySamplers(ImmediateContext.PixelShader, SampleState);
 
     private readonly Dictionary<(TextureAddressMode, TextureAddressMode), SamplerState> SamplerStateCache = [];
 
@@ -1337,7 +1326,12 @@ public class MeshRenderContext : RenderContext
             {
                 try
                 {
-                    if (UseGameShaders) LEEffect.BeginFrame(this);
+                    if (UseGameShaders)
+                    {
+                        //other users of the device may have changed them since the last frame
+                        LEEffect.PixelShaderResources.Reset();
+                        LEEffect.BeginFrame(this);
+                    }
                     RenderScene?.Invoke(null, EventArgs.Empty);
                 }
                 catch (Exception e)
@@ -1488,7 +1482,6 @@ public class MeshRenderContext : RenderContext
             MaximumLod = float.MaxValue // Allow sampling the full uploaded mip chain.
         };
         SampleState = new SamplerState(Device, ssd);
-        RestoreDefaultSamplers();
 
         TranslucentDepthState = new DepthStencilState(Device, new DepthStencilStateDescription
         {
@@ -1541,6 +1534,8 @@ public class MeshRenderContext : RenderContext
         WhiteTexView = new ShaderResourceView(Device, WhiteTex);
 
         LEEffect = new LEEffect(Device, EmbeddedResources.LevelEditorShader);
+        DefaultEffect.BeforeDraw = LEEffect.PixelShaderResources.Reset;
+        RestoreDefaultSamplers();
     }
 
     public override void CreateSizeDependentResources(int width, int height, Texture2D newBackBuffer)
@@ -1671,7 +1666,6 @@ public class MeshRenderContext : RenderContext
         WhiteTextureCube?.Dispose();
         WhiteTex?.Dispose();
         SampleState?.Dispose();
-        DefaultSamplers = null;
         SamplerStateCache.DisposeValuesAndClear();
         TranslucentDepthState?.Dispose();
         LightPassDepthState?.Dispose();
