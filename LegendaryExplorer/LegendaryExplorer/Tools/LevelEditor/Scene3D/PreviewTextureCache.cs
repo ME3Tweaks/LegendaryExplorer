@@ -659,7 +659,7 @@ public class PreviewTextureCache : IDisposable
             }
             if (textureEntry is ImportEntry import)
             {
-                textureEntry = EntryImporter.ResolveImport(import, packageCache);
+                textureEntry = EffectiveLightingProperties.Resolve(import, packageCache);
             }
             if (textureEntry is ExportEntry textureExport)
             {

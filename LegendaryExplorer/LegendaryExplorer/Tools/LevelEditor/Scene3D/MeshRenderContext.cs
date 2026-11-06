@@ -2169,8 +2169,8 @@ public class MeshRenderContext : RenderContext
     private int loadDepth;
 
     /// <summary>
-    /// Starts a load, which ends when the result is disposed. Texture archive readers and parsed meshes
-    /// are reused until the outermost load ends, including on failure.
+    /// Starts a load, which ends when the result is disposed. Texture archive readers, parsed meshes and
+    /// resolved imports are reused until the outermost load ends, including on failure.
     /// </summary>
     public IDisposable BeginLoad()
     {
@@ -2180,6 +2180,7 @@ public class MeshRenderContext : RenderContext
             {
                 textureDataReads = new();
                 StaticMeshes.SetLoading(true);
+                PackageCache.SetLoading(true);
             }
             return new LoadScope(this);
         }
@@ -2199,6 +2200,7 @@ public class MeshRenderContext : RenderContext
                     current.textureDataReads.Dispose();
                     current.textureDataReads = null;
                     current.StaticMeshes.SetLoading(false);
+                    current.PackageCache.SetLoading(false);
                 }
             }
         }

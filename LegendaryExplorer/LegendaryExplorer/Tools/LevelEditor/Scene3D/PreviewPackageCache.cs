@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
@@ -16,6 +18,8 @@ public sealed class PreviewPackageCache : PackageCache
     // Packages looked up while resolving imports, whose exports previews may hold. Includes import resolution's candidates that turned out
     // not to have the import, so it may keep a package that nothing uses until the cache is emptied, but never drops one that's used
     private readonly HashSet<string> LookedUp = new(StringComparer.OrdinalIgnoreCase);
+    // What imports resolved to during a load, including to nothing. Null outside one: an edit or a new file can change what an import resolves to
+    private volatile ConcurrentDictionary<ImportEntry, ExportEntry> LoadImports;
     public event Action<IMEPackage, List<PackageUpdate>> PackageUpdated;
 
     /// <summary>
@@ -24,6 +28,17 @@ public sealed class PreviewPackageCache : PackageCache
     public MaterialDependencyCache MaterialDependencies { get; } = new();
 
     public PreviewPackageCache(bool sharePackages = true) => AlwaysOpenFromDisk = !sharePackages;
+
+    /// <summary>
+    /// Starts or ends a load, during which <see cref="ResolveImport"/> resolves each import once.
+    /// A level's components all follow the same few imports, and resolving one searches several packages and checks for files on disk
+    /// </summary>
+    internal void SetLoading(bool loading) => LoadImports = loading ? new() : null;
+
+    /// <summary>Resolves an import with this cache's packages</summary>
+    public ExportEntry ResolveImport(ImportEntry import) => LoadImports is { } resolved
+        ? resolved.GetOrAdd(import, i => EntryImporter.ResolveImport(i, this))
+        : EntryImporter.ResolveImport(import, this);
 
     public override IMEPackage GetCachedPackage(string packagePath, bool openIfNotInCache = true,
         Func<string, IMEPackage> openPackageMethod = null)
@@ -99,6 +114,7 @@ public sealed class PreviewPackageCache : PackageCache
         lock (syncObj)
         {
             LookedUp.Remove(packagePath);
+            LoadImports?.Clear();
             if (Cache.TryGetValue(packagePath, out var package))
             {
                 Detach(package);
@@ -121,6 +137,7 @@ public sealed class PreviewPackageCache : PackageCache
         {
             foreach (var package in Cache.Values) Detach(package);
             LookedUp.Clear();
+            LoadImports?.Clear();
             MaterialDependencies.Clear();
             base.ReleasePackages(gc);
         }

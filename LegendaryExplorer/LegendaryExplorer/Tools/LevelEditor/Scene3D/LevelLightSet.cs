@@ -59,7 +59,7 @@ public sealed class LevelLightSet
             if ((entry switch
                 {
                     ExportEntry export => export,
-                    ImportEntry import when result.ImportDependencies.Add(import) => EntryImporter.ResolveImport(import, cache),
+                    ImportEntry import when result.ImportDependencies.Add(import) => EffectiveLightingProperties.Resolve(import, cache),
                     _ => null
                 }) is { } dependency)
                 Track(dependency);

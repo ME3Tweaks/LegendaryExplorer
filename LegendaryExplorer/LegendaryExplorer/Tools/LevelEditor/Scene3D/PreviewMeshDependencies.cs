@@ -57,7 +57,7 @@ public sealed class PreviewMeshDependencies
             var export = entry switch
             {
                 ExportEntry e => e,
-                ImportEntry i when Imports.Add(i) => EntryImporter.ResolveImport(i, Cache),
+                ImportEntry i when Imports.Add(i) => EffectiveLightingProperties.Resolve(i, Cache),
                 _ => null
             };
             if (export is null || Exports.Contains(export)) return;

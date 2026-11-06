@@ -15,7 +15,7 @@ internal static class EffectiveLightingProperties
     internal static ExportEntry Resolve(IEntry entry, PackageCache cache) => entry switch
     {
         ExportEntry export => export,
-        ImportEntry import => EntryImporter.ResolveImport(import, cache),
+        ImportEntry import => cache is PreviewPackageCache preview ? preview.ResolveImport(import) : EntryImporter.ResolveImport(import, cache),
         _ => null
     };
 

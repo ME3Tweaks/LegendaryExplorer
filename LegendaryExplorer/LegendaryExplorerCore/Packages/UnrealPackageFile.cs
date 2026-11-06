@@ -101,6 +101,12 @@ namespace LegendaryExplorerCore.Packages
         private EntryTree _tree;
         private bool lookupTableNeedsToBeRegenerated = true;
 
+        /// <summary>
+        /// The first export with each path that <see cref="EntryLookupTable"/> holds an import for instead. Built when it's first needed,
+        /// which resolving imports makes common: most lookups in a package for an import's path are for a path it only has as an import
+        /// </summary>
+        private CaseInsensitiveDictionary<ExportEntry> exportsBehindImports;
+
         public void InvalidateLookupTable()
         {
             if (!SuppressLookupTableInvalidation)
@@ -449,7 +455,6 @@ namespace LegendaryExplorerCore.Packages
 
         public ExportEntry FindExport(string instancedPath)
         {
-            IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
             lock (_findEntrySyncObj)
             {
@@ -457,27 +462,32 @@ namespace LegendaryExplorerCore.Packages
                 {
                     RebuildLookupTable();
                 }
-                EntryLookupTable.TryGetValue(instancedPath, out matchingEntry);
+                EntryLookupTable.TryGetValue(instancedPath, out IEntry matchingEntry);
+                if (matchingEntry is ImportEntry)
+                {
+                    // We want export version
+                    // Some files like LE2 Engine.pcc have imports and exports for same named thing
+                    // for some reason
+                    exportsBehindImports ??= FindExportsBehindImports();
+                    return exportsBehindImports.GetValueOrDefault(instancedPath);
+                }
+                return matchingEntry as ExportEntry;
             }
             // END CRITICAL SECTION ------------------------------------
+        }
 
-            if (matchingEntry is ImportEntry)
+        private CaseInsensitiveDictionary<ExportEntry> FindExportsBehindImports()
+        {
+            var result = new CaseInsensitiveDictionary<ExportEntry>();
+            foreach (ExportEntry exp in Exports)
             {
-                // We want export version
-                // Some files like LE2 Engine.pcc have imports and exports for same named thing
-                // for some reason
-                // Look manually for object
-                var dotIndex = instancedPath.LastIndexOf('.');
-                var objName = dotIndex > 0 ? instancedPath.AsSpan(dotIndex + 1) : instancedPath.AsSpan();
-                foreach (var exp in Exports)
+                string path = exp.InstancedFullPath;
+                if (EntryLookupTable.TryGetValue(path, out IEntry entry) && entry is ImportEntry)
                 {
-                    if (exp.ObjectName.EqualsInstancedString(objName)
-                        && exp.InstancedFullPath.CaseInsensitiveEquals(instancedPath)) // This goes second because if the object name does not match this will never be called. This reduces memory allocations
-                        return exp;
+                    result.TryAdd(path, exp);
                 }
             }
-
-            return matchingEntry as ExportEntry;
+            return result;
         }
 
         public ExportEntry FindExport(string instancedPath, string className)
@@ -562,6 +572,7 @@ namespace LegendaryExplorerCore.Packages
                 }
 #endif
                 EntryLookupTable[importEntry.InstancedFullPath] = importEntry;
+                exportsBehindImports = null;
                 _tree.Add(importEntry);
             }
 
@@ -584,6 +595,7 @@ namespace LegendaryExplorerCore.Packages
             lock (_packageSyncObj)
             {
                 EntryLookupTable.Clear();
+                exportsBehindImports = null;
                 //pre-order traversal of entry tree
                 //this is superior to just looping through the export and import arrays and calculating the InstancedFullPath anew for each one
                 //as InstancedFullPath has to recurse up from leaf to root, performing multiple string concats per node.
