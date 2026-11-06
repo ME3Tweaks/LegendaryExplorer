@@ -34,11 +34,14 @@ public sealed class ActorDeletionPlan
     public string Repairs => $"Committing removes it from {(Collection is null ? "the level" : Collection.ObjectName.Instanced)}"
                              + $"{(cleansDestroyedContent ? " and from the world's destroyed-actor list" : "")}, and trashes it"
                              + (Entries.Count > 1 ? $" with the {Entries.Count - 1} objects it owns." : ".")
+                             + (decals.Count > 0 ? $" It's also taken out of the {(decals.Count == 1 ? "decal that lands on it or lists it" : $"{decals.Count} decals that land on it or list it")}." : "")
                              // Light-maps and shadow-maps refer to a light by its GUIDs, not by reference
                              + (LightClasses.Contains(Actor.ClassName) || Collection is not null && IsLightComponent(Actor)
                                  ? " What it lit stays lit by it in the level's baked lighting until a rebake." : "");
     // Whether BioWorldInfo's ClientDestroyedActorContent refers to it, which TrashEntries cleans. Found by CheckReferences, which makes the plan with Inspect
     private bool cleansDestroyedContent;
+    // The decals that land on it or list it in their Filters, which the commit takes it out of. Found by CheckReferences too
+    private readonly List<ExportEntry> decals = [];
     private readonly (ExportEntry Entry, int Index, byte[] Header, byte[] Data)[] snapshots;
     // A collection member's transform in its collection when the deletion was prepared, which is its as much as its own export is
     private readonly Matrix4x4? memberTransform;
@@ -267,6 +270,7 @@ public sealed class ActorDeletionPlan
                 && !export.WouldReferenceAny(targets, properties, binary))
             {
                 cleansDestroyedContent |= export == worldInfo;
+                if (IsDecal(export)) decals.Add(export);
                 continue;
             }
             foreach (var target in Entries)
@@ -304,7 +308,28 @@ public sealed class ActorDeletionPlan
             properties.GetProp<ArrayProperty<ObjectProperty>>("ClientDestroyedActorContent").RemoveAll(o => trashed.Contains(o.Value));
             return true;
         }
+        if (IsDecal(referrer))
+        {
+            (properties, binary) = WithoutReceivers(referrer, Entries.Select(e => e.UIndex).ToHashSet());
+            return true;
+        }
         return repairs.WrittenProperties.TryGetValue(referrer, out properties);
+    }
+
+    private static bool IsDecal(ExportEntry export) => export.IsA("DecalComponent");
+
+    /// <summary>
+    /// A decal's properties and binary without <paramref name="entries"/>: their receivers, and their entries in its Filter. It keeps its other surfaces,
+    /// with their baked lighting. A Filter of "only these" that's left empty lands on nothing, as a Filter listing nothing does
+    /// </summary>
+    private static (PropertyCollection Properties, DecalComponent Binary) WithoutReceivers(ExportEntry decal, IReadOnlySet<int> entries)
+    {
+        var properties = decal.GetProperties();
+        properties.GetProp<ArrayProperty<StructProperty>>("DecalReceivers")?.RemoveAll(r => r.GetProp<ObjectProperty>("Component") is { } component && entries.Contains(component.Value));
+        properties.GetProp<ArrayProperty<ObjectProperty>>("Filter")?.RemoveAll(o => entries.Contains(o.Value));
+        var binary = decal.GetBinaryData<DecalComponent>();
+        binary.StaticReceivers = binary.StaticReceivers.Where(r => !entries.Contains(r.Component)).ToArray();
+        return (properties, binary);
     }
 
     /// <summary>A collection's properties and binary without <paramref name="members"/>: their entries in its component list, and their transforms</summary>
@@ -369,6 +394,11 @@ public sealed class ActorDeletionPlan
         }
         foreach (var collection in plans.Where(p => p.Collection is not null).GroupBy(p => p.Collection))
             RemoveMembers(collection.Key, collection.Select(p => p.Actor.UIndex).ToHashSet());
+        foreach (var decal in plans.SelectMany(p => p.decals.Select(d => (Decal: d, Plan: p))).GroupBy(d => d.Decal, d => d.Plan))
+        {
+            var (properties, binary) = WithoutReceivers(decal.Key, decal.SelectMany(p => p.Entries).Select(e => e.UIndex).ToHashSet());
+            decal.Key.WritePropertiesAndBinary(properties, binary);
+        }
         foreach (var package in plans.GroupBy(p => p.Actor.FileRef))
         {
             // Materialize the order before trashing changes outers; descendants must go first.

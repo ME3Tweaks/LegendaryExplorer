@@ -19,6 +19,7 @@ public static class ActorCommit
     public static void Commit(IReadOnlyList<OpenLevelFile> files, Action beforeActors = null, IReadOnlySet<ActorProxy> skipped = null)
     {
         var deletions = files.SelectMany(f => f.PendingDeletions).ToArray();
+        var deleted = deletions.SelectMany(d => d.Entries).ToHashSet<IEntry>();
         var written = new List<(OpenLevelFile File, ActorProxy Actor)>();
         var created = new HashSet<ActorProxy>();
         using (var scope = PackageEditScope.Begin(files.Select(f => f.Package)))
@@ -62,7 +63,11 @@ public static class ActorCommit
         foreach (var file in files)
         {
             //a receiving file's decals take on the receivers written for them, whether or not they were edited themselves
-            foreach (var decal in file.Actors.OfType<DecalActorProxy>().Where(d => skipped?.Contains(d) != true)) decal.MarkClean();
+            foreach (var decal in file.Actors.OfType<DecalActorProxy>().Where(d => skipped?.Contains(d) != true))
+            {
+                decal.MarkClean();
+                decal.ForgetDeleted(deleted);
+            }
             file.ClearPendingDeletions();
             file.IsDirty = false;
         }

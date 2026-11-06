@@ -88,6 +88,8 @@ public sealed class DecalActorProxy : EditorActorProxy
         decal?.CommitProjection();
         base.CommitChanges(packageCache);
     }
+    /// <summary>Lets go of what a commit deleted, which it took out of this decal's receivers and Filter (<see cref="ActorDeletionPlan"/>)</summary>
+    internal void ForgetDeleted(IReadOnlySet<IEntry> deleted) => decal?.ForgetDeleted(deleted);
     public override void MarkClean()
     {
         decal?.AcceptProjection();
@@ -221,6 +223,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         && data.Indices.All(i => i < data.Vertices.Length)
         && data.Vertices.All(v => DecalProjection.Finite(v.Position));
 
+    // A receiver pending deletion isn't drawn on, and has no say in a reprojection. It's still one until the commit that takes it out, which undoing the deletion avoids
+    private static bool PendingDeletion(Receiver r) => r.Source?.Actor.PendingDeletion is not null;
     private bool Stale(Receiver r) => r.Invalidated
         || r.Source is { } source && (source.Actor.IsDisposed || !source.Actor.Components.Contains(source)
             || source.LocalToWorld != r.OriginalTransform);
@@ -288,7 +292,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
             {
                 projection = DecalProjection.FromActor(Properties, settings, transform, owner.ProjectionBaseline);
                 foreach (var original in originalReceivers)
-                    if (original.Export is not null && context.FindDecalReceiver(original.Export) is not { HasPreviewMesh: true })
+                    if (original.Export is not null && !PendingDeletion(original) && context.FindDecalReceiver(original.Export) is not { HasPreviewMesh: true })
                         throw new InvalidOperationException("Load all original receivers before reprojecting this decal.");
                 List<Receiver> rebuilt = [];
                 bool staticMeshes = Properties.GetProp<BoolProperty>("bProjectOnStaticMeshes") is not { Value: false };
@@ -412,6 +416,16 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         }
         else { settings.Write(props); destination.WriteProperties(props); }
     }
+    internal void ForgetDeleted(IReadOnlySet<IEntry> deleted)
+    {
+        foreach (var receiver in originalReceivers.Concat(receivers).Distinct().Where(r => deleted.Contains(r.Export))) receiver.Mesh?.Dispose();
+        bool same = ReferenceEquals(receivers, originalReceivers);
+        originalReceivers.RemoveAll(r => deleted.Contains(r.Export));
+        if (!same) receivers.RemoveAll(r => deleted.Contains(r.Export));
+        var settings = owner.Decal.Settings;
+        if (settings.Filter.Actors.Any(deleted.Contains))
+            owner.Decal.MarkClean(settings with { Filter = new DecalFilterSettings(settings.Filter.Mode, settings.Filter.Actors.Where(a => !deleted.Contains(a))) });
+    }
     internal void AcceptProjection()
     {
         if (owner.Decal is null || projectedTransform is null) return;
@@ -491,7 +505,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                 BindReceivers(context);
                 if (r.Source is null || r.Invalidated) continue;
             }
-            if (Stale(r) || !r.Source.HasPreviewMesh) continue;
+            if (Stale(r) || PendingDeletion(r) || !r.Source.HasPreviewMesh) continue;
             if (!context.IsActorSelected(owner) && !context.IsComponentVisible(r.Source)) continue;
             try
             {
