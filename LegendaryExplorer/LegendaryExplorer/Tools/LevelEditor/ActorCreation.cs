@@ -8,9 +8,32 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using ClassFlags = LegendaryExplorerCore.Unreal.UnrealFlags.EClassFlags;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
+
+/// <summary>
+/// How new actors of <see cref="Classes"/> are made. Each is a class whose placed actors are known to be made this way, drawn by a view that writes all their
+/// values: there's no general recipe, and a class that isn't listed can't be placed
+/// </summary>
+/// <param name="Classes">The exact classes it makes: a subclass needs checking against it first</param>
+/// <param name="Draft">Makes the view of a new one, drawn and edited with nothing written until a commit</param>
+internal sealed record ActorRecipe(IReadOnlyList<string> Classes, ActorRecipe.MakeDraft Draft)
+{
+    /// <param name="asset">The <see cref="AssetClass"/> chosen for it, an entry of its package, if it needs one</param>
+    /// <param name="template">The subobject of its class default that <see cref="ComponentProperty"/> refers to, if it has one</param>
+    internal delegate ActorProxy MakeDraft(IActorEditorContext editor, ActorRecord record, PropertyCollection properties, IEntry asset, ExportEntry template);
+
+    /// <summary>The class of the asset to choose before placing one, or null if it needs none</summary>
+    internal string AssetClass { get; init; }
+    /// <summary>The property of its class default that refers to the component its own is made from, or null if it has none</summary>
+    internal string ComponentProperty { get; init; }
+    /// <summary>What else that component has to be, if anything</summary>
+    internal Func<ExportEntry, bool> AcceptsComponent { get; init; }
+    internal bool IsSpline { get; init; }
+}
 
 /// <summary>
 /// New actors made from their class's defaults, placed as drafts: drawn and edited with nothing written until a commit creates their exports
@@ -18,34 +41,82 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// </summary>
 public static class ActorCreation
 {
-    /// <summary>
-    /// The classes with a recipe. A new one has its location and its Tag (its class's name, as UE3's UWorld::SpawnActor sets it) and nothing else
-    /// of its own; spline points start unconnected, and a loft with no DeformMesh until one is assigned. A static mesh actor has the mesh chosen for
-    /// it, in a component made from its class default's (<see cref="ComponentTemplate"/>), and a standalone light has its class default's light
-    /// </summary>
-    public static IReadOnlyList<string> RecipeClasses { get; } =
-        ["Note", "TargetPoint", "SplineActor", "SplineLoftActor", "StaticMeshActor", .. LightActorProxy.StandaloneClasses];
+    private static ActorClassInfo MarkerInfo(ActorRecord record) => ActorClassification.Get(record.Class.ObjectName.Name, record.Package.Game);
 
-    /// <summary>Whether a new <paramref name="className"/> needs a mesh chosen for it</summary>
-    public static bool NeedsMesh(string className) => className is "StaticMeshActor";
+    /// <summary>
+    /// A new actor has its location and its Tag (its class's name, as UE3's UWorld::SpawnActor sets it) and nothing else of its own. Spline points start
+    /// unconnected, and a loft with no DeformMesh until one is assigned. A static mesh actor has the mesh chosen for it, and an emitter the particle
+    /// system, in a component made from its class default's (<see cref="ComponentTemplate"/>), and a standalone light has its class default's light
+    /// </summary>
+    private static readonly ActorRecipe[] Recipes =
+    [
+        new(["Note", "TargetPoint"], (editor, record, properties, _, _) => new EditorActorProxy(editor, record, properties, MarkerInfo(record))),
+        new(["SplineActor", "SplineLoftActor"], (editor, record, properties, _, _) => new SplineActorProxy(editor, record, properties)) { IsSpline = true },
+        new(["StaticMeshActor"], (editor, record, properties, mesh, template) => new StaticMeshActorProxy(editor, record, properties, mesh, template))
+        {
+            AssetClass = "StaticMesh", ComponentProperty = "StaticMeshComponent"
+        },
+        new(LightActorProxy.StandaloneClasses, (editor, record, properties, _, template) => new LightActorProxy(editor, record, properties, template))
+        {
+            ComponentProperty = "LightComponent", AcceptsComponent = light => SceneLight.GetLightType(light) is not null
+        },
+        new(["Emitter"], (editor, record, properties, system, template) => new EmitterDraftProxy(editor, record, properties, MarkerInfo(record), system, template))
+        {
+            AssetClass = "ParticleSystem", ComponentProperty = "ParticleSystemComponent"
+        }
+    ];
+
+    /// <summary>The classes with a recipe</summary>
+    public static IReadOnlyList<string> RecipeClasses { get; } = [.. Recipes.SelectMany(recipe => recipe.Classes)];
+
+    private static ActorRecipe RecipeFor(string className) => Recipes.FirstOrDefault(recipe => recipe.Classes.Contains(className));
+
+    /// <summary>The class of the asset to choose for a new <paramref name="className"/>, or null if it needs none</summary>
+    public static string AssetClass(string className) => RecipeFor(className)?.AssetClass;
 
     /// <summary>Why a new <paramref name="className"/> can't be placed in <paramref name="file"/> now, or null</summary>
+    public static string PlacementRefusal(OpenLevelFile file, string className, PackageCache cache) => PlacementRefusal(file, className, cache, out _);
+
+    private static string PlacementRefusal(OpenLevelFile file, string className, PackageCache cache, out IEntry actorClass) =>
+        Refusal(file, className, cache, out actorClass) ?? EligibilityRefusal(actorClass, cache);
+
+    /// <summary>
+    /// Why the editor wouldn't place a new <paramref name="actorClass"/>, or null: UEditorEngine::AddActor refuses a class that's Abstract, Transient or not
+    /// Placeable, and UWorld::SpawnActor one that's Deprecated. Navigation points are left to Pathfinding Editor. These are the concrete class's own
+    /// flags, since Abstract isn't inherited. It's no check on an upgraded collection member, which is an actor the game already has
+    /// </summary>
+    public static string EligibilityRefusal(IEntry actorClass, PackageCache cache)
+    {
+        string name = actorClass.ObjectName.Instanced;
+        try
+        {
+            if (EffectiveLightingProperties.Resolve(actorClass, cache) is not { IsClass: true } resolved) return $"{name}'s class couldn't be found.";
+            var flags = ObjectBinary.From<UClass>(resolved).ClassFlags;
+            if (!flags.HasFlag(ClassFlags.Placeable)) return $"{name} isn't placeable.";
+            if (flags.HasFlag(ClassFlags.Abstract)) return $"{name} is abstract.";
+            if (flags.HasFlag(ClassFlags.Transient)) return $"{name} is transient in {resolved.Game}.";
+            if (flags.HasFlag(ClassFlags.Deprecated)) return $"{name} is deprecated.";
+            if (resolved.InheritsFrom("NavigationPoint")) return $"{name} is a navigation point: use Pathfinding Editor.";
+            return null;
+        }
+        catch (Exception error) when (error is not OutOfMemoryException) { return $"{name}'s class couldn't be read: {error.Message}"; }
+    }
+
+    /// <summary>Why a new <paramref name="className"/> couldn't be made in <paramref name="file"/> now, or null: all upgrading a collection's member needs</summary>
     public static string Refusal(OpenLevelFile file, string className, PackageCache cache) => Refusal(file, className, cache, out _);
 
-    /// <param name="actorClass">Its class, if it can be placed</param>
+    /// <param name="actorClass">Its class, if it can be made</param>
     internal static string Refusal(OpenLevelFile file, string className, PackageCache cache, out IEntry actorClass)
     {
         actorClass = null;
-        if (!RecipeClasses.Contains(className)) return $"There's no recipe for a new {className}.";
+        if (RecipeFor(className) is not { } recipe) return $"There's no recipe for a new {className}.";
         if (FileRefusal(file) is { } refusal) return refusal;
         try { actorClass = FindClass(file.Package, className, cache); }
         catch (Exception error) when (error is not OutOfMemoryException) { return $"Its class couldn't be read: {error.Message}"; }
         if (actorClass is null) return $"{file.Package.Game} has no {className} class.";
-        if (NeedsMesh(className) && ComponentTemplate(actorClass, "StaticMeshComponent", cache) is null)
-            return $"{className}'s class default has no StaticMeshComponent to make its component from.";
-        if (LightActorProxy.StandaloneClasses.Contains(className)
-            && (ComponentTemplate(actorClass, "LightComponent", cache) is not { } light || SceneLight.GetLightType(light) is null))
-            return $"{className}'s class default has no light component to make its own from.";
+        if (recipe.ComponentProperty is { } property
+            && (ComponentTemplate(actorClass, property, cache) is not { } template || recipe.AcceptsComponent?.Invoke(template) == false))
+            return $"{className}'s class default has no {property} to make its own from.";
         return ImportRefusal(actorClass, file.Package);
     }
 
@@ -139,13 +210,14 @@ public static class ActorCreation
     /// caller to record. Its package is untouched until Commit Changes
     /// </summary>
     /// <param name="gridSize">The grid it's snapped to if its class asks to be (<see cref="SnapsToGrid(IEntry, PackageCache)"/>), or 0 for none</param>
-    /// <param name="mesh">For a class that <see cref="NeedsMesh"/>: the StaticMesh it draws, an entry of <paramref name="file"/>'s package</param>
-    public static IUndoAction Place(IActorEditorContext editor, OpenLevelFile file, string className, Vector3 location, float gridSize = 0, IEntry mesh = null)
+    /// <param name="asset">For a class with an <see cref="AssetClass"/>: what it uses, an entry of <paramref name="file"/>'s package</param>
+    public static IUndoAction Place(IActorEditorContext editor, OpenLevelFile file, string className, Vector3 location, float gridSize = 0, IEntry asset = null)
     {
         var cache = editor.RenderContext.PackageCache;
-        if (Refusal(file, className, cache, out var actorClass) is { } refusal) throw new InvalidOperationException(refusal);
-        if (NeedsMesh(className) && (mesh is null || mesh.FileRef != file.Package || !mesh.IsA("StaticMesh")))
-            throw new ArgumentException($"A {className} needs a StaticMesh of {file.FileName}.", nameof(mesh));
+        if (PlacementRefusal(file, className, cache, out var actorClass) is { } refusal) throw new InvalidOperationException(refusal);
+        var recipe = RecipeFor(className);
+        if (recipe.AssetClass is { } assetClass && (asset is null || asset.FileRef != file.Package || !asset.IsA(assetClass)))
+            throw new ArgumentException($"A {className} needs a {assetClass} of {file.FileName}.", nameof(asset));
         if (editor.RenderContext.IsDragging || editor.RenderContext.IsEditingScene) throw new InvalidOperationException("Finish the current scene operation first.");
         if (!float.IsFinite(location.X) || !float.IsFinite(location.Y) || !float.IsFinite(location.Z)) throw new ArgumentException("The location isn't finite.", nameof(location));
         //appRound, which rounds halves up
@@ -158,17 +230,13 @@ public static class ActorCreation
             new NameProperty(className, "Tag")
         };
         var registry = editor.RenderContext.Registry;
-        bool spline = className is "SplineActor" or "SplineLoftActor";
         var record = registry.CreateDraft(package, actorClass, registry.ProposeName(package, className),
-            isSpline: spline, isLoft: className == "SplineLoftActor");
+            isSpline: recipe.IsSpline, isLoft: className == "SplineLoftActor");
         var selection = editor.RenderContext.SelectedActor;
         ActorProxy draft = null;
         try
         {
-            draft = spline ? new SplineActorProxy(editor, record, props)
-                : NeedsMesh(className) ? new StaticMeshActorProxy(editor, record, props, mesh, ComponentTemplate(actorClass, "StaticMeshComponent", cache))
-                : LightActorProxy.StandaloneClasses.Contains(className) ? new LightActorProxy(editor, record, props, ComponentTemplate(actorClass, "LightComponent", cache))
-                : new EditorActorProxy(editor, record, props, ActorClassification.Get(className, package.Game));
+            draft = recipe.Draft(editor, record, props, asset, recipe.ComponentProperty is { } property ? ComponentTemplate(actorClass, property, cache) : null);
             draft.OwningFile = file;
             using var edit = new SceneEdit(editor);
             edit.Attach(draft);

@@ -260,3 +260,22 @@ public sealed class KAssetProxy : SkeletalMeshActorProxy
     // Moving physics assets may require body/constraint updates that the generic transform commit does not perform.
     public override bool CanEditTransform => false;
 }
+
+/// <summary>
+/// A new Emitter (a draft): a marker, as a placed one is, since particle systems aren't drawn. Its commit makes its component as shipping levels' are (see
+/// <see cref="ActorProxy.NewComponent"/>), with no binary. The component's only value is its Template: UE3's UActorFactoryEmitter sets no other, and the others
+/// shipping ones have (OldPosition, bJustAttached, LightingChannels) are the engine's. The actor refers to it as its ParticleSystemComponent, with no Components array
+/// </summary>
+internal sealed class EmitterDraftProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, ActorClassInfo info, IEntry particleSystem, ExportEntry componentTemplate)
+    : EditorActorProxy(context, draft, properties, info)
+{
+    public override void CommitChanges(PackageCache packageCache = null)
+    {
+        if (Materialized)
+        {
+            var component = NewComponent(componentTemplate, [new ObjectProperty(particleSystem, "Template")], null);
+            Properties.AddOrReplaceProp(new ObjectProperty(component, "ParticleSystemComponent"));
+        }
+        base.CommitChanges(packageCache);
+    }
+}
