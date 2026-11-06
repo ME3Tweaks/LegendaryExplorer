@@ -86,6 +86,14 @@ public class ModelPreviewLOD<Vertex> where Vertex : IVertexBase
     public LightEnvironmentPrimitive LightEnvironmentPrimitive;
 
     /// <summary>
+    /// The material of each of <see cref="Sections"/> that has one. Null until the LOD is first drawn, by when its preview is complete
+    /// </summary>
+    internal ModelPreviewMaterial<Vertex>[] SectionMaterials;
+
+    /// <summary>A bit for each <see cref="RenderPass"/> that draws something of this LOD, valid once <see cref="SectionMaterials"/> is set</summary>
+    internal int DrawnPasses;
+
+    /// <summary>
     /// Creates a new ModelPreviewLOD.
     /// </summary>
     /// <param name="mesh">The geometry of this level of detail.</param>
@@ -1066,15 +1074,22 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     {
         if (lod >= LODs.Count) return;
 
-        bool outsideView = view.CullingFrustum is { } frustum && !frustum.Intersects(LODs[lod].Mesh.TransformedBounds);
-        foreach (ModelPreviewSection section in LODs[lod].Sections)
+        ModelPreviewLOD<TVertex> current = LODs[lod];
+        ModelPreviewMaterial<TVertex>[] materials = current.SectionMaterials ?? ResolveSectionMaterials(current);
+        //every pass visits every mesh every frame, and most meshes have nothing in most passes
+        if ((current.DrawnPasses & 1 << (int)renderPass) == 0) return;
+
+        bool outsideView = view.CullingFrustum is { } frustum && !frustum.Intersects(current.Mesh.TransformedBounds);
+        List<ModelPreviewSection> sections = current.Sections;
+        for (int i = 0; i < sections.Count; i++)
         {
+            ModelPreviewSection section = sections[i];
             if (section.MaterialName is null)
             {
                 if (outsideView) continue;
                 if (view.Wireframe && renderPass is RenderPass.Base or RenderPass.ANY)
                 {
-                    switch (LODs[lod].Mesh)
+                    switch (current.Mesh)
                     {
                         case Mesh<WorldVertex> mesh:
                             view.RenderMeshAsWireframe(mesh, section);
@@ -1085,20 +1100,41 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
                     }
                 }
             }
-            else if (Materials.TryGetValue(section.MaterialName, out ModelPreviewMaterial<TVertex> material))
+            else if (materials[i] is { } material)
             {
                 // Test before shader setup, light interactions, and the base pass's hit-proxy draw.
                 if (outsideView && material.CanCullByBounds(view)) continue;
                 if (renderPass is RenderPass.Lighting)
                 {
-                    material.RenderLighting(LODs[lod], section, view);
+                    material.RenderLighting(current, section, view);
                 }
                 else if (material.Pass == renderPass || renderPass is RenderPass.ANY)
                 {
-                    material.RenderSection(LODs[lod], section, view);
+                    material.RenderSection(current, section, view);
                 }
             }
         }
+    }
+
+    private ModelPreviewMaterial<TVertex>[] ResolveSectionMaterials(ModelPreviewLOD<TVertex> lod)
+    {
+        var materials = new ModelPreviewMaterial<TVertex>[lod.Sections.Count];
+        int passes = 0;
+        for (int i = 0; i < materials.Length; i++)
+        {
+            string name = lod.Sections[i].MaterialName;
+            if (name is null)
+            {
+                //only wireframe views draw it
+                passes |= 1 << (int)RenderPass.Base | 1 << (int)RenderPass.ANY;
+            }
+            else if (Materials.TryGetValue(name, out materials[i]))
+            {
+                passes |= 1 << (int)materials[i].Pass | 1 << (int)RenderPass.Lighting | 1 << (int)RenderPass.ANY;
+            }
+        }
+        lod.DrawnPasses = passes;
+        return lod.SectionMaterials = materials;
     }
 
     public void UpdateLocalToWorld(Matrix4x4 ltw)

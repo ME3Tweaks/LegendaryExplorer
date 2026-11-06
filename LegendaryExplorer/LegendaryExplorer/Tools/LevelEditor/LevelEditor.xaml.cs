@@ -502,6 +502,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (UseFrustumCulling) viewFrustum.Update(RenderContext.Camera.ViewProjectionMatrix, depthClipEnabled: false);
         RenderContext.CullingFrustum = UseFrustumCulling ? viewFrustum : null;
         RenderContext.ShowHidden = ShowHidden;
+        visibleActors.Clear();
+        foreach (ActorProxy actor in RenderContext.DrawList_3D)
+        {
+            if (RenderContext.IsActorVisible(actor)) visibleActors.Add(actor);
+        }
         Span<RenderPass> passes = ShowCollision
             ? [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Decals, RenderPass.Translucent, RenderPass.Collision]
             : [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Decals, RenderPass.Translucent];
@@ -518,14 +523,17 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
         RenderContext.DrawUI();
     }
+
+    //the frame's actors, which every render pass goes through
+    private readonly List<ActorProxy> visibleActors = [];
+
     void DoRenderPass(RenderPass pass)
     {
         var actors = pass == RenderPass.Decals
-            ? RenderContext.DrawList_3D.OrderBy(a => (a as DecalActorProxy)?.SortOrder ?? 0)
-            : (IEnumerable<ActorProxy>)RenderContext.DrawList_3D;
+            ? visibleActors.OrderBy(a => (a as DecalActorProxy)?.SortOrder ?? 0)
+            : (IEnumerable<ActorProxy>)visibleActors;
         foreach (ActorProxy actor in actors)
         {
-            if (!RenderContext.IsActorVisible(actor)) continue;
             int hitID = actor.HitID;
             RenderContext.CurrentHitTestId = new Vector3((hitID & 0xFF) / 255f, ((hitID >> 8) & 0xFF) / 255f, ((hitID >> 16) & 0xFF) / 255f);
             if (actor == selectedActor)
