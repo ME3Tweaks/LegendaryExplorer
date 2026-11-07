@@ -22,6 +22,42 @@ public sealed record DeletionRepairs(IReadOnlySet<IEntry> Trashed, IReadOnlyDict
     public static DeletionRepairs None { get; } = new(new HashSet<IEntry>(), new Dictionary<ExportEntry, PropertyCollection>());
 }
 
+/// <summary>What goes when an actor's deleted</summary>
+/// <param name="Going">The actor, then what goes with it</param>
+/// <param name="Plans">Their plans, in that order</param>
+public sealed record DeletionChoice(IReadOnlyList<ActorProxy> Going, ActorDeletionPlan[] Plans)
+{
+    /// <summary>How many actors are left attached to what goes, which are detached</summary>
+    public int Detached => Plans.Sum(p => p.DetachedActors);
+}
+
+/// <summary>What's attached to an actor being deleted, for deciding what goes with it (<see cref="ActorDeletionPlan.FindAttachedAsync"/>)</summary>
+/// <param name="All">Everything attached that can go with it</param>
+/// <param name="Least">Only what it can't be deleted without: those that refer to it other than by attachment, or to another that does</param>
+/// <param name="Blockers">What those references are</param>
+public sealed record AttachedDependents(DeletionChoice All, DeletionChoice Least, IReadOnlyList<string> Blockers)
+{
+    /// <summary>The question to ask, which says what each answer leaves attached to what goes. What's chained under a kept actor stays attached to it</summary>
+    public string Question()
+    {
+        static string Names(IEnumerable<ActorProxy> actors) => ActorDeletionPlan.Listed(actors.Select(a => a.ActorName).ToArray());
+        string actor = All.Going[0].ActorName;
+        var required = Least.Going.Skip(1).ToArray();
+        var optional = All.Going.Skip(1).Except(required).ToArray();
+        string them = (optional.Length > 0 ? optional.Length : required.Length) == 1 ? "it" : "them";
+        string message = required.Length == 0
+            ? $"{(optional.Length == 1 ? "This actor is" : "These actors are")} attached to {actor}. Delete {them} too?\n\n{Names(optional)}"
+            : $"{actor} can't be deleted without {(required.Length == 1 ? "this actor" : "these actors")}:\n\n{Names(required)}\n\n"
+              + $"References:\n{ActorDeletionPlan.Listed(Blockers)}"
+              + (optional.Length > 0 ? $"\n\n{(optional.Length == 1 ? "This is" : "These are")} attached to it too. Delete {them} as well?\n\n{Names(optional)}" : $"\n\nDelete {them} too?");
+        if (All.Detached > 0)
+            message += $"\n\nWith {them} deleted, {(All.Detached == 1 ? "1 other attached actor stays where it is, detached, as it can't be deleted" : $"{All.Detached} other attached actors stay where they are, detached, as they can't be deleted")}.";
+        if (optional.Length > 0 && Least.Detached > 0)
+            message += $"\n\nWith {them} kept, {(Least.Detached == 1 ? "1 attached actor stays where it is, detached" : $"{Least.Detached} attached actors stay where they are, detached")}.";
+        return message;
+    }
+}
+
 /// <summary>Reference inspection and commit repairs for supported actor ownership recipes. Preparation never changes the package.</summary>
 public sealed class ActorDeletionPlan
 {
@@ -31,10 +67,15 @@ public sealed class ActorDeletionPlan
     public ExportEntry Collection { get; }
     public IReadOnlyList<string> Blockers => blockers;
     private readonly List<string> blockers;
+    // The blockers that are references, by what refers to it
+    private readonly Dictionary<IEntry, List<string>> blockersByReferrer = [];
+    /// <summary>The blockers that come from <paramref name="entries"/>, which it couldn't be deleted without</summary>
+    public IReadOnlyList<string> BlockersFrom(IEnumerable<ExportEntry> entries) => entries.SelectMany(e => blockersByReferrer.GetValueOrDefault(e) ?? []).ToArray();
     public IReadOnlyList<ExportEntry> Entries { get; }
     public string Repairs => $"Committing removes it from {(Collection is null ? "the level" : Collection.ObjectName.Instanced)}"
                              + $"{(cleansDestroyedContent ? " and from the world's destroyed-actor list" : "")}, and trashes it"
                              + (Entries.Count > 1 ? $" with the {Entries.Count - 1} objects it owns." : ".")
+                             + (DetachedActors > 0 ? $" {(DetachedActors == 1 ? "The actor attached to it stays where it is" : $"The {DetachedActors} actors attached to it stay where they are")}, detached." : "")
                              + (prefabs.Count > 0 ? " It stays removed from the prefab it came from." : "")
                              + (decals.Count > 0 ? $" It's also taken out of the {(decals.Count == 1 ? "decal that lands on it or lists it" : $"{decals.Count} decals that land on it or list it")}." : "")
                              // Light-maps and shadow-maps refer to a light by its GUIDs, not by reference
@@ -45,6 +86,10 @@ public sealed class ActorDeletionPlan
     // The decals that land on it or list it in their Filters, which the commit takes it out of. Found by CheckReferences too
     private readonly List<ExportEntry> decals = [];
     private readonly List<ExportEntry> decalsLeftEmpty = [];
+    // The actors attached to it, or that it's attached to, whose references the commit clears. Found by CheckReferences too
+    private readonly List<ExportEntry> attachments = [];
+    /// <summary>How many actors are left attached to it, which the commit detaches</summary>
+    public int DetachedActors { get; private set; }
     // The prefab instances it's a member of, whose entries for it the commit blanks. Found by CheckReferences too
     private readonly List<ExportEntry> prefabs = [];
     /// <summary>The decals that land on it and, with it and what's already pending deletion gone, on nothing else</summary>
@@ -86,7 +131,6 @@ public sealed class ActorDeletionPlan
         if (!Supports(actor.Export))
             return $"Committed deletion supports only the Legendary Edition's {string.Join(", ", SupportedClasses)}, and static mesh and light collections' "
                    + "meshes and point, spot and directional lights.";
-        if (actor.Base is not null || actor.Attached.Count != 0) return "Attached actors need a separate detach operation.";
         return null;
     }
 
@@ -201,28 +245,111 @@ public sealed class ActorDeletionPlan
     /// unsynchronized (as <see cref="Inspect"/> reads it, finding the actor's owned entries). Without the shared package cache, which ChangeCount
     /// needs to see edits, the scan is made here instead
     /// </summary>
-    public static async Task<ActorDeletionPlan> PrepareAsync(ExportEntry actor, ExportEntry level, DeletionRepairs repairs = null)
+    public static Task<ActorDeletionPlan> PrepareAsync(ExportEntry actor, ExportEntry level, DeletionRepairs repairs = null) =>
+        PrepareAllAsync([(actor, level)], _ => [repairs], plans => plans[0]);
+
+    /// <summary>
+    /// <see cref="PrepareAsync"/> for <paramref name="actors"/> going together, from one scan of each package: nothing needs repairing in what's going too.
+    /// Each is blocked only by what stays
+    /// </summary>
+    public static Task<ActorDeletionPlan[]> PrepareTogetherAsync(IReadOnlyList<ActorProxy> actors)
     {
-        if (!MEPackageHandler.GlobalSharedCacheEnabled) return Prepare(actor, level, repairs);
-        int changes = actor.FileRef.ChangeCount;
-        var plan = Inspect(actor, level);
+        var repairs = actors.Select(a => a.GetDeletionRepairs()).ToArray();
+        return PrepareAllAsync(actors.Select(a => (a.Export, a.OwningFile.LevelExport)).ToArray(), plans =>
+        {
+            IReadOnlySet<IEntry> trashed = repairs.SelectMany(r => r.Trashed).Concat(plans.SelectMany(p => p.Entries)).ToHashSet();
+            return repairs.Select(r => r with { Trashed = trashed }).ToArray();
+        }, plans => plans);
+    }
+
+    /// <summary>
+    /// What's attached to <paramref name="actor"/> that can go with it, for deciding what does. Each check assumes the others go, so it's made again without an
+    /// attached actor that's blocked, and what's attached to that, which stay: otherwise what depends on it being gone would be wrong. If <paramref name="actor"/>
+    /// would still be blocked with all of them gone, there's nothing to decide, so it throws
+    /// </summary>
+    /// <param name="plan">Its plan on its own, which says what it needs gone</param>
+    public static async Task<AttachedDependents> FindAttachedAsync(ActorProxy actor, ActorDeletionPlan plan)
+    {
+        var refused = new HashSet<ActorProxy>();
+        var attached = AttachedActors(actor);
+        ActorDeletionPlan[] plans;
+        while (true)
+        {
+            plans = await PrepareTogetherAsync([actor, .. attached]);
+            var blocked = attached.Where((_, i) => plans[i + 1].Blockers.Count != 0).ToArray();
+            if (blocked.Length == 0) break;
+            refused.UnionWith(blocked);
+            attached = AttachedActors(actor, refused);
+        }
+        plans[0].RequireAllowed();
+        //what it needs gone, then what those need gone
+        var required = new List<ActorProxy>();
+        var blockers = new List<string>();
+        ActorDeletionPlan[] requiredPlans = [plan];
+        while (true)
+        {
+            var needed = attached.Select((a, i) => (Actor: a, Plan: plans[i + 1])).Where(a => !required.Contains(a.Actor))
+                .Select(a => (a.Actor, Blockers: requiredPlans.SelectMany(p => p.BlockersFrom(a.Plan.Entries)).ToArray())).Where(a => a.Blockers.Length != 0).ToArray();
+            if (needed.Length == 0) break;
+            required.AddRange(needed.Select(n => n.Actor));
+            blockers.AddRange(needed.SelectMany(n => n.Blockers));
+            requiredPlans = await PrepareTogetherAsync([actor, .. required]);
+        }
+        return new AttachedDependents(new DeletionChoice([actor, .. attached], plans), new DeletionChoice([actor, .. required], requiredPlans), blockers);
+    }
+
+    /// <summary>
+    /// The decals that deleting <paramref name="going"/> (with <paramref name="plans"/>) would leave with nothing to project onto, and can go with them, and the
+    /// plans of all of those. An emptied decal that's blocked stays. If there are none, these are <paramref name="plans"/>
+    /// </summary>
+    public static async Task<(IReadOnlyList<ActorProxy> Decals, ActorDeletionPlan[] Plans)> FindEmptiedDecalsAsync(IReadOnlyList<ActorProxy> going, ActorDeletionPlan[] plans)
+    {
+        IReadOnlyList<ActorProxy> decals = EmptiedDecals(going[0], plans);
+        while (decals.Count != 0)
+        {
+            var together = await PrepareTogetherAsync([.. going, .. decals]);
+            var blocked = decals.Where((_, i) => together[going.Count + i].Blockers.Count != 0).ToArray();
+            if (blocked.Length == 0) return (decals, together);
+            decals = decals.Except(blocked).ToArray();
+        }
+        return ([], plans);
+    }
+
+    /// <param name="repairs">One for each actor</param>
+    /// <param name="result">What the caller gets. Made here, so that a caller awaiting this resumes straight after its last check for changes</param>
+    private static async Task<T> PrepareAllAsync<T>(IReadOnlyList<(ExportEntry Actor, ExportEntry Level)> actors,
+        Func<ActorDeletionPlan[], IReadOnlyList<DeletionRepairs>> repairs, Func<ActorDeletionPlan[], T> result)
+    {
+        ActorDeletionPlan[] Inspected() => actors.Select(a => Inspect(a.Actor, a.Level)).ToArray();
+        if (!MEPackageHandler.GlobalSharedCacheEnabled)
+        {
+            var inspected = Inspected();
+            CheckReferences(inspected, repairs(inspected));
+            return result(inspected);
+        }
+        var packages = actors.Select(a => a.Actor.FileRef).Distinct().ToArray();
+        int[] changes = packages.Select(p => p.ChangeCount).ToArray();
+        bool Changed() => !packages.Select(p => p.ChangeCount).SequenceEqual(changes);
+        var plans = Inspected();
+        var repaired = repairs(plans);
         try
         {
-            await Task.Run(() => CheckReferences([plan], repairs));
+            await Task.Run(() => CheckReferences(plans, repaired));
         }
-        catch (Exception) when (actor.FileRef.ChangeCount != changes)
+        catch (Exception) when (Changed())
         {
             //refused below, as the package changed
         }
-        if (actor.FileRef.ChangeCount != changes) throw new InvalidOperationException("The package changed during reference inspection. Retry deletion.");
-        return plan;
+        if (Changed()) throw new InvalidOperationException("The package changed during reference inspection. Retry deletion.");
+        return result(plans);
     }
 
     /// <summary>
     /// Scans the whole package, including undrawn objects. A reference is allowed only if the commit takes it away: its referrer is trashed with the
     /// actor, or the referrer as the commit leaves it (<paramref name="repairs"/>' written properties, the Level without the actor among its Actors,
-    /// BioWorldInfo without it in ClientDestroyedActorContent, which TrashEntries cleans) refers to none of the actor's entries. A commit's own check
-    /// passes no written properties, so it sees what those edits actually wrote
+    /// BioWorldInfo without it in ClientDestroyedActorContent, which TrashEntries cleans, a decal without it among its receivers and Filter, a prefab instance
+    /// with its entry blanked, or an actor detached from it) refers to none of the actor's entries. A commit's own check passes no written properties, so
+    /// it sees what those edits actually wrote
     /// </summary>
     public static ActorDeletionPlan Prepare(ExportEntry actor, ExportEntry level, DeletionRepairs repairs = null)
     {
@@ -232,12 +359,14 @@ public sealed class ActorDeletionPlan
     }
 
     /// <summary>Adds what blocks each of <paramref name="plans"/> (<see cref="Inspect"/>ed) because of references to it, from one scan of each package</summary>
-    internal static void CheckReferences(IReadOnlyList<ActorDeletionPlan> plans, DeletionRepairs repairs)
+    internal static void CheckReferences(IReadOnlyList<ActorDeletionPlan> plans, DeletionRepairs repairs) => CheckReferences(plans, plans.Select(_ => repairs).ToArray());
+
+    private static void CheckReferences(IReadOnlyList<ActorDeletionPlan> plans, IReadOnlyList<DeletionRepairs> repairs)
     {
         var references = plans.SelectMany(p => p.Entries).GroupBy(e => e.FileRef)
             .SelectMany(package => package.ToList().GetEntriesThatReferenceThese())
             .ToDictionary(r => r.Key, r => r.Value);
-        foreach (var plan in plans) plan.CheckReferences(references, repairs ?? DeletionRepairs.None);
+        for (int i = 0; i < plans.Count; i++) plans[i].CheckReferences(references, repairs[i] ?? DeletionRepairs.None);
     }
 
     /// <summary>The actor's owned entries, and what blocks deleting it besides references to them</summary>
@@ -254,8 +383,6 @@ public sealed class ActorDeletionPlan
             || actor.IsTrash() || levelActor.IsTrash())
             throw new InvalidOperationException("The actor or its Level was removed or replaced.");
         var entries = CollectOwnedEntries(actor, collection is not null, blockers);
-        if (actor.GetProperty<ObjectProperty>("Base") is { Value: not 0 })
-            blockers.Add("Attached actors need a separate detach operation.");
         if (collection is not null && MemberTransform(actor) is null)
             blockers.Add($"{collection.ObjectName.Instanced} must list it once, with a transform for each of its components.");
         var binary = level.GetBinaryData<Level>();
@@ -277,11 +404,15 @@ public sealed class ActorDeletionPlan
         var referrers = Entries.SelectMany(target => references[target].Keys).Where(r => !ownership.Contains(r) && !repairs.Trashed.Contains(r)).Distinct();
         foreach (var referrer in referrers)
         {
-            if (referrer is ExportEntry export && TryRepair(export, repairs, out var properties, out var binary)
-                && !export.WouldReferenceAny(targets, properties, binary))
+            if (referrer is ExportEntry export && IsRepaired(export, targets, repairs, out var binary, out bool attachment))
             {
                 cleansDestroyedContent |= export == worldInfo;
-                if (IsPrefab(export)) prefabs.Add(export);
+                if (attachment)
+                {
+                    attachments.Add(export);
+                    if (export.GetProperty<ObjectProperty>("Base") is { } @base && targets.Contains(@base.Value)) DetachedActors++;
+                }
+                if (binary is PrefabInstance) prefabs.Add(export);
                 if (IsDecal(export))
                 {
                     decals.Add(export);
@@ -292,18 +423,41 @@ public sealed class ActorDeletionPlan
             foreach (var target in Entries)
             {
                 foreach (string field in references[target].GetValueOrDefault(referrer) ?? [])
-                    blockers.Add($"#{referrer.UIndex} {referrer.InstancedFullPath}: {field} references {target.InstancedFullPath}");
+                {
+                    string blocker = $"#{referrer.UIndex} {referrer.InstancedFullPath}: {field} references {target.InstancedFullPath}";
+                    blockers.Add(blocker);
+                    if (!blockersByReferrer.TryGetValue(referrer, out var fromReferrer)) blockersByReferrer[referrer] = fromReferrer = [];
+                    fromReferrer.Add(blocker);
+                }
             }
+        }
+    }
+
+    /// <summary>Whether the commit takes away all of <paramref name="referrer"/>'s references to <paramref name="targets"/></summary>
+    /// <param name="binary">Its binary as the commit leaves it, null if that's unchanged</param>
+    /// <param name="attachment">Whether that's by taking them out of its attachment</param>
+    private bool IsRepaired(ExportEntry referrer, IReadOnlySet<int> targets, DeletionRepairs repairs, out ObjectBinary binary, out bool attachment)
+    {
+        //no well-formed export is unreadable: one that is means the file is broken, and can't be edited safely
+        try
+        {
+            return TryRepair(referrer, targets, repairs, out var properties, out binary, out attachment) && !referrer.WouldReferenceAny(targets, properties, binary);
+        }
+        catch (Exception error) when (error is not OutOfMemoryException)
+        {
+            throw new InvalidOperationException($"#{referrer.UIndex} {referrer.InstancedFullPath} can't be read, so this file can't be edited safely: {error.Message}", error);
         }
     }
 
     /// <summary>
     /// <paramref name="referrer"/> as the commit leaves it, if the commit changes it: its properties and binary, null for what's unchanged
     /// </summary>
-    private bool TryRepair(ExportEntry referrer, DeletionRepairs repairs, out PropertyCollection properties, out ObjectBinary binary)
+    private bool TryRepair(ExportEntry referrer, IReadOnlySet<int> targets, DeletionRepairs repairs, out PropertyCollection properties, out ObjectBinary binary,
+        out bool attachment)
     {
         properties = null;
         binary = null;
+        attachment = false;
         if (referrer == Collection)
         {
             (properties, binary) = WithoutMembers(Collection, new HashSet<int> { Actor.UIndex });
@@ -319,25 +473,41 @@ public sealed class ActorDeletionPlan
         if (referrer == worldInfo && canCleanDestroyedContent)
         {
             properties = worldInfo.GetProperties();
-            var trashed = Entries.Select(e => e.UIndex).ToHashSet();
             //as TrashEntries cleans it
-            properties.GetProp<ArrayProperty<ObjectProperty>>("ClientDestroyedActorContent").RemoveAll(o => trashed.Contains(o.Value));
+            properties.GetProp<ArrayProperty<ObjectProperty>>("ClientDestroyedActorContent").RemoveAll(o => targets.Contains(o.Value));
             return true;
         }
         if (IsDecal(referrer))
         {
-            (properties, binary) = WithoutReceivers(referrer, Entries.Select(e => e.UIndex).ToHashSet());
+            (properties, binary) = WithoutReceivers(referrer, targets);
             return true;
         }
-        if (IsPrefab(referrer))
-        {
-            binary = WithoutPrefabMembers(referrer, Entries.Select(e => e.UIndex).ToHashSet());
-            return true;
-        }
-        return repairs.WrittenProperties.TryGetValue(referrer, out properties);
+        //(an actor too, so it can also be attached)
+        if (referrer.IsA("PrefabInstance") && referrer.GetBinaryData<PrefabInstance>().ArchetypeToInstanceMap.Any(p => targets.Contains(p.Value)))
+            binary = WithoutPrefabMembers(referrer, targets);
+        bool written = repairs.WrittenProperties.TryGetValue(referrer, out properties);
+        //only an actor's Base and Attached are attachment: any other object that has them stays a blocker that names it
+        if (!referrer.IsA("Actor")) return written;
+        properties = written ? properties.DeepClone() : referrer.GetProperties();
+        attachment = WithoutAttachment(properties, targets);
+        return written || attachment || binary is not null;
     }
 
-    private static bool IsPrefab(ExportEntry export) => export.IsA("PrefabInstance");
+    /// <summary>
+    /// Takes <paramref name="entries"/> out of an actor's <paramref name="properties"/>' attachment, as AActor::SetBase does: from its Attached, and if its
+    /// Base is one of them, off it. Its Location is its place in the world, so it stays where it is. They're written as blank, since a removed value could be
+    /// inherited from an archetype (a prefab member's Base is its archetype's, to another archetype), and all three together, since each could be
+    /// </summary>
+    /// <returns>Whether that changed anything</returns>
+    internal static bool WithoutAttachment(PropertyCollection properties, IReadOnlySet<int> entries)
+    {
+        bool changed = properties.GetProp<ArrayProperty<ObjectProperty>>("Attached")?.RemoveAll(o => entries.Contains(o.Value)) == true;
+        if (properties.GetProp<ObjectProperty>("Base") is not { } @base || !entries.Contains(@base.Value)) return changed;
+        properties.AddOrReplaceProp(new ObjectProperty(0, "Base"));
+        properties.AddOrReplaceProp(new ObjectProperty(0, "BaseSkelComponent"));
+        properties.AddOrReplaceProp(new NameProperty("None", "BaseBoneName"));
+        return true;
+    }
 
     /// <summary>
     /// A prefab instance's binary with <paramref name="members"/>' entries blanked. An entry is kept, as APrefabInstance::UpdatePrefabInstance wants it: one
@@ -363,16 +533,38 @@ public sealed class ActorDeletionPlan
     }
 
     /// <summary>
-    /// The decals deleting <paramref name="actor"/> would leave with nothing to project onto, which could be deleted with it. A decal with an uncommitted
-    /// reprojection lands where it shows, which isn't what its binary says: it may have moved off the actor, or onto it from another package
+    /// The actors attached to <paramref name="actor"/>, and to them in turn, that could be deleted with it. One that can't be, or is in <paramref name="refused"/>,
+    /// keeps what's attached to it
     /// </summary>
-    public static IReadOnlyList<DecalActorProxy> EmptiedDecals(ActorProxy actor, ActorDeletionPlan plan)
+    public static IReadOnlyList<ActorProxy> AttachedActors(ActorProxy actor, IReadOnlySet<ActorProxy> refused = null)
     {
-        var gone = plan.Entries.Concat(actor.OwningFile.PendingDeletions.SelectMany(d => d.Entries)).ToHashSet();
-        return actor.Editor.RenderContext.DrawList_3D.OfType<DecalActorProxy>().Where(d => d.DecalComponent is { } component && Refusal(d) is null
+        var found = new List<ActorProxy>();
+        void Add(ActorProxy parent)
+        {
+            //(a Base cycle would come back round to what's already found)
+            foreach (var attached in parent.Attached.Where(a => a != actor && refused?.Contains(a) != true && a.DeleteRefusal is null && !found.Contains(a)))
+            {
+                found.Add(attached);
+                Add(attached);
+            }
+        }
+        Add(actor);
+        return found;
+    }
+
+    /// <summary>
+    /// The decals deleting what <paramref name="plans"/> delete, with <paramref name="actor"/>, would leave with nothing to project onto, which could be
+    /// deleted too. A decal with an uncommitted reprojection lands where it shows, which isn't what its binary says: it may have moved off the actor, or
+    /// onto it from another package
+    /// </summary>
+    public static IReadOnlyList<DecalActorProxy> EmptiedDecals(ActorProxy actor, params ActorDeletionPlan[] plans)
+    {
+        var deleted = plans.SelectMany(p => p.Entries).ToHashSet();
+        var gone = deleted.Concat(actor.OwningFile.PendingDeletions.SelectMany(d => d.Entries)).ToHashSet();
+        return actor.Editor.RenderContext.DrawList_3D.OfType<DecalActorProxy>().Where(d => d.DecalComponent is { } component && !deleted.Contains(d.Export) && Refusal(d) is null
             && (component.HasReprojectedReceivers
-                ? component.Receivers.Any(plan.Entries.Contains) && component.Receivers.All(gone.Contains)
-                : plan.DecalsLeftEmpty.Contains(component.Export))).ToArray();
+                ? component.Receivers.Any(deleted.Contains) && component.Receivers.All(gone.Contains)
+                : plans.Any(p => p.DecalsLeftEmpty.Contains(component.Export)))).ToArray();
     }
 
     /// <summary>
@@ -425,10 +617,14 @@ public sealed class ActorDeletionPlan
 
     internal void RequireAllowed()
     {
-        const int listed = 10;
-        if (Blockers.Count != 0)
-            throw new InvalidOperationException($"Cannot delete {Actor.ObjectName}:\n{string.Join("\n", Blockers.Take(listed))}"
-                                                + (Blockers.Count > listed ? $"\n...and {Blockers.Count - listed} more" : ""));
+        if (Blockers.Count != 0) throw new InvalidOperationException($"Cannot delete {Actor.ObjectName}:\n{Listed(Blockers)}");
+    }
+
+    /// <summary>A list for a message, one to a line, of a length that fits in one</summary>
+    internal static string Listed(IReadOnlyCollection<string> lines)
+    {
+        const int shown = 10;
+        return string.Join("\n", lines.Take(shown)) + (lines.Count > shown ? $"\n...and {lines.Count - shown} more" : "");
     }
 
     /// <summary>
@@ -456,6 +652,12 @@ public sealed class ActorDeletionPlan
             var (properties, binary) = WithoutReceivers(decal.Key, decal.SelectMany(p => p.Entries).Select(e => e.UIndex).ToHashSet());
             decal.Key.WritePropertiesAndBinary(properties, binary);
         }
+        foreach (var actor in plans.SelectMany(p => p.attachments.Select(a => (Actor: a, Plan: p))).GroupBy(a => a.Actor, a => a.Plan))
+        {
+            var properties = actor.Key.GetProperties();
+            WithoutAttachment(properties, actor.SelectMany(p => p.Entries).Select(e => e.UIndex).ToHashSet());
+            actor.Key.WriteProperties(properties);
+        }
         foreach (var prefab in plans.SelectMany(p => p.prefabs.Select(i => (Instance: i, Plan: p))).GroupBy(i => i.Instance, i => i.Plan))
             prefab.Key.WriteBinary(WithoutPrefabMembers(prefab.Key, prefab.SelectMany(p => p.Entries).Select(e => e.UIndex).ToHashSet()));
         foreach (var package in plans.GroupBy(p => p.Actor.FileRef))
@@ -467,6 +669,13 @@ public sealed class ActorDeletionPlan
     }
 }
 
+/// <summary>What a cancelled deletion leaves to be shown as the package has it</summary>
+/// <param name="File">The actor's file</param>
+/// <param name="Export">The actor's export</param>
+/// <param name="Collection">The collection it's one of, if it is</param>
+/// <param name="AlsoChanged">The other actors its undo step changed</param>
+public sealed record CancelledDeletion(OpenLevelFile File, ExportEntry Export, ExportEntry Collection, IReadOnlyList<ActorProxy> AlsoChanged);
+
 /// <summary>Reversible deletion intent, retained independently of history until committed or reset.</summary>
 public sealed class PendingActorDeletion
 {
@@ -474,8 +683,8 @@ public sealed class PendingActorDeletion
     public string Status { get; private set; }
     private readonly ActorDeletionPlan prepared;
     private IDisposable retained;
-    /// <summary>The other actors the deletion's undo step changes (a spline point's neighbours, without their connections to it)</summary>
-    internal IReadOnlyList<ActorProxy> AlsoChanged { get; }
+    /// <summary>The other actors the deletion's undo step changes: a spline point's neighbours, without their connections to it, and what was deleted with it</summary>
+    internal IReadOnlyList<ActorProxy> AlsoChanged { get; private set; }
 
     private PendingActorDeletion(ActorProxy actor, ActorDeletionPlan plan, IReadOnlyList<ActorProxy> alsoChanged)
     {
@@ -486,6 +695,29 @@ public sealed class PendingActorDeletion
     }
     /// <summary>Whether the actor and what it owns are still as they were when its deletion was prepared</summary>
     internal bool MatchesSnapshot() => prepared.MatchesSnapshot();
+
+    /// <summary>
+    /// Cancels <paramref name="overtaken"/> (<see cref="Cancel"/>), and any deletion of <paramref name="files"/> whose undo step's other actors
+    /// (<see cref="AlsoChanged"/>) are gone, which orphans that step, including those that <paramref name="show"/> leaves gone
+    /// </summary>
+    /// <param name="show">Shows what each cancelled deletion leaves as the package has it</param>
+    /// <returns>Whether any was cancelled</returns>
+    public static bool CancelAll(IEnumerable<PendingActorDeletion> overtaken, IEnumerable<OpenLevelFile> files, Action<CancelledDeletion> show)
+    {
+        var queue = new Queue<PendingActorDeletion>(overtaken);
+        bool cancelled = false;
+        while (queue.TryDequeue(out var deletion)
+               || (deletion = files.SelectMany(f => f.PendingDeletions).FirstOrDefault(d => d.AlsoChanged.Any(a => a.IsDisposed))) is not null)
+        {
+            var file = deletion.Actor.OwningFile;
+            if (!file.PendingDeletions.Contains(deletion)) continue;
+            cancelled = true;
+            var left = new CancelledDeletion(file, deletion.Actor.Export, deletion.Actor.CollectionOwner, deletion.AlsoChanged);
+            deletion.Cancel();
+            show(left);
+        }
+        return cancelled;
+    }
 
     /// <summary>
     /// For when another tool changed the actor or what it owns since its deletion was prepared (<see cref="MatchesSnapshot"/>). Its change wins, as
@@ -532,6 +764,8 @@ public sealed class PendingActorDeletion
             }
             throw;
         }
+        //one undo step: if another tool's change cancels one, that step is orphaned, so the others have to be cancelled with it, or they'd have no way back
+        foreach (var (actor, _) in deletions) actor.PendingDeletion.AlsoChanged = [.. actor.PendingDeletion.AlsoChanged, .. deletions.Select(d => d.Actor).Where(a => a != actor)];
         return new GroupedDeletionAction(steps);
     }
 
@@ -651,7 +885,12 @@ public sealed class PendingActorDeletion
     }
 
     // A successful commit invalidates retained history for the now-trashed actor, even for non-window callers.
-    internal void Accept() => Actor.Dispose();
+    internal void Accept()
+    {
+        //it's no longer an undo step that could orphan one deleted with it, in a file this commit left out
+        foreach (var other in AlsoChanged.Select(a => a.PendingDeletion).OfType<PendingActorDeletion>()) other.AlsoChanged = other.AlsoChanged.Where(a => a != Actor).ToArray();
+        Actor.Dispose();
+    }
 
     private sealed class DraftDeletionAction : IUndoAction, IDisposable
     {

@@ -40,6 +40,12 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
         Owner?.ShowPendingDeletion(deletion.Actor, true);
     }
 
+    /// <summary>Attaches what stayed attached to <paramref name="views"/> in the package: a view that left the scene, or was rebuilt, let go of them</summary>
+    public void ReattachTo(IReadOnlyCollection<ActorProxy> views)
+    {
+        foreach (var attached in Actors.Where(a => a.Base is null)) attached.ResolveAttachment(views);
+    }
+
     internal void RemoveDeletion(PendingActorDeletion deletion)
     {
         if (!pendingDeletions.Remove(deletion)) return;

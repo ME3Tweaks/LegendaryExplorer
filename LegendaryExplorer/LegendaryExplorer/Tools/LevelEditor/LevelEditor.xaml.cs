@@ -956,6 +956,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext.PackageCache.StopUsingPackage(filePath);
         //reopening it starts new actors, even if the package object is shared and comes back
         RenderContext.Registry.Forget(file.Package);
+        //its actors' undo steps went with them, and so do the deletions made with them in other files
+        List<string> errors = [];
+        CancelDeletions([], errors);
         UndoHistory.RemoveOrphaned();
         HasAnyFileOpen = OpenFiles.Count > 0;
         UpdateGlobalDirtyState();
@@ -970,6 +973,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             UndoHistory.Clear();
             _preEditSnapshot = null;
         }
+        //(a dialog keeps dispatching, so it comes once the file's gone)
+        if (errors.Count != 0) MessageBox.Show(this, string.Join("\n", errors), "Pending deletions");
     }
 
     public void CloseFileByName(string fileName)
@@ -1111,6 +1116,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (Actors.Contains(view)) return;
         Actors.Add(view);
         view.ResolveAttachment(Actors);
+        view.OwningFile?.ReattachTo([view]);
         Actors.Sort(a => a.SortIndex);
         //back in the scene, its light is too
         if (view is ILightProxy light) OnLightEdited(light);
@@ -1462,19 +1468,30 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             try { plan = await ActorDeletionPlan.PrepareAsync(actor.Export, actor.OwningFile.LevelExport, actor.GetDeletionRepairs()); }
             finally { EndBusy(); }
             if (!CanMutateScene) throw new InvalidOperationException("The editor state changed during reference inspection. Retry deletion.");
-            var decals = await ChooseEmptiedDecals(actor, plan);
-            if (decals is null) return;
-            if (decals.Count > 0)
+            IReadOnlyList<ActorProxy> going = [actor];
+            ActorDeletionPlan[] plans = [plan];
+            if (ActorDeletionPlan.AttachedActors(actor).Count != 0)
             {
-                // Nothing needs taking out of a decal that's going too, which what the deletion says should show
-                var repairs = actor.GetDeletionRepairs();
-                repairs = repairs with { Trashed = repairs.Trashed.Concat(decals.SelectMany(d => d.Plan.Entries)).ToHashSet() };
-                SetBusy($"Checking references to {actor.ActorName}...");
-                try { plan = await ActorDeletionPlan.PrepareAsync(actor.Export, actor.OwningFile.LevelExport, repairs); }
-                finally { EndBusy(); }
+                var attached = await WhileCheckingReferences(actor, () => ActorDeletionPlan.FindAttachedAsync(actor, plan));
+                //(with nothing to decide, what can't be deleted is detached, as the deletion's status says: mostly navigation points, on most of what's placed)
+                if (attached.All.Going.Count > 1)
+                {
+                    if (AskAboutAttached(attached) is not { } chosen) return;
+                    (going, plans) = (chosen.Going, chosen.Plans);
+                }
+            }
+            plans[0].RequireAllowed();
+            var (decals, withDecals) = await WhileCheckingReferences(actor, () => ActorDeletionPlan.FindEmptiedDecalsAsync(going, plans));
+            if (decals.Count != 0)
+            {
+                string question = decals.Count == 1 ? $"Deleting {actor.ActorName} leaves the decal {decals[0].ActorName} with nothing to project onto. Delete it too?"
+                    : $"Deleting {actor.ActorName} leaves {decals.Count} decals with nothing to project onto. Delete them too?\n\n{ActorDeletionPlan.Listed(decals.Select(d => d.ActorName).ToArray())}";
+                var answer = MessageBox.Show(this, question, "Delete actor", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No);
+                if (answer is not (MessageBoxResult.Yes or MessageBoxResult.No)) return;
+                if (answer == MessageBoxResult.Yes) (going, plans) = ([.. going, .. decals], withDecals);
             }
             if (!CanMutateScene) throw new InvalidOperationException("The editor state changed during reference inspection. Retry deletion.");
-            UndoHistory.Push(decals.Count == 0 ? actor.Delete(plan) : PendingActorDeletion.DeleteTogether([(actor, plan), .. decals]));
+            UndoHistory.Push(going.Count == 1 ? actor.Delete(plans[0]) : PendingActorDeletion.DeleteTogether(going.Zip(plans).ToList()));
         }
         catch (Exception error) when (error is not OutOfMemoryException)
         {
@@ -1482,32 +1499,24 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
     }
 
-    /// <summary>
-    /// Asks whether to delete the decals that deleting <paramref name="actor"/> would leave with nothing to project onto, if there are any that can be
-    /// </summary>
-    /// <returns>The decals to delete with it, with their plans, or null if its deletion was cancelled</returns>
-    private async Task<List<(ActorProxy Actor, ActorDeletionPlan Plan)>> ChooseEmptiedDecals(ActorProxy actor, ActorDeletionPlan plan)
+    private async Task<T> WhileCheckingReferences<T>(ActorProxy actor, Func<Task<T>> check)
     {
-        var deletable = new List<(ActorProxy Actor, ActorDeletionPlan Plan)>();
-        var emptied = ActorDeletionPlan.EmptiedDecals(actor, plan);
-        if (emptied.Count == 0) return deletable;
-        SetBusy($"Checking references to {actor.ActorName}'s decals...");
-        try
-        {
-            foreach (var decal in emptied)
-            {
-                var decalPlan = await ActorDeletionPlan.PrepareAsync(decal.Export, decal.OwningFile.LevelExport, decal.GetDeletionRepairs());
-                if (decalPlan.Blockers.Count == 0) deletable.Add((decal, decalPlan));
-            }
-        }
+        SetBusy($"Checking references to {actor.ActorName}...");
+        try { return await check(); }
         finally { EndBusy(); }
-        if (deletable.Count == 0) return deletable;
-        string decals = deletable.Count == 1 ? $"the decal {deletable[0].Actor.ActorName} with nothing to project onto. Delete it too?"
-            : $"{deletable.Count} decals with nothing to project onto. Delete them too?\n\n{string.Join("\n", deletable.Select(d => d.Actor.ActorName))}";
-        return MessageBox.Show(this, $"Deleting {actor.ActorName} leaves {decals}", "Delete actor", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) switch
+    }
+
+    /// <summary>Asks what's to go with an actor of what's attached to it (<see cref="AttachedDependents.Question"/>)</summary>
+    /// <returns>The answer, or null if its deletion was cancelled</returns>
+    private DeletionChoice AskAboutAttached(AttachedDependents attached)
+    {
+        bool anyRequired = attached.Least.Going.Count > 1;
+        bool anyOptional = attached.Least.Going.Count < attached.All.Going.Count;
+        return MessageBox.Show(this, attached.Question(), "Delete actor", anyOptional ? MessageBoxButton.YesNoCancel : MessageBoxButton.OKCancel, MessageBoxImage.Question,
+            anyRequired ? MessageBoxResult.Cancel : MessageBoxResult.No) switch
         {
-            MessageBoxResult.Yes => deletable,
-            MessageBoxResult.No => [],
+            MessageBoxResult.Yes or MessageBoxResult.OK => attached.All,
+            MessageBoxResult.No => attached.Least,
             _ => null
         };
     }
@@ -1914,7 +1923,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             changed |= ApplyLevelActorUpdate(file, updatedExports, MustRebuild, errors, out bool levelActorsChanged);
             //the level's lights are read from its actors
             if (levelActorsChanged && !lightFiles.Contains(file)) lightFiles.Add(file);
-            changed |= CancelDeletions(file, cancelled, errors);
+            changed |= CancelDeletions(cancelled, errors);
         }
         changed |= lightFiles.Count > 0;
         if (lightFiles.Count > 0) RenderContext.InvalidateLightFunctions();
@@ -1941,6 +1950,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         (Vector3, float, float) savedCamPOV = default;
         Vector3 savedActorPos = default;
         HashSet<ExportEntry> collectionActorsToUpdate = [];
+        List<ActorProxy> rebuiltViews = [];
         for (int i = file.Actors.Count - 1; i >= 0; i--)
         {
             ActorProxy alteredActor = file.Actors[i];
@@ -1977,10 +1987,15 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 RemoveActor(alteredActor);
                 if (file.Package.GetEntry(alteredActor.Export.UIndex) is ExportEntry actorExport)
                 {
-                    foreach (var view in CreateActorViews(actorExport, file)) AddActor(view);
+                    foreach (var view in CreateActorViews(actorExport, file))
+                    {
+                        AddActor(view);
+                        rebuiltViews.Add(view);
+                    }
                 }
             }
         }
+        if (rebuiltViews.Count != 0) file.ReattachTo(rebuiltViews);
         foreach (var collectionActor in collectionActorsToUpdate) RebuildCollection(collectionActor, file);
         if (level is not null && AddActorsNewToLevel(file, level))
         {
@@ -2008,25 +2023,26 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     }
 
     /// <summary>
-    /// Cancels the file's pending deletions that another tool's change overtook (<see cref="PendingActorDeletion.Cancel"/>): the
-    /// <paramref name="overtaken"/> deletions of actors it changed, and those whose undo step's other actors (a spline point's neighbours, still
-    /// referring to it in the package) it rebuilt, which orphans that step. Each actor is shown as the package now has it, if its Level still lists it.
+    /// Cancels the pending deletions that another tool's change overtook (<see cref="PendingActorDeletion.Cancel"/>): the <paramref name="overtaken"/>
+    /// deletions of actors it changed, and those of any open file whose undo step's other actors (a spline point's neighbours, still referring to it in
+    /// the package, or what was deleted with it) are gone, which orphans that step. Each actor is shown as the package now has it, if its Level still lists it.
     /// The other committed actors their undo steps changed are shown as the package has them too, as when another tool changes them: with the
     /// cancelled step, nothing else would take back what it did to them. Rebuilding them can overtake another deletion in turn
     /// </summary>
     /// <returns>Whether any was cancelled</returns>
-    private bool CancelDeletions(OpenLevelFile file, List<PendingActorDeletion> overtaken, List<string> errors)
+    private bool CancelDeletions(List<PendingActorDeletion> overtaken, List<string> errors)
     {
-        var queue = new Queue<PendingActorDeletion>(overtaken);
-        HashSet<int> listed = null;
-        bool cancelled = false;
-        while (queue.TryDequeue(out var deletion) || (deletion = file.PendingDeletions.FirstOrDefault(d => d.AlsoChanged.Any(a => a.IsDisposed))) is not null)
+        var listedByFile = new Dictionary<OpenLevelFile, HashSet<int>>();
+        var rebuilt = new List<ActorProxy>();
+        bool cancelled = PendingActorDeletion.CancelAll(overtaken, OpenFiles, Show);
+        foreach (var views in rebuilt.GroupBy(view => view.OwningFile)) views.Key.ReattachTo(views.ToArray());
+        if (cancelled) UpdateGlobalDirtyState();
+        return cancelled;
+
+        void Show(CancelledDeletion left)
         {
-            if (!file.PendingDeletions.Contains(deletion)) continue;
-            cancelled = true;
-            var (export, collection) = (deletion.Actor.Export, deletion.Actor.CollectionOwner);
-            deletion.Cancel();
-            listed ??= file.LevelExport.GetBinaryData<Level>().Actors.ToHashSet();
+            var (file, export, collection, alsoChanged) = left;
+            if (!listedByFile.TryGetValue(file, out var listed)) listedByFile[file] = listed = file.LevelExport.GetBinaryData<Level>().Actors.ToHashSet();
             if (collection is not null)
             {
                 // A collection's member is shown with the rest of its collection, which is shown as the package has it, as when another tool changes one
@@ -2042,7 +2058,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                     });
             }
             else if (file.Package.GetEntry(export.UIndex) == export && listed.Contains(export.UIndex)) Rebuild(export, file);
-            foreach (var other in deletion.AlsoChanged.Where(a => a.Export is not null && Actors.Contains(a)))
+            foreach (var other in alsoChanged.Where(a => a.Export is not null && Actors.Contains(a)))
             {
                 var (otherExport, owner) = (other.Export, other.OwningFile);
                 if (other == SelectedActor) SelectedActor = null;
@@ -2051,8 +2067,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 owner.RecalculateDirty();
             }
         }
-        if (cancelled) UpdateGlobalDirtyState();
-        return cancelled;
 
         void Rebuild(ExportEntry export, OpenLevelFile owner) => TryRefresh(export.ObjectName.Instanced, errors, () =>
         {
@@ -2060,6 +2074,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             foreach (var view in CreateActorViews(export, owner))
             {
                 AddActor(view);
+                rebuilt.Add(view);
                 //a light whose deletion was pending had left the scene's lights
                 if (view is ILightProxy light) OnLightEdited(light);
             }
@@ -2098,10 +2113,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             .SelectMany(index => CreateActorViews(file.Package.GetUExport(index), file)).ToList();
         foreach (var view in added) AddActor(view, false);
         //actors whose base was added with or after them
-        if (added.Count > 0)
-        {
-            foreach (var actor in file.Actors.Where(actor => actor.Base is null)) actor.ResolveAttachment(added);
-        }
+        if (added.Count > 0) file.ReattachTo(added);
         if (!file.Actors.OfType<LevelModelProxy>().Any()
             && !(file.UndrawnModel is { } undrawn && undrawn.Model == level.Model && undrawn.Components.SequenceEqual(level.ModelComponents))
             && CreateLevelModelView(level, file) is { } bsp)

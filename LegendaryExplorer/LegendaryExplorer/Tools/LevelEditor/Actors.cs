@@ -608,6 +608,13 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         Attached.Clear();
     }
 
+    /// <summary>
+    /// Lets go of what a commit deleted, which took it out of this actor's attachment (<see cref="ActorDeletionPlan"/>). A commit writes <see cref="Properties"/>
+    /// whole, so they'd bring it back otherwise
+    /// </summary>
+    /// <param name="indexes">The UIndexes of what was deleted in this actor's file, when it was</param>
+    internal void ForgetDeletedAttachments(IReadOnlySet<int> indexes) => ActorDeletionPlan.WithoutAttachment(Properties, indexes);
+
     protected virtual void UpdateLocalToWorld()
     {
         LocalToWorld = ActorUtils.ComposeLocalToWorld(location, rotation, drawScale * drawScale3D, prePivot);

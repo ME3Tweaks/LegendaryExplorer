@@ -20,6 +20,8 @@ public static class ActorCommit
     {
         var deletions = files.SelectMany(f => f.PendingDeletions).ToArray();
         var deleted = deletions.SelectMany(d => d.Entries).ToHashSet<IEntry>();
+        // Each file's own: a UIndex means nothing in another package. Taken now, since trashing can change them
+        var deletedIndexes = deleted.GroupBy(e => e.FileRef).ToDictionary(g => g.Key, g => g.Select(e => e.UIndex).ToHashSet());
         var written = new List<(OpenLevelFile File, ActorProxy Actor)>();
         var created = new HashSet<ActorProxy>();
         using (var scope = PackageEditScope.Begin(files.Select(f => f.Package)))
@@ -67,6 +69,10 @@ public static class ActorCommit
             {
                 decal.MarkClean();
                 decal.ForgetDeleted(deleted);
+            }
+            if (deletedIndexes.TryGetValue(file.Package, out var indexes))
+            {
+                foreach (var actor in file.Actors.Where(a => skipped?.Contains(a) != true)) actor.ForgetDeletedAttachments(indexes);
             }
             file.ClearPendingDeletions();
             file.IsDirty = false;
