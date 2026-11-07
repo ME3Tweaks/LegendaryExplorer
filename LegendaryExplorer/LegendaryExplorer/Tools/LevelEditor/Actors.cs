@@ -511,13 +511,6 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public TransformSnapshot SnapshotTransform() => new(location, rotation, drawScale, drawScale3D);
 
-    // Prefab placement is derived state, including in read-only previews. It must bypass editor mutation guards.
-    internal void SetPrefabTransform(Matrix4x4 transform)
-    {
-        (location, _, rotation) = transform.UnrealDecompose();
-        UpdateLocalToWorld();
-    }
-
     public void RestoreTransform(TransformSnapshot snapshot)
     {
         Location = snapshot.Location;
@@ -1320,193 +1313,17 @@ public class StaticMeshComponentActorProxy : CollectionActorComponentProxy
     }
 }
 
-public class PrefabInstanceProxy : ActorProxy
+/// <summary>
+/// A placed prefab's record, as a marker: UE3's editor uses it to update a level's actors from the prefab. Its members are ordinary actors of the level (every
+/// live one in LE1-LE3's levels is), which draw themselves. Its template isn't drawn: it lists what the level may no longer have, since a blank entry in the
+/// instance's map is a member that was deleted. It can't be moved, since that wouldn't move its members
+/// </summary>
+public sealed class PrefabInstanceProxy(IActorEditorContext context, ExportEntry actorExport)
+    : EditorActorProxy(context, actorExport, new(ActorKind.Prefab, "Prefabs", "A placed prefab's record. Its members are ordinary actors of the level."))
 {
-    public override ActorCoverage Coverage => new(
-        Actors.Count > 0 && Actors.All(a => a.Coverage.Representation == ActorRepresentation.SceneRendered)
-            ? ActorRepresentation.SceneRendered : ActorRepresentation.PartialScene,
-        $"Prefab has {Actors.Count} children; {Actors.Count(a => a.Coverage.Representation != ActorRepresentation.SceneRendered)} have partial, helper-only or unsupported coverage.");
-
-    private readonly List<ActorProxy> Actors = [];
-
-    /// <summary>
-    /// The prefab's actors, which aren't in the editor's actor list
-    /// </summary>
-    internal IReadOnlyList<ActorProxy> Children => Actors;
-
-    internal override IEnumerable<MeshComponentProxy> LightingMeshes => Actors.SelectMany(a => a.LightingMeshes);
-    private readonly List<Matrix4x4> RelativeMatrices = [];
-    // Not Editor, which is cleared for a prefab nested in another prefab, but is still needed to reload its children
-    private readonly IActorEditorContext PreviewContext;
-    // The template and its archetype list's entries, including imports, since relinking one changes the prefab without changing any export
-    private readonly HashSet<IEntry> TemplateLinks = [];
-
-    public PrefabInstanceProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
-    {
-        PreviewContext = context;
-        LoadChildren();
-    }
-
-    private void LoadChildren()
-    {
-        var context = PreviewContext;
-        PackageCache packageCache = context.RenderContext.PackageCache;
-        TemplateLinks.Clear();
-        ObjectProperty templateProp = Properties.GetProp<ObjectProperty>("TemplatePrefab");
-        if (templateProp?.ResolveToEntry(Pcc) is { } templateEntry) TemplateLinks.Add(templateEntry);
-        if (templateProp?.ResolveToExport(Pcc, packageCache) is not { } prefab) return;
-        TemplateLinks.Add(prefab);
-        if (prefab.GetProperty<ArrayProperty<ObjectProperty>>("PrefabArchetypes") is { } prefabActors)
-        {
-            foreach (var objProp in prefabActors)
-            {
-                if (objProp.ResolveToEntry(prefab.FileRef) is { } archetypeEntry) TemplateLinks.Add(archetypeEntry);
-                if (objProp.TryResolveExport(prefab.FileRef, packageCache, out ExportEntry prefabActor)
-                    && Create(context, prefabActor) is ActorProxy prefabActorProxy)
-                {
-                    prefabActorProxy.Editor = null; // prevent IsDirty being marked
-
-                    var actorRelative = ActorUtils.ComposeLocalToWorld(prefabActorProxy.Location, prefabActorProxy.Rotation, Vector3.One);
-                    prefabActorProxy.SetPrefabTransform(actorRelative * LocalToWorld);
-                    Actors.Add(prefabActorProxy);
-                    RelativeMatrices.Add(actorRelative);
-                }
-            }
-        }
-    }
-
-    public override bool TryRefreshPreview(IMEPackage package, HashSet<int> updatedExports, bool force = false)
-    {
-        if (Export.FileRef == package && updatedExports.Contains(Export.UIndex)) return false;
-        if (TemplateLinks.Any(link => link.FileRef == package && updatedExports.Contains(link.UIndex)))
-        {
-            foreach (var child in Actors) child.Dispose();
-            Actors.Clear();
-            RelativeMatrices.Clear();
-            LoadChildren();
-            return true;
-        }
-        bool refreshed = false;
-        for (int i = Actors.Count - 1; i >= 0; i--)
-        {
-            var child = Actors[i];
-            if (child.TryRefreshPreview(package, updatedExports, force))
-                refreshed = true;
-            else if (child.Export.FileRef == package && child.TestUIndexes(updatedExports))
-            {
-                child.Dispose();
-                if (Create(PreviewContext, child.Export) is { } replacement)
-                {
-                    replacement.Editor = null;
-                    var relative = ActorUtils.ComposeLocalToWorld(replacement.Location, replacement.Rotation, Vector3.One);
-                    replacement.SetPrefabTransform(relative * LocalToWorld);
-                    Actors[i] = replacement;
-                    RelativeMatrices[i] = relative;
-                }
-                else
-                {
-                    Actors.RemoveAt(i);
-                    RelativeMatrices.RemoveAt(i);
-                }
-                refreshed = true;
-            }
-        }
-        return refreshed;
-    }
-
-    public override void UpdateScene(LevelEditorRenderContext context, float deltaTime)
-    {
-        foreach (var actor in Actors)
-        {
-            actor.UpdateScene(context, deltaTime);
-        }
-    }
-
-    public override void Render(LevelEditorRenderContext context, RenderPass pass)
-    {
-        foreach (var actor in Actors)
-        {
-            if (!context.IsActorVisible(actor)) continue;
-            actor.Render(context, pass);
-        }
-    }
-
-    protected override void UpdateLocalToWorld()
-    {
-        //Unreal appears to ignore scaling on a prefab
-        LocalToWorld = ActorUtils.ComposeLocalToWorld(Location, Rotation, Vector3.One);
-        for (int i = 0; i < Actors.Count; i++)
-        {
-            ActorProxy actor = Actors[i];
-            actor.SetPrefabTransform(RelativeMatrices[i] * LocalToWorld);
-        }
-    }
-
-    public override BoxSphereBounds GetBounds()
-    {
-        var spatial = Actors.Where(a => a is not EditorActorProxy && a.HasSpatialRepresentation).ToList();
-        if (spatial.Count is 0)
-        {
-            return new BoxSphereBounds
-            {
-                Origin = LocalToWorld.Translation
-            };
-        }
-        var bounds = spatial[0].GetBounds();
-        for (int i = 1; i < spatial.Count; i++)
-        {
-            bounds = bounds.Union(spatial[i].GetBounds());
-        }
-        return bounds;
-    }
-
-    public override void CommitChanges(PackageCache packageCache = null)
-    {
-        var props = Properties;
-
-        string locationPropName = LocationPropertyName(Export.Game);
-        if (props.ContainsNamedProp(locationPropName) || Location != Vector3.Zero)
-        {
-            props.AddOrReplaceProp(CommonStructs.Vector3Prop(Location, locationPropName));
-        }
-        if (props.ContainsNamedProp("Rotation") || !Rotation.IsZero)
-        {
-            props.AddOrReplaceProp(CommonStructs.RotatorProp(Rotation, "Rotation"));
-        }
-        Export.WriteProperties(props);
-    }
-
-    public override bool TestUIndexes(HashSet<int> uIndexes)
-    {
-        if (uIndexes.Contains(Export.UIndex))
-        {
-            return true;
-        }
-        foreach (var actor in Actors)
-        {
-            if (actor.TestUIndexes(uIndexes))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    protected override void Dispose(bool disposing)
-    {
-        if (!isDisposed)
-        {
-            if (disposing)
-            {
-                foreach (var actor in Actors)
-                {
-                    actor.Dispose();
-                }
-            }
-            isDisposed = true;
-        }
-    }
-
+    public override bool CanEditTransform => false;
 }
+
 public class SFXDroppedPickupProxy : ActorProxy
 {
     public SkeletalMeshComponentProxy PickupMesh;

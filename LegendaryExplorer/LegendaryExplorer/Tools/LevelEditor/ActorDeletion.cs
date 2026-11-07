@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -34,6 +35,7 @@ public sealed class ActorDeletionPlan
     public string Repairs => $"Committing removes it from {(Collection is null ? "the level" : Collection.ObjectName.Instanced)}"
                              + $"{(cleansDestroyedContent ? " and from the world's destroyed-actor list" : "")}, and trashes it"
                              + (Entries.Count > 1 ? $" with the {Entries.Count - 1} objects it owns." : ".")
+                             + (prefabs.Count > 0 ? " It stays removed from the prefab it came from." : "")
                              + (decals.Count > 0 ? $" It's also taken out of the {(decals.Count == 1 ? "decal that lands on it or lists it" : $"{decals.Count} decals that land on it or list it")}." : "")
                              // Light-maps and shadow-maps refer to a light by its GUIDs, not by reference
                              + (LightClasses.Contains(Actor.ClassName) || Collection is not null && IsLightComponent(Actor)
@@ -43,6 +45,8 @@ public sealed class ActorDeletionPlan
     // The decals that land on it or list it in their Filters, which the commit takes it out of. Found by CheckReferences too
     private readonly List<ExportEntry> decals = [];
     private readonly List<ExportEntry> decalsLeftEmpty = [];
+    // The prefab instances it's a member of, whose entries for it the commit blanks. Found by CheckReferences too
+    private readonly List<ExportEntry> prefabs = [];
     /// <summary>The decals that land on it and, with it and what's already pending deletion gone, on nothing else</summary>
     public IReadOnlyList<ExportEntry> DecalsLeftEmpty => decalsLeftEmpty;
     private readonly (ExportEntry Entry, int Index, byte[] Header, byte[] Data)[] snapshots;
@@ -277,6 +281,7 @@ public sealed class ActorDeletionPlan
                 && !export.WouldReferenceAny(targets, properties, binary))
             {
                 cleansDestroyedContent |= export == worldInfo;
+                if (IsPrefab(export)) prefabs.Add(export);
                 if (IsDecal(export))
                 {
                     decals.Add(export);
@@ -324,7 +329,27 @@ public sealed class ActorDeletionPlan
             (properties, binary) = WithoutReceivers(referrer, Entries.Select(e => e.UIndex).ToHashSet());
             return true;
         }
+        if (IsPrefab(referrer))
+        {
+            binary = WithoutPrefabMembers(referrer, Entries.Select(e => e.UIndex).ToHashSet());
+            return true;
+        }
         return repairs.WrittenProperties.TryGetValue(referrer, out properties);
+    }
+
+    private static bool IsPrefab(ExportEntry export) => export.IsA("PrefabInstance");
+
+    /// <summary>
+    /// A prefab instance's binary with <paramref name="members"/>' entries blanked. An entry is kept, as APrefabInstance::UpdatePrefabInstance wants it: one
+    /// that's in the map but blank is a member that was deleted and stays deleted, where a missing one is a member to create
+    /// </summary>
+    private static PrefabInstance WithoutPrefabMembers(ExportEntry instance, IReadOnlySet<int> members)
+    {
+        var binary = instance.GetBinaryData<PrefabInstance>();
+        var map = new UMultiMap<int, int>(binary.ArchetypeToInstanceMap.Count);
+        foreach (var (archetype, member) in binary.ArchetypeToInstanceMap) map.Add(archetype, members.Contains(member) ? 0 : member);
+        binary.ArchetypeToInstanceMap = map;
+        return binary;
     }
 
     private static bool IsDecal(ExportEntry export) => export.IsA("DecalComponent");
@@ -431,6 +456,8 @@ public sealed class ActorDeletionPlan
             var (properties, binary) = WithoutReceivers(decal.Key, decal.SelectMany(p => p.Entries).Select(e => e.UIndex).ToHashSet());
             decal.Key.WritePropertiesAndBinary(properties, binary);
         }
+        foreach (var prefab in plans.SelectMany(p => p.prefabs.Select(i => (Instance: i, Plan: p))).GroupBy(i => i.Instance, i => i.Plan))
+            prefab.Key.WriteBinary(WithoutPrefabMembers(prefab.Key, prefab.SelectMany(p => p.Entries).Select(e => e.UIndex).ToHashSet()));
         foreach (var package in plans.GroupBy(p => p.Actor.FileRef))
         {
             // Materialize the order before trashing changes outers; descendants must go first.

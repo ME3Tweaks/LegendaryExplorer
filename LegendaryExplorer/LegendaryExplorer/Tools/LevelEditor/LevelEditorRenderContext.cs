@@ -273,20 +273,7 @@ public class LevelEditorRenderContext : MeshRenderContext
         return state;
     }
 
-    public bool IsActorSelected(ActorProxy actor)
-    {
-        if (actor is null || SelectedActor is null) return false;
-        return Contains(SelectedActor, actor);
-
-        static bool Contains(ActorProxy candidate, ActorProxy target)
-        {
-            if (candidate == target) return true;
-            if (candidate is PrefabInstanceProxy prefab)
-                foreach (var child in prefab.Children)
-                    if (Contains(child, target)) return true;
-            return false;
-        }
-    }
+    public bool IsActorSelected(ActorProxy actor) => actor is not null && actor == SelectedActor;
 
     public override bool IsActorVisible(ActorProxy actor)
     {

@@ -2451,9 +2451,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     // Uses the active viewport's rules: Level lighting includes the last build's records; the other modes ignore them, like Preview lighting.
     private bool IgnorePrecomputedLighting => LightingMode != ViewportLightingMode.Level;
 
-    private static IEnumerable<MeshComponentProxy> MeshComponents(ActorProxy actor) => actor is PrefabInstanceProxy prefab
-        ? prefab.Children.SelectMany(MeshComponents)
-        : actor.Components.OfType<MeshComponentProxy>();
+    private static IEnumerable<MeshComponentProxy> MeshComponents(ActorProxy actor) => actor.Components.OfType<MeshComponentProxy>();
 
     private SceneLight SelectedSceneLight => selectedActor is ILightProxy proxy ? selectedActor.OwningFile?.Lighting?.Find(proxy.Light.Component) : null;
 
