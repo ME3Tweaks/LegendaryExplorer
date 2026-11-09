@@ -30,22 +30,30 @@ namespace LegendaryExplorerCore.Unreal.PhysX
                 throw new Exception($"Unable to load {PhysXDllLoader.PHYSXCOOKING64_DLL}");
             }
             NxInitCooking(null, null);
-            NxCookingParams* parms = NxGetCookingParams();
-            NxCookingParams defaultParms = *parms;
-            parms->skinWidth = 0.025f;
-            NxSetCookingParams(&defaultParms);
+            //as UE3 does (PhysSkinWidth)
+            NxCookingParams parms = *NxGetCookingParams();
+            parms.skinWidth = 0.025f;
+            NxSetCookingParams(&parms);
         }
 
-        public byte[] GenerateCachedPhysicsData(ReadOnlySpan<Vector3> verts)
+        /// <returns>The convex mesh of <paramref name="verts"/> cooked for collision, or null if PhysX can't cook it (as for a flat hull)</returns>
+        public byte[] TryGenerateCachedPhysicsData(ReadOnlySpan<Vector3> verts)
         {
-            using NxStream stream = GenerateCachedPhysicsDataStream(verts);
-
-            byte[] cachedData = new byte[stream.Count];
-            new Span<byte>(stream.Data, (int)stream.Count).CopyTo(cachedData);
-            return cachedData;
+            if (!TryCook(verts, hullOnly: false, out NxStream stream)) return null;
+            using (stream)
+            {
+                byte[] cachedData = new byte[stream.Count];
+                new Span<byte>(stream.Data, (int)stream.Count).CopyTo(cachedData);
+                return cachedData;
+            }
         }
 
-        public NxStream GenerateCachedPhysicsDataStream(ReadOnlySpan<Vector3> verts)
+        /// <param name="hullOnly">Only compute the convex hull of <paramref name="verts"/>, as FKConvexElem::GenerateHullData does, rather than cook it for
+        /// collision as MakeCachedConvexDataForAggGeom does, which inflates it</param>
+        public NxStream GenerateCachedPhysicsDataStream(ReadOnlySpan<Vector3> verts, bool hullOnly = false) =>
+            TryCook(verts, hullOnly, out NxStream stream) ? stream : throw new Exception("Convex Mesh cooking failed!");
+
+        private bool TryCook(ReadOnlySpan<Vector3> verts, bool hullOnly, out NxStream cooked)
         {
             if (isDisposed)
             {
@@ -58,7 +66,7 @@ namespace LegendaryExplorerCore.Unreal.PhysX
                     NumVertices = (uint)verts.Length,
                     PointStrideBytes = 12u,
                     Points = data,
-                    Flags = ConvexFlags.ComputeConvex | ConvexFlags.InflateConvex | ConvexFlags.UseUncompressedNormals
+                    Flags = hullOnly ? ConvexFlags.ComputeConvex : ConvexFlags.ComputeConvex | ConvexFlags.InflateConvex | ConvexFlags.UseUncompressedNormals
                 };
 
                 var stream = new NxStream();
@@ -66,9 +74,11 @@ namespace LegendaryExplorerCore.Unreal.PhysX
                 if (NxCookConvexMesh(&meshDesc, &stream) is 0)
                 {
                     stream.Dispose();
-                    throw new Exception("Convex Mesh cooking failed!");
+                    cooked = default;
+                    return false;
                 }
-                return stream;
+                cooked = stream;
+                return true;
             }
         }
 

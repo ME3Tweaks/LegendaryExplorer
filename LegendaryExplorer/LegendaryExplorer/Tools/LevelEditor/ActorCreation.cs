@@ -46,7 +46,9 @@ public static class ActorCreation
     /// <summary>
     /// A new actor has its location and its Tag (its class's name, as UE3's UWorld::SpawnActor sets it) and nothing else of its own. Spline points start
     /// unconnected, and a loft with no DeformMesh until one is assigned. A static mesh actor has the mesh chosen for it, and an emitter the particle
-    /// system, in a component made from its class default's (<see cref="ComponentTemplate"/>), and a standalone light has its class default's light
+    /// system, in a component made from its class default's (<see cref="ComponentTemplate"/>), and a standalone light has its class default's light. A volume
+    /// is a box (<see cref="BrushProxy.NewBoxSize"/>), made as cooked volumes are: a hull, cached PhysX data if it has rigid-body collision, and the level's
+    /// empty brush
     /// </summary>
     private static readonly ActorRecipe[] Recipes =
     [
@@ -63,6 +65,10 @@ public static class ActorCreation
         new(["Emitter"], (editor, record, properties, system, template) => new EmitterDraftProxy(editor, record, properties, MarkerInfo(record), system, template))
         {
             AssetClass = "ParticleSystem", ComponentProperty = "ParticleSystemComponent"
+        },
+        new(["BlockingVolume", "TriggerVolume", "BioTriggerVolume"], (editor, record, properties, _, template) => new BrushProxy(editor, record, properties, template))
+        {
+            ComponentProperty = "BrushComponent", AcceptsComponent = component => component.ClassName == "BrushComponent"
         }
     ];
 
@@ -143,10 +149,13 @@ public static class ActorCreation
     /// Why <paramref name="package"/> can't import <paramref name="actorClass"/>, which a commit does if it's defined in another package, or null.
     /// A level imports its actors' classes from the game's own packages: never copies a class's implementation into itself
     /// </summary>
-    internal static string ImportRefusal(IEntry actorClass, IMEPackage package) =>
-        actorClass.FileRef == package || EntryImporter.IsSafeToImportFrom(actorClass.FileRef.FilePath, package)
-            ? null
-            : $"{actorClass.ObjectName} is defined in {Path.GetFileName(actorClass.FileRef.FilePath)}, which {package.FileNameNoExtension} can't import from.";
+    internal static string ImportRefusal(IEntry actorClass, IMEPackage package)
+    {
+        if (actorClass.FileRef == package) return null;
+        // An export is defined in its file; an import (as of a class default's component's class) is the package at its root's
+        string file = actorClass is ImportEntry import ? $"{import.GetRootName()}.pcc" : Path.GetFileName(actorClass.FileRef.FilePath);
+        return EntryImporter.IsSafeToImportFrom(file, package) ? null : $"{actorClass.ObjectName} is defined in {file}, which {package.FileNameNoExtension} can't import from.";
+    }
 
     /// <summary>
     /// <paramref name="package"/>'s entry for <paramref name="source"/>, an object of a package it can import from (a class, or a class default's
@@ -158,7 +167,10 @@ public static class ActorCreation
     {
         if (source.FileRef == package) return source;
         if (ImportRefusal(source, package) is { } refusal) throw new InvalidOperationException(refusal);
+        // An import of the source's package (SFXGame's of Engine.BrushComponent, the class of one of its class defaults' components) is of the same object
+        // for this one, at the same path; an export is under the package it's in
         IEntry outer = source.Parent is { } parent ? ImportOf(parent, package)
+            : source is ImportEntry ? null
             : package.GetEntryOrAddImport(Path.GetFileNameWithoutExtension(source.FileRef.FilePath), "Package");
         if (package.Imports.FirstOrDefault(i => i.Parent == outer && i.ObjectName == source.ObjectName && i.ClassName == source.ClassName) is { } existing)
             return existing;
@@ -166,10 +178,11 @@ public static class ActorCreation
         {
             ClassName = source.ClassName,
             //the package its class is in: Core for a class
-            PackageFile = (source as ExportEntry)?.Class switch
+            PackageFile = source switch
             {
-                ImportEntry classImport => classImport.GetRootName(),
-                ExportEntry classExport => Path.GetFileNameWithoutExtension(classExport.FileRef.FilePath),
+                ImportEntry sourceImport => sourceImport.PackageFile,
+                ExportEntry { Class: ImportEntry classImport } => classImport.GetRootName(),
+                ExportEntry { Class: ExportEntry classExport } => Path.GetFileNameWithoutExtension(classExport.FileRef.FilePath),
                 _ => "Core"
             }
         };

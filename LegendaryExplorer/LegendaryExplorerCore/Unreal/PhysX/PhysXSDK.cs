@@ -5,7 +5,6 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LegendaryExplorerCore.Unreal.PhysX;
 
@@ -64,7 +63,7 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
         {
             physXScaleHullVerts[i] = convexHull[i] * UnrealtoPhysXScale;
         }
-        using NxStream stream = sdk.Cooker.GenerateCachedPhysicsDataStream(physXScaleHullVerts);
+        using NxStream stream = sdk.Cooker.GenerateCachedPhysicsDataStream(physXScaleHullVerts, hullOnly: true);
         NxConvexMesh* mesh = sdk.SDK->CreateConvexMesh(&stream);
         if (mesh is null)
         {
@@ -131,17 +130,16 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
                 int edge1 = edges[i * 2 + 1];
                 
                 (int tri0Index, int tri1Index) = getTriIndicesUsingEdge(edge0, edge1, convexElem.FaceTriData);
-                if (tri0Index == -1 || tri1Index == -1)
-                {
-                    throw new Exception("Open Mesh");
-                }
+                //(an open mesh's edge with one triangle isn't counted, as UE3 does)
+                if (tri0Index == -1 || tri1Index == -1) continue;
                 Vector3 tri0Normal = triNormals[tri0Index];
                 Vector3 tri1Normal = triNormals[tri1Index];
                 float faceNormalDot = Vector3.Dot(tri0Normal, tri1Normal);
 
-                if (MathF.Abs(faceNormalDot - 1.0f) < AngleCompareThreshold)
+                //an edge between faces that aren't parallel, not one inside a face
+                if (faceNormalDot < 1.0f - AngleCompareThreshold)
                 {
-                    Vector3 edgeDir = Vector3.Normalize(convexElem.VertexData[edge1] - convexElem.VertexData[edge0]);
+                    Vector3 edgeDir = Vector3.Normalize(convexElem.VertexData[edge0] - convexElem.VertexData[edge1]);
                     AddDirIfNotPresent(convexElem.EdgeDirections, edgeDir);
                 }
             }
@@ -258,10 +256,7 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
                     {
                         tri1Index = i;
                     }
-                    else
-                    {
-                        throw new Exception("3 tris share an edge.");
-                    }
+                    //(a third that shares it is ignored, as GetTriIndicesUsingEdge only logs it)
                 }
             }
             return (tri0Index, tri1Index);

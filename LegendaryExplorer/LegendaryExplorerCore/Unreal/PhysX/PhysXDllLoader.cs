@@ -35,7 +35,7 @@ namespace LegendaryExplorerCore.Unreal.PhysX
 
         private static bool EnsureDll(string filename, ref bool dllLoaded, string srcRelativePath = null)
         {
-            if (cookingDllLoaded)
+            if (dllLoaded)
             {
                 return true;
             }
