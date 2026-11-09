@@ -354,8 +354,11 @@ namespace LegendaryExplorerCore.UDK
                 }
 
                 // Toggleable lights get UDK's toggleable classes, whose templates keep them out of the lightmaps (shadow maps only),
-                // so they can still be switched and animated at runtime.
-                string actorClassSuffix = ownerMobility == LightOwnerMobility.Toggleable ? "Toggleable" : "";
+                // so they can still be switched and animated at runtime
+                // Shadowmapped items need to export as a toggleable so UDK bakes as a shadow map
+                bool shadowMappedStatic = ownerMobility == LightOwnerMobility.Static && baseClassName != "SkyLight"
+                    && IsShadowMapped(lightComponent, assetInfo.ShadowMappedLightGuids);
+                string actorClassSuffix = ownerMobility == LightOwnerMobility.Toggleable || shadowMappedStatic ? "Toggleable" : "";
                 string componentClassName = lightComponent.ClassName;
                 var originalIFP = lightComponent.InstancedFullPath;
 
@@ -437,8 +440,13 @@ namespace LegendaryExplorerCore.UDK
                 var componentExport = portedComponent as ExportEntry;
                 componentExport.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
                 componentExport.Archetype = GetLightActorTemplate(assetInfo.TempPackage, baseClassName + actorClassSuffix, componentClassName + "0", componentClassName);
-                SetDirectLightMapMode(lightComponent, componentExport, assetInfo.ShadowMappedLightGuids);
-                if (ownerMobility == LightOwnerMobility.Toggleable)
+                if (shadowMappedStatic)
+                {
+                    // Keep source value of indirect lighting
+                    KeepIndirectLighting(lightComponent, componentExport);
+                    LECLog.Information($"Exporting shadow-mapped static light {originalIFP} as {baseClassName}Toggleable");
+                }
+                else if (ownerMobility == LightOwnerMobility.Toggleable)
                 {
                     KeepToggleableLightOutOfLightmaps(componentExport);
                 }
@@ -449,7 +457,7 @@ namespace LegendaryExplorerCore.UDK
 
         private enum LightOwnerMobility
         {
-            /// <summary>Baked into lightmaps (or shadow maps, per UseDirectLightMap)</summary>
+            /// <summary>Baked into lightmaps (exported as toggleable if the source game shadow-mapped it)</summary>
             Static,
             /// <summary>Can be switched or animated at runtime: static shadowing only, lighting stays dynamic</summary>
             Toggleable,
@@ -506,20 +514,37 @@ namespace LegendaryExplorerCore.UDK
             }
         }
 
-        private static void SetDirectLightMapMode(ExportEntry sourceLight, ExportEntry udkLight, ISet<Guid> shadowMappedLightGuids)
+        /// <summary>
+        /// Whether components in the source game have shadow maps for this light
+        /// </summary>
+        private static bool IsShadowMapped(ExportEntry sourceLight, ISet<Guid> shadowMappedLightGuids)
         {
-            if (shadowMappedLightGuids == null)
+            if (shadowMappedLightGuids == null || sourceLight.GetProperty<StructProperty>("LightGuid") is not { } guidProp)
             {
-                return;
+                return false;
             }
 
-            Guid lightGuid = CommonStructs.GetGuid(sourceLight.GetProperty<StructProperty>("LightGuid"));
-            if (lightGuid != Guid.Empty && shadowMappedLightGuids.Contains(lightGuid))
+            Guid lightGuid = CommonStructs.GetGuid(guidProp);
+            return lightGuid != Guid.Empty && shadowMappedLightGuids.Contains(lightGuid);
+        }
+
+        /// <summary>
+        /// Gives a light exported with a toggleable template the source light's indirect lighting scale
+        /// </summary>
+        private static void KeepIndirectLighting(ExportEntry sourceLight, ExportEntry udkLight)
+        {
+            // Scale defaults to 1 if not set
+            float indirectScale = sourceLight.GetProperty<StructProperty>("LightmassSettings")?.GetProp<FloatProperty>("IndirectLightingScale")?.Value ?? 1f;
+            var settings = udkLight.GetProperty<StructProperty>("LightmassSettings");
+            if (settings == null)
             {
-                // PointLight/SpotLight/DirectionalLight default to true in UDK. False makes Lightmass retain
-                // the light as a separate static light and generate ShadowMap1D/ShadowMap2D data for it.
-                udkLight.WriteProperty(new BoolProperty(false, "UseDirectLightMap"));
+                // Make defaults
+                string structType = udkLight.ClassName == "DirectionalLightComponent" ? "LightmassDirectionalLightSettings" : "LightmassPointLightSettings";
+                settings = new StructProperty(structType, GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.UDK, structType, true, udkLight.FileRef), "LightmassSettings");
             }
+
+            settings.Properties.AddOrReplaceProp(new FloatProperty(indirectScale, "IndirectLightingScale"));
+            udkLight.WriteProperty(settings);
         }
 
         /// <summary>
@@ -699,6 +724,9 @@ namespace LegendaryExplorerCore.UDK
                                                              CustomRelinkUIndex = delegatesROP?.CustomRelinkUIndex,
                                                          }, out IEntry result);
                     ((ExportEntry)result).Archetype = staticMeshComponentArchetype;
+                    // UDK and LE games have different default settings for this so we need to explicitly set it
+                    // otherwise light bake is def wrong
+                    ((ExportEntry)result).WriteProperty(new BoolProperty(false, "bForceDirectLightMap"));
                     assetInfo.PortedMeshComponents[smc.UIndex] = (ExportEntry)result;
                     props = new PropertyCollection
                             {
