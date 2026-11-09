@@ -1142,7 +1142,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     #region Commands
 
     public ICommand OpenFileCommand { get; set; }
-    public ICommand AddFileCommand { get; set; }
+    public ICommand AddFilesCommand { get; set; }
     public ICommand SaveAllCommand { get; set; }
     public ICommand SaveAsCommand { get; set; }
     public ICommand SaveSingleFileCommand { get; set; }
@@ -1173,7 +1173,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         // Window InputBindings consume these keys even when a text editor has focus.
         if (e.Handled || Keyboard.Modifiers != ModifierKeys.None) return;
         //wherever focus is, if no control used the key
-        if (e.Key is Key.Escape && placingClass is not null)
+        if (e.Key is Key.Escape && placing is not null)
         {
             EndPlacement();
             e.Handled = true;
@@ -1224,7 +1224,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         SetAssignmentPolicyCommand = new RelayCommand(policy => AssignmentPolicy = (LightAssignmentPolicy)policy);
         SetLightingModeCommand = new RelayCommand(mode => LightingMode = (ViewportLightingMode)mode);
         OpenFileCommand = new GenericCommand(OpenFile, () => CanEditScene);
-        AddFileCommand = new GenericCommand(AddFile, () => CanEditScene);
+        AddFilesCommand = new GenericCommand(AddFiles, () => CanEditScene);
         SaveAllCommand = new GenericCommand(SaveAllFiles, () => CanEditScene && PackageIsLoaded());
         SaveAsCommand = new GenericCommand(SaveFileAs, () => CanEditScene && PackageIsLoaded());
         SaveSingleFileCommand = new RelayCommand(SaveSingleFileExecute, _ => CanEditScene && PackageIsLoaded());
@@ -2813,25 +2813,31 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
     }
 
-    private async void AddFile()
+    private async void AddFiles()
     {
-        var d = AppDirectories.GetOpenPackageDialog();
+        var d = AppDirectories.GetOpenPackageDialog("Add level files");
+        d.Multiselect = true;
         if (d.ShowDialog() == true)
         {
-#if !DEBUG
+            using var guard = new RenderGuard(this);
+            await AddLevelFiles(d.FileNames).ConfigureAwait(true);
+        }
+    }
+
+    /// <summary>Adds <paramref name="files"/> to the view in turn. One that fails to load is reported, and the rest still load. Callers hold a RenderGuard</summary>
+    private async Task AddLevelFiles(IReadOnlyList<string> files)
+    {
+        for (int i = 0; i < files.Count; i++)
+        {
             try
             {
-#endif
-
-            using var guard = new RenderGuard(this);
-            await AddLevelFile(d.FileName).ConfigureAwait(true);
-#if !DEBUG
+                await AddLevelFile(files[i], i + 1, files.Count).ConfigureAwait(true);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Unable to open file:\n" + ex.Message);
+                StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(files[i]);
+                MessageBox.Show(this, $"Error loading {Path.GetFileName(files[i])}:\n{ex.Message}", "Load level");
             }
-#endif
         }
     }
 
@@ -2873,8 +2879,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             if (files.Length is 0) return;
             if (PackageIsLoaded())
             {
-                string q = files.Length is 1 ? "these files" : "";
-                var result = MessageBox.Show("Do you want to add" + q + "to the existing level view? Select no to unload all open files first.", "Add to files?", MessageBoxButton.YesNoCancel);
+                string q = files.Length is 1 ? "this file" : "these files";
+                var result = MessageBox.Show($"Do you want to add {q} to the existing level view? Select no to unload all open files first.", "Add to files?", MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Cancel) return;
                 //a refresh can start while the question is shown
                 if (!CanChangeFiles)
@@ -2887,18 +2893,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             if (isFirst && !ConfirmCloseFiles("Open the new files anyway?")) return;
             using var guard = new RenderGuard(this);
             if (isFirst) CloseAllFiles();
-            for (int i = 0; i < files.Length; i++)
-            {
-                try
-                {
-                    await AddLevelFile(files[i], i + 1, files.Length).ConfigureAwait(true);
-                }
-                catch (Exception ex)
-                {
-                    StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(files[i]);
-                    MessageBox.Show(this, $"Error loading {Path.GetFileName(files[i])}:\n{ex.Message}", "Load level");
-                }
-            }
+            await AddLevelFiles(files).ConfigureAwait(true);
         }
     }
 

@@ -114,7 +114,7 @@
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenFileCommand}"/>
-        <KeyBinding Key="O" Modifiers="Control+Shift" Command="{Binding AddFileCommand}"/>
+        <KeyBinding Key="O" Modifiers="Control+Shift" Command="{Binding AddFilesCommand}"/>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveAllCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
         <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
@@ -125,7 +125,7 @@
             <Menu DockPanel.Dock="Top" Padding="4,0" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <MenuItem Header="_File">
                     <MenuItem Header="Open..." Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O"/>
-                    <MenuItem Header="Add File..." Command="{Binding AddFileCommand}" InputGestureText="Ctrl+Shift+O"/>
+                    <MenuItem Header="Add Files..." Command="{Binding AddFilesCommand}" InputGestureText="Ctrl+Shift+O"/>
                     <MenuItem Header="Load Related Levels" Command="{Binding LoadRelatedLevelsCommand}"/>
                     <Separator/>
                     <MenuItem Header="Save All" Command="{Binding SaveAllCommand}" InputGestureText="Ctrl+S"/>
@@ -324,22 +324,74 @@
                             </DockPanel>
                         </TabItem>
                         <TabItem Header="Place Actors" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <StackPanel Margin="8" IsEnabled="{Binding HasAnyFileOpen}">
+                            <DockPanel Background="{StaticResource EditorPanel}" IsEnabled="{Binding HasAnyFileOpen, Converter={StaticResource BoolEnabledConverter}}">
+                                <StackPanel DockPanel.Dock="Top" Margin="8,8,8,0">
                                     <DockPanel>
                                         <TextBlock Text="Level" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource EditorMuted}"/>
                                         <ComboBox ItemsSource="{Binding OpenFiles}" SelectedItem="{Binding PlacementFile}" DisplayMemberPath="FileName" ToolTip="The level new actors are placed in" AutomationProperties.Name="Level to place actors in"/>
                                     </DockPanel>
-                                    <ItemsControl ItemsSource="{Binding PlacementOptions}" Margin="0,6,0,0">
-                                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate><DataTemplate>
-                                            <Button Content="{Binding ClassName}" Command="{Binding Data.BeginPlacementCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}"
-                                                    ToolTip="{Binding Description}" ToolTipService.ShowOnDisabled="True" Padding="8,3" Margin="0,0,5,5"/>
-                                        </DataTemplate></ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                    <TextBlock Text="{Binding PlacementStatus}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}"/>
+                                    <TextBlock Text="{Binding PlacementRefusal}" Visibility="{Binding PlacementRefusal, Converter={StaticResource NullVisibilityConverter}}" TextWrapping="Wrap" Foreground="{StaticResource EditorDirty}" Margin="0,6,0,0"/>
+                                    <xctk:WatermarkTextBox Watermark="Search classes" Text="{Binding PlacementSearch, UpdateSourceTrigger=PropertyChanged}" Margin="0,8,0,0"
+                                                           AutomationProperties.Name="Search placeable classes" ToolTip="Search class names, descriptions and categories"/>
                                 </StackPanel>
-                            </ScrollViewer>
+                                <TextBlock DockPanel.Dock="Bottom" Text="{Binding PlacementStatus}" Visibility="{Binding PlacementStatus, Converter={StaticResource NullVisibilityConverter}}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="9,7"/>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,6,0,0">
+                                    <ItemsControl ItemsSource="{Binding PlacementOptions}" Margin="8,0,8,8" Focusable="False">
+                                        <ItemsControl.GroupStyle>
+                                            <GroupStyle>
+                                                <GroupStyle.ContainerStyle>
+                                                    <Style TargetType="GroupItem">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="GroupItem">
+                                                                    <Expander Style="{StaticResource OutlinerGroupExpander}" IsExpanded="False" Header="{TemplateBinding Content}" HeaderTemplate="{TemplateBinding ContentTemplate}">
+                                                                        <ItemsPresenter/>
+                                                                    </Expander>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </GroupStyle.ContainerStyle>
+                                                <GroupStyle.HeaderTemplate>
+                                                    <DataTemplate>
+                                                        <Border Background="{StaticResource EditorRaised}" Padding="8,6" Margin="0,5,0,1">
+                                                            <DockPanel>
+                                                                <TextBlock DockPanel.Dock="Right" Text="{Binding ItemCount}" Foreground="{StaticResource EditorMuted}" Margin="8,0,0,0"/>
+                                                                <fa:ImageAwesome Icon="{Binding Name.Icon}" Width="12" Height="12" Margin="0,0,7,0"/>
+                                                                <TextBlock Text="{Binding Name.Name}" FontWeight="SemiBold"/>
+                                                            </DockPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </GroupStyle.HeaderTemplate>
+                                            </GroupStyle>
+                                        </ItemsControl.GroupStyle>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Command="{Binding Data.TogglePlacementCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}"
+                                                        IsEnabled="{Binding Data.CanPlace, Source={StaticResource bindingProxy}, Converter={StaticResource BoolEnabledConverter}}"
+                                                        HorizontalContentAlignment="Stretch" Padding="8,5" Margin="0,1,0,0" AutomationProperties.Name="{Binding ClassName, StringFormat='Place {0}'}">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource EditorButtonBase}">
+                                                            <Setter Property="ToolTip" Value="Click, then click the scene where it goes"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsPlacing}" Value="True">
+                                                                    <Setter Property="Background" Value="{StaticResource EditorAccent}"/>
+                                                                    <Setter Property="ToolTip" Value="Placing: click the scene where it goes. Click here again, or press Esc, to cancel"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding ClassName}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,2,0,0"/>
+                                                        <TextBlock Text="{Binding AssetHint}" Visibility="{Binding AssetHint, Converter={StaticResource NullVisibilityConverter}}" FontStyle="Italic" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,2,0,0"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </DockPanel>
                         </TabItem>
                     </TabControl>
 

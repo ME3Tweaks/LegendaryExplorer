@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using FontAwesome5;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
@@ -14,14 +15,34 @@ using ClassFlags = LegendaryExplorerCore.Unreal.UnrealFlags.EClassFlags;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
+/// <summary>A group of the classes that can be placed, as the Place Actors list shows them</summary>
+public sealed record PlacementCategory(string Name, EFontAwesomeIcon Icon)
+{
+    public static readonly PlacementCategory StaticMeshes = new("Static meshes", EFontAwesomeIcon.Solid_Cube);
+    public static readonly PlacementCategory Lights = new("Lights", EFontAwesomeIcon.Solid_Lightbulb);
+    public static readonly PlacementCategory Volumes = new("Volumes", EFontAwesomeIcon.Solid_VectorSquare);
+    public static readonly PlacementCategory Effects = new("Effects", EFontAwesomeIcon.Solid_Magic);
+    public static readonly PlacementCategory Splines = new("Splines", EFontAwesomeIcon.Solid_BezierCurve);
+    public static readonly PlacementCategory Markers = new("Markers", EFontAwesomeIcon.Solid_MapMarkerAlt);
+}
+
+/// <summary>A class that can be placed (<see cref="ActorCreation.PlaceableClasses"/>)</summary>
+/// <param name="Description">What it is, in a line</param>
+/// <param name="AssetClass">The class of the asset chosen before placing one, or null if it needs none</param>
+public sealed record PlaceableClass(string ClassName, PlacementCategory Category, string Description, string AssetClass);
+
 /// <summary>
 /// How new actors of <see cref="Classes"/> are made. Each is a class whose placed actors are known to be made this way, drawn by a view that writes all their
 /// values: there's no general recipe, and a class that isn't listed can't be placed
 /// </summary>
+/// <param name="Category">Where its classes are listed for placing</param>
 /// <param name="Classes">The exact classes it makes: a subclass needs checking against it first</param>
 /// <param name="Draft">Makes the view of a new one, drawn and edited with nothing written until a commit</param>
-internal sealed record ActorRecipe(IReadOnlyList<string> Classes, ActorRecipe.MakeDraft Draft)
+internal sealed record ActorRecipe(PlacementCategory Category, IReadOnlyList<string> Classes, ActorRecipe.MakeDraft Draft)
 {
+    /// <summary>What each of <see cref="Classes"/> is, in a line, for the list it's placed from</summary>
+    internal required IReadOnlyDictionary<string, string> Descriptions { get; init; }
+
     /// <param name="asset">The <see cref="AssetClass"/> chosen for it, an entry of its package, if it needs one</param>
     /// <param name="template">The subobject of its class default that <see cref="ComponentProperty"/> refers to, if it has one</param>
     internal delegate ActorProxy MakeDraft(IActorEditorContext editor, ActorRecord record, PropertyCollection properties, IEntry asset, ExportEntry template);
@@ -50,30 +71,72 @@ public static class ActorCreation
     /// is a box (<see cref="BrushProxy.NewBoxSize"/>), made as cooked volumes are: a hull, cached PhysX data if it has rigid-body collision, and the level's
     /// empty brush
     /// </summary>
+    /// <remarks>In the order they're listed for placing</remarks>
     private static readonly ActorRecipe[] Recipes =
     [
-        new(["Note", "TargetPoint"], (editor, record, properties, _, _) => new EditorActorProxy(editor, record, properties, MarkerInfo(record))),
-        new(["SplineActor", "SplineLoftActor"], (editor, record, properties, _, _) => new SplineActorProxy(editor, record, properties)) { IsSpline = true },
-        new(["StaticMeshActor"], (editor, record, properties, mesh, template) => new StaticMeshActorProxy(editor, record, properties, mesh, template))
+        new(PlacementCategory.StaticMeshes, ["StaticMeshActor"],
+            (editor, record, properties, mesh, template) => new StaticMeshActorProxy(editor, record, properties, mesh, template))
         {
-            AssetClass = "StaticMesh", ComponentProperty = "StaticMeshComponent"
+            AssetClass = "StaticMesh", ComponentProperty = "StaticMeshComponent",
+            Descriptions = new Dictionary<string, string> { ["StaticMeshActor"] = "A mesh fixed in place, lit by the level's baked lighting" }
         },
-        new(LightActorProxy.StandaloneClasses, (editor, record, properties, _, template) => new LightActorProxy(editor, record, properties, template))
+        new(PlacementCategory.Lights, LightActorProxy.StandaloneClasses, (editor, record, properties, _, template) => new LightActorProxy(editor, record, properties, template))
         {
-            ComponentProperty = "LightComponent", AcceptsComponent = light => SceneLight.GetLightType(light) is not null
+            ComponentProperty = "LightComponent", AcceptsComponent = light => SceneLight.GetLightType(light) is not null,
+            Descriptions = new Dictionary<string, string>
+            {
+                ["PointLight"] = "Shines in every direction. Baked, and can't change in game",
+                ["PointLightMovable"] = "Shines in every direction. Can move in game, so it lights and shadows at runtime",
+                ["PointLightToggleable"] = "Shines in every direction. Kismet can turn it on and off; its shadows are baked",
+                ["SpotLight"] = "A cone of light. Baked, and can't change in game",
+                ["SpotLightMovable"] = "A cone of light. Can move in game, so it lights and shadows at runtime",
+                ["SpotLightToggleable"] = "A cone of light. Kismet can turn it on and off; its shadows are baked",
+                ["DirectionalLight"] = "Light from one direction across the level, as sunlight. Baked, and can't change in game",
+                ["DirectionalLightToggleable"] = "Light from one direction across the level, as sunlight. Kismet can turn it on and off; its shadows are baked"
+            }
         },
-        new(["Emitter"], (editor, record, properties, system, template) => new EmitterDraftProxy(editor, record, properties, MarkerInfo(record), system, template))
+        new(PlacementCategory.Volumes, ["BlockingVolume", "TriggerVolume", "BioTriggerVolume"],
+            (editor, record, properties, _, template) => new BrushProxy(editor, record, properties, template))
         {
-            AssetClass = "ParticleSystem", ComponentProperty = "ParticleSystemComponent"
+            ComponentProperty = "BrushComponent", AcceptsComponent = component => component.ClassName == "BrushComponent",
+            Descriptions = new Dictionary<string, string>
+            {
+                ["BlockingVolume"] = "An invisible box that blocks players and physics",
+                ["TriggerVolume"] = "An invisible box that fires Kismet's Touched events",
+                ["BioTriggerVolume"] = "A trigger volume that can be disabled, or set to fire once (Enabled, OneShot)"
+            }
         },
-        new(["BlockingVolume", "TriggerVolume", "BioTriggerVolume"], (editor, record, properties, _, template) => new BrushProxy(editor, record, properties, template))
+        new(PlacementCategory.Effects, ["Emitter"],
+            (editor, record, properties, system, template) => new EmitterDraftProxy(editor, record, properties, MarkerInfo(record), system, template))
         {
-            ComponentProperty = "BrushComponent", AcceptsComponent = component => component.ClassName == "BrushComponent"
+            AssetClass = "ParticleSystem", ComponentProperty = "ParticleSystemComponent",
+            Descriptions = new Dictionary<string, string> { ["Emitter"] = "A particle effect" }
+        },
+        new(PlacementCategory.Splines, ["SplineActor", "SplineLoftActor"], (editor, record, properties, _, _) => new SplineActorProxy(editor, record, properties))
+        {
+            IsSpline = true,
+            Descriptions = new Dictionary<string, string>
+            {
+                ["SplineActor"] = "A spline point, to connect to others",
+                ["SplineLoftActor"] = "A spline point that bends a mesh along its connections"
+            }
+        },
+        new(PlacementCategory.Markers, ["Note", "TargetPoint"], (editor, record, properties, _, _) => new EditorActorProxy(editor, record, properties, MarkerInfo(record)))
+        {
+            Descriptions = new Dictionary<string, string>
+            {
+                ["Note"] = "Text for other editors. Not shown in game",
+                ["TargetPoint"] = "A position for Kismet and scripts to use. Not shown in game"
+            }
         }
     ];
 
+    /// <summary>The classes with a recipe, as they're listed for placing</summary>
+    public static IReadOnlyList<PlaceableClass> PlaceableClasses { get; } =
+        [.. Recipes.SelectMany(recipe => recipe.Classes.Select(c => new PlaceableClass(c, recipe.Category, recipe.Descriptions[c], recipe.AssetClass)))];
+
     /// <summary>The classes with a recipe</summary>
-    public static IReadOnlyList<string> RecipeClasses { get; } = [.. Recipes.SelectMany(recipe => recipe.Classes)];
+    public static IReadOnlyList<string> RecipeClasses { get; } = [.. PlaceableClasses.Select(placeable => placeable.ClassName)];
 
     private static ActorRecipe RecipeFor(string className) => Recipes.FirstOrDefault(recipe => recipe.Classes.Contains(className));
 
