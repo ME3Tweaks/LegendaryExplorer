@@ -113,7 +113,10 @@ public sealed class ActorDeletionPlan
 
     private static IReadOnlyList<string> LightClasses => LightActorProxy.StandaloneClasses;
     private static readonly string[] SupportedClasses = ["Note", "TargetPoint", "Emitter", "DecalActor", "StaticMeshActor", "InterpActor", "SplineActor", "SplineLoftActor", .. LightClasses];
-    private static bool Supports(ExportEntry actor) => actor.Game.IsLEGame() && (SupportedClasses.Contains(actor.ClassName) || CollectionOf(actor) is not null);
+    private static bool Supports(ExportEntry actor) => actor.Game.IsLEGame() && (SupportedClasses.Contains(actor.ClassName) || IsVolume(actor) || CollectionOf(actor) is not null);
+
+    /// <summary>Whether it's a volume: any class of one, as what each owns is checked (<see cref="CollectOwnedEntries"/>)</summary>
+    private static bool IsVolume(ExportEntry actor) => actor.IsA("Volume");
 
     /// <summary>
     /// The collection <paramref name="member"/> is one of, if it's a kind whose deletion is supported: a StaticMeshCollectionActor's static mesh
@@ -140,8 +143,8 @@ public sealed class ActorDeletionPlan
     {
         if (RemovalRefusal(actor) is { } refusal) return refusal;
         if (!Supports(actor.Export))
-            return $"Committed deletion supports only the Legendary Edition's {string.Join(", ", SupportedClasses)}, and static mesh and light collections' "
-                   + "meshes and point, spot and directional lights.";
+            return $"Committed deletion supports only the Legendary Edition's {string.Join(", ", SupportedClasses)}, volumes, and static mesh and light "
+                   + "collections' meshes and point, spot and directional lights.";
         return null;
     }
 
@@ -196,6 +199,7 @@ public sealed class ActorDeletionPlan
         bool lightActor = !member && LightClasses.Contains(actor.ClassName);
         bool emitter = !member && actor.ClassName == "Emitter";
         bool decalActor = !member && actor.ClassName == "DecalActor";
+        bool volume = !member && IsVolume(actor);
         foreach (var child in actor.GetAllDescendants())
         {
             // Ownership comes from the outer chain, never from an asset/property reference. Unknown
@@ -213,7 +217,9 @@ public sealed class ActorDeletionPlan
                     // Its component, and in a few of LE2's, the light environment that lights its particles. Its template is an asset of the package, not under it
                     || emitter && e.Parent == actor && e.ClassName is ("ParticleSystemComponent" or "ParticleLightEnvironmentComponent")
                     // Its component, and the shadow maps of its surfaces. Its material is an asset of the package, not under it
-                    || decalActor && e.Parent == actor && (IsDecal(e) || e.ClassName == "ShadowMap1D"));
+                    || decalActor && e.Parent == actor && (IsDecal(e) || e.ClassName == "ShadowMap1D")
+                    // Its collision, and in some, its brush, with its polygons. Most cooked volumes' Brush is an empty model of the level's that others share too
+                    || volume && (e.Parent == actor && e.ClassName is ("BrushComponent" or "Model") || e.Parent?.Parent == actor && e.Parent.ClassName == "Model" && e.ClassName == "Polys"));
             if (supported) entries.Add((ExportEntry)child);
             else blockers.Add($"#{child.UIndex} {child.InstancedFullPath}: unsupported owned subobject.");
         }
@@ -229,6 +235,11 @@ public sealed class ActorDeletionPlan
         }
         if (lightActor) RequireOwned("LightComponent", IsLightComponent, "a light component");
         if (decalActor) RequireOwned("Decal", IsDecal, "a supported component");
+        if (volume)
+        {
+            RequireOwned("BrushComponent", e => e.ClassName == "BrushComponent", "a supported component");
+            RequireOwned("CollisionComponent", e => e.ClassName == "BrushComponent", "a supported component");
+        }
         if (emitter)
         {
             RequireOwned("ParticleSystemComponent", e => e.ClassName == "ParticleSystemComponent", "a supported component");
