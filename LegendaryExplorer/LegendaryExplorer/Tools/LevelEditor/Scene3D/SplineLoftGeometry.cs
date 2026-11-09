@@ -65,20 +65,26 @@ public static class SplineLoftGeometry
     private static float CosTab(int angle) => TrigTable[((angle + 16384) >> 2) & 16383];
 
     /// <summary>
-    /// AActor::LocalToWorld as UE3 computes it: the rotation's sines and cosines come from FGlobalMath's lookup table (in steps of 4 rotation units),
-    /// so a rotated actor's matrix differs slightly from an exact one. The editor built the cooked SplineParams with it
+    /// AActor::LocalToWorld as UE3 computes it, term for term so that it rounds the same: the rotation's sines and cosines come from FGlobalMath's lookup
+    /// table (in steps of 4 rotation units), so a rotated actor's matrix differs slightly from an exact one. The editor built the cooked SplineParams and
+    /// terrains' collision vertices with it
     /// </summary>
+    /// <param name="scale">DrawScale3D * DrawScale</param>
     public static Matrix4x4 ActorLocalToWorld(Vector3 location, Rotator rotation, Vector3 scale, Vector3 prePivot)
     {
         float sr = SinTab(rotation.Roll), sp = SinTab(rotation.Pitch), sy = SinTab(rotation.Yaw);
         float cr = CosTab(rotation.Roll), cp = CosTab(rotation.Pitch), cy = CosTab(rotation.Yaw);
-        //FRotationMatrix's rows
-        var rotationMatrix = new Matrix4x4(
-            cp * cy, cp * sy, sp, 0,
-            sr * sp * cy - cr * sy, sr * sp * sy + cr * cy, -sr * cp, 0,
-            -(cr * sp * cy + sr * sy), cy * sr - cr * sp * sy, cr * cp, 0,
-            0, 0, 0, 1);
-        return Matrix4x4.CreateTranslation(-prePivot) * Matrix4x4.CreateScale(scale) * rotationMatrix * Matrix4x4.CreateTranslation(location);
+        float lx = location.X, ly = location.Y, lz = location.Z;
+        float px = prePivot.X, py = prePivot.Y, pz = prePivot.Z;
+        float dx = scale.X, dy = scale.Y, dz = scale.Z;
+        return new Matrix4x4(
+            cp * cy * dx, cp * dx * sy, dx * sp, 0,
+            dy * (cy * sp * sr - cr * sy), dy * (cr * cy + sp * sr * sy), -cp * dy * sr, 0,
+            -dz * (cr * cy * sp + sr * sy), dz * (cy * sr - cr * sp * sy), cp * cr * dz, 0,
+            lx - cp * cy * dx * px + cr * cy * dz * pz * sp - cy * dy * py * sp * sr + cr * dy * py * sy + dz * pz * sr * sy,
+            ly - (cr * cy * dy * py + cy * dz * pz * sr + cp * dx * px * sy - cr * dz * pz * sp * sy + dy * py * sp * sr * sy),
+            lz - (cp * cr * dz * pz + dx * px * sp - cp * dy * py * sr),
+            1);
     }
 
     /// <summary>

@@ -38,9 +38,41 @@ public sealed class TerrainProxy : ActorProxy
 
     public override string Category => "Terrain";
 
+    //where the terrain was when its collision was last accepted as written (at load, or a commit that succeeded): its collision vertices are in world space
+    private Matrix4x4 collisionLocalToWorld;
+    private Matrix4x4 GameLocalToWorld => SplineLoftGeometry.ActorLocalToWorld(Location, Rotation, DrawScale * DrawScale3D, PrePivot);
+
     public TerrainProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         Load(context.RenderContext);
+        collisionLocalToWorld = GameLocalToWorld;
+    }
+
+    /// <summary>
+    /// Moving, turning or scaling a terrain moves its collision, which its components save in world space: the commit writes their collision vertices and
+    /// BV trees again (<see cref="TerrainCollisionData"/>). A terrain whose height field or sections can't be read is refused, with nothing written
+    /// </summary>
+    public override void CommitChanges(PackageCache packageCache = null)
+    {
+        Matrix4x4 localToWorld = GameLocalToWorld;
+        if (localToWorld != collisionLocalToWorld)
+        {
+            //(the height field the view was made from: any change to the terrain's export makes the view again)
+            TerrainHeightField field = HeightField
+                ?? throw new InvalidOperationException($"{Export.InstancedFullPath} couldn't be read ({LoadError}), so its collision can't be made again.");
+            var cache = packageCache ?? Editor.RenderContext.PackageCache;
+            //(before the actor's own values, so a refusal leaves both unwritten)
+            TerrainCollisionData.WriteCollision(field, component => EffectiveLightingProperties.ReadPrimitive(component, cache), localToWorld,
+                TerrainCollisionData.HasCollision(Export, Properties, cache));
+        }
+        base.CommitChanges(packageCache);
+    }
+
+    //(a commit that's rolled back puts the collision back too, so only one that succeeds moves it)
+    public override void MarkClean()
+    {
+        collisionLocalToWorld = GameLocalToWorld;
+        base.MarkClean();
     }
 
     private void Load(MeshRenderContext context)
