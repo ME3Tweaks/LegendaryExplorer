@@ -1248,13 +1248,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         ToggleLocalCoordsCommand = new GenericCommand(() => { CancelViewportDrag(); UseLocalCoordsForWidget = !UseLocalCoordsForWidget; }, PackageIsLoaded);
         OpenInPackageEditorCommand = new GenericCommand(() =>
         {
-            if (SelectedActor?.Export is { } export)
-            {
-                var p = new PackageEditorWindow();
-                p.Show();
-                p.LoadPackage(export.FileRef, export.UIndex);
-                p.Activate();
-            }
+            if (SelectedActor?.Export is { } export) OpenInPackageEditor(export);
         }, () => CanEditScene && PackageIsLoaded() && SelectedActor is { IsDraft: false });
         OpenRecentSetCommand = new RelayCommand(obj => { if (obj is RecentFileSet set) OpenRecentFileSet(set); });
         UndoCommand = new GenericCommand(Undo);
@@ -1493,6 +1487,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             if (!CanMutateScene) throw new InvalidOperationException("The editor state changed during reference inspection. Retry deletion.");
             UndoHistory.Push(going.Count == 1 ? actor.Delete(plans[0]) : PendingActorDeletion.DeleteTogether(going.Zip(plans).ToList()));
         }
+        catch (ActorDeletionBlockedException blocked)
+        {
+            //(the editor waits for it, while what it lists is changed in the Sequence Editor)
+            new DeletionBlockedDialog(blocked).ShowOver(this);
+        }
         catch (Exception error) when (error is not OutOfMemoryException)
         {
             MessageBox.Show(this, error.Message, "Delete actor");
@@ -1508,6 +1507,21 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     /// <summary>Asks what's to go with an actor of what's attached to it (<see cref="AttachedDependents.Question"/>)</summary>
     /// <returns>The answer, or null if its deletion was cancelled</returns>
+    /// <summary>Shows <paramref name="export"/> in a Package Editor: one that already has its package, if one does</summary>
+    internal static void OpenInPackageEditor(ExportEntry export)
+    {
+        if (export.FileRef.Users.OfType<PackageEditorWindow>().FirstOrDefault() is { } editor)
+        {
+            editor.GoToNumber(export.UIndex);
+            editor.RestoreAndBringToFront();
+            return;
+        }
+        editor = new PackageEditorWindow();
+        editor.Show();
+        editor.LoadPackage(export.FileRef, export.UIndex);
+        editor.Activate();
+    }
+
     private DeletionChoice AskAboutAttached(AttachedDependents attached)
     {
         bool anyRequired = attached.Least.Going.Count > 1;

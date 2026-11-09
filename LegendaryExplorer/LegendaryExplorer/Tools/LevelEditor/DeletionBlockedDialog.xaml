@@ -1,0 +1,55 @@
+<bases:TrackingNotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.LevelEditor.DeletionBlockedDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+        xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+        Title="Delete actor" Width="720" SizeToContent="Height" MaxHeight="640" MinWidth="420"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Background="{DynamicResource EditorChrome}" Foreground="{DynamicResource EditorText}"
+        FontFamily="Segoe UI" FontSize="12" UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="LevelEditorStyles.xaml"/></ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <DockPanel Margin="12">
+        <TextBlock DockPanel.Dock="Top" Text="{Binding Message}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+        <Button DockPanel.Dock="Bottom" Content="Close" BorderBrush="{StaticResource EditorBorder}" HorizontalAlignment="Right" Margin="0,10,0,0" IsCancel="True" Click="Close_Click"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding Referrers}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{StaticResource EditorRaised}" Padding="8,6" Margin="0,0,0,4">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,2"/>
+                                    <ItemsControl ItemsSource="{Binding References}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate><TextBlock Text="{Binding}" TextWrapping="Wrap"/></DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Button Content="Open in Sequence Editor" Style="{StaticResource EditorCompactButton}" BorderBrush="{StaticResource EditorBorder}"
+                                            HorizontalAlignment="Left" Margin="0,5,0,0" Click="OpenInSequenceEditor_Click"
+                                            Visibility="{Binding OpensInSequenceEditor, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                    <Button Content="Open in Package Editor" Style="{StaticResource EditorCompactButton}" BorderBrush="{StaticResource EditorBorder}"
+                                            HorizontalAlignment="Left" Margin="0,5,0,0" Click="OpenInPackageEditor_Click"
+                                            Visibility="{Binding OpensInSequenceEditor, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding OtherBlockers}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{StaticResource EditorRaised}" Padding="8,6" Margin="0,0,0,4">
+                                <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</bases:TrackingNotifyPropertyChangedWindowBase>

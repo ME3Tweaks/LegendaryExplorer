@@ -65,12 +65,20 @@ public sealed class ActorDeletionPlan
     public ExportEntry Level { get; }
     /// <summary>For one of a static mesh or light collection's members: the collection, whose component list and transforms the commit removes it from</summary>
     public ExportEntry Collection { get; }
-    public IReadOnlyList<string> Blockers => blockers;
-    private readonly List<string> blockers;
-    // The blockers that are references, by what refers to it
-    private readonly Dictionary<IEntry, List<string>> blockersByReferrer = [];
+    /// <summary>What blocks it: <see cref="OtherBlockers"/>, then each reference to it, by what refers, as they were found</summary>
+    public IReadOnlyList<string> Blockers => [.. otherBlockers, .. referencesByReferrer.SelectMany(r => r.Value.Select(reference => Blocker(r.Key, reference)))];
+    // The blockers that aren't references, which Inspect finds
+    private readonly List<string> otherBlockers;
+    // What each export that blocks it refers to it by, in the order they were found
+    private readonly OrderedDictionary<ExportEntry, List<string>> referencesByReferrer = [];
+    private static string Blocker(ExportEntry referrer, string reference) => $"#{referrer.UIndex} {referrer.InstancedFullPath}: {reference}";
     /// <summary>The blockers that come from <paramref name="entries"/>, which it couldn't be deleted without</summary>
-    public IReadOnlyList<string> BlockersFrom(IEnumerable<ExportEntry> entries) => entries.SelectMany(e => blockersByReferrer.GetValueOrDefault(e) ?? []).ToArray();
+    public IReadOnlyList<string> BlockersFrom(IEnumerable<ExportEntry> entries) =>
+        entries.SelectMany(e => (referencesByReferrer.GetValueOrDefault(e) ?? []).Select(reference => Blocker(e, reference))).ToArray();
+    /// <summary>The exports whose references block it</summary>
+    public IReadOnlyList<BlockingReferrer> GetBlockingReferrers() => referencesByReferrer.Select(r => new BlockingReferrer(r.Key, r.Value.ToArray())).ToArray();
+    /// <summary>What blocks it other than references to it</summary>
+    public IReadOnlyList<string> OtherBlockers => otherBlockers;
     public IReadOnlyList<ExportEntry> Entries { get; }
     public string Repairs => $"Committing removes it from {(Collection is null ? "the level" : Collection.ObjectName.Instanced)}"
                              + $"{(cleansDestroyedContent ? " and from the world's destroyed-actor list" : "")}, and trashes it"
@@ -134,13 +142,14 @@ public sealed class ActorDeletionPlan
         return null;
     }
 
-    private ActorDeletionPlan(ExportEntry actor, ExportEntry level, ExportEntry collection, List<ExportEntry> entries, List<string> blockers,
+    /// <param name="otherBlockers">What blocks it other than references to it, which <see cref="CheckReferences"/> finds</param>
+    private ActorDeletionPlan(ExportEntry actor, ExportEntry level, ExportEntry collection, List<ExportEntry> entries, List<string> otherBlockers,
         ExportEntry worldInfo, bool canCleanDestroyedContent)
     {
         Actor = actor;
         Level = level;
         Collection = collection;
-        this.blockers = blockers;
+        this.otherBlockers = otherBlockers;
         Entries = entries.AsReadOnly();
         snapshots = entries.Select(e => (e, e.UIndex, Header(e), e.DataReadOnly.ToArray())).ToArray();
         memberTransform = collection is not null ? MemberTransform(actor) : null;
@@ -402,21 +411,22 @@ public sealed class ActorDeletionPlan
         var ownership = Entries.Cast<IEntry>().ToHashSet();
         var targets = Entries.Select(e => e.UIndex).ToHashSet();
         var referrers = Entries.SelectMany(target => references[target].Keys).Where(r => !ownership.Contains(r) && !repairs.Trashed.Contains(r)).Distinct();
-        foreach (var referrer in referrers)
+        //(the scan reads exports, so only they refer to anything)
+        foreach (var referrer in referrers.Cast<ExportEntry>())
         {
-            if (referrer is ExportEntry export && IsRepaired(export, targets, repairs, out var binary, out bool attachment))
+            if (IsRepaired(referrer, targets, repairs, out var binary, out bool attachment))
             {
-                cleansDestroyedContent |= export == worldInfo;
+                cleansDestroyedContent |= referrer == worldInfo;
                 if (attachment)
                 {
-                    attachments.Add(export);
-                    if (export.GetProperty<ObjectProperty>("Base") is { } @base && targets.Contains(@base.Value)) DetachedActors++;
+                    attachments.Add(referrer);
+                    if (referrer.GetProperty<ObjectProperty>("Base") is { } @base && targets.Contains(@base.Value)) DetachedActors++;
                 }
-                if (binary is PrefabInstance) prefabs.Add(export);
-                if (IsDecal(export))
+                if (binary is PrefabInstance) prefabs.Add(referrer);
+                if (IsDecal(referrer))
                 {
-                    decals.Add(export);
-                    if (LeftEmpty(export, targets, repairs)) decalsLeftEmpty.Add(export);
+                    decals.Add(referrer);
+                    if (LeftEmpty(referrer, targets, repairs)) decalsLeftEmpty.Add(referrer);
                 }
                 continue;
             }
@@ -424,10 +434,9 @@ public sealed class ActorDeletionPlan
             {
                 foreach (string field in references[target].GetValueOrDefault(referrer) ?? [])
                 {
-                    string blocker = $"#{referrer.UIndex} {referrer.InstancedFullPath}: {field} references {target.InstancedFullPath}";
-                    blockers.Add(blocker);
-                    if (!blockersByReferrer.TryGetValue(referrer, out var fromReferrer)) blockersByReferrer[referrer] = fromReferrer = [];
-                    fromReferrer.Add(blocker);
+                    string reference = $"{field} references {target.InstancedFullPath}";
+                    if (!referencesByReferrer.TryGetValue(referrer, out var fromReferrer)) referencesByReferrer[referrer] = fromReferrer = [];
+                    fromReferrer.Add(reference);
                 }
             }
         }
@@ -617,7 +626,7 @@ public sealed class ActorDeletionPlan
 
     internal void RequireAllowed()
     {
-        if (Blockers.Count != 0) throw new InvalidOperationException($"Cannot delete {Actor.ObjectName}:\n{Listed(Blockers)}");
+        if (Blockers.Count != 0) throw new ActorDeletionBlockedException(this);
     }
 
     /// <summary>A list for a message, one to a line, of a length that fits in one</summary>

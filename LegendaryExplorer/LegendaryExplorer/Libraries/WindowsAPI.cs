@@ -20,6 +20,11 @@ namespace LegendaryExplorer.Libraries
         [LibraryImport("user32.dll")]
         public static partial IntPtr GetForegroundWindow();
 
+        /// <returns>Whether it was disabled before</returns>
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool EnableWindow(IntPtr hWnd, [MarshalAs(UnmanagedType.Bool)] bool bEnable);
+
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool SetForegroundWindow(IntPtr hWnd);
