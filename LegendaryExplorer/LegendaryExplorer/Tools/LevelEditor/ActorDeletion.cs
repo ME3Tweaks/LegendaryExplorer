@@ -85,6 +85,7 @@ public sealed class ActorDeletionPlan
                              + (Entries.Count > 1 ? $" with the {Entries.Count - 1} objects it owns." : ".")
                              + (DetachedActors > 0 ? $" {(DetachedActors == 1 ? "The actor attached to it stays where it is" : $"The {DetachedActors} actors attached to it stay where they are")}, detached." : "")
                              + (prefabs.Count > 0 ? " It stays removed from the prefab it came from." : "")
+                             + (shadowGrouped.Count > 0 ? $" {(shadowGrouped.Count == 1 ? "The component shadowed with it casts its own shadow" : $"The {shadowGrouped.Count} components shadowed with it cast their own shadows")}." : "")
                              + (decals.Count > 0 ? $" It's also taken out of the {(decals.Count == 1 ? "decal that lands on it or lists it" : $"{decals.Count} decals that land on it or list it")}." : "")
                              // Light-maps and shadow-maps refer to a light by its GUIDs, not by reference
                              + (LightClasses.Contains(Actor.ClassName) || Collection is not null && IsLightComponent(Actor)
@@ -100,6 +101,8 @@ public sealed class ActorDeletionPlan
     public int DetachedActors { get; private set; }
     // The prefab instances it's a member of, whose entries for it the commit blanks. Found by CheckReferences too
     private readonly List<ExportEntry> prefabs = [];
+    // The components shadowed as part of one of its own, which the commit takes out of its shadow group. Found by CheckReferences too
+    private readonly List<ExportEntry> shadowGrouped = [];
     /// <summary>The decals that land on it and, with it and what's already pending deletion gone, on nothing else</summary>
     public IReadOnlyList<ExportEntry> DecalsLeftEmpty => decalsLeftEmpty;
     private readonly (ExportEntry Entry, int Index, byte[] Header, byte[] Data)[] snapshots;
@@ -357,7 +360,7 @@ public sealed class ActorDeletionPlan
     /// Scans the whole package, including undrawn objects. A reference is allowed only if the commit takes it away: its referrer is trashed with the
     /// actor, or the referrer as the commit leaves it (<paramref name="repairs"/>' written properties, the Level without the actor among its Actors,
     /// BioWorldInfo without it in ClientDestroyedActorContent, which TrashEntries cleans, a decal without it among its receivers and Filter, a prefab instance
-    /// with its entry blanked, or an actor detached from it) refers to none of the actor's entries. A commit's own check passes no written properties, so
+    /// with its entry blanked, an actor detached from it, or a component out of its shadow group) refers to none of the actor's entries. A commit's own check passes no written properties, so
     /// it sees what those edits actually wrote
     /// </summary>
     public static ActorDeletionPlan Prepare(ExportEntry actor, ExportEntry level, DeletionRepairs repairs = null)
@@ -414,9 +417,10 @@ public sealed class ActorDeletionPlan
         //(the scan reads exports, so only they refer to anything)
         foreach (var referrer in referrers.Cast<ExportEntry>())
         {
-            if (IsRepaired(referrer, targets, repairs, out var binary, out bool attachment))
+            if (IsRepaired(referrer, targets, repairs, out var binary, out bool attachment, out bool shadowGroup))
             {
                 cleansDestroyedContent |= referrer == worldInfo;
+                if (shadowGroup) shadowGrouped.Add(referrer);
                 if (attachment)
                 {
                     attachments.Add(referrer);
@@ -445,12 +449,14 @@ public sealed class ActorDeletionPlan
     /// <summary>Whether the commit takes away all of <paramref name="referrer"/>'s references to <paramref name="targets"/></summary>
     /// <param name="binary">Its binary as the commit leaves it, null if that's unchanged</param>
     /// <param name="attachment">Whether that's by taking them out of its attachment</param>
-    private bool IsRepaired(ExportEntry referrer, IReadOnlySet<int> targets, DeletionRepairs repairs, out ObjectBinary binary, out bool attachment)
+    /// <param name="shadowGroup">Whether that's by taking it, a component, out of one's shadow group</param>
+    private bool IsRepaired(ExportEntry referrer, IReadOnlySet<int> targets, DeletionRepairs repairs, out ObjectBinary binary, out bool attachment, out bool shadowGroup)
     {
         //no well-formed export is unreadable: one that is means the file is broken, and can't be edited safely
         try
         {
-            return TryRepair(referrer, targets, repairs, out var properties, out binary, out attachment) && !referrer.WouldReferenceAny(targets, properties, binary);
+            return TryRepair(referrer, targets, repairs, out var properties, out binary, out attachment, out shadowGroup)
+                   && !referrer.WouldReferenceAny(targets, properties, binary);
         }
         catch (Exception error) when (error is not OutOfMemoryException)
         {
@@ -462,11 +468,11 @@ public sealed class ActorDeletionPlan
     /// <paramref name="referrer"/> as the commit leaves it, if the commit changes it: its properties and binary, null for what's unchanged
     /// </summary>
     private bool TryRepair(ExportEntry referrer, IReadOnlySet<int> targets, DeletionRepairs repairs, out PropertyCollection properties, out ObjectBinary binary,
-        out bool attachment)
+        out bool attachment, out bool shadowGroup)
     {
         properties = null;
         binary = null;
-        attachment = false;
+        attachment = shadowGroup = false;
         if (referrer == Collection)
         {
             (properties, binary) = WithoutMembers(Collection, new HashSet<int> { Actor.UIndex });
@@ -495,11 +501,26 @@ public sealed class ActorDeletionPlan
         if (referrer.IsA("PrefabInstance") && referrer.GetBinaryData<PrefabInstance>().ArchetypeToInstanceMap.Any(p => targets.Contains(p.Value)))
             binary = WithoutPrefabMembers(referrer, targets);
         bool written = repairs.WrittenProperties.TryGetValue(referrer, out properties);
+        properties = written ? properties.DeepClone() : referrer.GetProperties();
+        if (referrer.IsA("PrimitiveComponent")) return (shadowGroup = WithoutShadowParent(properties, targets)) || written;
         //only an actor's Base and Attached are attachment: any other object that has them stays a blocker that names it
         if (!referrer.IsA("Actor")) return written;
-        properties = written ? properties.DeepClone() : referrer.GetProperties();
         attachment = WithoutAttachment(properties, targets);
         return written || attachment || binary is not null;
+    }
+
+    /// <summary>
+    /// Takes a primitive component's <paramref name="properties"/> out of the shadow group of one of <paramref name="entries"/>, if they're in it, so that it
+    /// casts its own shadow. UPrimitiveComponent::Attach puts a component of a bShadowParented actor in its Base's group, and Detach takes it out; in shipping
+    /// levels, a ShadowParent outside a component's own actor is always one of its Base's components, or its BaseSkelComponent, so the commit also detaches
+    /// its actor. It's written as blank, as attachment is, in case it would be inherited
+    /// </summary>
+    /// <returns>Whether that changed anything</returns>
+    private static bool WithoutShadowParent(PropertyCollection properties, IReadOnlySet<int> entries)
+    {
+        if (properties.GetProp<ObjectProperty>("ShadowParent") is not { } parent || !entries.Contains(parent.Value)) return false;
+        properties.AddOrReplaceProp(new ObjectProperty(0, "ShadowParent"));
+        return true;
     }
 
     /// <summary>
@@ -666,6 +687,12 @@ public sealed class ActorDeletionPlan
             var properties = actor.Key.GetProperties();
             WithoutAttachment(properties, actor.SelectMany(p => p.Entries).Select(e => e.UIndex).ToHashSet());
             actor.Key.WriteProperties(properties);
+        }
+        foreach (var component in plans.SelectMany(p => p.shadowGrouped.Select(c => (Component: c, Plan: p))).GroupBy(c => c.Component, c => c.Plan))
+        {
+            var properties = component.Key.GetProperties();
+            WithoutShadowParent(properties, component.SelectMany(p => p.Entries).Select(e => e.UIndex).ToHashSet());
+            component.Key.WriteProperties(properties);
         }
         foreach (var prefab in plans.SelectMany(p => p.prefabs.Select(i => (Instance: i, Plan: p))).GroupBy(i => i.Instance, i => i.Plan))
             prefab.Key.WriteBinary(WithoutPrefabMembers(prefab.Key, prefab.SelectMany(p => p.Entries).Select(e => e.UIndex).ToHashSet()));

@@ -477,7 +477,8 @@ public sealed class LightEnvironmentPrimitive
     public bool AcceptsDynamicLights = true;
     /// <summary>Precomputed-shadow participation and grouping, for directly drawn lights' shadows</summary>
     public bool HasStaticShadowing;
-    public bool HasShadowParent;
+    /// <summary>Whether it's shadowed as part of its ShadowParent's group, which isn't deleted or pending deletion</summary>
+    public Func<bool> HasShadowParent = () => false;
     public bool SelfShadowOnly;
     /// <summary>The primitive's component, to identify the owner's main mesh</summary>
     public ExportEntry Component;
@@ -733,7 +734,7 @@ internal static class LightEnvironmentDirectLighting
     //FLightPrimitiveInteraction (RVAs LE1 0x739390, LE2 0x3228d0, LE3 0x33ca00): non-static primitives take only the composite shadow
     //from composite-shadow lights; dominant and non-composite lights keep their own shadow, and static receivers the ordinary test.
     public static bool CastsSeparateShadow(SceneLight light, LightEnvironmentPrimitive primitive) =>
-        primitive.DrawShadowCaster is not null && !primitive.HasShadowParent && !primitive.SelfShadowOnly && light.CastsDynamicShadows
+        primitive.DrawShadowCaster is not null && !primitive.HasShadowParent() && !primitive.SelfShadowOnly && light.CastsDynamicShadows
         && (!primitive.HasStaticShadowing || !light.HasStaticShadowing)
         && (primitive.HasStaticShadowing || light.IsDominant || !light.CastsCompositeShadow);
 

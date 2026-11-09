@@ -323,6 +323,13 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     protected bool IsShown() => RenderContext.IsComponentVisible(this);
 
     /// <summary>
+    /// Whether what <paramref name="uIndex"/> is in the mesh's package has been deleted, or is pending deletion. Its ShadowParent, for one, which a deletion's
+    /// commit takes it out of the group of, so that it casts its own shadow (as the preview then shows it)
+    /// </summary>
+    protected bool IsDeleted(int uIndex) => Export.FileRef.GetEntry(uIndex) is ExportEntry entry
+        && (entry.IsTrash() || Actor?.OwningFile?.PendingDeletions.Any(d => d.Entries.Contains(entry)) == true);
+
+    /// <summary>
     /// Adds the mesh to the light environment that lights it, so that the light environment's bounds include it, and it casts the light environment's shadow
     /// </summary>
     /// <param name="castsShadow">CastShadow and bCastDynamicShadow, including inherited values</param>
@@ -351,7 +358,7 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
             AcceptsLights = Properties.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false },
             AcceptsDynamicLights = Properties.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false },
             HasStaticShadowing = staticLighting?.HasStaticShadowing ?? Properties.GetProp<BoolProperty>("bUsePrecomputedShadows") is { Value: true },
-            HasShadowParent = Properties.GetProp<ObjectProperty>("ShadowParent") is { Value: not 0 },
+            HasShadowParent = Properties.GetProp<ObjectProperty>("ShadowParent") is { Value: not 0 } shadowParent ? () => !IsDeleted(shadowParent.Value) : () => false,
             SelfShadowOnly = Properties.GetProp<BoolProperty>("bSelfShadowOnly") is { Value: true },
             Component = Export,
             HasBone = hasBone,
@@ -513,6 +520,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
                     UnsupportedLightEnvironmentReason = staticLighting.UnsupportedLightEnvironmentReason;
                     staticLighting.IsInScene = IsInScene;
                     staticLighting.IsShown = IsShown;
+                    staticLighting.IsDeleted = IsDeleted;
                     //only light environments trace against the level's geometry. (UpdateSelfLocalToWorld adds it to the geometry)
                     //USplineMeshComponent::LineCheck never hits, so spline meshes don't block those traces
                     if (MeshRenderContext.SupportsLightEnvironments(Export.Game) && deformation is null)
@@ -716,6 +724,7 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
                     if (!usesLightEnvironment)
                     {
                         staticLighting = MeshStaticLighting.CreateDynamic(context, Export, Properties);
+                        if (staticLighting is not null) staticLighting.IsDeleted = IsDeleted;
                     }
                 }
                 Mesh = new ModelPreview<VertexType>(context, skm, staticLighting, LOD, MaterialOverrides);

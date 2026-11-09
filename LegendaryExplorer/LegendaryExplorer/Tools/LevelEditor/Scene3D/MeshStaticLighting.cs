@@ -168,7 +168,15 @@ public sealed class MeshStaticLighting : IDisposable
     private bool CastsShadow;
     internal ShadowParticipation ShadowSettings { get; private set; }
     private bool HasNonWhiteVertexColors;
-    private bool HasShadowParent;
+    // Its ShadowParent's UIndex in its package, 0 if it has none
+    private int shadowParent;
+    /// <summary>
+    /// Whether what a UIndex of the mesh's package is is deleted, or pending deletion, which takes the mesh out of its shadow group if it's its ShadowParent
+    /// (as the commit does). Set by the mesh's component
+    /// </summary>
+    internal Func<int, bool> IsDeleted = _ => false;
+    // Whether it's shadowed as part of its ShadowParent's group, which the preview doesn't draw
+    private bool HasShadowParent => shadowParent != 0 && !IsDeleted(shadowParent);
     public int PreviewLod { get; private set; }
 
     /// <summary>
@@ -232,9 +240,11 @@ public sealed class MeshStaticLighting : IDisposable
 
     /// <summary>
     /// Whether the mesh can cast dynamic (projected) shadows from the lights that reach it: it casts dynamic shadows, and isn't lit by a light environment
-    /// (which casts its own). Which lights it casts them from is <see cref="CastsDynamicShadowFrom"/>; see <see cref="LightAttenuationRenderer"/>
+    /// (which casts its own), or cast with its shadow parent's group. Which lights it casts them from is <see cref="CastsDynamicShadowFrom"/>; see <see cref="LightAttenuationRenderer"/>
     /// </summary>
-    public bool IsDynamicShadowCaster { get; private set; }
+    public bool IsDynamicShadowCaster => castsOwnDynamicShadow && !HasShadowParent;
+    // Whether it would be a dynamic shadow caster if it weren't in a shadow group
+    private bool castsOwnDynamicShadow;
 
     /// <summary>
     /// FPrimitiveSceneInfo's bStaticShadowing (bUsePrecomputedShadows, which level static meshes have): the shadows of static-shadowing lights are precomputed for it
@@ -424,10 +434,8 @@ public sealed class MeshStaticLighting : IDisposable
         staticLighting.HasNonWhiteVertexColors = mesh.LODModels[lod].ColorVertexBuffer?.VertexData?.Any(c => c != OpaqueWhite) == true
             || (lod < component.LODData.Length && component.LODData[lod].OverrideVertexColors?.VertexData?.Any(c => c != OpaqueWhite) == true);
         staticLighting.CastsDynamicShadow = staticLighting.CastsShadow && condensedProps.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
-        staticLighting.IsDynamicShadowCaster = staticLighting.CastsDynamicShadow
-                                               //shadow groups (a shadow parent's children cast with it) aren't supported
-                                               && condensedProps.GetProp<ObjectProperty>("ShadowParent") is not { Value: not 0 }
-                                               && !staticLighting.UsesLightEnvironment;
+        //(shadow groups, a shadow parent's children casting with it, aren't supported: see IsDynamicShadowCaster)
+        staticLighting.castsOwnDynamicShadow = staticLighting.CastsDynamicShadow && !staticLighting.UsesLightEnvironment;
         if (lod < component.LODData.Length)
         {
             staticLighting.Load(component.LODData[lod], componentExport.FileRef, mesh, lod);
@@ -469,7 +477,7 @@ public sealed class MeshStaticLighting : IDisposable
         //bUsePrecomputedShadows defaults to false
         staticLighting.HasStaticShadowing = condensedProps.GetProp<BoolProperty>("bUsePrecomputedShadows") is { Value: true };
         staticLighting.CastsDynamicShadow = staticLighting.CastsShadow && condensedProps.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
-        staticLighting.IsDynamicShadowCaster = staticLighting.CastsDynamicShadow && condensedProps.GetProp<ObjectProperty>("ShadowParent") is not { Value: not 0 };
+        staticLighting.castsOwnDynamicShadow = staticLighting.CastsDynamicShadow;
         context.RegisterStaticLighting(staticLighting);
         return staticLighting;
     }
@@ -491,7 +499,7 @@ public sealed class MeshStaticLighting : IDisposable
         lighting.ReadPrimitiveSettings(componentExport, props, channels);
         lighting.HasStaticShadowing = true;
         lighting.CastsDynamicShadow = lighting.CastsShadow && props.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
-        lighting.IsDynamicShadowCaster = lighting.CastsDynamicShadow;
+        lighting.castsOwnDynamicShadow = lighting.CastsDynamicShadow;
         lighting.Load(element.LightMap, element.ShadowMaps ?? [], [], componentExport.FileRef, lightMapCoordinates.Length, lightMapCoordinates);
         context.RegisterStaticLighting(lighting);
         return lighting;
@@ -519,7 +527,7 @@ public sealed class MeshStaticLighting : IDisposable
         lighting.ReadPrimitiveSettings(componentExport, settings, LightingChannels.StaticPrimitiveDefault);
         lighting.HasStaticShadowing = true;
         lighting.CastsDynamicShadow = lighting.CastsShadow && settings.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
-        lighting.IsDynamicShadowCaster = lighting.CastsDynamicShadow;
+        lighting.castsOwnDynamicShadow = lighting.CastsDynamicShadow;
         int[] shadowMaps = settings.GetProp<ArrayProperty<ObjectProperty>>("ShadowMaps")?.Select(o => o.Value).ToArray() ?? [];
         lighting.Load(lightMap ?? new LightMap(), shadowMaps, [], componentExport.FileRef, 0, null, shaderComputesCoordinates: true);
         context.RegisterStaticLighting(lighting);
@@ -535,7 +543,7 @@ public sealed class MeshStaticLighting : IDisposable
         ShadowSettings = ShadowParticipation.Read(condensedProps);
         ModShadowCulling = ModulatedShadowCullingFlags.Read(condensedProps,
             skeletal: LegendaryExplorerCore.Unreal.ObjectInfo.GlobalUnrealObjectInfo.IsA(componentExport.ClassName, "SkeletalMeshComponent", componentExport.Game));
-        HasShadowParent = condensedProps.GetProp<ObjectProperty>("ShadowParent") is { Value: not 0 };
+        shadowParent = condensedProps.GetProp<ObjectProperty>("ShadowParent")?.Value ?? 0;
         CastsShadow = ShadowSettings.CastShadow;
         LightingChannels = LightingChannels.FromProperty(condensedProps.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false, defaultChannels);
         //Component archetypes set bAcceptsLights. Only an explicit false is trusted, in case the archetype chain couldn't be resolved
