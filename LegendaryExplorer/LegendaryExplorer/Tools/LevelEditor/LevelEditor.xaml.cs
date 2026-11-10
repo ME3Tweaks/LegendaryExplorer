@@ -133,7 +133,21 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
         }
         MeshExportsList.UpdateLayout();
-        MeshExportsList.ScrollIntoView(actor);
+        // A group that just expanded has its rows placed by estimated heights, so the first scroll can land
+        // up to a group's worth off. Its rows are measured by then, so scrolling again lands on the actor.
+        for (int attempt = 0; attempt < 3 && !IsOutlinerRowInView(actor); attempt++)
+        {
+            MeshExportsList.ScrollIntoView(actor);
+            MeshExportsList.UpdateLayout();
+        }
+    }
+
+    private bool IsOutlinerRowInView(ActorProxy actor)
+    {
+        if (MeshExportsList.ItemContainerGenerator.ContainerFromItem(actor) is not ListBoxItem { IsVisible: true } row) return false;
+        // The list's scroll viewer fills it: no border, padding or horizontal scroll bar.
+        Rect bounds = row.TransformToAncestor(MeshExportsList).TransformBounds(new Rect(row.RenderSize));
+        return bounds.Top >= -0.5 && bounds.Bottom <= MeshExportsList.ActualHeight + 0.5;
     }
 
     private bool _groupActorsByCategory = true;
