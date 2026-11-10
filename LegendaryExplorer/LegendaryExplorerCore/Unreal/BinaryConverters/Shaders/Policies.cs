@@ -69,10 +69,10 @@ public static class FPointLightPolicy
 {
     public struct PixelParametersType : IPixelParametersType
     {
-        public FShaderParameter WorldIncidentLighting;
+        public FShaderParameter LightColorAndFalloffExponent;
         public void Serialize(SerializingContainer sc)
         {
-            sc.SerializeUnmanaged(ref WorldIncidentLighting);
+            sc.SerializeUnmanaged(ref LightColorAndFalloffExponent);
         }
     }
     public struct ModShadowPixelParamsType : IModShadowPixelParamsType

@@ -82,6 +82,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 case "FMaterialUniformExpressionFmod":
                 case "FMaterialUniformExpressionMax":
                 case "FMaterialUniformExpressionMin":
+                case "FMaterialUniformExpressionBIOMod":
+                case "FMaterialUniformExpressionBIOSineSubtend":
                     node.Items.Add(ReadMaterialUniformExpression(bin, "A"));
                     node.Items.Add(ReadMaterialUniformExpression(bin, "B"));
                     break;
@@ -115,7 +117,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     break;
                 case "FMaterialUniformExpressionFlipbookParameter":
-                    node.Items.Add(MakeInt32Node(bin, "Index:"));
+                    node.Items.Add(MakeInt32Node(bin, "Index (1 = scale, 2 = offset)"));
                     node.Items.Add(MakeEntryNode(bin, "TextureIndex"));
                     break;
                 case "FMaterialUniformExpressionTextureParameter":
@@ -137,7 +139,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     node.Items.Add(MakeFloatNode(bin, "Default A"));
                     break;
                 case "FMaterialUniformExpressionFractionOfEffectEnabled":
-                    //Not sure what it does, but it doesn't seem to have any parameters
+                    //no parameters. In LE3 it always evaluates to 0
                     break;
                 default:
                     throw new ArgumentException(expressionType.Instanced);

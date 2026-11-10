@@ -5,6 +5,7 @@ using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using SharpDX.Direct3D11;
+using SharpDX.DXGI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,9 +31,15 @@ public class PreviewTextureCache : IDisposable
         public string InstanceFullPath { get; }
 
         /// <summary>
-        /// The Direct3D ShaderResourceView for binding to shaders.
+        /// The Direct3D ShaderResourceView for binding to shaders. Reads raw texel values.
         /// </summary>
         public ShaderResourceView TextureView { get; private set; }
+
+        /// <summary>
+        /// For textures holding sRGB-encoded color, a view that converts to linear when sampled, as the game's shaders expect.
+        /// Otherwise, the same as <see cref="TextureView"/>.
+        /// </summary>
+        public ShaderResourceView LinearTextureView { get; private set; }
 
         /// <summary>
         /// The Direct3D texture for ShaderResourceView creation.
@@ -47,6 +54,12 @@ public class PreviewTextureCache : IDisposable
         public readonly bool IsTextureCube;
 
         /// <summary>
+        /// How the game samples this texture outside [0,1]. (The texture's AddressX and AddressY)
+        /// </summary>
+        public readonly TextureAddressMode AddressU = TextureAddressMode.Wrap;
+        public readonly TextureAddressMode AddressV = TextureAddressMode.Wrap;
+
+        /// <summary>
         /// Creates a new cache entry for the given texture.
         /// </summary>
         public TextureEntry(MeshRenderContext renderContext, ExportEntry export)
@@ -54,9 +67,40 @@ public class PreviewTextureCache : IDisposable
             MemoryAnalyzer.AddTrackedMemoryItem($"PreviewTexture {export.ObjectName}", new WeakReference(this));
             InstanceFullPath = export.InstancedFullPath;
             IsTextureCube = export.ClassName == "TextureCube";
+            if (!IsTextureCube)
+            {
+                PropertyCollection props = export.GetProperties();
+                AddressU = GetAddressMode(props.GetProp<EnumProperty>("AddressX"));
+                AddressV = GetAddressMode(props.GetProp<EnumProperty>("AddressY"));
+            }
 
-            Texture = IsTextureCube ? renderContext.LoadUnrealTextureCube(export) : renderContext.LoadUnrealTexture(export);
-            TextureView = new ShaderResourceView(renderContext.Device, Texture);
+            MeshRenderContext.LoadedTexture loaded = IsTextureCube ? renderContext.LoadUnrealTextureCube(export) : renderContext.LoadUnrealTexture(export);
+            Texture = loaded.Texture;
+            TextureView = CreateView(renderContext, loaded.ViewFormat);
+            LinearTextureView = loaded.SRGBViewFormat is Format srgbFormat ? CreateView(renderContext, srgbFormat) : TextureView;
+        }
+
+        private static TextureAddressMode GetAddressMode(EnumProperty textureAddress) => textureAddress?.Value.Name switch
+        {
+            "TA_Clamp" => TextureAddressMode.Clamp,
+            "TA_Mirror" => TextureAddressMode.Mirror,
+            _ => TextureAddressMode.Wrap //TA_Wrap is the default
+        };
+
+        private ShaderResourceView CreateView(MeshRenderContext renderContext, Format format)
+        {
+            var desc = new ShaderResourceViewDescription { Format = format };
+            if (IsTextureCube)
+            {
+                desc.Dimension = SharpDX.Direct3D.ShaderResourceViewDimension.TextureCube;
+                desc.TextureCube.MipLevels = -1;
+            }
+            else
+            {
+                desc.Dimension = SharpDX.Direct3D.ShaderResourceViewDimension.Texture2D;
+                desc.Texture2D.MipLevels = -1;
+            }
+            return new ShaderResourceView(renderContext.Device, Texture, desc);
         }
 
         /// <summary>
@@ -64,6 +108,11 @@ public class PreviewTextureCache : IDisposable
         /// </summary>
         public void Dispose()
         {
+            if (LinearTextureView != TextureView)
+            {
+                LinearTextureView?.Dispose();
+            }
+            LinearTextureView = null;
             TextureView?.Dispose();
             TextureView = null;
             Texture?.Dispose();
@@ -280,6 +329,8 @@ public class PreviewTextureCache : IDisposable
             Tick(context.CurrentTime);
             return new LinearColor(HorizontalScale * CurrentColumn, VerticalScale * CurrentRow, 0, 0);
         }
+
+        public LinearColor GetTextureScale() => new(HorizontalScale, VerticalScale, 0, 0);
     }
 
     public MeshRenderContext RenderContext { get; }
@@ -333,10 +384,11 @@ public class PreviewTextureCache : IDisposable
     /// <summary>
     /// Queues a texture for eventual loading.
     /// </summary>
-    public TextureEntry LoadTexture(IEntry textureEntry, PackageCache packageCache = null)
+    /// <param name="cacheKey">Textures are cached by their path, unless this is given. For textures whose paths aren't unique between packages</param>
+    public TextureEntry LoadTexture(IEntry textureEntry, PackageCache packageCache = null, string cacheKey = null)
     {
         string ifp = textureEntry.InstancedFullPath;
-        if (AssetCache.TryGetValue(ifp, out TextureEntry entry))
+        if (AssetCache.TryGetValue(cacheKey ?? ifp, out TextureEntry entry))
         {
             entry.LastUsageTime = DateTime.Now;
             return entry;
@@ -349,15 +401,15 @@ public class PreviewTextureCache : IDisposable
             }
             if (textureEntry is ExportEntry textureExport)
             {
-                if (AssetCache.TryGetValue(textureExport.InstancedFullPath, out entry))
+                if (AssetCache.TryGetValue(cacheKey ?? textureExport.InstancedFullPath, out entry))
                 {
                     entry.LastUsageTime = DateTime.Now;
                     return entry;
                 }
                 try
                 {
-                    entry = textureExport.ClassName is "FlipBookTextureEntry" ? new FlipBookTextureEntry(RenderContext, textureExport) : new TextureEntry(RenderContext, textureExport);
-                    AssetCache.Add(entry.InstanceFullPath, entry);
+                    entry = textureExport.ClassName is "TextureFlipBook" ? new FlipBookTextureEntry(RenderContext, textureExport) : new TextureEntry(RenderContext, textureExport);
+                    AssetCache.Add(cacheKey ?? entry.InstanceFullPath, entry);
                     return entry;
                 }
                 catch

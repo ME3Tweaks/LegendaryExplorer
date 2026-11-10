@@ -38,5 +38,11 @@ namespace LegendaryExplorerCore.UnrealScript
         /// Invoked to fetch a VTable for a class from a donor object. Used to align VTables typically across games. [IFP to VTable list]
         /// </summary>
         public Func<string, List<string>> GetVTableFromDonor { get; set; }
+
+        /// <summary>
+        /// When doing bulk-compiles of non-base files, providing this can significantly improve performance.
+        /// It must be an initialized FileLib for the last file in the game's base file list, as defined in <see cref="FileLib.BaseFileNames"/>
+        /// </summary>
+        public FileLib BaseFilesFileLib { get; set; }
     }
 }

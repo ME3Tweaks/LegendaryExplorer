@@ -123,7 +123,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             }
 
                             //specifier validation
-                            if (string.Equals(node.ConfigName, "inherit", StringComparison.OrdinalIgnoreCase) && !((Class)node.Parent).Flags.Has(EClassFlags.Config))
+                            if (string.Equals(node.ConfigName, "inherit", StringComparison.OrdinalIgnoreCase) && ((Class)node.Parent).ConfigName.CaseInsensitiveEquals("None"))
                             {
                                 return Error($"Cannot inherit config filename from parent class ({node.Parent.Name}) which is not marked as config!", node.StartPos);
                             }
@@ -319,13 +319,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             node.Flags |= EClassFlags.HasComponents;
                         }
-                        if (decl.Flags.Has(EPropertyFlags.CrossLevel))
+                        if ((decl.Flags & EPropertyFlags.CrossLevel) != 0)
                         {
                             node.Flags |= EClassFlags.HasCrossLevelRefs;
                         }
-                        if (decl.Flags.Has(EPropertyFlags.Config) && !node.Flags.Has(EClassFlags.Config))
+                        if (decl.Flags.Has(EPropertyFlags.Config))
                         {
-                            Error("Cannot have a config var in a class with no specified config file.", decl.StartPos);
+                            node.Flags |= EClassFlags.Config;
+                            if (node.ConfigName.CaseInsensitiveEquals("None"))
+                                Error("Cannot have a config var in a class with no specified config file.", decl.StartPos);
                         }
                         if (decl.Flags.Has(EPropertyFlags.Localized))
                         {
@@ -356,8 +358,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     if (node.VarType is not PrimitiveType && node.Outer is not Function { IsLambda: true })
                     {
-                        node.VarType.Outer = node;
+                        if (node.VarType is not (Class or Struct or Enumeration)) node.VarType.Outer = node;
                         var typeStub = node.VarType;
+                        VariableType qualifiedStub = typeStub;
+                        while (qualifiedStub is StaticArrayType or DynamicArrayType)
+                            qualifiedStub = qualifiedStub is StaticArrayType sa ? sa.ElementType : ((DynamicArrayType)qualifiedStub).ElementType;
+                        // UE3 applies the component class qualifier before resolving a nested enum/struct.
+                        if (node.Outer is not Function && qualifiedStub.StartPos >= 0 && qualifiedStub.Name.Contains('.') &&
+                            Symbols.TryGetType(qualifiedStub.Name.Split('.')[0], out Class qualifier) && qualifier.IsComponent)
+                            node.Flags |= EPropertyFlags.Component | EPropertyFlags.ExportObject;
                         if (!Symbols.TryResolveType(ref node.VarType))
                         {
                             return Error($"No type named '{node.VarType.DisplayName()}' exists!", node.VarType.StartPos, node.VarType.EndPos);
@@ -426,44 +435,53 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else if (Pass is ValidationPass.BodyPass)
             {
-                //if (node.Outer is not Function) Not sure why I added this in the first place? But it's definitely wrong
+                VariableType propertyType = (node.VarType as StaticArrayType)?.ElementType ?? node.VarType;
+                bool allowComponents = node.Outer is not Function;
+                if (allowComponents && HasComponentReferences(propertyType, new HashSet<Struct>()))
                 {
-                    switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
+                    node.Flags |= EPropertyFlags.Component;
+                    if (propertyType is Class || propertyType is DynamicArrayType { ElementType: Class })
                     {
-                        case DynamicArrayType { ElementType: VariableType elType } dynArrType:
-                            if (elType is Class { NeedsComponentFlag: true })
-                            {
-                                dynArrType.ElementPropertyFlags |= EPropertyFlags.Component;
-                                node.Flags |= EPropertyFlags.Component;
-                            }
-                            else if (elType is DelegateType ||
-                                     !node.Flags.Has(EPropertyFlags.Native) && (elType.PropertyType is EPropertyType.String ||
-                                                                                elType is Struct elStruct && StructNeedsCtorLink(elStruct, new Stack<Struct> { elStruct })))
-                            {
-                                dynArrType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
-                            }
-                            break;
-                        case Class { NeedsComponentFlag: true }:
-                            node.Flags |= EPropertyFlags.Component;
-                            break;
-                        case Struct strct:
-                            if (!node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }))
-                            {
-                                node.Flags |= EPropertyFlags.NeedCtorLink;
-                            }
-                            break;
+                        node.Flags |= EPropertyFlags.ExportObject;
                     }
                 }
+                if (propertyType is DynamicArrayType arrayType)
+                {
+                    // The inner property is linked independently; native applies to the array itself.
+                    arrayType.ElementPropertyFlags |= node.Flags & (EPropertyFlags.ExportObject | EPropertyFlags.EditInline | EPropertyFlags.Component | EPropertyFlags.AlwaysInit);
+                    if (NeedsCtorLink(arrayType.ElementType, arrayType.ElementPropertyFlags))
+                    {
+                        arrayType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
+                    }
+                }
+                else if (NeedsCtorLink(propertyType, node.Flags))
+                {
+                    node.Flags |= EPropertyFlags.NeedCtorLink;
+                }
 
+                if (node.Outer is Struct { Flags: var structFlags } && (structFlags & (ScriptStructFlags.Transient | ScriptStructFlags.RequiresInit)) != 0)
+                {
+                    node.Flags |= EPropertyFlags.AlwaysInit;
+                }
+
+                bool NeedsCtorLink(VariableType type, EPropertyFlags flags) => type switch
+                {
+                    DelegateType => true,
+                    Class cls => !cls.IsComponent && flags.Has(EPropertyFlags.EditInline | EPropertyFlags.ExportObject),
+                    Struct s => !flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(s, new Stack<Struct> { s }),
+                    _ => !flags.Has(EPropertyFlags.Native) && type.PropertyType == EPropertyType.String
+                };
                 bool StructNeedsCtorLink(Struct s1, Stack<Struct> stack)
                 {
                     foreach (VariableDeclaration strctVariableDeclaration in s1.VariableDeclarations)
                     {
-                        if (strctVariableDeclaration.Flags.Has(EPropertyFlags.NeedCtorLink))
+                        VariableType memberType = (strctVariableDeclaration.VarType as StaticArrayType)?.ElementType ?? strctVariableDeclaration.VarType;
+                        if (strctVariableDeclaration.Flags.Has(EPropertyFlags.NeedCtorLink) ||
+                            memberType is Class && NeedsCtorLink(memberType, strctVariableDeclaration.Flags))
                         {
                             return true;
                         }
-                        if (strctVariableDeclaration.VarType is Struct s2)
+                        if (memberType is Struct s2)
                         {
                             if (stack.Contains(s2))
                             {
@@ -598,42 +616,35 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     return Error($"Extending from '{parentStruct.Name}' causes circular extension!", parentStruct.StartPos, parentStruct.EndPos);
                 }
 
+                foreach (Struct nestedStruct in node.TypeDeclarations.OfType<Struct>())
+                    Success &= nestedStruct.AcceptVisitor(this);
                 //second pass to resolve EPropertyFlags.NeedCtorLink for Struct Properties
                 foreach (VariableDeclaration decl in node.VariableDeclarations)
                 {
                     Success &= decl.AcceptVisitor(this);
                 }
-                if (HasComponents(node))
+                if (HasComponentReferences(node, new HashSet<Struct>()))
                 {
                     node.Flags |= ScriptStructFlags.HasComponents;
                 }
 
-                static bool HasComponents(Struct strct)
-                {
-                    bool hasComponents = false;
-                    foreach (VariableDeclaration decl in strct.VariableDeclarations)
-                    {
-                        if (decl.Flags.Has(EPropertyFlags.Component))
-                        {
-                            hasComponents = true;
-                        }
-                        var varType = decl.VarType is StaticArrayType staticArrayType ? staticArrayType.ElementType : decl.VarType;
-                        if (varType is DynamicArrayType dynArrType)
-                        {
-                            varType = dynArrType.ElementType;
-                        }
-                        if (varType is Struct innerStruct && (innerStruct.Flags.Has(ScriptStructFlags.HasComponents) || HasComponents(innerStruct)))
-                        {
-                            decl.Flags |= EPropertyFlags.Component;
-                            hasComponents = true;
-                        }
-                    }
-                    return hasComponents;
-                }
             }
             return Success;
         }
 
+        private static bool HasComponentReferences(VariableType type, HashSet<Struct> visited)
+        {
+            return type switch
+            {
+                StaticArrayType array => HasComponentReferences(array.ElementType, visited),
+                DynamicArrayType array => HasComponentReferences(array.ElementType, visited),
+                Class cls => cls.IsComponent,
+                Struct s => visited.Add(s) && (s.Flags.Has(ScriptStructFlags.HasComponents) ||
+                    s.Parent is Struct parent && HasComponentReferences(parent, visited) ||
+                    s.VariableDeclarations.Any(v => v.Flags.Has(EPropertyFlags.Component) || HasComponentReferences(v.VarType, visited))),
+                _ => false
+            };
+        }
         public bool VisitNode(Enumeration node)
         {
             if (Pass == ValidationPass.TypesAndFunctionNamesAndStateNames)

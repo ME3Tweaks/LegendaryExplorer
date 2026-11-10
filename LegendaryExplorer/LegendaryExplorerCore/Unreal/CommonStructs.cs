@@ -96,6 +96,21 @@ namespace LegendaryExplorerCore.Unreal
             ], name, true);
         }
 
+        /// <summary>
+        /// Reads a Matrix struct. Its XPlane, YPlane, ZPlane and WPlane are the rows of the result
+        /// </summary>
+        public static Matrix4x4 GetMatrix(StructProperty matrixProp)
+        {
+            static Vector4 GetRow(StructProperty matrixProp, string plane) => matrixProp.GetProp<StructProperty>(plane) is { } planeProp
+                ? new Vector4(planeProp.GetProp<FloatProperty>("X"), planeProp.GetProp<FloatProperty>("Y"), planeProp.GetProp<FloatProperty>("Z"), planeProp.GetProp<FloatProperty>("W"))
+                : Vector4.Zero;
+            Vector4 x = GetRow(matrixProp, "XPlane");
+            Vector4 y = GetRow(matrixProp, "YPlane");
+            Vector4 z = GetRow(matrixProp, "ZPlane");
+            Vector4 w = GetRow(matrixProp, "WPlane");
+            return new Matrix4x4(x.X, x.Y, x.Z, x.W, y.X, y.Y, y.Z, y.W, z.X, z.Y, z.Z, z.W, w.X, w.Y, w.Z, w.W);
+        }
+
         public static StructProperty GuidProp(Guid guid, NameReference? name = null)
         {
             byte[] guidBytes = guid.ToByteArray();

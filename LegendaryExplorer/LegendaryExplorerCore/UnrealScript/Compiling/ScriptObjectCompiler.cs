@@ -10,12 +10,15 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Language.Util;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling
 {
     public static class ScriptObjectCompiler
     {
+        private static readonly EPropertyFlags KnownPropertyFlags = Enum.GetValues<EPropertyFlags>().Aggregate((flags, next) => flags | next);
+
         public static void Compile(ASTNode node, IMEPackage pcc, IEntry parent, UnrealScriptOptionsPackage usop, UField existingObject = null)
         {
             switch (node)
@@ -115,7 +118,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             classObj.LabelTableOffset = ushort.MaxValue;
             classObj.ClassConfigName = NameReference.FromInstancedString(classAST.ConfigName);
 
-            classObj.ClassFlags = classAST.Flags;
+            // Cooking can strip native declarations while leaving their class traits in the package.
+            EClassFlags nativeTraits = classAST.IsNative ? classObj.ClassFlags &
+                (EClassFlags.HasComponents | EClassFlags.Localized | EClassFlags.Config) : 0;
+            classObj.ClassFlags = classAST.Flags | nativeTraits;
             if (classAST.Parent is Class parentClass)
             {
                 //loop in case we are compiling multiple classes at once and our direct parent has not inherited flags yet
@@ -142,7 +148,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 foreach (Function func in curClass.Functions)
                 {
-                    if (func.IsDefined && Enum.TryParse(func.Name, true, out EProbeFunctions enumVal))
+                    if ((func.IsDefined || func.IsNative) && Enum.TryParse(func.Name, true, out EProbeFunctions enumVal))
                     {
                         classObj.ProbeMask |= enumVal;
                     }
@@ -223,6 +229,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         uProperty = null;
                     }
                 }
+                if (uProperty is UMapProperty)
+                {
+                    compiledProperties.Add(property.Name, uProperty);
+                    continue;
+                }
+                if (property.IsSynthetic) continue;
                 childrenHaveBeenAdded |= uProperty is null;
                 completions.Add(CreatePropertyStub(property, classExport, ref uProperty, usop));
                 compiledProperties.Add(property.Name, uProperty);
@@ -638,6 +650,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
             }
             UFunction funcObj = refFuncObj;
+            int previousSuper = funcObj.SuperClass;
+            bool wasDeclaration = (funcObj.FunctionFlags & (EFunctionFlags.Defined | EFunctionFlags.Native)) == 0;
 
             funcObj.FriendlyName = friendlyName;
             funcObj.FunctionFlags = funcAST.Flags;
@@ -685,7 +699,19 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             void FinishFunctionCompilation(UnrealScriptOptionsPackage usop2)
             {
                 IEntry super = null;
-                if (funcAST.SuperFunction is not null)
+                // Cooking loses the distinction between an ignores entry and an explicit
+                // empty state declaration. Preserve a class-scope binding when it is still
+                // in the valid override chain. Defined and new functions use normal lookup.
+                if (wasDeclaration && !funcAST.IsDefined && !funcAST.IsNative && funcAST.Outer is State && previousSuper != 0)
+                {
+                    for (Function candidate = NodeUtils.GetContainingClass(funcAST).LookupFunction(funcAST.Name);
+                         candidate is not null; candidate = candidate.SuperFunction)
+                    {
+                        IEntry entry = CompilerUtils.ResolveFunction(candidate, parent.FileRef, usop2);
+                        if (entry.UIndex == previousSuper) { super = entry; break; }
+                    }
+                }
+                if (super is null && funcAST.SuperFunction is not null)
                 {
                     super = CompilerUtils.ResolveFunction(funcAST.SuperFunction, parent.FileRef, usop2);
                 }
@@ -737,7 +763,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 structExport = refStructObj.Export;
                 structExport.ObjectName = structName;
             }
-            refStructObj.StructFlags = structAST.Flags;
+            // Native struct layouts can contain members absent from cooked script reflection.
+            const ScriptStructFlags knownStructFlags = ScriptStructFlags.Native | ScriptStructFlags.Export |
+                ScriptStructFlags.HasComponents | ScriptStructFlags.Transient | ScriptStructFlags.Atomic |
+                ScriptStructFlags.Immutable | ScriptStructFlags.StrictConfig | ScriptStructFlags.ImmutableWhenCooked |
+                ScriptStructFlags.AtomicWhenCooked | ScriptStructFlags.RequiresInit;
+            refStructObj.StructFlags = structAST.Flags | (refStructObj.StructFlags & ~knownStructFlags) |
+                (structAST.IsNative ? refStructObj.StructFlags & ScriptStructFlags.HasComponents : 0);
             UScriptStruct structObj = refStructObj;
 
             (CaseInsensitiveDictionary<UScriptStruct> existingSubStructs, CaseInsensitiveDictionary<UProperty> existingProps) = GetMembers<UScriptStruct, UProperty>(structObj);
@@ -759,6 +791,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             foreach (VariableDeclaration member in structAST.VariableDeclarations)
             {
                 existingProps.Remove(member.Name, out UProperty current);
+                if (current is UMapProperty)
+                {
+                    properties.Add(current);
+                    continue;
+                }
                 if (current is not null && !current.Export.ClassName.CaseInsensitiveEquals(ByteCodeCompilerVisitor.PropertyTypeName(member.VarType)))
                 {
                     EntryPruner.TrashEntryAndDescendants(current.Export);
@@ -814,6 +851,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     var baseDefaults = structAST.MakeBaseProps(pcc, usop2, false);
                     structObj.Defaults = fullDefaults.Diff(baseDefaults);
+                    // Newly declared struct members serialize their full value. Inherited
+                    // members serialize only their overrides, including nested struct deltas.
+                    foreach (StructProperty delta in structObj.Defaults.OfType<StructProperty>())
+                    {
+                        if (!delta.IsImmutable && !structAST.VariableDeclarations.Any(v => v.Name.CaseInsensitiveEquals(delta.Name.Name)) &&
+                            baseDefaults.GetProp<StructProperty>(delta.Name, delta.StaticArrayIndex) is { } baseline)
+                            delta.Properties = delta.Properties.Diff(baseline.Properties, structDiff: true);
+                    }
                 }
             }
         }
@@ -870,7 +915,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             UProperty propObj = refPropObj;
 
             propObj.ArraySize = varDeclAST.ArrayLength;
-            propObj.PropertyFlags = varDeclAST.Flags;
+            EPropertyFlags retainedFlags = propObj.PropertyFlags & ~KnownPropertyFlags;
+            // Native structs may have a constructor chain for members stripped by cooking.
+            if (varType is Struct { IsNative: true } nativeStruct && propObj is UStructProperty previousStruct &&
+                previousStruct.Struct == CompilerUtils.ResolveStruct(nativeStruct, pcc, usop).UIndex)
+                retainedFlags |= propObj.PropertyFlags & EPropertyFlags.NeedCtorLink;
+            propObj.PropertyFlags = varDeclAST.Flags | retainedFlags;
+            if (varType is DynamicArrayType { ElementType: Class { IsComponent: true } })
+                propObj.PropertyFlags |= EPropertyFlags.EditInline;
+            if (propObj is UComponentProperty) propObj.PropertyFlags |= EPropertyFlags.EditInline;
             propObj.Category = NameReference.FromInstancedString(varDeclAST.Category);
 
             return FinishPropertyCompilation;
@@ -923,7 +976,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         CompileProperty(new VariableDeclaration(elementType, dynArrType.ElementPropertyFlags, propName), uArrayProperty.Export, ref child, usop2);
                         //propogate certain flags to inner prop
                         child.PropertyFlags |= uArrayProperty.PropertyFlags & (EPropertyFlags.ExportObject | EPropertyFlags.EditInline | EPropertyFlags.EditInlineUse | EPropertyFlags.Localized
-                                                                               | EPropertyFlags.Component | EPropertyFlags.Config | EPropertyFlags.EditConst | EPropertyFlags.AlwaysInit
+                                                                               | EPropertyFlags.Component | EPropertyFlags.Config | EPropertyFlags.EditConst
                                                                                | EPropertyFlags.Deprecated | EPropertyFlags.SerializeText | EPropertyFlags.CrossLevel);
                         child.Export.WriteBinary(child);
                         uArrayProperty.ElementType = child.Export.UIndex;
@@ -969,7 +1022,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 enumExport.ObjectName = enumName;
             }
             var values = enumAST.Values.Select(ev => NameReference.FromInstancedString(ev.Name)).ToList();
-            values.Add(enumAST.GenerateMaxName());
+            //preserve existing max names, as they do not always follow the general pattern.
+            values.Add(enumObj.Names is { Length: > 0 } && enumObj.Names.Length == values.Count + 1 &&
+                       enumObj.Names.Take(values.Count).SequenceEqual(values) ? enumObj.Names[^1] : enumAST.GenerateMaxName());
             enumObj.Names = values.ToArray();
         }
 

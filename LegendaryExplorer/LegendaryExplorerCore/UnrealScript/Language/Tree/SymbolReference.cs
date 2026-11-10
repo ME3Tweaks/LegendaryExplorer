@@ -9,6 +9,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsGlobal;
         public bool IsSuper;
+        /// <summary>Emit a function reference as EX_InstanceDelegate rather than a delegate property value.</summary>
+        public bool IsInstanceDelegate;
         public VariableType SuperSpecifier;
 
         public SymbolReference(ASTNode symbol, string name = "", int start = -1, int end = -1) 

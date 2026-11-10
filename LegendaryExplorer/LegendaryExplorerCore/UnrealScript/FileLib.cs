@@ -232,29 +232,36 @@ namespace LegendaryExplorerCore.UnrealScript
                 {
                     baseFileNames = baseFileNames.Concat(Pcc.LECLTagData.ImportHintFiles).ToArray();
                 }
-
-                foreach (string fileName in baseFileNames)
+                if (!isBaseFile && baseFileNames.Length > 0 && usop.BaseFilesFileLib is { IsInitialized: true } baseFilesLib && baseFilesLib.Pcc.Game == Pcc.Game
+                    && baseFilesLib.Pcc.FilePath.EndsWith(baseFileNames[^1], StringComparison.OrdinalIgnoreCase))
                 {
-                    if (usop.CustomFileResolver != null && usop.CustomFileResolver.Invoke(fileName, usop.Cache) != null)
+                    _baseSymbols = baseFilesLib.GetSymbolTable();
+                }
+                else
+                {
+                    foreach (string fileName in baseFileNames)
                     {
-                        // Custom resolution, given a cache, will be relatively fast on a second invocation
-                        if (!ResolveAllClassesInPackage(usop.CustomFileResolver.Invoke(fileName, usop.Cache), ref _baseSymbols, InitializationLog, usop))
+                        if (usop.CustomFileResolver != null && usop.CustomFileResolver.Invoke(fileName, usop.Cache) != null)
                         {
+                            // Custom resolution, given a cache, will be relatively fast on a second invocation
+                            if (!ResolveAllClassesInPackage(usop.CustomFileResolver.Invoke(fileName, usop.Cache), ref _baseSymbols, InitializationLog, usop))
+                            {
+                                return false;
+                            }
+                        }
+                        else if (gameFiles.TryGetValue(fileName, out var path) && File.Exists(path))
+                        {
+                            IMEPackage pcc = usop.Cache.GetCachedPackage(path, true);
+                            if (!ResolveAllClassesInPackage(pcc, ref _baseSymbols, InitializationLog, usop))
+                            {
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            InitializationLog.LogError($"Could not find required base file: {fileName}");
                             return false;
                         }
-                    }
-                    else if (gameFiles.TryGetValue(fileName, out var path) && File.Exists(path))
-                    {
-                        IMEPackage pcc = usop.Cache.GetCachedPackage(path, true);
-                        if (!ResolveAllClassesInPackage(pcc, ref _baseSymbols, InitializationLog, usop))
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        InitializationLog.LogError($"Could not find required base file: {fileName}");
-                        return false;
                     }
                 }
                 if (!isBaseFile)
@@ -343,6 +350,8 @@ namespace LegendaryExplorerCore.UnrealScript
         {
             lock (_initializationLock)
             {
+                // Do not expose a partially rebuilt symbol table to the decompiler.
+                _isInitialized = false;
                 objBinCache.Clear();
                 _symbols = _baseSymbols?.Clone();
                 if (ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, usop))

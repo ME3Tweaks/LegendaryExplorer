@@ -79,7 +79,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     var paramTokenStream = unparsedBody.Tokens;
 
                     var paramParser = new CodeBodyParser(paramTokenStream, game, unparsedBody, symbols, func, log, usop);
+                    paramParser.ExpressionExpectedTypes.Push((param.VarType, true));
                     var parsed = paramParser.ParseExpression();
+                    paramParser.ExpressionExpectedTypes.Pop();
                     if (parsed is null)
                     {
                         throw paramParser.ParseError("Could not parse default parameter value!", unparsedBody);
@@ -99,6 +101,83 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             symbols.PopScope();
         }
 
+        private static bool HasStructDefaults(Struct s, HashSet<Struct> visited)
+        {
+            return visited.Add(s) && (s.DefaultProperties.Statements.Any() ||
+                s.Parent is Struct parent && HasStructDefaults(parent, visited) ||
+                s.VariableDeclarations.Any(v => ((v.VarType as StaticArrayType)?.ElementType ?? v.VarType) is Struct inner && HasStructDefaults(inner, visited)));
+        }
+
+        // LE1's PropagateStructDefaults additionally calls UStructProperty::HasValue.
+        // Evaluate effective defaults so an explicit zero can replace an inherited value.
+        private static bool HasNonZeroStructDefaults(Struct type, HashSet<Struct> visiting, IEnumerable<AssignStatement> overrides = null)
+        {
+            if (!visiting.Add(type)) return false;
+            try
+            {
+                var values = new Dictionary<(string Name, int Index), Expression>();
+                var hierarchy = new Stack<Struct>();
+                for (Struct current = type; current is not null; current = current.Parent as Struct)
+                    hierarchy.Push(current);
+                foreach (Struct current in hierarchy)
+                    Apply(current.DefaultProperties.Statements.Cast<AssignStatement>());
+                if (overrides is not null) Apply(overrides);
+                foreach (Struct current in hierarchy)
+                {
+                    foreach (VariableDeclaration member in current.VariableDeclarations)
+                    {
+                        VariableType memberType = (member.VarType as StaticArrayType)?.ElementType ?? member.VarType;
+                        for (int index = 0; index < member.ArrayLength; index++)
+                        {
+                            if (values.TryGetValue((member.Name.ToLowerInvariant(), index), out Expression value)
+                                ? HasValue(value, memberType)
+                                : memberType is Struct nested && HasNonZeroStructDefaults(nested, visiting))
+                                return true;
+                        }
+                    }
+                }
+                return false;
+
+                void Apply(IEnumerable<AssignStatement> assignments)
+                {
+                    foreach (AssignStatement assignment in assignments)
+                    {
+                        Expression target = assignment.Target;
+                        int index = 0;
+                        if (target is ArraySymbolRef array)
+                        {
+                            target = array.Array;
+                            index = (int)((IntegerLiteral)array.Index).Value;
+                        }
+                        // Defaults decompiled while loading symbols retain names but have no linked nodes.
+                        var reference = (SymbolReference)target;
+                        string memberName = (reference.Node as VariableDeclaration)?.Name ?? reference.Name;
+                        values[(memberName.ToLowerInvariant(), index)] = assignment.Value;
+                    }
+                }
+                bool HasValue(Expression value, VariableType memberType) => value switch
+                {
+                    NoneLiteral => false,
+                    IntegerLiteral number => number.Value != 0,
+                    FloatLiteral number => number.Value != 0,
+                    StringRefLiteral number => number.Value != 0,
+                    BooleanLiteral boolean => boolean.Value,
+                    NameLiteral name => !name.Value.CaseInsensitiveEquals("None"),
+                    StringLiteral text => text.Value.Length != 0,
+                    SymbolReference { Node: EnumValue enumeration } when memberType is Enumeration enumType => !enumeration.Name.CaseInsensitiveEquals(enumType.Values[0].Name),
+                    DynamicArrayLiteral array => array.Values.Count != 0,
+                    StructLiteral structure when memberType is Struct nested => HasNonZeroStructDefaults(nested, visiting, structure.Statements),
+                    VectorLiteral vector => vector.X != 0 || vector.Y != 0 || vector.Z != 0,
+                    RotatorLiteral rotation => rotation.Pitch != 0 || rotation.Yaw != 0 || rotation.Roll != 0,
+                    _ => true // Non-null object and delegate references.
+                };
+            }
+            finally
+            {
+                visiting.Remove(type);
+            }
+        }
+
         private static void SharedFunctionVerification(Function func, MEGame game, SymbolTable symbols, MessageLog log, UnrealScriptOptionsPackage usop)
         {
             bool hasStructDefaults = false;
@@ -111,7 +190,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     validator.VisitVarDecl(local, false);
                     validator2.VisitVarDecl(local, false);
-                    hasStructDefaults |= ((local.VarType as StaticArrayType)?.ElementType ?? local.VarType) is Struct s && (game.IsGame3() ? s.DefaultProperties.Statements.Any() : isNotInState);
+                    hasStructDefaults |= isNotInState && ((local.VarType as StaticArrayType)?.ElementType ?? local.VarType) is Struct s && (game switch
+                    {
+                        MEGame.LE1 => HasNonZeroStructDefaults(s, new HashSet<Struct>()),
+                        MEGame.ME3 or MEGame.LE3 => HasStructDefaults(s, new HashSet<Struct>()),
+                        _ => true
+                    });
                 }
             }
             foreach (var param in func.Parameters)
@@ -127,15 +211,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 func.Flags &= ~EFunctionFlags.HasDefaults;
             }
             CodeBody body = func.Body;
-            if (func.ReturnType is null)
-            {
-                //remove redundant return;
-                if (body.Statements.Count > 0 && body.Statements[^1] is ReturnStatement { Value: null })
-                {
-                    body.Statements.RemoveAt(body.Statements.Count - 1);
-                }
-            }
-            else
+            if (func.ReturnType is not null)
             {
                 if (body.EndPos != body.StartPos && !DoesReturn(body))
                 {
@@ -1484,8 +1560,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                     else
                     {
-                        AddConversion(bestMatch.LeftOperand.VarType, ref lhs);
-                        AddConversion(bestMatch.RightOperand.VarType, ref rhs);
+                        AddConversion(bestMatch.LeftOperand.VarType, ref lhs, false);
+                        AddConversion(bestMatch.RightOperand.VarType, ref rhs, false);
                     }
                     if (bestMatch.Implementer is not null)
                     {
@@ -1656,8 +1732,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
         }
 
-        private static void AddConversion(VariableType destType, ref Expression expr)
+        private static void AddConversion(VariableType destType, ref Expression expr, bool promoteDelegateFunction = true)
         {
+            if (promoteDelegateFunction) PromoteDelegateFunctionValue(destType, ref expr);
             if (expr is NoneLiteral noneLit)
             {
                 if (destType.PropertyType == EPropertyType.Delegate)
@@ -1705,13 +1782,49 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                         break;
                     case ConditionalExpression condExpr:
-                        AddConversion(destType, ref condExpr.TrueExpression);
-                        AddConversion(destType, ref condExpr.FalseExpression);
+                        AddConversion(destType, ref condExpr.TrueExpression, false);
+                        AddConversion(destType, ref condExpr.FalseExpression, false);
                         return;
                 }
                 if ((byte)cast != 0 && cast != ECast.Max)
                 {
                     expr = new PrimitiveCast(cast, destType, expr, expr.StartPos, expr.EndPos);
+                }
+            }
+        }
+
+        // Delegate value boundaries allow a named function fallback. Simple references in
+        // comparisons, ternary branches, and out arguments must keep stored delegate bindings.
+        private static void PromoteDelegateFunctionValue(VariableType destType, ref Expression expr)
+        {
+            if (destType is not DelegateType) return;
+            if (expr is CompositeSymbolRef composite)
+            {
+                Expression inner = composite.InnerSymbol;
+                PromoteDelegateFunctionValue(destType, ref inner);
+                if (!ReferenceEquals(inner, composite.InnerSymbol))
+                {
+                    expr = new CompositeSymbolRef(composite.OuterSymbol, inner, composite.IsClassContext, composite.StartPos, composite.EndPos)
+                    {
+                        IsStructMemberExpression = composite.IsStructMemberExpression,
+                        IsGlobal = composite.IsGlobal,
+                        IsSuper = composite.IsSuper,
+                        SuperSpecifier = composite.SuperSpecifier
+                    };
+                }
+                return;
+            }
+            if (expr is SymbolReference sr && sr.GetType() == typeof(SymbolReference))
+            {
+                if (sr.Node is VariableDeclaration { VarType: DelegateType delegateType } backing
+                    && backing.Name.Equals($"__{delegateType.DefaultFunction.Name}__Delegate", StringComparison.OrdinalIgnoreCase)
+                    && sr.Name.Equals(delegateType.DefaultFunction.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    expr = new SymbolReference(delegateType.DefaultFunction, sr.Name, sr.StartPos, sr.EndPos);
+                }
+                else if (sr.Node is Function)
+                {
+                    sr.IsInstanceDelegate = false;
                 }
             }
         }
@@ -1845,7 +1958,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         throw ParseError("Expected a valid member name to follow the dot!", CurrentPosition);
                     }
-                    //TODO: check if rhs is a type that makes sense eg. no int literals
 
                     if (isConst)
                     {
@@ -2048,6 +2160,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     TypeError($"Expected 'comparefunction' argument to '{SORT}' to be a delegate that takes two parameters of type '{elementType.DisplayName()}' and returns an int!", comparefunctionArg);
                 }
 
+                PromoteDelegateFunctionValue(sortDelegateType, ref comparefunctionArg);
                 ExpectRightParen();
                 return new DynArraySort(dynArrayRef, comparefunctionArg, dynArrayRef.StartPos, PrevToken.EndPos);
             }
@@ -2258,7 +2371,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             TypeError($"Expected an argument of type '{p.VarType.DisplayName()}'!", currentArg);
                         }
 
-                        AddConversion(p.VarType, ref currentArg);
+                        AddConversion(p.VarType, ref currentArg, !p.IsOut);
 
                         if (p.IsOut && !p.IsConst)
                         {
@@ -3126,7 +3239,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     TypeError("COMPILER ERROR! Cannot find backing property of delegate.", token);
                 }
             }
-            return NewSymbolReference(symbol, token, isDefaultRef);
+            var symbolReference = NewSymbolReference(symbol, token, isDefaultRef);
+            if (symbol is Function && symbolReference is SymbolReference functionReference)
+            {
+                functionReference.IsInstanceDelegate = true;
+            }
+            return symbolReference;
         }
 
         private void CheckAccesibility(Function func, ScriptToken token)

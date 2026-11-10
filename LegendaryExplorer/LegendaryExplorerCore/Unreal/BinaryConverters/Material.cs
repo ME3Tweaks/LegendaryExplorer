@@ -735,13 +735,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         Dictionary<string, LinearColor> vectorParameterValues,
         float currentTime,
         float currentRealTime,
-        Func<UniformExpressionRenderContext, int, LinearColor> getFlipBookTextureOffset)
+        Func<UniformExpressionRenderContext, int, LinearColor> getFlipBookTextureOffset,
+        Func<UniformExpressionRenderContext, int, LinearColor> getFlipBookTextureScale = null)
     {
         public readonly Dictionary<string, float> ScalarParameterValues = scalarParameterValues;
         public readonly Dictionary<string, LinearColor> VectorParameterValues = vectorParameterValues;
         public readonly float CurrentTime = currentTime;
         public readonly float CurrentRealTime = currentRealTime;
         public readonly Func<UniformExpressionRenderContext, int, LinearColor> GetFlipBookTextureOffset = getFlipBookTextureOffset;
+        public readonly Func<UniformExpressionRenderContext, int, LinearColor> GetFlipBookTextureScale = getFlipBookTextureScale;
     }
 
     public abstract partial class MaterialUniformExpression
@@ -804,6 +806,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 "FMaterialUniformExpressionTextureParameter" => new MaterialUniformExpressionTextureParameter(),
                 "FMaterialUniformExpressionVectorParameter" => new MaterialUniformExpressionVectorParameter(),
                 "FMaterialUniformExpressionFlipbookParameter" => new MaterialUniformExpressionFlipbookParameter(),
+                "FMaterialUniformExpressionBIOSineSubtend" => new MaterialUniformExpressionBIOSineSubtend(),
+                "FMaterialUniformExpressionBIOMod" => new MaterialUniformExpressionBIOMod(),
                 _ => throw new ArgumentException(expressionTypeName)
             };
         }
@@ -833,15 +837,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
         {
-            //TODO: replace guess with whatever this actually should be
-            if (LegendaryExplorerCoreLib.IsDebug && Debugger.IsAttached)
-            {
-                Debugger.Break();
-            }
-            outVal = new LinearColor(1, 1, 1, 1);
+            //LE3's implementation unconditionally writes 0 to R, leaving the other components untouched
+            outVal.R = 0;
         }
 
-        public override bool IsNotFrameDependent => false; //Re-evaluate once we've figured out what this is
+        public override bool IsNotFrameDependent => true;
     }
 
     public abstract partial class MaterialUniformExpressionUnaryOp : MaterialUniformExpression
@@ -934,7 +934,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public partial class MaterialUniformExpressionFlipbookParameter : MaterialUniformExpression
     {
-        public int Index; //TODO: what is this?
+        public int Index; //1 = FlipBook scale, 2 = FlipBook offset (UTextureFlipBook::GetFlipBookScale/GetFlipBookOffset in LE3)
         [UIndexRef("Texture", UIndexRefFlags.ME1 | UIndexRefFlags.ME2)]
         public UIndex TextureIndex; //UIndex in ME1/2, index into MaterialResource's Uniform2DTextureExpressions in ME3/LE
         public override void Serialize(SerializingContainer sc)
@@ -946,7 +946,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
         {
-            outVal = context.GetFlipBookTextureOffset(context, TextureIndex);
+            LinearColor val = Index switch
+            {
+                1 => context.GetFlipBookTextureScale?.Invoke(context, TextureIndex) ?? LinearColor.Black,
+                2 => context.GetFlipBookTextureOffset?.Invoke(context, TextureIndex) ?? LinearColor.Black,
+                _ => LinearColor.Black
+            };
+            //only the X and Y of the FVector are written
+            outVal = new LinearColor(val.R, val.G, 0, 0);
         }
         public override bool IsNotFrameDependent => false;
     }
@@ -1015,6 +1022,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             outVal.G = tempA.G % tempB.G;
             outVal.B = tempA.B % tempB.B;
             outVal.A = tempA.A % tempB.A;
+        }
+    }
+
+    //Bioware addition. Identical to Fmod in LE3
+    public class MaterialUniformExpressionBIOMod : MaterialUniformExpressionFmod;
+
+    //Bioware addition. sin of the angle between A and B (assuming they're normalized), splatted to all components
+    public class MaterialUniformExpressionBIOSineSubtend : MaterialUniformExpressionBinaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            LinearColor tempA = LinearColor.Black;
+            A.GetNumberValue(context, ref tempA);
+            LinearColor tempB = LinearColor.Black;
+            B.GetNumberValue(context, ref tempB);
+            float dot = Vector4.Dot((Vector4)tempA, (Vector4)tempB);
+            float cosSquaredComplement = 1f - dot * dot;
+            //written to match the game's handling of NaN: anything not >= 0 becomes 0
+            float clamped = cosSquaredComplement >= 0f ? MathF.Min(cosSquaredComplement, 1f) : 0f;
+            outVal = new LinearColor(MathF.Sqrt(clamped));
         }
     }
 
@@ -1162,14 +1189,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             LinearColor inVal = LinearColor.Black;
             LinearColor minVal = LinearColor.Black;
             LinearColor maxVal = LinearColor.Black;
-            Input.GetNumberValue(context, ref outVal);
-            Min.GetNumberValue(context, ref outVal);
-            Max.GetNumberValue(context, ref outVal);
+            Input.GetNumberValue(context, ref inVal);
+            Min.GetNumberValue(context, ref minVal);
+            Max.GetNumberValue(context, ref maxVal);
 
-            outVal.R = Math.Clamp(inVal.R, minVal.R, maxVal.R);
-            outVal.G = Math.Clamp(inVal.G, minVal.G, maxVal.G);
-            outVal.B = Math.Clamp(inVal.B, minVal.B, maxVal.B);
-            outVal.A = Math.Clamp(inVal.A, minVal.A, maxVal.A);
+            outVal.R = Clamp(inVal.R, minVal.R, maxVal.R);
+            outVal.G = Clamp(inVal.G, minVal.G, maxVal.G);
+            outVal.B = Clamp(inVal.B, minVal.B, maxVal.B);
+            outVal.A = Clamp(inVal.A, minVal.A, maxVal.A);
+
+            //Unreal's Clamp. Unlike Math.Clamp, it doesn't throw when min > max, which some materials rely on
+            static float Clamp(float x, float min, float max) => x < min ? min : x < max ? x : max;
         }
         public override bool IsNotFrameDependent => Input.IsNotFrameDependent && Min.IsNotFrameDependent && Max.IsNotFrameDependent;
     }

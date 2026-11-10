@@ -1125,24 +1125,89 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        public static PropertyCollection GetCondensedProperties(this ExportEntry export)
+        /// <summary>
+        /// Reads an export's properties, filling in missing values from its archetypes. The nearest value wins.
+        /// </summary>
+        /// <param name="export">The export whose properties to read.</param>
+        /// <param name="packageCache">The cache used to read properties and resolve imported archetypes.</param>
+        /// <param name="resolveImports">Whether to follow imported archetypes. Unresolved imports end the traversal.</param>
+        /// <param name="mergeStructs">Whether to recursively inherit missing fields in matching, non-immutable structs.
+        /// Arrays and immutable structs are always inherited as whole values.</param>
+        /// <remarks>
+        /// Imported archetypes can contribute properties from other packages. Object and delegate properties from
+        /// those packages are omitted because their object indices are only valid in the source package; references
+        /// are not relinked. Non-immutable struct fields are filtered recursively. Arrays and immutable structs
+        /// containing such references are omitted as a whole to preserve their layout. The result may therefore be incomplete.
+        /// Properties originating in the export's own package are not filtered.
+        /// </remarks>
+        public static PropertyCollection GetCondensedProperties(this ExportEntry export, PackageCache packageCache = null,
+            bool resolveImports = false, bool mergeStructs = false)
         {
-            IEntry archetypeEntry = export.Archetype;
-            var properties = export.GetProperties();
-            while (archetypeEntry is ExportEntry archetype)
+            var properties = export.GetProperties(packageCache: packageCache);
+            //guard against circular archetype references, which are invalid but can occur in broken packages
+            var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                var archProps = archetype.GetProperties();
-                foreach (Property prop in archProps)
+                export.FileRef.FilePath + "|" + export.UIndex
+            };
+            ExportEntry current = export;
+            while (true)
+            {
+                ExportEntry archetype = current.Archetype switch
                 {
-                    if (!properties.ContainsNamedProp(prop.Name, prop.StaticArrayIndex))
-                    {
-                        properties.Add(prop);
-                    }
+                    ExportEntry archetypeExport => archetypeExport,
+                    ImportEntry archetypeImport when resolveImports => EntryImporter.ResolveImport(archetypeImport, packageCache),
+                    _ => null
+                };
+                if (archetype is null || !visited.Add(archetype.FileRef.FilePath + "|" + archetype.UIndex))
+                {
+                    break;
                 }
 
-                archetypeEntry = archetype.Archetype;
+                InheritProperties(properties, archetype.GetProperties(packageCache: packageCache), archetype.FileRef != export.FileRef);
+                current = archetype;
             }
             return properties;
+
+            void InheritProperties(PropertyCollection target, PropertyCollection defaults, bool foreignPackage)
+            {
+                foreach (Property prop in defaults)
+                {
+                    Property existing = target.GetProp<Property>(prop.Name, prop.StaticArrayIndex);
+                    if (existing is null)
+                    {
+                        Property inherited = foreignPackage ? FilterForeignProperty(prop) : prop;
+                        if (inherited is not null)
+                        {
+                            target.Add(inherited);
+                        }
+                    }
+                    else if (mergeStructs && existing is StructProperty { IsImmutable: false } targetStruct
+                             && prop is StructProperty { IsImmutable: false } defaultStruct
+                             && targetStruct.StructType.CaseInsensitiveEquals(defaultStruct.StructType))
+                    {
+                        InheritProperties(targetStruct.Properties, defaultStruct.Properties, foreignPackage);
+                    }
+                }
+            }
+
+            static Property FilterForeignProperty(Property prop)
+            {
+                if (prop is StructProperty { IsImmutable: false } structProp)
+                {
+                    structProp.Properties.RemoveAll(field => FilterForeignProperty(field) is null);
+                    return prop;
+                }
+                return ContainsObjectReferences(prop) ? null : prop;
+            }
+
+            static bool ContainsObjectReferences(Property prop) => prop switch
+            {
+                ObjectProperty or DelegateProperty => true,
+                StructProperty structProp => structProp.Properties.Any(ContainsObjectReferences),
+                ImmutableByteArrayProperty => false,
+                ArrayPropertyBase arrayProp => arrayProp.Properties.Any(ContainsObjectReferences),
+                _ => false
+            };
         }
 
         public static void CondenseArchetypes(this ExportEntry export, bool removeArchetypeLink = true)

@@ -215,7 +215,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             type.SyntaxType = type.Value is INT or FLOAT or BOOL or BYTE or BIOMASK4 or STRING or STRINGREF or NAME ? ST.Keyword : ST.Class;
-            return new VariableType(type.Value, type.StartPos, type.EndPos);
+            string typeName = type.Value;
+            while (Matches(TokenType.Dot))
+            {
+                var nestedType = Consume(TokenType.Word) ?? throw ParseError("Expected type name after dot!", CurrentPosition);
+                typeName += "." + nestedType.Value;
+            }
+            return new VariableType(typeName, type.StartPos, PrevToken.EndPos);
         }
 
         #region Helpers
