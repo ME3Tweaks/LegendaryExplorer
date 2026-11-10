@@ -441,8 +441,8 @@ namespace LegendaryExplorerCore.Shaders
 
         //The header and name table of each game's ref shader cache. Reading them takes a few ms, which adds up when shaders are looked up for many materials.
         //Only used for reading, so it's safe to share between threads.
-        private static readonly IMEPackage[] ShaderCachePackages = new IMEPackage[7];
-        private static readonly long[] ShaderCachePackagesFileSize = new long[7];
+        private static readonly IMEPackage[] ShaderCachePackages = new IMEPackage[Enum.GetValues(typeof(MEGame)).Length];
+        private static readonly long[] ShaderCachePackagesFileSize = new long[Enum.GetValues(typeof(MEGame)).Length];
 
         /// <summary>
         /// Gets the header and name table of the ref shader cache that <paramref name="fs"/> was just opened on. Do not dispose the result.
