@@ -452,8 +452,6 @@ public interface ILightProxy
 /// </summary>
 internal static class LightProxyVisuals
 {
-    private const int NoHitId = 0xFFFFFF;
-
     /// <summary>
     /// Half the size of a light's sprite: a fixed world size, so it's part of the scene, but never smaller than a few pixels, so distant lights stay findable
     /// </summary>
@@ -481,7 +479,7 @@ internal static class LightProxyVisuals
         //a light that affects the selected mesh
         if (context.HighlightedLights.Contains(light.Component))
         {
-            DrawScreenSquare(context, context.WorldPrimitives, position, halfSize * 1.3f, LevelEditorRenderContext.HighlightColor, NoHitId);
+            DrawScreenSquare(context, context.WorldPrimitives, position, halfSize * 1.3f, LevelEditorRenderContext.HighlightColor, BatchedPrimitives.NoHitId);
         }
     }
 

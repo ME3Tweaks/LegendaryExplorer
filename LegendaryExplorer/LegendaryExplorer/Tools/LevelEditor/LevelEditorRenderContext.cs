@@ -141,7 +141,7 @@ public class LevelEditorRenderContext : MeshRenderContext
         {
             for (int bit = 1; bit < 8; bit <<= 1)
             {
-                if ((i & bit) == 0) WorldPrimitives.AddLine(corners[i], corners[i | bit], HighlightColor, 0xFFFFFF);
+                if ((i & bit) == 0) WorldPrimitives.AddLine(corners[i], corners[i | bit], HighlightColor, BatchedPrimitives.NoHitId);
             }
         }
     }
@@ -262,6 +262,20 @@ public class LevelEditorRenderContext : MeshRenderContext
     /// </summary>
     public Action<int, int> PlaceAt { get; set; }
 
+    /// <summary>While set, a left drag that starts on a terrain sculpts it instead of selecting or moving the camera (see <see cref="TerrainSculptMode"/>)</summary>
+    public TerrainSculptMode TerrainSculpt
+    {
+        get => terrainSculpt;
+        set
+        {
+            if (terrainSculpt == value) return;
+            terrainSculpt?.EndStroke(DragEndReason.Cancelled);
+            terrainSculpt?.MoveCursor(null);
+            terrainSculpt = value;
+        }
+    }
+    private TerrainSculptMode terrainSculpt;
+
     private readonly Dictionary<string, OutlinerCategoryState> _categories = [];
 
     public OutlinerCategoryState GetCategoryState(string category)
@@ -318,8 +332,8 @@ public class LevelEditorRenderContext : MeshRenderContext
     const int HitTestSize = 3;
     private ModifierKeys? clickModifiers;
 
-    /// <summary>Whether a widget, light handle or spline tangent drag owns the mouse. Drags belong to the left button</summary>
-    public bool IsDragging => TransformWidget.IsDragging || LightGizmo.IsDragging || SplineGizmo.IsDragging;
+    /// <summary>Whether a widget, light handle or spline tangent drag, or a terrain stroke, owns the mouse. Drags belong to the left button</summary>
+    public bool IsDragging => TransformWidget.IsDragging || LightGizmo.IsDragging || SplineGizmo.IsDragging || TerrainSculpt?.IsStroking == true;
 
     public override bool HoldsMouseCapture => IsDragging;
 
@@ -342,6 +356,7 @@ public class LevelEditorRenderContext : MeshRenderContext
         TransformWidget.EndDrag(reason);
         LightGizmo.EndDrag(reason);
         SplineGizmo.EndDrag(reason);
+        TerrainSculpt?.EndStroke(reason);
     }
 
     public override bool MouseUp(MouseButtons button, int x, int y) => MouseUp(button, x, y, Keyboard.Modifiers);
@@ -417,6 +432,13 @@ public class LevelEditorRenderContext : MeshRenderContext
             }
         }
         if (button is MouseButtons.Left) clickModifiers = modifiers;
+        //a press on a terrain is the brush's; anywhere else the camera's, as usual
+        if (button is MouseButtons.Left && TerrainSculpt is { } sculpt && sculpt.BeginStroke(this, x, y, modifiers))
+        {
+            //(a refused press mustn't select or move the camera on release either)
+            if (!sculpt.IsStroking) swallowedReleases.Add(button);
+            return true;
+        }
         //a placement click neither selects nor drags a widget; dragging still moves the camera
         if (button is MouseButtons.Left && PlaceAt is not null)
         {
@@ -482,6 +504,9 @@ public class LevelEditorRenderContext : MeshRenderContext
         return base.LostMouseFocus();
     }
 
+    //(the brush isn't outlined where the cursor was once it's gone)
+    public override void MouseLeft() => TerrainSculpt?.MoveCursor(null);
+
     public override bool LostKeyboardFocus()
     {
         EndDrag(DragEndReason.Cancelled);
@@ -504,6 +529,7 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public override bool MouseMove(int x, int y)
     {
+        TerrainSculpt?.MoveCursor((x, y));
         if (IsDragging)
         {
             //failsafe if the release was never received: the button was let go, so the drag is complete
@@ -514,7 +540,8 @@ public class LevelEditorRenderContext : MeshRenderContext
             }
             if (TransformWidget.IsDragging) TransformWidget.Drag(this, x, y);
             else if (LightGizmo.IsDragging) LightGizmo.Drag(this, x, y);
-            else SplineGizmo.Drag(this, x, y);
+            //(a stroke is applied each frame, where the cursor now is)
+            else if (SplineGizmo.IsDragging) SplineGizmo.Drag(this, x, y);
             return true;
         }
         if (base.MouseMove(x, y)) return true;
@@ -611,6 +638,7 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public void DrawUI()
     {
+        TerrainSculpt?.Draw(this);
         WorldPrimitives.Render(this);
         Sprites.Render(this);
         helperMarkers = 0;
@@ -626,6 +654,7 @@ public class LevelEditorRenderContext : MeshRenderContext
     {
         // Pose before skinning; hidden actors still need current bounds for light environments.
         base.Update(timestep);
+        TerrainSculpt?.Update(this, timestep);
         foreach (ActorProxy actor in DrawList_3D)
         {
             actor.UpdateScene(this, timestep);

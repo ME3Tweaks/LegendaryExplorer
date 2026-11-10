@@ -152,6 +152,7 @@ public partial class LevelEditor
         }
         CancelViewportDrag();
         EndPlacement();
+        EndSculpting();
         placing = option;
         option.IsPlacing = true;
         placingAsset = asset;

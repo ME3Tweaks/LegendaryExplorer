@@ -91,9 +91,10 @@ public sealed class TerrainHeightField
     /// Where a ray in terrain-local space (from <paramref name="origin"/> along <paramref name="direction"/>, to <paramref name="maxT"/> of it)
     /// first meets the height field at maximum tessellation as <paramref name="sections"/> draw it (<see cref="Draws"/>), as a multiple of
     /// <paramref name="direction"/>; null if it doesn't. Each quad is split as its orientation flag says. The quads the ray passes over are tested in
-    /// order, from where it enters the grid
+    /// order, from where it enters the grid. With <paramref name="ignoreHoles"/>, hole quads are met too, as UE3's terrain tools trace
+    /// (TRACE_TerrainIgnoreHoles), so a hole can be filled
     /// </summary>
-    public float? RayHit(Vector3 origin, Vector3 direction, float maxT, IReadOnlyList<TerrainSection> sections)
+    public float? RayHit(Vector3 origin, Vector3 direction, float maxT, IReadOnlyList<TerrainSection> sections, bool ignoreHoles = false)
     {
         float near = 0, far = maxT;
         for (int axis = 0; axis < 2; axis++)
@@ -118,7 +119,7 @@ public sealed class TerrainHeightField
         float nextY = stepY > 0 ? near + (y + 1 - entry.Y) / direction.Y : stepY < 0 ? near + (y - entry.Y) / direction.Y : float.PositiveInfinity;
         while (true)
         {
-            if (sections.Any(section => Draws(section, x, y)) && QuadHit(x, y, origin, direction, maxT) is { } hit) return hit;
+            if (InSections(x, y) && QuadHit(x, y, origin, direction, maxT) is { } hit) return hit;
             if (nextX < nextY)
             {
                 if (nextX > far) return null;
@@ -132,6 +133,16 @@ public sealed class TerrainHeightField
                 nextY += deltaY;
             }
             if (x < 0 || y < 0 || x > NumVerticesX - 2 || y > NumVerticesY - 2) return null;
+        }
+
+        //(a loop, not a lambda: it runs for every quad a ray passes, every frame while sculpting)
+        bool InSections(int quadX, int quadY)
+        {
+            foreach (TerrainSection section in sections)
+            {
+                if (ignoreHoles ? InPatch(section, quadX, quadY) : Draws(section, quadX, quadY)) return true;
+            }
+            return false;
         }
     }
 
@@ -257,11 +268,27 @@ public sealed class TerrainHeightField
     }
 
     /// <summary>Whether <see cref="SectionIndices"/> draws the quad whose first vertex is (<paramref name="x"/>, <paramref name="y"/>): it's in one of the section's patches, whose first quad is visible</summary>
-    public bool Draws(TerrainSection section, int x, int y)
+    public bool Draws(TerrainSection section, int x, int y) =>
+        InPatch(section, x, y) && IsQuadVisible(section.BaseX + (x - section.BaseX) / section.Step * section.Step, section.BaseY + (y - section.BaseY) / section.Step * section.Step);
+
+    /// <summary>Whether the quad whose first vertex is (<paramref name="x"/>, <paramref name="y"/>) is in one of the section's patches, hole or not</summary>
+    public bool InPatch(TerrainSection section, int x, int y)
     {
         int sx = x - section.BaseX, sy = y - section.BaseY, step = section.Step;
-        return sx >= 0 && sy >= 0 && sx < section.TrueSizeX && sy < section.TrueSizeY && sx / step < section.SizeX && sy / step < section.SizeY
-               && IsQuadVisible(section.BaseX + sx / step * step, section.BaseY + sy / step * step);
+        return sx >= 0 && sy >= 0 && sx < section.TrueSizeX && sy < section.TrueSizeY && sx / step < section.SizeX && sy / step < section.SizeY;
+    }
+
+    /// <summary>How many triangles <see cref="SectionIndices"/> makes, without making them</summary>
+    public int SectionTriangleCount(TerrainSection section)
+    {
+        int step = section.Step, quads = 0;
+        for (int py = 0; py < section.SizeY; py++)
+        for (int px = 0; px < section.SizeX; px++)
+        {
+            if (!IsQuadVisible(section.BaseX + px * step, section.BaseY + py * step)) continue;
+            quads += Math.Clamp(section.TrueSizeX - px * step, 0, step) * Math.Clamp(section.TrueSizeY - py * step, 0, step);
+        }
+        return quads * 2;
     }
 
     /// <summary><see cref="SectionIndices"/> of a section without holes or flipped quads</summary>

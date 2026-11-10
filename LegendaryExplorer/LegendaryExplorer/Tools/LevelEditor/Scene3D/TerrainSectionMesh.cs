@@ -59,10 +59,10 @@ public sealed class TerrainSectionMesh : IDisposable
     internal TerrainHeightField HeightField { get; }
     public TerrainSection Section { get; }
     /// <summary>Section-local bounds</summary>
-    public BoxSphereBounds LocalBounds { get; }
+    public BoxSphereBounds LocalBounds { get; private set; }
     /// <summary>Triangles drawn at maximum tessellation</summary>
-    public int TriangleCount { get; }
-    public bool IsRegular { get; }
+    public int TriangleCount { get; private set; }
+    public bool IsRegular { get; private set; }
 
     private Buffer VertexBuffer;
     private Buffer IndexBuffer;
@@ -75,13 +75,25 @@ public sealed class TerrainSectionMesh : IDisposable
     {
         HeightField = heightField;
         Section = section;
-        IsRegular = heightField.IsRegular(section);
-        TriangleCount = IsRegular ? section.TrueSizeX * section.TrueSizeY * 2 : heightField.SectionIndices(section).Count / 3;
+        ReadHeightField();
+    }
+
+    private void ReadHeightField()
+    {
+        IsRegular = HeightField.IsRegular(Section);
+        TriangleCount = IsRegular ? Section.TrueSizeX * Section.TrueSizeY * 2 : HeightField.SectionTriangleCount(Section);
         var box = new Box();
-        for (int y = 0; y <= section.TrueSizeY; y++)
-        for (int x = 0; x <= section.TrueSizeX; x++)
+        for (int y = 0; y <= Section.TrueSizeY; y++)
+        for (int x = 0; x <= Section.TrueSizeX; x++)
             box.Add(LocalPosition(x, y));
         LocalBounds = new BoxSphereBounds(box);
+    }
+
+    /// <summary>Takes on edits to the height field's heights or holes: its bounds and triangles are read again, and its GPU buffers made again when it's next drawn</summary>
+    public void Refresh()
+    {
+        Dispose();
+        ReadHeightField();
     }
 
     private Vector3 LocalPosition(int x, int y) => HeightField.LocalVertex(Section.BaseX + x, Section.BaseY + y) - new Vector3(Section.BaseX, Section.BaseY, 0);

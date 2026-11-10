@@ -413,6 +413,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext.TransformWidget.OnDuplicateDragComplete = OnDuplicateDragComplete;
         RenderContext.LightGizmo.OnDragComplete = OnLightGizmoDragComplete;
         RenderContext.SplineGizmo.OnDragComplete = OnSplineGizmoDragComplete;
+        InitTerrainSculpting();
         ActorsView =CollectionViewSource.GetDefaultView(Actors);
         ActorsView.Filter = ActorFilter;
         // A preview refresh can change a mesh's category (whether it's volumetric)
@@ -437,6 +438,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         OpenFiles.CollectionChanged += (_, _) =>
         {
             UpdatePlacementOptions();
+            //(with no level open, the Terrain tab is disabled, so its tool couldn't be clicked off)
+            if (OpenFiles.Count == 0) EndSculpting();
             RefreshCommandStates();
         };
         RenderContext.SceneEditingChanged += RefreshCommandStates;
@@ -1173,9 +1176,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         // Window InputBindings consume these keys even when a text editor has focus.
         if (e.Handled || Keyboard.Modifiers != ModifierKeys.None) return;
         //wherever focus is, if no control used the key
-        if (e.Key is Key.Escape && placing is not null)
+        if (e.Key is Key.Escape && (placing is not null || sculpting is not null))
         {
             EndPlacement();
+            EndSculpting();
             e.Handled = true;
             return;
         }
@@ -1825,8 +1829,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     {
         // Package loading and shader preparation also read the scene on background threads.
         // Keep edits queued until those readers finish, and suspend rendering while replacing GPU resources. (Package saves aren't readers of the scene)
-        if (_busyCount > 0 || PreviewRefreshInProgress || RenderContext.TransformWidget.IsDragging || RenderContext.LightGizmo.IsDragging
-            || RenderContext.SplineGizmo.IsDragging || RenderContext.IsEditingScene || _isApplyingUndoRedo || UndoHistory.IsExecuting) return;
+        if (_busyCount > 0 || PreviewRefreshInProgress || RenderContext.IsDragging || RenderContext.IsEditingScene || _isApplyingUndoRedo
+            || UndoHistory.IsExecuting) return;
         PreviewUpdateTimer.Stop();
         if (OpenFiles.Count == 0 || PreviewClosed)
         {

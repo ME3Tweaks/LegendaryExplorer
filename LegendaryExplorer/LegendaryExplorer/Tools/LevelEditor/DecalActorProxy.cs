@@ -450,7 +450,6 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         if (projection is not { } p) return;
         // Keep the selection guides depth-tested so scene geometry obscures them.
         // Decals project orthographically, so retain parallel sides rather than drawing a cone.
-        const int noHitId = 0xFFFFFF;
         var lines = context.WorldPrimitives;
         var color = LevelEditorRenderContext.HighlightColor;
         Span<Vector3> corners = stackalloc Vector3[8];
@@ -460,11 +459,11 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                 - p.Normal * ((i & 4) == 0 ? p.NearPlane : p.FarPlane), delta);
         for (int i = 0; i < 8; i++)
             for (int bit = 1; bit <= 4; bit <<= 1)
-                if ((i & bit) == 0) lines.AddLine(corners[i], corners[i | bit], color, noHitId);
+                if ((i & bit) == 0) lines.AddLine(corners[i], corners[i | bit], color, BatchedPrimitives.NoHitId);
 
         // Tie the actor's transform handle to the projection volume even when its origin is offset.
         for (int i = 0; i < 4; i++)
-            lines.AddLine(owner.LocalToWorld.Translation, corners[i], color with { W = 0.45f }, noHitId);
+            lines.AddLine(owner.LocalToWorld.Translation, corners[i], color with { W = 0.45f }, BatchedPrimitives.NoHitId);
 
         Vector3 start = Vector3.Transform(p.Location, delta);
         Vector3 tip = Vector3.Transform(p.Location - p.Normal * p.FarPlane, delta);
@@ -475,9 +474,9 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
             direction /= length;
             float head = Math.Min(length * 0.25f, 14 * context.WorldUnitsPerPixel(tip));
             var (u, v) = LightProxyVisuals.Perpendiculars(direction);
-            lines.AddLine(start, tip, color, noHitId);
+            lines.AddLine(start, tip, color, BatchedPrimitives.NoHitId);
             foreach (var side in new[] { u, -u, v, -v })
-                lines.AddLine(tip, tip - direction * head + side * (head * 0.45f), color, noHitId);
+                lines.AddLine(tip, tip - direction * head + side * (head * 0.45f), color, BatchedPrimitives.NoHitId);
         }
     }
 

@@ -441,6 +441,9 @@ public abstract class RenderContext
         return false;
     }
 
+    /// <summary>The mouse left the viewport (not while it's captured: a drag keeps reporting it outside)</summary>
+    public virtual void MouseLeft() { }
+
     /// <summary>
     /// Whether the context owns the mouse (such as during a drag), so the control captures it and keeps reporting it outside the viewport
     /// </summary>
@@ -575,6 +578,7 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
         KeyUp += OnKeyUp;
         LostKeyboardFocus += SceneRenderControl_LostKeyboardFocus;
         LostMouseCapture += SceneRenderControl_LostMouseCapture;
+        MouseLeave += SceneRenderControl_MouseLeave;
         SizeChanged += SceneRenderControlWPF_SizeChanged;
     }
 
@@ -589,6 +593,7 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
         KeyDown -= OnKeyDown;
         LostKeyboardFocus -= SceneRenderControl_LostKeyboardFocus;
         LostMouseCapture -= SceneRenderControl_LostMouseCapture;
+        MouseLeave -= SceneRenderControl_MouseLeave;
         SizeChanged -= SceneRenderControlWPF_SizeChanged;
     }
 
@@ -806,6 +811,8 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
     {
         e.Handled = Context.LostMouseFocus();
     }
+
+    private void SceneRenderControl_MouseLeave(object sender, MouseEventArgs e) => Context.MouseLeft();
 
     private void SceneRenderControl_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
     {

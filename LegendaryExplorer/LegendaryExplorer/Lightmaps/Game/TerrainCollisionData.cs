@@ -22,34 +22,49 @@ public static class TerrainCollisionData
     private const ushort NullNode = ushort.MaxValue;
 
     /// <summary>
-    /// Writes each of the terrain's components' collision vertices and BV tree for the terrain at <paramref name="terrainLocalToWorld"/>, as
-    /// UTerrainComponent::BuildCollisionData makes them. Every one is made before any is written, and nothing is written if the height field can't be
-    /// read, a TerrainComponents entry isn't an export, or a component isn't the terrain's own section within its height field: the refusal names it
+    /// Why the terrain's components' data can't be made again (<see cref="Write"/>), or null: its height field can't be read, a TerrainComponents entry
+    /// isn't an export, or a component isn't the terrain's own section within its height field. The refusal names it
     /// </summary>
     /// <param name="readProperties">A component's properties, with those it takes from its archetypes (the section's size and base)</param>
-    /// <param name="collides"><see cref="HasCollision"/>: a terrain that doesn't collide has no BV trees</param>
-    public static void WriteCollision(TerrainHeightField field, Func<ExportEntry, PropertyCollection> readProperties, Matrix4x4 terrainLocalToWorld, bool collides)
+    public static string Refusal(TerrainHeightField field, Func<ExportEntry, PropertyCollection> readProperties) => Refusal(field, readProperties, out _);
+
+    //and the sections it checked, so a writer needn't read them again
+    private static string Refusal(TerrainHeightField field, Func<ExportEntry, PropertyCollection> readProperties, out List<TerrainSection> sections)
     {
-        if (!field.IsValid)
-            throw new InvalidOperationException($"{field.Export.InstancedFullPath}'s height field can't be read, so its collision can't be made again.");
+        sections = null;
+        if (!field.IsValid) return $"{field.Export.InstancedFullPath}'s height field can't be read, so its collision can't be made again.";
         //(UE3 skips a null entry, which has no collision to go stale; anything else that ReadSections can't resolve would)
         foreach (ObjectProperty entry in field.Properties.GetProp<ArrayProperty<ObjectProperty>>("TerrainComponents") ?? Enumerable.Empty<ObjectProperty>())
         {
             if (entry.Value != 0 && !field.Export.FileRef.TryGetUExport(entry.Value, out _))
-                throw new InvalidOperationException($"{field.Export.InstancedFullPath}'s TerrainComponents refers to #{entry.Value}, which isn't an export, so its collision can't be made again.");
+                return $"{field.Export.InstancedFullPath}'s TerrainComponents refers to #{entry.Value}, which isn't an export, so its collision can't be made again.";
         }
-        List<TerrainSection> sections = field.ReadSections(readProperties);
+        sections = field.ReadSections(readProperties);
         foreach (TerrainSection section in sections)
         {
             if (section.Component.Parent != field.Export || !field.Contains(section))
-                throw new InvalidOperationException($"{section.Component.InstancedFullPath} isn't a section within {field.Export.InstancedFullPath}'s height field, so its collision can't be made again.");
+                return $"{section.Component.InstancedFullPath} isn't a section within {field.Export.InstancedFullPath}'s height field, so its collision can't be made again.";
         }
+        return null;
+    }
+
+    /// <summary>
+    /// Writes each of the terrain's components' collision vertices and BV tree for the terrain at <paramref name="terrainLocalToWorld"/>, as
+    /// UTerrainComponent::BuildCollisionData makes them, and its patch bounds. Every one is made before any is written, and nothing is written if
+    /// there's a <see cref="Refusal"/>, which it throws
+    /// </summary>
+    /// <param name="readProperties">A component's properties, with those it takes from its archetypes (the section's size and base)</param>
+    /// <param name="collides"><see cref="HasCollision"/>: a terrain that doesn't collide has no BV trees</param>
+    public static void Write(TerrainHeightField field, Func<ExportEntry, PropertyCollection> readProperties, Matrix4x4 terrainLocalToWorld, bool collides)
+    {
+        if (Refusal(field, readProperties, out List<TerrainSection> sections) is { } refusal) throw new InvalidOperationException(refusal);
         var made = new List<(ExportEntry Component, TerrainComponent Binary)>(sections.Count);
         foreach (TerrainSection section in sections)
         {
             var binary = section.Component.GetBinaryData<TerrainComponent>();
             binary.CollisionVertices = CollisionVertices(field, section, terrainLocalToWorld);
             binary.BVTree = BVTree(field, section, binary.CollisionVertices, collides);
+            binary.PatchBounds = PatchBounds(field, section);
             made.Add((section.Component, binary));
         }
         foreach (var (component, binary) in made) component.WriteBinary(binary);

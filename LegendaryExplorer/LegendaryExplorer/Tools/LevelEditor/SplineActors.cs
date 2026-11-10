@@ -23,7 +23,6 @@ public sealed partial class SplineActorProxy : ActorProxy
 {
     /// <summary>SplineActor's SplineColor default, for the curves</summary>
     private static readonly Vector4 SplineColor = new(1, 0, 1, 0.7f);
-    private const int NoHitId = 0xFFFFFF;
 
     public List<SplineMeshComponentProxy> SplineMeshComps = [];
     private readonly List<Connection> connections = [];
@@ -428,7 +427,7 @@ public sealed partial class SplineActorProxy : ActorProxy
         for (int i = 1; i <= steps; i++)
         {
             Vector3 point = curve.Eval((float)i / steps, Vector3.Zero);
-            primitives.AddLine(previous, point, color, NoHitId);
+            primitives.AddLine(previous, point, color, BatchedPrimitives.NoHitId);
             previous = point;
         }
         if (!TryGetDirectionArrow(curve, out Vector3 center, out Vector3 direction)) return;
@@ -438,8 +437,8 @@ public sealed partial class SplineActorProxy : ActorProxy
         float size = 10 * context.WorldUnitsPerPixel(center);
         Vector3 tip = center + direction * (size / 2);
         Vector3 tail = center - direction * (size / 2);
-        primitives.AddLine(tip, tail + side * (size * 0.4f), color, NoHitId);
-        primitives.AddLine(tip, tail - side * (size * 0.4f), color, NoHitId);
+        primitives.AddLine(tip, tail + side * (size * 0.4f), color, BatchedPrimitives.NoHitId);
+        primitives.AddLine(tip, tail - side * (size * 0.4f), color, BatchedPrimitives.NoHitId);
     }
 
     /// <summary>The position and unit direction at the parameter midpoint of a two-point UE3 Hermite spline; stationary points have no arrow.</summary>
@@ -664,7 +663,6 @@ public class SplineTangentGizmo : UIElement
 
     private static readonly Vector4 HandleColor = new(1, 1, 1, 1);
     private static readonly Vector4 ActiveHandleColor = new(1, 1, 0, 1);
-    private const int NoHitId = 0xFFFFFF;
     //sizes in pixels
     private const float SphereRadius = 5, ArrowGap = 3, ArrowLength = 14, ArrowRadius = 5, MinimumReach = 16;
     /// <summary>The shortest tangent the arrow drags to</summary>
@@ -673,7 +671,7 @@ public class SplineTangentGizmo : UIElement
     public void GetHandleHitProxies(ref USparseArray<IHitProxy> hitProxies)
     {
         foreach (SplineTangentHandle handle in Enum.GetValues<SplineTangentHandle>())
-            HandleHitIds[(int)handle] = handle is SplineTangentHandle.None ? NoHitId : hitProxies.Add(new SplineTangentHitProxy(handle));
+            HandleHitIds[(int)handle] = handle is SplineTangentHandle.None ? BatchedPrimitives.NoHitId : hitProxies.Add(new SplineTangentHitProxy(handle));
     }
 
     public int HandleHitId(SplineTangentHandle handle) => HandleHitIds[(int)handle];
@@ -723,7 +721,7 @@ public class SplineTangentGizmo : UIElement
             Vector3 sphere = position + direction * reach;
             float pixel = context.WorldUnitsPerPixel(sphere);
             Vector3 arrowBase = sphere + direction * (SphereRadius + ArrowGap) * pixel;
-            context.UIPrimitives.AddLine(position, arrowBase, (IsActive(turn) || IsActive(lengthen) ? ActiveHandleColor : HandleColor) with { W = 0.8f }, NoHitId);
+            context.UIPrimitives.AddLine(position, arrowBase, (IsActive(turn) || IsActive(lengthen) ? ActiveHandleColor : HandleColor) with { W = 0.8f }, BatchedPrimitives.NoHitId);
             if (Attach.IsReadOnly) continue;
             //the sphere the turning grabber moves on
             if (IsActive(turn)) DrawCircle(context, position, IsDragging ? DragRadius : reach, ActiveHandleColor with { W = 0.35f });
@@ -819,7 +817,7 @@ public class SplineTangentGizmo : UIElement
         {
             (float sin, float cos) = MathF.SinCos(MathF.Tau * i / segments);
             Vector3 point = center + (right * cos + up * sin) * radius;
-            context.UIPrimitives.AddLine(previous, point, color, NoHitId);
+            context.UIPrimitives.AddLine(previous, point, color, BatchedPrimitives.NoHitId);
             previous = point;
         }
     }

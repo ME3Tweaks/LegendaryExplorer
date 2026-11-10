@@ -20,13 +20,19 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 public sealed class TerrainProxy : ActorProxy
 {
     /// <summary>Its height field's surface as its sections draw it, in the terrain's frame (which the sections are placed in)</summary>
-    public override float? RayHit(Vector3 origin, Vector3 direction, float maxDistance) =>
-        HeightField is { IsValid: true } field && Matrix4x4.Invert(LocalToWorld, out Matrix4x4 worldToLocal)
-            ? field.RayHit(Vector3.Transform(origin, worldToLocal), Vector3.TransformNormal(direction, worldToLocal), maxDistance,
-                Components.OfType<TerrainComponentProxy>().Select(c => c.Mesh.Section).ToList())
+    public override float? RayHit(Vector3 origin, Vector3 direction, float maxDistance) => RayHit(origin, direction, maxDistance, ignoreHoles: false);
+
+    /// <inheritdoc cref="RayHit(Vector3, Vector3, float)"/>
+    /// <param name="ignoreHoles">Whether holes are met too, as the surface they'd have, as UE3's terrain tools trace it (so a sculpting brush can fill them)</param>
+    public float? RayHit(Vector3 origin, Vector3 direction, float maxDistance, bool ignoreHoles) =>
+        HeightField is { } field && Matrix4x4.Invert(LocalToWorld, out Matrix4x4 worldToLocal)
+            ? field.RayHit(Vector3.Transform(origin, worldToLocal), Vector3.TransformNormal(direction, worldToLocal), maxDistance, DrawnSections, ignoreHoles)
             : null;
 
-    private TerrainHeightField HeightField;
+    /// <summary>The height field it's drawn from, with what's been sculpted; null if it couldn't be read</summary>
+    public TerrainHeightField HeightField { get; private set; }
+    //the sections it has a component for, which it's drawn as
+    private readonly List<TerrainSection> DrawnSections = [];
     private string LoadError;
     private int HoleQuads;
     private PreviewMeshDependencies Dependencies;
@@ -42,43 +48,162 @@ public sealed class TerrainProxy : ActorProxy
     private Matrix4x4 collisionLocalToWorld;
     private Matrix4x4 GameLocalToWorld => SplineLoftGeometry.ActorLocalToWorld(Location, Rotation, DrawScale * DrawScale3D, PrePivot);
 
+    //the export's heights and quad flags, as last accepted (at load, or a commit that succeeded), taken when it's first sculpted since; the view's height
+    //field holds the sculpted ones
+    private ushort[] committedHeights;
+    private TerrainInfoFlags[] committedInfo;
+    /// <summary>Whether its heights or holes have been sculpted since they were committed</summary>
+    public bool IsHeightFieldDirty { get; private set; }
+
     public TerrainProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         Load(context.RenderContext);
         collisionLocalToWorld = GameLocalToWorld;
     }
 
+    protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || IsHeightFieldDirty;
+
     /// <summary>
-    /// Moving, turning or scaling a terrain moves its collision, which its components save in world space: the commit writes their collision vertices and
-    /// BV trees again (<see cref="TerrainCollisionData"/>). A terrain whose height field or sections can't be read is refused, with nothing written
+    /// Moving, turning or scaling a terrain moves its collision, which its components save in world space; sculpting it changes its collision and patch
+    /// bounds too. The commit writes the sculpted heights and holes, then its components' collision vertices, BV trees and patch bounds again
+    /// (<see cref="TerrainCollisionData"/>). A terrain whose height field or sections can't be read is refused, with nothing written
     /// </summary>
     public override void CommitChanges(PackageCache packageCache = null)
     {
         Matrix4x4 localToWorld = GameLocalToWorld;
-        if (localToWorld != collisionLocalToWorld)
+        if (IsHeightFieldDirty || localToWorld != collisionLocalToWorld)
         {
-            //(the height field the view was made from: any change to the terrain's export makes the view again)
+            //(the height field the view was made from, with its sculpted heights: any change to the terrain's export makes the view again)
             TerrainHeightField field = HeightField
                 ?? throw new InvalidOperationException($"{Export.InstancedFullPath} couldn't be read ({LoadError}), so its collision can't be made again.");
             var cache = packageCache ?? Editor.RenderContext.PackageCache;
-            //(before the actor's own values, so a refusal leaves both unwritten)
-            TerrainCollisionData.WriteCollision(field, component => EffectiveLightingProperties.ReadPrimitive(component, cache), localToWorld,
+            //(before the actor's own values, so a refusal leaves everything unwritten)
+            TerrainCollisionData.Write(field, component => EffectiveLightingProperties.ReadPrimitive(component, cache), localToWorld,
                 TerrainCollisionData.HasCollision(Export, Properties, cache));
+            if (IsHeightFieldDirty) Export.WriteBinary(field.Binary);
         }
         base.CommitChanges(packageCache);
     }
 
-    //(a commit that's rolled back puts the collision back too, so only one that succeeds moves it)
+    //(a commit that's rolled back puts the collision and heights back too, so only one that succeeds moves them)
     public override void MarkClean()
     {
         collisionLocalToWorld = GameLocalToWorld;
+        (committedHeights, committedInfo, IsHeightFieldDirty) = (null, null, false);
         base.MarkClean();
     }
 
-    private void Load(MeshRenderContext context)
+    /// <summary>
+    /// Why its height field can't be sculpted, or null. Only Legendary Edition terrains are: their collision is what LEX writes, which was checked against
+    /// every shipping LE terrain, none of which has displacement. One that wasn't read whole, or whose collision can't be made again, is refused, as its
+    /// commit would be
+    /// </summary>
+    public string SculptRefusal
+    {
+        get
+        {
+            if (!Export.Game.IsLEGame()) return $"{Export.InstancedFullPath} can't be sculpted: only Legendary Edition terrains can be.";
+            if (HeightField is null || LoadError is not null) return $"{Export.InstancedFullPath} couldn't be read ({LoadError}), so it can't be sculpted.";
+            //(its CachedDisplacements would go stale, and collision is made without displacement)
+            if (HeightField.Binary.MaxCollisionDisplacement != 0) return $"{Export.InstancedFullPath} has displacement, so it can't be sculpted.";
+            var cache = Editor.RenderContext.PackageCache;
+            return TerrainCollisionData.Refusal(HeightField, component => EffectiveLightingProperties.ReadPrimitive(component, cache));
+        }
+    }
+
+    /// <summary>A world position in the terrain's own space, where each vertex is a unit apart (null if its transform can't be inverted)</summary>
+    public Vector3? ToTerrainSpace(Vector3 world) => Matrix4x4.Invert(LocalToWorld, out Matrix4x4 worldToLocal) ? Vector3.Transform(world, worldToLocal) : null;
+
+    /// <summary>A position in the terrain's own space in the world</summary>
+    public Vector3 ToWorld(Vector3 local) => Vector3.Transform(local, LocalToWorld);
+
+    /// <summary>
+    /// The point of the height field nearest a terrain-space position in X and Y: the position moved onto the grid if it's off it, at the height
+    /// bilinear between the four vertices around it. Not split along the quads' diagonals as they're drawn, so it can be just off the surface: it
+    /// places the brush's outline. Null if the height field couldn't be read
+    /// </summary>
+    public Vector3? SurfacePoint(float x, float y)
+    {
+        if (HeightField is not { } field) return null;
+        x = Math.Clamp(x, 0, field.NumVerticesX - 1);
+        y = Math.Clamp(y, 0, field.NumVerticesY - 1);
+        int x0 = (int)MathF.Floor(x), y0 = (int)MathF.Floor(y);
+        float tx = x - x0, ty = y - y0;
+        float Z(int vx, int vy) => field.LocalVertex(vx, vy).Z;
+        return new Vector3(x, y, float.Lerp(float.Lerp(Z(x0, y0), Z(x0 + 1, y0), tx), float.Lerp(Z(x0, y0 + 1), Z(x0 + 1, y0 + 1), tx), ty));
+    }
+
+    /// <summary>
+    /// Starts a stroke of <paramref name="tool"/> at a terrain-space position, on a terrain with no <see cref="SculptRefusal"/>. The view isn't read again
+    /// until it ends: preview refreshes wait for a viewport drag to end
+    /// </summary>
+    public TerrainStroke BeginStroke(TerrainSculptTool tool, Vector3 localPosition)
+    {
+        TerrainHeightField field = HeightField ?? throw new InvalidOperationException($"{Export.InstancedFullPath} couldn't be read ({LoadError}), so it can't be sculpted.");
+        //(as committed: nothing has been sculpted since, or it was taken then)
+        committedHeights ??= field.Binary.Heights.ToArray();
+        committedInfo ??= field.Binary.InfoData.ToArray();
+        return new TerrainStroke(field, tool, localPosition);
+    }
+
+    /// <summary>Applies a stroke for <paramref name="deltaTime"/> seconds with the brush at a terrain-space position, sizes in world units</summary>
+    public void Sculpt(TerrainStroke stroke, Vector3 localPosition, float radius, float falloff, float strength, float deltaTime, bool inverted)
+    {
+        var (inner, outer, localStrength) = TerrainStroke.LocalBrush(radius, falloff, strength, deltaTime, DrawScale, DrawScale3D);
+        if (stroke.Apply(localPosition, inner, outer, localStrength, inverted) is { } changed) RefreshSections(changed);
+    }
+
+    /// <summary>Ends a stroke: what it changed, as a history step; null if it changed nothing</summary>
+    public TerrainSculptAction FinishStroke(TerrainStroke stroke)
+    {
+        TerrainEdit edit = stroke.Finish();
+        UpdateHeightFieldDirty();
+        return edit.IsEmpty ? null : new TerrainSculptAction(this, edit, stroke.Tool);
+    }
+
+    /// <summary>Abandons a stroke, putting back what it changed</summary>
+    public void CancelStroke(TerrainStroke stroke)
+    {
+        if (stroke.Revert() is { } changed) RefreshSections(changed);
+        UpdateHeightFieldDirty();
+    }
+
+    /// <summary>Gives the height field the values from after a stroke (redo), or from before it (undo)</summary>
+    public void ApplyEdit(TerrainEdit edit, bool after)
+    {
+        TerrainHeightField field = HeightField
+            ?? throw new InvalidOperationException($"{Export.InstancedFullPath} couldn't be read ({LoadError}), so its sculpting can't be undone or redone.");
+        edit.Apply(field, after);
+        RefreshSections(edit.Region);
+        UpdateHeightFieldDirty();
+    }
+
+    private void RefreshSections(TerrainRegion changed)
+    {
+        foreach (TerrainComponentProxy component in Components.OfType<TerrainComponentProxy>())
+        {
+            if (changed.Affects(component.Mesh.Section)) component.Mesh.Refresh();
+        }
+    }
+
+    private void UpdateHeightFieldDirty()
+    {
+        if (HeightField is not { } field || committedHeights is null) return;
+        IsHeightFieldDirty = !field.Binary.Heights.AsSpan().SequenceEqual(committedHeights) || !field.Binary.InfoData.AsSpan().SequenceEqual(committedInfo);
+        int holes = field.Binary.InfoData.Count(f => (f & TerrainInfoFlags.TID_Visibility_Off) != 0);
+        if (holes != HoleQuads)
+        {
+            HoleQuads = holes;
+            NotifyCoverageChanged();
+        }
+        UpdateDirty();
+    }
+
+    private void Load(MeshRenderContext context, TerrainHeightField sculpted = null)
     {
         Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
         HeightField = null;
+        DrawnSections.Clear();
         Layers = null;
         LoadError = GameShadingError = null;
         HoleQuads = 0;
@@ -89,7 +214,14 @@ public sealed class TerrainProxy : ActorProxy
             {
                 LoadError = $"Height field has {HeightField.Binary.Heights.Length} heights and {HeightField.Binary.InfoData.Length} info flags for a "
                             + $"{HeightField.NumVerticesX} × {HeightField.NumVerticesY} vertex grid.";
+                HeightField = null;
                 return;
+            }
+            //read again for a dependency's change, not its own export's: the grid is the same, and it keeps what's been sculpted
+            if (sculpted is not null)
+            {
+                sculpted.Binary.Heights.CopyTo(HeightField.Binary.Heights, 0);
+                sculpted.Binary.InfoData.CopyTo(HeightField.Binary.InfoData, 0);
             }
             HoleQuads = HeightField.Binary.InfoData.Count(f => (f & TerrainInfoFlags.TID_Visibility_Off) != 0);
             var cache = context.PackageCache;
@@ -110,6 +242,7 @@ public sealed class TerrainProxy : ActorProxy
                 {
                     ActorPropertyName = "TerrainComponents"
                 });
+                DrawnSections.Add(section);
             }
         }
         catch (Exception e) when (e is not OutOfMemoryException)
@@ -177,7 +310,7 @@ public sealed class TerrainProxy : ActorProxy
         if (!force && !Dependencies.IsAffectedBy(package, updatedExports)) return false;
         Components.DisposeAndClear();
         ClearMaterials();
-        Load(Editor.RenderContext);
+        Load(Editor.RenderContext, IsHeightFieldDirty ? HeightField : null);
         NotifyCoverageChanged();
         return true;
     }

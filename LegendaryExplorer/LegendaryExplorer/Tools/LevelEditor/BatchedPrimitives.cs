@@ -13,6 +13,9 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// <param name="depthTested">Whether the primitives are hidden behind the scene. Otherwise they're drawn on top of it</param>
 public class BatchedPrimitives(bool depthTested = false)
 {
+    /// <summary>The hit ID of primitives that can't be clicked: none is registered with it</summary>
+    public const int NoHitId = 0xFFFFFF;
+
     private readonly List<WorldVertex> LineVerts = [];
 
     private readonly List<int> MeshStarts = [];

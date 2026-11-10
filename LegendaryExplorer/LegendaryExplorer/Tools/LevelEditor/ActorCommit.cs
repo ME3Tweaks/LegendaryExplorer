@@ -7,7 +7,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 namespace LegendaryExplorer.Tools.LevelEditor;
 
 /// <summary>
-/// Writes level files' pending actor edits (transforms, spline points, lights, decals and mesh lighting) inside one <see cref="PackageEditScope"/>,
+/// Writes level files' pending actor edits (transforms, spline points, lights, decals, sculpted terrain and mesh lighting) inside one <see cref="PackageEditScope"/>,
 /// then accepts them. Either every write lands and the actors become clean, or the packages are restored exactly and every actor keeps its pending edits.
 /// Writers change only the packages (and what <see cref="ActorProxy.AbandonCommit"/> puts back); views take on what was written in <see cref="ActorProxy.MarkClean"/>
 /// </summary>
@@ -112,8 +112,8 @@ public static class ActorCommit
             }
             else
             {
-                // A loft point can be dirty without moving: its spline values, or a connection rebuilt because the next point moved
-                if (created.Contains(actor) || actor.IsTransformDirty || actor is ILightProxy or DecalActorProxy or SplineActorProxy) actor.CommitChanges();
+                // A loft point can be dirty without moving: its spline values, or a connection rebuilt because the next point moved. A terrain, by being sculpted
+                if (created.Contains(actor) || actor.IsTransformDirty || actor is ILightProxy or DecalActorProxy or SplineActorProxy or TerrainProxy { IsHeightFieldDirty: true }) actor.CommitChanges();
             }
             foreach (var mesh in actor.LightingMeshes) mesh.ExistingLighting?.Write();
         }

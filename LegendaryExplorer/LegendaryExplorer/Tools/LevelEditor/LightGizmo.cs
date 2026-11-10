@@ -45,13 +45,12 @@ public class LightGizmo : UIElement
 
     private static readonly Vector4 HandleColor = new(1, 1, 1, 1);
     private static readonly Vector4 ActiveHandleColor = new(1, 1, 0, 1);
-    private const int NoHitId = 0xFFFFFF;
 
     public void GetHandleHitProxies(ref USparseArray<IHitProxy> hitProxies)
     {
         foreach (LightHandle handle in Enum.GetValues<LightHandle>())
         {
-            HandleHitIds[(int)handle] = handle is LightHandle.None ? NoHitId : hitProxies.Add(new LightHandleHitProxy(handle));
+            HandleHitIds[(int)handle] = handle is LightHandle.None ? BatchedPrimitives.NoHitId : hitProxies.Add(new LightHandleHitProxy(handle));
         }
     }
 
@@ -68,7 +67,7 @@ public class LightGizmo : UIElement
 
         //the selection outline around the sprite
         LightProxyVisuals.DrawScreenSquare(context, context.UIPrimitives, position, LightProxyVisuals.SpriteHalfSize(context, position) * 1.15f,
-            new Vector4(1, 1, 0, 1), NoHitId);
+            new Vector4(1, 1, 0, 1), BatchedPrimitives.NoHitId);
 
         switch (light.Type)
         {
@@ -107,11 +106,11 @@ public class LightGizmo : UIElement
             case SceneLightType.Directional:
             {
                 Vector3 tip = position + direction * (90 * pixel);
-                context.UIPrimitives.AddLine(position, tip, color, NoHitId);
+                context.UIPrimitives.AddLine(position, tip, color, BatchedPrimitives.NoHitId);
                 (Vector3 u, Vector3 v) = LightProxyVisuals.Perpendiculars(direction);
                 foreach (Vector3 side in new[] { u, -u, v, -v })
                 {
-                    context.UIPrimitives.AddLine(tip, tip - direction * (14 * pixel) + side * (6 * pixel), color, NoHitId);
+                    context.UIPrimitives.AddLine(tip, tip - direction * (14 * pixel) + side * (6 * pixel), color, BatchedPrimitives.NoHitId);
                 }
                 break;
             }
@@ -153,7 +152,7 @@ public class LightGizmo : UIElement
         {
             (float sin, float cos) = MathF.SinCos(MathF.Tau * i / segments);
             Vector3 point = center + (axisA * cos + axisB * sin) * radius;
-            context.UIPrimitives.AddLine(previous, point, color, NoHitId);
+            context.UIPrimitives.AddLine(previous, point, color, BatchedPrimitives.NoHitId);
             previous = point;
         }
     }
@@ -165,7 +164,7 @@ public class LightGizmo : UIElement
         for (int i = 1; i <= segments; i++)
         {
             Vector3 point = center + ConePoint(direction, side, from + (to - from) * i / segments) * radius;
-            context.UIPrimitives.AddLine(previous, point, color, NoHitId);
+            context.UIPrimitives.AddLine(previous, point, color, BatchedPrimitives.NoHitId);
             previous = point;
         }
     }
@@ -179,7 +178,7 @@ public class LightGizmo : UIElement
         for (int i = 0; i < 8; i++)
         {
             (float s, float c) = MathF.SinCos(MathF.Tau * i / 8);
-            context.UIPrimitives.AddLine(apex, rimCenter + (u * c + v * s) * (radius * sin), color, NoHitId);
+            context.UIPrimitives.AddLine(apex, rimCenter + (u * c + v * s) * (radius * sin), color, BatchedPrimitives.NoHitId);
         }
     }
 
