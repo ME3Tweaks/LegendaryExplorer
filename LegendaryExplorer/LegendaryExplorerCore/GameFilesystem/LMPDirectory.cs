@@ -163,7 +163,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static string LocalProfilePath => Path.Combine(SaveFolderPath, @"MP_Profile");
 
         /// <summary>
-        /// Gets the path to the LOD configuration file for LMP
+        /// Gets the path to the LOD configuration file for LMP (GAMER settings - GAMERRR)
         /// </summary>
         /// <param name="gamePathRootOverride">Optional: override game path root</param>
         /// <returns>Path to LOD configuration file</returns>

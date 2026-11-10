@@ -242,7 +242,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
-        /// Gets path to the LOD config file for an input game
+        /// Gets path to the LOD config file for an input game (GamerSettings)
         /// </summary>
         /// <param name="game">Game to get config file for</param>
         /// <param name="gamePathOverride">Optional: override game path root</param>
