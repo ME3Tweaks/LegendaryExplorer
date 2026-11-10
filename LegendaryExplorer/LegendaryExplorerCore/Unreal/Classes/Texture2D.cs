@@ -248,6 +248,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 var format = mipToLoad.Export.GetProperty<EnumProperty>(@"Format")?.Value.Name;
                 data = GX2Tiling.Untile(data, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(format));
             }
+            else if (decompress && data != null && mipToLoad.Export?.FileRef.Platform == MEPackage.GamePlatform.Xenon)
+            {
+                var format = mipToLoad.Export.GetProperty<EnumProperty>(@"Format")?.Value.Name;
+                data = Xbox360Tiling.Untile(data, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(format));
+            }
             return data;
         }
 

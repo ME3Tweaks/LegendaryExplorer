@@ -316,12 +316,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     // A target-game class donor may omit a source-game override that was imported separately.
                     // Register it before FileLib initializes against the destination package or it won't be linked in
                     RegisterCrossGameClassFunctions(rop);
+
+                    // 11/04/2026 - Add function to determine if it's actually the destination game so we relink against the correct game
+                    var destPcc = rop.CrossPackageMap[functionsToRelink[0]].FileRef;
+                    bool IsDestinationGameFunction(ExportEntry func) => func.Game == destPcc.Game || (func.Game.IsLEGame3() && destPcc.Game.IsLEGame3());
+                    // If every function is from the destination's game, usopSource is never used, so the fallback doesn't matter.
+                    var sourceGame = functionsToRelink.FirstOrDefault(x => !IsDestinationGameFunction(x))?.Game ?? rop.CrossPackageMap.First().Key.Game;
+
                     // Reused for every cross-game function relink that shares this rop instance (instead of a new
                     // cache root being created per call) via RelinkerOptionsPackage.GetOrCreateCrossGameFunctionSourceCache.
                     // Disposed when rop is, if rop owns it - see RelinkerOptionsPackage.Dispose.
                     UnrealScriptOptionsPackage usopSource = new UnrealScriptOptionsPackage()
                     {
-                        Cache = rop.GetOrCreateCrossGameFunctionSourceCache(rop.CrossPackageMap.First().Key.Game), // Cross game source will use its own cache
+                        Cache = rop.GetOrCreateCrossGameFunctionSourceCache(sourceGame), // Cross game source will use its own cache
                         CustomFileResolver = rop.SourceCustomImportFileResolver,
                     };
 
@@ -347,7 +354,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             // We use different USOP objects depending on what game we are initializing the FileLib for. If a
                             // class is donated from the target game we use the dest one. If there is no donor, it might be coming cross
                             // game and we want to use the source game instead.
-                            sourceOK &= sourceLib.Initialize(funcToRelink.FileRef.Game == rop.CrossPackageMap.First().Key.Game ? usopSource : usopDest);
+                            sourceOK &= sourceLib.Initialize(IsDestinationGameFunction(funcToRelink) ? usopDest : usopSource);
                             if (!sourceOK)
                             {
                                 rop.RelinkReport.Add(new EntryStringPair(funcToRelink, $"{funcToRelink.UIndex} {funcToRelink.InstancedFullPath} function relinking failed. Could not initialize the FileLib! This will likely be unusable. {string.Join("\n", sourceLib.InitializationLog.AllErrors.Select(x => x.Message))}"));
@@ -357,7 +364,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                     }
 
-                    var destPcc = rop.CrossPackageMap[functionsToRelink[0]].FileRef;
                     FileLib destFL = new FileLib(destPcc);
                     var destOK = destFL.Initialize(usopDest);
 
@@ -388,7 +394,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             var debugTargetEntry = rop.CrossPackageMap[f];
 #endif
 
-                            var sourceInfo = UnrealScriptCompiler.DecompileExport(f, sourceFileLibs[f.FileRef], usopSource);
+                            var sourceInfo = UnrealScriptCompiler.DecompileExport(f, sourceFileLibs[f.FileRef], IsDestinationGameFunction(f) ? usopDest : usopSource);
                             //    var targetFunc = ObjectBinary.From<UFunction>(targetFuncExp);
                             //    targetFunc.ScriptBytes = new byte[0]; // Zero out function
                             //    targetFuncExp.WriteBinary(targetFunc);

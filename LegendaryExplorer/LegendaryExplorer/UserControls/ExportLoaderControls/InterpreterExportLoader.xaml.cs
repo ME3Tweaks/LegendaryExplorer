@@ -153,6 +153,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             LoadCommands();
             InitializeComponent();
+            // Hosts can load an export before this control's Loaded event - store it here
+            Interpreter_Hexbox = (HexBox)Interpreter_Hexbox_Host.Child;
             Settings.StaticPropertyChanged += SettingChanged;
             ThemeManager.ThemeChanged += Theme_Changed;
             EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj

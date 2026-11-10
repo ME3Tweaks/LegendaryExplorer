@@ -326,7 +326,7 @@ namespace LegendaryExplorerCore.Packages
                     //Debug.WriteLine($"in {i}, {j}: {BitConverter.ToString(MD5.HashData(datain)).Replace(@"-", "").ToLowerInvariant()}");
                     //Buffer.BlockCopy(Chunks[i].Compressed, pos, datain, 0, b.compressedsize);
                     pos += b.compressedsize;
-                    if (platform is GamePlatform.PS3 or GamePlatform.WiiU && b.compressedsize == b.uncompressedsize)
+                    if (platform is GamePlatform.PS3 or GamePlatform.WiiU or GamePlatform.Xenon && b.compressedsize == b.uncompressedsize)
                     {
                         // WiiU and PS3 files sometimes have weird case where one single block has same sizes and does not have LZMA compression flag for some reason
                         // These are very uncommon

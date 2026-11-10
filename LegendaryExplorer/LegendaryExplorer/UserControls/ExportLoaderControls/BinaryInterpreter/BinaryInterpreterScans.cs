@@ -1421,7 +1421,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     Items = ReadList(portalNodesCount, i => MakeInt32Node(bin, $"{i}"))
                 });
 
-                if (Pcc.Game < MEGame.UDK)
+                if (Pcc.Game < MEGame.UDK || Pcc.Game.IsGame3()) // Covers LMP
                 {
                     subnodes.Add(MakeInt32Node(bin, "FMeshEdge Size"));
                     int legacyedgesCount = bin.ReadInt32();
