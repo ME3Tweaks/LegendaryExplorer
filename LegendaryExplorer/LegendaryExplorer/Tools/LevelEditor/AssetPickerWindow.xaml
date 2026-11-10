@@ -91,10 +91,10 @@
             </Grid.ColumnDefinitions>
             <ListBox x:Name="ChoiceList" ItemsSource="{Binding VisibleChoices}" SelectedItem="{Binding Selected}" ItemTemplate="{StaticResource ChoiceRow}"
                      VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
-                     MouseDoubleClick="ChoiceList_MouseDoubleClick" Visibility="{Binding ShowList, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                     Visibility="{Binding ShowList, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <TreeView x:Name="FolderTree" ItemsSource="{Binding FolderRoots}" Background="{StaticResource EditorPanel}" Foreground="{StaticResource EditorText}" BorderThickness="0"
                       VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      SelectedItemChanged="FolderTree_SelectedItemChanged" MouseDoubleClick="FolderTree_MouseDoubleClick"
+                      SelectedItemChanged="FolderTree_SelectedItemChanged"
                       Visibility="{Binding ShowFolders, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type local:AssetFolder}" ItemsSource="{Binding Children}">

@@ -16,8 +16,11 @@ public static class ActorCommit
     /// <param name="files">The files whose dirty actors are written, in the order their packages join the scope</param>
     /// <param name="beforeActors">Package writes made in the same scope before the actors' (a decal migration), rolled back with them on failure</param>
     /// <param name="skipped">Actors neither written nor accepted (decals the migration moved to another package)</param>
-    public static void Commit(IReadOnlyList<OpenLevelFile> files, Action beforeActors = null, IReadOnlySet<ActorProxy> skipped = null)
+    /// <param name="sources">The cache other files' assets are copied from (<see cref="AssetPorting.CopyIn"/>), shared with the migration; by default the commit's own</param>
+    public static void Commit(IReadOnlyList<OpenLevelFile> files, Action beforeActors = null, IReadOnlySet<ActorProxy> skipped = null, PackageCache sources = null)
     {
+        using var ownSources = sources is null ? new PackageCache() : null;
+        sources ??= ownSources;
         var deletions = files.SelectMany(f => f.PendingDeletions).ToArray();
         var deleted = deletions.SelectMany(d => d.Entries).ToHashSet<IEntry>();
         // Each file's own: a UIndex means nothing in another package. Taken now, since trashing can change them
@@ -29,9 +32,12 @@ public static class ActorCommit
         {
             try
             {
-                // Other files' assets are copied in before anything refers to them, including a decal that the migration moves (from its own package)
-                useChosenAssets = AssetPorting.CopyIn(files.SelectMany(f => f.PendingCreations.Concat(f.Actors.Where(a => a.IsDirty))).Distinct().ToList());
+                // First, since it checks that nothing has changed the packages since it was prepared. A moved decal's material from another file is
+                // copied into its new package there
                 beforeActors?.Invoke();
+                // Other files' assets are copied in before anything refers to them
+                useChosenAssets = AssetPorting.CopyIn(files.SelectMany(f => f.PendingCreations.Concat(f.Actors.Where(a => a.IsDirty)))
+                    .Where(a => skipped?.Contains(a) != true).Distinct().ToList(), sources);
                 // Allocate every draft across the batch before writing any references, regardless of proxy family.
                 foreach (var file in files)
                 {

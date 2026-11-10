@@ -62,25 +62,31 @@ public static class AssetPicking
     };
 
     /// <summary>
-    /// The choices for a pick: the destination's own entries of the kind (exports and imports) by name, then the catalog's other assets of it by name.
-    /// An entry the catalog lists is in the kind if the catalog says so. One it doesn't is if it's of the kind's class, and for a decal material, if the
-    /// game draws it on a decal (<see cref="MaterialUsage.DecalProblem"/>, resolving it through <paramref name="cache"/>). Without a catalog, only the
-    /// destination's entries. Can be called off the UI thread
+    /// The destination's own entries of the kind (exports and imports), by name: of the kind's class, and for a decal material, drawn on a decal by the
+    /// game (<see cref="MaterialUsage.DecalProblem"/>, resolving it through <paramref name="cache"/>). Judged as they are in the file, which may be edited,
+    /// not as the asset database recorded them. Can be called off the UI thread
     /// </summary>
-    public static List<AssetChoice> Choices(IMEPackage destination, AssetKind kind, AssetCatalog catalog, PackageCache cache)
+    public static List<AssetChoice> InFile(IMEPackage destination, AssetKind kind, PackageCache cache)
     {
         string className = ClassOf(kind);
-        bool InKind(IEntry entry, IndexedAsset indexed) => indexed?.Is(kind)
-            ?? (kind is not AssetKind.DecalMaterial || MaterialUsage.DecalProblem(entry, cache) is null);
-        var inFile = destination.Exports.Where(e => !e.IsDefaultObject).Cast<IEntry>().Concat(destination.Imports)
-            .Where(e => e.IsA(className)).Select(e => (Entry: e, Indexed: catalog?.Find(e.InstancedFullPath)))
-            .Where(e => InKind(e.Entry, e.Indexed))
-            .Select(e => AssetChoice.InFile(e.Entry, e.Indexed))
+        return destination.Exports.Where(e => !e.IsDefaultObject).Cast<IEntry>().Concat(destination.Imports)
+            .Where(e => e.IsA(className) && (kind is not AssetKind.DecalMaterial || MaterialUsage.DecalProblem(e, cache) is null))
+            .Select(e => AssetChoice.InFile(e, null))
             .OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase).ThenBy(c => c.InstancedFullPath, StringComparer.OrdinalIgnoreCase).ToList();
-        if (catalog is null) return inFile;
-        var paths = new HashSet<string>(inFile.Select(c => c.InstancedFullPath), StringComparer.OrdinalIgnoreCase);
-        inFile.AddRange(catalog.Assets(kind).Where(a => !paths.Contains(a.InstancedFullPath)).Select(AssetChoice.FromIndex));
-        return inFile;
+    }
+
+    /// <summary>
+    /// The choices for a pick with the game's asset database: <paramref name="inFile"/> (<see cref="InFile"/>, of <paramref name="destination"/>) with
+    /// what the catalog records about each, then the catalog's other assets of the kind, by name. None at a path the destination has any entry at, even
+    /// one <see cref="InFile"/> left out or of another class: the game loads one object per path, so a commit would use the destination's, or refuse a
+    /// different one (<see cref="AssetPorting.Copy"/>). Opens no other package
+    /// </summary>
+    public static List<AssetChoice> WithCatalog(IMEPackage destination, IReadOnlyList<AssetChoice> inFile, AssetKind kind, AssetCatalog catalog)
+    {
+        var choices = inFile.Select(c => AssetChoice.InFile(c.Entry, catalog.Find(c.InstancedFullPath))).ToList();
+        var paths = new HashSet<string>(destination.Exports.Cast<IEntry>().Concat(destination.Imports).Select(e => e.InstancedFullPath), StringComparer.OrdinalIgnoreCase);
+        choices.AddRange(catalog.Assets(kind).Where(a => !paths.Contains(a.InstancedFullPath)).Select(AssetChoice.FromIndex));
+        return choices;
     }
 
     /// <summary>The choices matching every word of <paramref name="query"/>, in a path, source or file name, in order</summary>

@@ -1564,6 +1564,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
         CancelViewportDrag();
         var files = requested.ToHashSet();
+        // Other files' assets are opened from disk once for the commit, by the decal migration and the commit's own copying
+        using var sources = new PackageCache();
         DecalPackageMigration migration;
         try
         {
@@ -1583,7 +1585,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
             foreach (var spline in files.SelectMany(f => f.Actors).OfType<SplineActorProxy>().Where(s => s.IsDirty))
                 spline.ValidateConnectionsForCommit();
-            migration = DecalPackageMigration.Prepare(files.SelectMany(f => f.Actors).OfType<DecalActorProxy>());
+            migration = DecalPackageMigration.Prepare(files.SelectMany(f => f.Actors).OfType<DecalActorProxy>(), sources);
         }
         catch (Exception error) when (error is not OutOfMemoryException)
         {
@@ -1597,7 +1599,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             // the busy overlay first would mean running the dispatcher's queue in the middle of the commit
             Exception failure = null;
             Mouse.OverrideCursor = Cursors.Wait;
-            try { ActorCommit.Commit(OpenFiles.Where(files.Contains).ToList(), migration.Apply, migration.Moves.Select(m => (ActorProxy)m.Actor).ToHashSet()); }
+            try { ActorCommit.Commit(OpenFiles.Where(files.Contains).ToList(), migration.Apply, migration.Moves.Select(m => (ActorProxy)m.Actor).ToHashSet(), sources); }
             catch (Exception error) when (error is not OutOfMemoryException) { failure = error; }
             finally { Mouse.OverrideCursor = null; }
             if (failure is not null)

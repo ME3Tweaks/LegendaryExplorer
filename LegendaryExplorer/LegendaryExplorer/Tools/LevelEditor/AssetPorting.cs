@@ -23,8 +23,12 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 internal static class AssetPorting
 {
     /// <summary>Copies in the assets <paramref name="actors"/> would write references to</summary>
+    /// <param name="sources">
+    /// The commit's own cache the other files are opened from disk in, as the asset database found them: never the editor's (another tool's copy may
+    /// have unsaved edits), and porting can change its source (EntryExporter.PrepareGlobalFileForPorting)
+    /// </param>
     /// <returns>Points the actors back at the other files' assets, for when the commit is abandoned</returns>
-    public static Action CopyIn(IEnumerable<ActorProxy> actors)
+    public static Action CopyIn(IEnumerable<ActorProxy> actors, PackageCache sources)
     {
         var copies = new Dictionary<(IMEPackage Package, AssetReference Asset), AssetReference>();
         var restores = new List<Action>();
@@ -32,9 +36,6 @@ internal static class AssetPorting
         {
             for (int i = restores.Count - 1; i >= 0; i--) restores[i]();
         }
-        // Opened from disk for the copy, as the asset database found them: never the editor's own (another tool's, which may have unsaved edits), and
-        // porting can change its source (EntryExporter.PrepareGlobalFileForPorting)
-        using var sources = new PackageCache();
         try
         {
             foreach (var actor in actors)

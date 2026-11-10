@@ -73,8 +73,31 @@ public sealed class AssetPreviewScene : IDisposable
         model?.Dispose();
         model = null;
         Context.ErrorText = null;
-        //a shader load reads the packages
-        if (!loadingShaders && Context.PackageCache.Cache.Count > maxPackages) Context.EmptyCaches();
+        //not while a shader load or another thread reads the packages
+        if (!loadingShaders && packageReads == 0 && Context.PackageCache.Cache.Count > maxPackages) Context.EmptyCaches();
+    }
+
+    //reads of the context's packages running on other threads (ReadPackages); counted on the UI thread
+    private int packageReads;
+
+    /// <summary>
+    /// Runs <paramref name="read"/> on another thread with the context's package cache, which <see cref="Clear"/> doesn't empty until it's done, even if
+    /// its result is no longer wanted. Called from the UI thread. Closing the picker disposes the context, and its packages, regardless: a read still
+    /// running may then throw, or open more packages, which are let go with it; either way its result is dropped. Nothing locks the packages
+    /// themselves: the read and what the preview draws may use one at the same time
+    /// </summary>
+    public async Task<T> ReadPackages<T>(Func<PackageCache, T> read)
+    {
+        var cache = Context.PackageCache;
+        packageReads++;
+        try
+        {
+            return await Task.Run(() => read(cache));
+        }
+        finally
+        {
+            packageReads--;
+        }
     }
 
     //a bounding box's sphere is larger than a sphere or plane in it, so they're framed by their own size
@@ -192,8 +215,10 @@ public sealed class AssetPreviewScene : IDisposable
                     for (int segment = 0; segment < Segments; segment++)
                     {
                         uint a = (uint)(ring * (Segments + 1) + segment), b = a + 1, c = a + Segments + 1, d = c + 1;
-                        AddWound(vertices, triangles, Vector3.Normalize(vertices[(int)a].Position + vertices[(int)d].Position), a, b, c);
-                        AddWound(vertices, triangles, Vector3.Normalize(vertices[(int)a].Position + vertices[(int)d].Position), b, d, c);
+                        var outward = Vector3.Normalize(vertices[(int)a].Position + vertices[(int)d].Position);
+                        //a pole's ring is one point, so next to it, each quad is one triangle
+                        if (ring > 0) AddWound(vertices, triangles, outward, a, b, c);
+                        if (ring < Rings - 1) AddWound(vertices, triangles, outward, b, d, c);
                     }
                 }
                 break;

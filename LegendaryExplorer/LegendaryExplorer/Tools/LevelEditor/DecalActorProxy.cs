@@ -602,7 +602,10 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
 
     public override bool TestUIndexes(HashSet<int> exports) => base.TestUIndexes(exports)
         || receivers.Any(r => r.Export?.FileRef == Export.FileRef && (exports.Contains(r.Export.UIndex) || exports.Contains(r.Export.idxLink)))
-        || materialEntry?.Entry is { } entry && entry.FileRef == Export.FileRef && exports.Contains(entry.UIndex);
+        //the material drawn, and the one chosen, which it's drawn with from the next update (after a commit, the copy of another file's)
+        || UsesAny(materialEntry, exports) || UsesAny(owner.Decal?.Settings.Material, exports);
+
+    private bool UsesAny(AssetReference material, HashSet<int> exports) => material?.Entry is { } entry && entry.FileRef == Export.FileRef && exports.Contains(entry.UIndex);
 
     protected override void Dispose(bool disposing)
     {

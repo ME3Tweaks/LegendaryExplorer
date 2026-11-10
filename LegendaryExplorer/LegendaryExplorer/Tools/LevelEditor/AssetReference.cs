@@ -43,8 +43,17 @@ public sealed record AssetReference
         if (entry is null) return null;
         if (entry.FileRef == package) return To(entry);
         var export = EffectiveLightingProperties.Resolve(entry, cache) ?? entry;
+        if (export.FileRef.FilePath is null)
+            throw new InvalidOperationException($"{export.InstancedFullPath} is in a package that wasn't opened from a file, so it can't be referred to from {Path.GetFileName(package.FilePath)}.");
         return InFile(export.FileRef.FilePath, export.InstancedFullPath);
     }
+
+    //a file's path and an object's path are each the same whatever their case
+    public bool Equals(AssetReference other) => other is not null && EqualityComparer<IEntry>.Default.Equals(Entry, other.Entry)
+        && string.Equals(SourceFile, other.SourceFile, StringComparison.OrdinalIgnoreCase) && string.Equals(SourcePath, other.SourcePath, StringComparison.OrdinalIgnoreCase);
+
+    public override int GetHashCode() => HashCode.Combine(Entry, SourceFile is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(SourceFile),
+        SourcePath is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(SourcePath));
 
     /// <summary>Whether it's another file's export, which a commit would have to copy into the destination</summary>
     public bool IsExternal => Entry is null;

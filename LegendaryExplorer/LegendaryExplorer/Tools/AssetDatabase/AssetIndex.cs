@@ -53,7 +53,7 @@ public sealed class IndexedAsset
     /// <summary>Its copies, the one to use first: base game, then official DLC, then mods</summary>
     public IReadOnlyList<AssetCopy> Copies { get; init; }
     public AssetCopy Source => Copies[0];
-    internal int Kinds;
+    internal int Kinds { get; init; }
     public bool Is(AssetKind kind) => (Kinds & 1 << (int)kind) != 0;
 }
 
@@ -141,7 +141,7 @@ public sealed class AssetCatalog
 
     //a base material's bool property, as its record lists them (MaterialScanner: the property's name, type and value)
     private static bool SetsFlag(MaterialRecord material, string flag) =>
-        material.MatSettings.Any(s => s.Name == flag && s.Parm1 == nameof(BoolProperty) && s.Parm2 == bool.TrueString);
+        material.MatSettings.Any(s => s.Name == flag && s.Parm1 == nameof(PropertyType.BoolProperty) && s.Parm2 == bool.TrueString);
 }
 
 /// <summary>A game's <see cref="AssetCatalog"/>, or why there's none: <paramref name="Problem"/> is null when it loaded</summary>

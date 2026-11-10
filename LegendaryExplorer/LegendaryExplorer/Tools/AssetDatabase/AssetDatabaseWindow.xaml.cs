@@ -49,6 +49,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     {
         #region Declarations
         // v9.0: Textures now use .IsTexture() to get more texture class types. Add MaterialInstances to Materials.
+        // v10.0: Meshes, materials and particle systems record their instanced full path, and materials their class and parent's path, for the Level Editor's asset pickers.
         public const string dbCurrentBuild = "10.0"; //If changes are made that invalidate old databases edit this.
 
         private int previousView { get; set; }

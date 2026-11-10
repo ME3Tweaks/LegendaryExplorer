@@ -15,11 +15,16 @@ internal sealed class DecalPackageMigration : IDisposable
 {
     internal sealed record Move(DecalActorProxy Actor, IMEPackage Destination, int ActorIndex);
     private readonly Dictionary<IMEPackage, PackageEdit> packages = [];
+    //other files' materials are copied from: the commit's (AssetPorting.CopyIn)
+    private readonly PackageCache sources;
     internal List<Move> Moves { get; } = [];
 
-    internal static DecalPackageMigration Prepare(IEnumerable<DecalActorProxy> actors)
+    private DecalPackageMigration(PackageCache sources) => this.sources = sources;
+
+    /// <param name="sources">The cache other files' materials are copied from, opened from disk: the commit's (<see cref="ActorCommit.Commit"/>)</param>
+    internal static DecalPackageMigration Prepare(IEnumerable<DecalActorProxy> actors, PackageCache sources)
     {
-        var result = new DecalPackageMigration();
+        var result = new DecalPackageMigration(sources);
         try
         {
             foreach (var actor in actors.Where(a => a.ProjectionPackage != a.Export.FileRef))
@@ -52,8 +57,16 @@ internal sealed class DecalPackageMigration : IDisposable
         donorComponent.WriteProperty(new ArrayProperty<StructProperty>("DecalReceivers"));
         // The pending filter is written with destination indices after import, just like the receiver list.
         donorComponent.WriteProperty(new ArrayProperty<ObjectProperty>("Filter"));
-        // A pending material is a source package entry, so the donor (a copy of it) has it at the same index, and the import carries it across
-        if (actor.Decal.MaterialChanged) donorComponent.WriteProperty(new ObjectProperty(actor.Decal.Settings.Material?.EntryIn(actor.Export.FileRef).UIndex ?? 0, "DecalMaterial"));
+        // A pending material of the source package is an entry the donor (a copy of it) has at the same index, and the import carries it across. Another
+        // file's is copied into the destination after the import, as a commit copies one in (AssetPorting), never into the package the decal is leaving;
+        // until then the donor has none, so the import doesn't carry the old one across
+        AssetReference external = null;
+        if (actor.Decal.MaterialChanged)
+        {
+            var material = actor.Decal.Settings.Material;
+            if (material is { IsExternal: true }) external = material;
+            donorComponent.WriteProperty(new ObjectProperty(external is null ? material?.EntryIn(actor.Export.FileRef).UIndex ?? 0 : 0, "DecalMaterial"));
+        }
         donorComponent.WriteBinary(DecalComponent.Create());
         var subtree = donorActor.GetAllDescendants().Append(donorActor).ToHashSet();
         if (subtree.GetEntriesThatReferenceThese().Values.Any(referrers => referrers.Keys.Any(e => !subtree.Contains(e) && e.UIndex != sourceLevel.UIndex)))
@@ -87,6 +100,8 @@ internal sealed class DecalPackageMigration : IDisposable
         if (errors.Count > 0 || imported is not ExportEntry newActor
             || !options.CrossPackageMap.TryGetValue(donorComponent, out var component) || component is not ExportEntry newComponent)
             throw new InvalidOperationException($"Could not relink {actor.Export.ObjectName} into the receiving package: {string.Join("; ", errors)}");
+        if (external is not null)
+            newComponent.WriteProperty(new ObjectProperty(AssetPorting.Copy(external, destination.Staged, sources).UIndex, "DecalMaterial"));
         actor.DecalComponent.CommitProjection(newComponent);
         var targetBinary = targetLevel.GetBinaryData<Level>();
         targetBinary.Actors.Add(newActor.UIndex);

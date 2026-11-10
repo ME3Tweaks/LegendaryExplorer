@@ -178,20 +178,24 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
     {
         MEGame game = request.Destination.Game;
         var loading = AssetIndex.Load(game);
-        //listing a file's decal materials checks each one, which can open the packages its imports are in
-        var cache = preview.Context.PackageCache;
+        List<AssetChoice> inFile;
+        //what's in this file, for the status line: the rest of the game's are listed even if the file's own couldn't be
+        string inThisFile;
         try
         {
-            choices = await Task.Run(() => AssetPicking.Choices(request.Destination, request.Kind, null, cache));
+            //listing a file's decal materials checks each one, which can open the packages its imports are in
+            inFile = await preview.ReadPackages(cache => AssetPicking.InFile(request.Destination, request.Kind, cache));
+            inThisFile = $"{Count(inFile.Count)} in this file.";
         }
         catch (Exception e)
         {
-            Status = $"This file's assets couldn't be listed: {e.Message}";
-            return;
+            inFile = [];
+            inThisFile = $"This file's own {Noun(2)} couldn't be listed: {e.Message}";
         }
         if (closed) return;
+        choices = inFile;
         ApplySearch();
-        Status = $"{Count(choices.Count)} in this file. Loading the {game} asset database to list the rest of the game's…";
+        Status = $"{inThisFile} Loading the {game} asset database to list the rest of the game's…";
         AssetIndexLoad load;
         try
         {
@@ -202,18 +206,24 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
             load = new(null, $"The {game} asset database couldn't be loaded: {e.Message}");
         }
         if (closed) return;
-        int inFile = choices.Count;
         if (load.Catalog is { } catalog)
         {
-            choices = await Task.Run(() => AssetPicking.Choices(request.Destination, request.Kind, catalog, cache));
+            try
+            {
+                choices = await Task.Run(() => AssetPicking.WithCatalog(request.Destination, inFile, request.Kind, catalog));
+            }
+            catch (Exception e)
+            {
+                Status = $"{inThisFile} The rest of {game}'s couldn't be listed from its asset database: {e.Message}";
+                return;
+            }
             if (closed) return;
-            inFile = choices.Count(c => c.Entry is not null);
-            Status = $"{Count(inFile)} in this file, and {Count(choices.Count - inFile)} elsewhere in {game}, from its asset database of {catalog.GenerationDate}.";
+            Status = $"{inThisFile} {Count(choices.Count - inFile.Count)} elsewhere in {game}, from its asset database of {catalog.GenerationDate}.";
             ApplySearch();
         }
         else
         {
-            Status = $"{Count(inFile)} in this file. {load.Problem} Build it in the Asset Database window to pick from the whole game.";
+            Status = $"{inThisFile} {load.Problem} Build it in the Asset Database window to pick from the whole game.";
             CanOpenDatabase = true;
             if (!declinedDatabasePrompts.Contains(game))
             {
@@ -261,7 +271,7 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
         {
             //moving through the list with the arrow keys opens only where it stops
             await Task.Delay(100, cancellation.Token);
-            resolved = await Task.Run(() => AssetPicking.Resolve(choice, request, preview.Context.PackageCache), cancellation.Token);
+            resolved = await preview.ReadPackages(cache => AssetPicking.Resolve(choice, request, cache));
         }
         catch (OperationCanceledException)
         {
@@ -329,16 +339,13 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
         return string.Join("\n", lines);
     }
 
-    private void Use()
+    //the Use button (or Enter) is the only way to choose: double-clicking the list doesn't
+    private void Use_Click(object sender, RoutedEventArgs e)
     {
         if (!CanUse || usable is null) return;
         chosen = usable;
         DialogResult = true;
     }
-
-    private void Use_Click(object sender, RoutedEventArgs e) => Use();
-
-    private void ChoiceList_MouseDoubleClick(object sender, MouseButtonEventArgs e) => Use();
 
     //a folder's selection leaves the asset shown
     private void FolderTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -346,17 +353,11 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
         if (e.NewValue is AssetChoice choice) Selected = choice;
     }
 
-    //on a folder, it opens or closes it
-    private void FolderTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-    {
-        if (FolderTree.SelectedItem is AssetChoice) Use();
-    }
-
-    //from the search box, down goes into the list, or the tree
+    //from the search box, down goes into the list, or the tree, with the search typed so far applied
     private void SearchBox_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key != Key.Down || VisibleChoices.Count == 0) return;
-        ApplySearch();
+        if (e.Key != Key.Down) return;
+        if (searchTimer.IsEnabled) ApplySearch();
         if (VisibleChoices.Count == 0) return;
         if (showFolders)
         {
