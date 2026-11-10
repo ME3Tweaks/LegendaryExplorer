@@ -317,6 +317,8 @@ internal static class ShaderParameterSetters
 
         static void SetShadowTexture(MeshRenderContext context, FShaderResourceParameter param, LightInteraction interaction)
         {
+            //unbound when the compiler optimized the shadow map out (e.g. a shader that outputs a constant): its indices are then meaningless
+            if (!param.IsBound()) return;
             //shadow maps hold linear values, and don't stream
             context.LEEffect.PixelShaderResources.Set(param.BaseIndex, interaction.ShadowMap?.Texture.ResidentView ?? context.WhiteTexView);
             context.LEEffect.PixelShaderResources.SetSampler(param.SamplerIndex, context.GetSamplerState(TextureAddressMode.Wrap, TextureAddressMode.Wrap));
