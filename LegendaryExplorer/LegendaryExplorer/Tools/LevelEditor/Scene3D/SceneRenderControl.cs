@@ -11,6 +11,8 @@ using SharpDX.Direct3D;
 using LegendaryExplorerCore.Unreal;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Windows.Threading;
 using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 using Point = System.Windows.Point;
@@ -20,6 +22,7 @@ using LegendaryExplorerCore.Packages;
 using Texture2D = SharpDX.Direct3D11.Texture2D;
 using LegendaryExplorer.Dialogs;
 using System.Numerics;
+using LegendaryExplorer.Libraries;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
@@ -469,6 +472,10 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
     private Microsoft.Wpf.Interop.DirectX.D3D11Image D3DImage;
     private Image Image;
     private readonly Stopwatch Stopwatch = new();
+    private Thread framePacer;
+    private volatile bool pacing;
+    //1 from when a frame is asked for until it has been drawn
+    private int framePending;
     private bool _shouldRender;
     private RenderContext _context;
     private Action _onImageRendered;
@@ -561,7 +568,9 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
                 return;
             }
 
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
+            pacing = true;
+            framePacer = new Thread(PaceFrames) { IsBackground = true, Name = "Viewport frame pacing" };
+            framePacer.Start();
             InitiallyLoaded = true;
             D3DImage.SetPixelSize(RenderWidth, RenderHeight);
         }
@@ -602,7 +611,8 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
     /// </summary>
     public void Dispose()
     {
-        CompositionTarget.Rendering -= CompositionTarget_Rendering;
+        //(the pacing thread stops within a frame, and a frame it has already asked for draws nothing)
+        pacing = false;
         Unloaded -= SceneRenderControlWPF_Unloaded;
 
         if (Context.Backbuffer != null)
@@ -640,12 +650,39 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
         D3DImage.SetPixelSize(RenderWidth, RenderHeight);
     }
 
-    private void CompositionTarget_Rendering(object sender, EventArgs e)
+    /// <summary>
+    /// Asks for a frame each time the desktop is composed (once a refresh), if the last one has been drawn. Frames aren't drawn from
+    /// CompositionTarget.Rendering: WPF paces those itself, and once frames at Render priority have kept its Input-priority check from running
+    /// for half a second, it drops the next one to Input priority. Input-priority work only runs while no input is waiting, so a mouse
+    /// that keeps moving then holds frames back until it stops. Frames asked for here stay at Render priority (updating the image has WPF
+    /// draw it at Render priority too), and the next isn't asked for until the refresh after one finishes, so input is processed in between
+    /// </summary>
+    private void PaceFrames()
     {
-        if (_shouldRender && Context is { IsReady: true })
+        while (pacing)
         {
-            //Debug.WriteLine("Rendering");
-            D3DImage?.RequestRender();
+            long start = Stopwatch.GetTimestamp();
+            //returns at the next composition, or at once if composition is off
+            if (WindowsAPI.DwmFlush() < 0 || Stopwatch.GetElapsedTime(start).TotalMilliseconds < 1) Thread.Sleep(15);
+            if (Interlocked.CompareExchange(ref framePending, 1, 0) == 0)
+            {
+                Dispatcher.InvokeAsync(DrawFrame, DispatcherPriority.Render);
+            }
+        }
+    }
+
+    private void DrawFrame()
+    {
+        try
+        {
+            if (pacing && _shouldRender && Context is { IsReady: true })
+            {
+                D3DImage?.RequestRender();
+            }
+        }
+        finally
+        {
+            Volatile.Write(ref framePending, 0);
         }
     }
 

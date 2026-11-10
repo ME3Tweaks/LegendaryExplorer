@@ -414,6 +414,8 @@ public class LevelEditorRenderContext : MeshRenderContext
     /// <summary>Starts a viewport click, retaining Ctrl/Shift even if released before the mouse button.</summary>
     public bool MouseDown(MouseButtons button, int x, int y, ModifierKeys modifiers)
     {
+        //the press hit-tests for itself, and a hover read later mustn't change what it picked
+        pendingHover = null;
         //a new press supersedes a release that never arrived
         swallowedReleases.Remove(button);
         if (IsDragging)
@@ -546,6 +548,18 @@ public class LevelEditorRenderContext : MeshRenderContext
         }
         if (base.MouseMove(x, y)) return true;
 
+        pendingHover = (x, y);
+        return false;
+    }
+
+    /// <summary>
+    /// Where the cursor last hovered, hit-tested once a frame in <see cref="Update"/>. Reading the hit buffer waits for the GPU,
+    /// so testing every mouse move stalls the UI thread for each one, and a fast-moving mouse stops frames being drawn at all
+    /// </summary>
+    private (int X, int Y)? pendingHover;
+
+    private void UpdateHover(int x, int y)
+    {
         if (HitBufferView is not null)
         {
             IHitProxy selected = GetHitProxy(x, y);
@@ -566,7 +580,6 @@ public class LevelEditorRenderContext : MeshRenderContext
                     break;
             }
         }
-        return false;
     }
 
     private IHitProxy GetHitProxy(int x, int y)
@@ -652,6 +665,9 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public override void Update(float timestep)
     {
+        //(a drag owns what's hovered until it ends)
+        if (pendingHover is (int hoverX, int hoverY) &&!IsDragging) UpdateHover(hoverX, hoverY);
+        pendingHover = null;
         // Pose before skinning; hidden actors still need current bounds for light environments.
         base.Update(timestep);
         TerrainSculpt?.Update(this, timestep);
