@@ -18,6 +18,17 @@ public sealed class DecalActorProxy : EditorActorProxy
     private readonly DecalComponentProxy decal;
     internal TransformSnapshot ProjectionBaseline;
     public EditableDecal Decal { get; }
+
+    //a material is written only when it's changed (one inherited from an archetype in another package isn't)
+    internal override IEnumerable<AssetReference> AssetsToCopy => Decal is { MaterialChanged: true, Settings.Material: { } material } ? [material] : [];
+
+    internal override Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf)
+    {
+        var settings = Decal.Settings;
+        if (settings.Material is not { } material) return () => { };
+        Decal.Restore(settings with { Material = copyOf(material) });
+        return () => Decal.Restore(settings);
+    }
     public bool CanReproject => decal?.EditUnsupportedReason is null && decal is not null;
     public string DecalEditingStatus => decal?.EditingStatus ?? "No decal component.";
     public override string Category => "Decals";

@@ -335,7 +335,8 @@ public sealed class EditableLight : NotifyPropertyChangedBase
             fields = [new BoolProperty(true, "bInitialized")];
             foreach (LightChannelOption channel in Channels)
             {
-                fields.Add(new BoolProperty(false, channel.Name));
+                //Unnamed_1 is the name Unnamed with a number, as the game's field is
+                fields.Add(new BoolProperty(false, NameReference.FromInstancedString(channel.Name)));
             }
         }
         foreach (BoolProperty field in fields.OfType<BoolProperty>())

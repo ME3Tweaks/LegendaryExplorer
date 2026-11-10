@@ -24,10 +24,13 @@ public static class ActorCommit
         var deletedIndexes = deleted.GroupBy(e => e.FileRef).ToDictionary(g => g.Key, g => g.Select(e => e.UIndex).ToHashSet());
         var written = new List<(OpenLevelFile File, ActorProxy Actor)>();
         var created = new HashSet<ActorProxy>();
+        Action useChosenAssets = null;
         using (var scope = PackageEditScope.Begin(files.Select(f => f.Package)))
         {
             try
             {
+                // Other files' assets are copied in before anything refers to them, including a decal that the migration moves (from its own package)
+                useChosenAssets = AssetPorting.CopyIn(files.SelectMany(f => f.PendingCreations.Concat(f.Actors.Where(a => a.IsDirty))).Distinct().ToList());
                 beforeActors?.Invoke();
                 // Allocate every draft across the batch before writing any references, regardless of proxy family.
                 foreach (var file in files)
@@ -54,6 +57,7 @@ public static class ActorCommit
             catch
             {
                 for (int i = written.Count - 1; i >= 0; i--) written[i].Actor.AbandonCommit();
+                useChosenAssets?.Invoke();
                 throw;
             }
         }

@@ -17,7 +17,7 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// <summary>
 /// Picks an asset of a kind for a file being edited, from the file's own entries and every asset of the kind in the game that the asset database lists,
 /// marked with where each is, with search and a preview. The highlighted asset is opened and checked as its use asks. One in another file is chosen by
-/// that file and its path (<see cref="AssetReference"/>): choosing it adds nothing to the file
+/// that file and its path (<see cref="AssetReference"/>): choosing it adds nothing to the file, and a commit copies it in (<see cref="AssetPorting"/>)
 /// </summary>
 public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
 {
@@ -312,7 +312,7 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
             not null => $"In {fileName}",
             _ => $"From {choice.Indexed.Source.File.FileName} ({choice.SourceLabel})"
         });
-        if (choice.Entry is null) lines.Add($"Using it adds nothing to {fileName} until a commit, which can't copy it in yet: that comes next.");
+        if (choice.Entry is null) lines.Add($"Copied into {fileName}, with what it uses, when the change is committed. Until then, nothing is added to it.");
         if (choice.Indexed is { } indexed)
         {
             //the file being edited may be a game file the database lists

@@ -167,6 +167,18 @@ public sealed partial class SplineActorProxy
         return EditConnections("Edit spline mesh", [this], () => { deformMesh = mesh; deformMaterials = values; });
     }
 
+    //only changed ones can be other files' (what was committed, or read from the export, is the package's own)
+    internal override IEnumerable<AssetReference> AssetsToCopy => IsLoft ? deformMaterials.Prepend(deformMesh).Where(a => a is not null) : [];
+
+    //its connections' previews, already drawing them, are left as they are: a commit rebuilds them from what it writes
+    internal override Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf)
+    {
+        var (mesh, materials) = (deformMesh, deformMaterials);
+        deformMesh = mesh is null ? null : copyOf(mesh);
+        deformMaterials = [.. materials.Select(m => m is null ? null : copyOf(m))];
+        return () => (deformMesh, deformMaterials) = (mesh, materials);
+    }
+
     //for a draft copy of a point: its mesh and materials (see CreateDraft)
     private void ChooseMeshesOf(SplineActorProxy source)
     {

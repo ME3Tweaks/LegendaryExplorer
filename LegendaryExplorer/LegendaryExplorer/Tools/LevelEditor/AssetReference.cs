@@ -64,14 +64,13 @@ public sealed record AssetReference
     public IEntry Find(PackageCache cache) => Entry ?? cache.GetCachedPackage(SourceFile)?.FindExport(SourcePath);
 
     /// <summary>
-    /// For a commit writing a reference to it into <paramref name="package"/>: its entry there. Another file's export would have to be copied in, which
-    /// isn't supported yet, so that fails the commit
+    /// For a commit writing a reference to it into <paramref name="package"/>: its entry there. Another file's export must have been copied in, and the
+    /// reference replaced with the copy, first (<see cref="AssetPorting"/>)
     /// </summary>
     public IEntry EntryIn(IMEPackage package)
     {
         if (Entry is null)
-            throw new InvalidOperationException($"{SourcePath} is in {Path.GetFileName(SourceFile)}, and copying assets into {Path.GetFileName(package.FilePath)} " +
-                "from other files isn't supported yet. Choose one of its own, or undo the change that uses it.");
+            throw new InvalidOperationException($"{SourcePath}, from {Path.GetFileName(SourceFile)}, wasn't copied into {Path.GetFileName(package.FilePath)}.");
         if (Entry.FileRef != package) throw new InvalidOperationException($"{Entry.InstancedFullPath} is an entry of another package than {Path.GetFileName(package.FilePath)}.");
         return Entry;
     }

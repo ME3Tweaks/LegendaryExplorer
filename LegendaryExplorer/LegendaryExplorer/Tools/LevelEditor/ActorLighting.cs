@@ -239,7 +239,9 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
             var fields = ChannelFields.DeepClone();
             fields.AddOrReplaceProp(new BoolProperty(true, "bInitialized"));
             foreach (var channel in Channels)
-                fields.AddOrReplaceProp(new BoolProperty((s.Channels & 1u << channel.Bit) != 0, channel.Name));
+                //a channel such as Unnamed_1 is the name Unnamed with a number, as the struct's field is: from the string itself it'd be another name,
+                //added alongside the field rather than replacing it
+                fields.AddOrReplaceProp(new BoolProperty((s.Channels & 1u << channel.Bit) != 0, NameReference.FromInstancedString(channel.Name)));
             result.Add(new StructProperty("LightingChannelContainer", fields, "LightingChannels",
                 GlobalUnrealObjectInfo.IsImmutable("LightingChannelContainer", Component.Game)));
         }

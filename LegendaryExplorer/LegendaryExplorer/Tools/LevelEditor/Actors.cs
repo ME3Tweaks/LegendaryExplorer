@@ -296,6 +296,15 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// <summary>The meshes whose pending lighting edits a commit writes to their own components, alongside this actor's</summary>
     internal virtual IEnumerable<MeshComponentProxy> LightingMeshes => Components.OfType<MeshComponentProxy>();
 
+    /// <summary>The assets a commit of its pending values would write references to, which <see cref="AssetPorting"/> copies in first if they're other files'</summary>
+    internal virtual IEnumerable<AssetReference> AssetsToCopy => [];
+
+    /// <summary>
+    /// For a commit, once <see cref="AssetsToCopy"/> are copied in: uses what <paramref name="copyOf"/> gives for each (its copy, or the asset itself) in
+    /// its place, as if it had been chosen. Returns what puts them back, for when the commit is abandoned
+    /// </summary>
+    internal virtual Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf) => () => { };
+
     /// <summary>Undoes what a commit begun with <see cref="BeginCommit"/> changed in this view, leaving its pending edits as they were</summary>
     internal virtual void AbandonCommit()
     {
@@ -1006,7 +1015,7 @@ public class StaticMeshActorProxy : ActorProxy
 
     //a draft's: the class default's component its own is made from, and the mesh it draws
     private readonly ExportEntry componentTemplate;
-    private readonly AssetReference mesh;
+    private AssetReference mesh;
 
     /// <summary>
     /// A new static mesh actor (a draft) drawing <paramref name="mesh"/>, an entry of its package or another file's mesh. Its component is drawn as the
@@ -1035,6 +1044,16 @@ public class StaticMeshActorProxy : ActorProxy
     }
 
     private protected override bool WritesAllValuesWhenCreated => true;
+
+    internal override IEnumerable<AssetReference> AssetsToCopy => IsDraft && componentTemplate is not null ? [mesh] : [];
+
+    //the preview, already drawing the asset, is left as it is
+    internal override Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf)
+    {
+        var chosen = mesh;
+        mesh = copyOf(mesh);
+        return () => mesh = chosen;
+    }
 
     //a draft's mesh lighting is written to the component its commit makes
     internal override IEnumerable<MeshComponentProxy> LightingMeshes => componentTemplate is null ? base.LightingMeshes : [];

@@ -269,6 +269,17 @@ public sealed class KAssetProxy : SkeletalMeshActorProxy
 internal sealed class EmitterDraftProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, ActorClassInfo info, AssetReference particleSystem, ExportEntry componentTemplate)
     : EditorActorProxy(context, draft, properties, info)
 {
+    private AssetReference particleSystem = particleSystem;
+
+    internal override IEnumerable<AssetReference> AssetsToCopy => IsDraft ? [particleSystem] : [];
+
+    internal override Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf)
+    {
+        var chosen = particleSystem;
+        particleSystem = copyOf(particleSystem);
+        return () => particleSystem = chosen;
+    }
+
     public override void CommitChanges(PackageCache packageCache = null)
     {
         if (Materialized)
