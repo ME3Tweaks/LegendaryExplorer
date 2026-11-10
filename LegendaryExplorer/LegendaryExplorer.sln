@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 18
-VisualStudioVersion = 18.8.12023.21 stable
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendaryExplorer", "LegendaryExplorer\LegendaryExplorer.csproj", "{90722DA5-6E21-4FA5-B625-B832686A10D3}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -49,9 +49,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Tweaks.Wwiser", "submodules\Wwiser.NET\ME3Tweaks.Wwiser\ME3Tweaks.Wwiser.csproj", "{591473D5-22A7-48E8-ADAC-921332DAC7C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegendaryExplorerUnrealDoc", "LegendaryExplorerUnrealDoc\LegendaryExplorerUnrealDoc.csproj", "{FE6D8103-56EC-4638-89E0-B191BFC82AB4}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WwiseAudioPlayer", "WwiseAudioPlayer\WwiseAudioPlayer.vcxproj", "{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendaryExplorerCore.SourceGenerators", "LegendaryExplorerCore.SourceGenerators\LegendaryExplorerCore.SourceGenerators.csproj", "{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}"
 EndProject
 Global
