@@ -144,9 +144,9 @@ public partial class LevelEditor
             return;
         }
         IEntry asset = null;
-        if (ActorCreation.AssetClass(className) is { } assetClass)
+        if (ActorCreation.AssetKindOf(className) is { } assetKind)
         {
-            asset = EntrySelector.GetEntry<IEntry>(this, placementFile.Package, $"Select the new {className}'s {assetClass}", entry => entry.IsA(assetClass));
+            asset = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest($"The new {className}'s {AssetPicking.ClassOf(assetKind)}", placementFile.Package, assetKind));
             //(the scene may have become busy, or the file read-only, while the dialog was open)
             if (asset is null || !CanMutateScene || ActorCreation.FileRefusal(placementFile) is not null) return;
         }

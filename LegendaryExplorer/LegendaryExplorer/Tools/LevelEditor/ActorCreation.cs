@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using FontAwesome5;
+using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
@@ -47,8 +48,10 @@ internal sealed record ActorRecipe(PlacementCategory Category, IReadOnlyList<str
     /// <param name="template">The subobject of its class default that <see cref="ComponentProperty"/> refers to, if it has one</param>
     internal delegate ActorProxy MakeDraft(IActorEditorContext editor, ActorRecord record, PropertyCollection properties, IEntry asset, ExportEntry template);
 
-    /// <summary>The class of the asset to choose before placing one, or null if it needs none</summary>
-    internal string AssetClass { get; init; }
+    /// <summary>The kind of asset to choose before placing one, or null if it needs none</summary>
+    internal AssetKind? Asset { get; init; }
+    /// <summary>The class of <see cref="Asset"/>, or null</summary>
+    internal string AssetClass => Asset is { } kind ? AssetPicking.ClassOf(kind) : null;
     /// <summary>The property of its class default that refers to the component its own is made from, or null if it has none</summary>
     internal string ComponentProperty { get; init; }
     /// <summary>What else that component has to be, if anything</summary>
@@ -77,7 +80,7 @@ public static class ActorCreation
         new(PlacementCategory.StaticMeshes, ["StaticMeshActor"],
             (editor, record, properties, mesh, template) => new StaticMeshActorProxy(editor, record, properties, mesh, template))
         {
-            AssetClass = "StaticMesh", ComponentProperty = "StaticMeshComponent",
+            Asset = AssetKind.StaticMesh, ComponentProperty = "StaticMeshComponent",
             Descriptions = new Dictionary<string, string> { ["StaticMeshActor"] = "A mesh fixed in place, lit by the level's baked lighting" }
         },
         new(PlacementCategory.Lights, LightActorProxy.StandaloneClasses, (editor, record, properties, _, template) => new LightActorProxy(editor, record, properties, template))
@@ -109,7 +112,7 @@ public static class ActorCreation
         new(PlacementCategory.Effects, ["Emitter"],
             (editor, record, properties, system, template) => new EmitterDraftProxy(editor, record, properties, MarkerInfo(record), system, template))
         {
-            AssetClass = "ParticleSystem", ComponentProperty = "ParticleSystemComponent",
+            Asset = AssetKind.ParticleSystem, ComponentProperty = "ParticleSystemComponent",
             Descriptions = new Dictionary<string, string> { ["Emitter"] = "A particle effect" }
         },
         new(PlacementCategory.Splines, ["SplineActor", "SplineLoftActor"], (editor, record, properties, _, _) => new SplineActorProxy(editor, record, properties))
@@ -142,6 +145,9 @@ public static class ActorCreation
 
     /// <summary>The class of the asset to choose for a new <paramref name="className"/>, or null if it needs none</summary>
     public static string AssetClass(string className) => RecipeFor(className)?.AssetClass;
+
+    /// <summary>The kind of asset to choose for a new <paramref name="className"/>, or null if it needs none</summary>
+    public static AssetKind? AssetKindOf(string className) => RecipeFor(className)?.Asset;
 
     /// <summary>Why a new <paramref name="className"/> can't be placed in <paramref name="file"/> now, or null</summary>
     public static string PlacementRefusal(OpenLevelFile file, string className, PackageCache cache) => PlacementRefusal(file, className, cache, out _);

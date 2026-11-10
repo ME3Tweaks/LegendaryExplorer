@@ -1,4 +1,5 @@
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Lightmaps.Lightmass;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
@@ -2308,7 +2309,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void SplineMesh_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
-        var mesh = EntrySelector.GetEntry<IEntry>(this, point.Package, "Select DeformMesh", entry => entry.IsA("StaticMesh"));
+        var mesh = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest($"DeformMesh of {point.ActorName}", point.Package, AssetKind.StaticMesh));
         if (mesh is null || point.SetDeformMesh(mesh.UIndex, point.DeformMeshMaterials) is null) return;
         //allowed, since its sections can be given overrides next
         var problems = point.SplineMeshMaterialProblems(mesh.UIndex, [.. point.DeformMeshMaterials]).ToList();
@@ -2318,6 +2319,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 $"Give them DeformMeshMaterials overrides that can be:\n\n{string.Join("\n", problems)}", "DeformMesh");
         }
     }
+
+    /// <summary>The games whose missing or out-of-date asset database an asset picker shouldn't ask about again while this editor is open</summary>
+    private readonly HashSet<MEGame> declinedAssetDatabasePrompts = [];
+
+    //an override must be a material the game draws on a spline mesh (SetDeformMesh)
+    private static AssetPickRequest SplineMaterialRequest(string title, SplineActorProxy point) =>
+        new(title, point.Package, AssetKind.Material) { Problem = MaterialUsage.SplineMeshProblem };
 
     //the game draws a material it can't draw on a spline mesh with its default material instead
     private bool RefuseSplineMaterial(SplineActorProxy point, IEntry material)
@@ -2333,7 +2341,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void SplineMaterials_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
-        var material = EntrySelector.GetEntry<IEntry>(this, point.Package, "Add DeformMeshMaterials override", entry => entry.IsA("MaterialInterface"));
+        var material = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, SplineMaterialRequest($"Add a DeformMeshMaterials override to {point.ActorName}", point));
         if (material is not null && !RefuseSplineMaterial(point, material)) point.SetDeformMesh(point.DeformMesh, point.DeformMeshMaterials.Append(material.UIndex));
     }
     private void SplineClearMaterials_Click(object sender, RoutedEventArgs e)
@@ -2347,7 +2355,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         switch (operation)
         {
             case "Choose":
-                var material = EntrySelector.GetEntry<IEntry>(this, slot.Point.Package, $"Material override for slot {slot.Index}", entry => entry.IsA("MaterialInterface"));
+                var material = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, SplineMaterialRequest($"Material override for slot {slot.Index} of {slot.Point.ActorName}", slot.Point));
                 if (material is null || RefuseSplineMaterial(slot.Point, material)) return;
                 values[slot.Index] = material.UIndex;
                 break;
@@ -2370,7 +2378,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void DecalMaterial_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedDecal is not { IsEditable: true } decal) return;
-        var material = EntrySelector.GetEntry<IEntry>(this, decal.Package, "Select DecalMaterial", entry => entry.IsA("MaterialInterface"));
+        var material = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest("DecalMaterial", decal.Package, AssetKind.DecalMaterial) { Problem = MaterialUsage.DecalProblem });
         if (material is not null && decal.SetMaterial(material) is { } problem) MessageBox.Show(this, problem, "DecalMaterial");
     }
 

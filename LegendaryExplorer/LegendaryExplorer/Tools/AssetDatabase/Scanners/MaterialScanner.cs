@@ -51,7 +51,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                         objectNameInstanced += "_Decal";
                     }
 
-                    var NewMat = new MaterialRecord(objectNameInstanced, parent, e.IsDlc, mSets);
+                    var NewMat = new MaterialRecord(objectNameInstanced, parent, e.IsDlc, mSets) { InstancedFullPath = e.Export.InstancedFullPath, ClassName = e.ClassName };
                     NewMat.Usages.Add(matUsage);
                     if (!db.GeneratedMats.TryAdd(e.AssetKey, NewMat))
                     {
@@ -93,7 +93,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 
                     var objectNameInstanced = e.ObjectNameInstanced;
 
-                    var NewMat = new MaterialRecord(objectNameInstanced, parent, e.IsDlc, mSets);
+                    var NewMat = new MaterialRecord(objectNameInstanced, parent, e.IsDlc, mSets)
+                    {
+                        InstancedFullPath = e.Export.InstancedFullPath,
+                        ClassName = e.ClassName,
+                        ParentPath = e.Properties.GetProp<ObjectProperty>("Parent")?.ResolveToEntry(e.Export.FileRef)?.InstancedFullPath
+                    };
                     NewMat.Usages.Add(matUsage);
                     if (!db.GeneratedMats.TryAdd(e.AssetKey, NewMat))
                     {

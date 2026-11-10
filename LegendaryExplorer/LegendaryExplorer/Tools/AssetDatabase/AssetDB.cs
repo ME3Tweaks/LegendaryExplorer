@@ -264,6 +264,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     {
         public string MaterialName { get; set; }
 
+        public string InstancedFullPath { get; set; }
+
+        /// <summary>The material's class: Material, DecalMaterial, or a MaterialInstance class</summary>
+        public string ClassName { get; set; }
+
+        /// <summary>A material instance's Parent, by instanced full path, or null</summary>
+        public string ParentPath { get; set; }
+
         /// <summary>
         /// Containing memory package
         /// </summary>
@@ -350,6 +358,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     {
         public string MeshName { get; set; }
 
+        public string InstancedFullPath { get; set; }
+
         public bool IsSkeleton { get; set; }
 
         public int BoneCount { get; set; }
@@ -401,6 +411,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public string DisplayString => $"{PSName} ({VFXType})";
 
         public string PSName { get; set; }
+
+        public string InstancedFullPath { get; set; }
 
         public string ParentPackage { get; set; }
 

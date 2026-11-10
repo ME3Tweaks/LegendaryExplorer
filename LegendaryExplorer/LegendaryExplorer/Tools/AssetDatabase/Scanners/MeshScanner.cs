@@ -38,7 +38,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                         bones = bin?.RefSkeleton.Length ?? 0;
                     }
 
-                    var NewMeshRec = new MeshRecord(e.ObjectNameInstanced, IsSkel, e.IsMod, bones);
+                    var NewMeshRec = new MeshRecord(e.ObjectNameInstanced, IsSkel, e.IsMod, bones) { InstancedFullPath = e.Export.InstancedFullPath };
                     NewMeshRec.Usages.Add(meshUsage);
                     if (!db.GeneratedMeshes.TryAdd(e.AssetKey, NewMeshRec))
                     {
