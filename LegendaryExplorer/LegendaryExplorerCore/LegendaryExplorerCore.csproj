@@ -73,10 +73,6 @@
     <None Remove="Libraries\Windows\TexConverter.ilk" />
     <None Remove="Libraries\Windows\TexConverter.lib" />
     <None Remove="Libraries\Windows\TexConverter.pdb" />
-    <None Remove="Libraries\Windows\WwiseAudioPlayer.exp" />
-    <None Remove="Libraries\Windows\WwiseAudioPlayer.ilk" />
-    <None Remove="Libraries\Windows\WwiseAudioPlayer.lib" />
-    <None Remove="Libraries\Windows\WwiseAudioPlayer.pdb" />
   </ItemGroup>
 
   <ItemGroup>
@@ -96,10 +92,6 @@
     <ContentWithTargetPath Include="Libraries\Windows\ISACTTools.dll">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	    <TargetPath>ISACTTools.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="Libraries\Windows\WwiseAudioPlayer.dll" Condition="Exists('Libraries\Windows\WwiseAudioPlayer.dll')">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	    <TargetPath>WwiseAudioPlayer.dll</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
 
