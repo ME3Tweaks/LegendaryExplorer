@@ -65,6 +65,9 @@
   <setting name="PathfindingNetworkEditor_RotationArrowMinZoom" type="double" defaultvalue="1.0"
            category="Pathfinding Network Editor" friendlyName="Rotation Arrow Min Zoom (show rotation arrows above this zoom level)"/>
 
+  <!-- Level Editor specific settings -->
+  <setting name="LevelEditor_CameraSpeed" type="int" defaultvalue="500"/>
+
   <!-- AssetDB specific settings-->
   <setting name="AssetDB_DefaultGame" type="string" defaultvalue=""/>
   <setting name="AssetDBGame" type="string" defaultvalue="LE3"/>

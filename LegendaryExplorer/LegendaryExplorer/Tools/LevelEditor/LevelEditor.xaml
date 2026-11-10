@@ -475,6 +475,10 @@
                                             <MenuItem Header="Selected Light's Reach" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowLightReach}" ToolTip="Tint and outline the meshes the selected light is eligible to light"/>
                                         </MenuItem>
                                     </Menu>
+                                    <StackPanel Orientation="Horizontal" Margin="8,0,0,0" ToolTip="How fast the camera flies, in units per second, with W A S D Q E. The scroll wheel and left or middle dragging scale with it. Hold Shift with the keys or the wheel to go ten times faster.">
+                                        <TextBlock Text="Camera speed" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <xctk:SingleUpDown Width="80" Value="{Binding CameraSpeed}" Minimum="1" DefaultValue="500" DisplayDefaultValueOnEmptyText="True" Increment="250" FormatString="F0" VerticalAlignment="Center" AutomationProperties.Name="Camera speed"/>
+                                    </StackPanel>
                                 </WrapPanel>
                             </DockPanel>
                         </Border>

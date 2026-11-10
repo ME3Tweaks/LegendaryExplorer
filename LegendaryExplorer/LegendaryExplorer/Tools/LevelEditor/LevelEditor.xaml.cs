@@ -1,6 +1,7 @@
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Lightmaps.Lightmass;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
@@ -398,7 +399,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext = new LevelEditorRenderContext(readOnlyPreview)
         {
             UseGameShaders = true,
-            TextureStreamingEnabled = true
+            TextureStreamingEnabled = true,
+            CameraSpeed = Math.Max(1, Settings.LevelEditor_CameraSpeed)
         };
         // Not Background: continuous rendering of a slow scene (such as preview lighting) never leaves the dispatcher idle,
         // so a Background timer could starve and leave lighting-mode switches and package refreshes pending indefinitely.
@@ -2937,6 +2939,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         UndoHistory.Clear();
 
         SceneViewer.Dispose();
+
+        Settings.LevelEditor_CameraSpeed = (int)MathF.Round(CameraSpeed);
     }
 
     private void LevelEditor_Loaded(object sender, RoutedEventArgs e)
@@ -3079,6 +3083,18 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private string _currentModeName = "Translate";
     public string CurrentModeName { get => _currentModeName; set => SetProperty(ref _currentModeName, value); }
+
+    /// <summary>Units per second the camera flies at, kept between sessions</summary>
+    public float CameraSpeed
+    {
+        get => RenderContext.CameraSpeed;
+        set
+        {
+            if (RenderContext.CameraSpeed == value) return;
+            RenderContext.CameraSpeed = value;
+            OnPropertyChanged();
+        }
+    }
 
     private bool _isOrthographicView;
     public bool IsOrthographicView

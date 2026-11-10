@@ -89,7 +89,8 @@ public class MeshRenderContext : RenderContext
         S = 0b100,
         D = 0b1000,
         Q = 0b10000,
-        E = 0b100000
+        E = 0b100000,
+        Shift = 0b1000000
     }
 
     public Color BackgroundColor = Color.FromArgb(255,255,255,255); //Default
@@ -261,7 +262,16 @@ public class MeshRenderContext : RenderContext
     }
     private KeyStates PressedKeys;
     private MouseButtons PressedMouseButton;
-    public float CameraSpeed { get; set; } = 500.0f; // Units per second
+    /// <summary>
+    /// Units per second the first-person camera moves at with WASD/QE. A scroll notch and a dragged pixel move it
+    /// as far as that speed does in <see cref="ScrollNotchSeconds"/> and <see cref="DragPixelSeconds"/>
+    /// </summary>
+    public float CameraSpeed { get; set; } = DefaultCameraSpeed;
+    public const float DefaultCameraSpeed = 500.0f;
+    /// <summary>Holding Shift multiplies <see cref="CameraSpeed"/> for WASD/QE and the scroll wheel</summary>
+    public const float FastCameraMultiplier = 10f;
+    private const float ScrollNotchSeconds = 0.2f;
+    private const float DragPixelSeconds = 1 / 60f;
     public float Time { get; private set; }
     public uint NumFrames { get; private set; }
 
@@ -1278,29 +1288,30 @@ public class MeshRenderContext : RenderContext
         }
         else if (Camera.FirstPerson)
         {
+            float distance = timestep * CameraSpeed * (PressedKeys.HasFlag(KeyStates.Shift) ? FastCameraMultiplier : 1);
             if (PressedKeys.HasFlag(KeyStates.W))
             {
-                Camera.Position += Camera.CameraForward * timestep * CameraSpeed;
+                Camera.Position += Camera.CameraForward * distance;
             }
             if (PressedKeys.HasFlag(KeyStates.S))
             {
-                Camera.Position -= Camera.CameraForward * timestep * CameraSpeed;
+                Camera.Position -= Camera.CameraForward * distance;
             }
             if (PressedKeys.HasFlag(KeyStates.A))
             {
-                Camera.Position -= Camera.CameraRight * timestep * CameraSpeed;
+                Camera.Position -= Camera.CameraRight * distance;
             }
             if (PressedKeys.HasFlag(KeyStates.D))
             {
-                Camera.Position += Camera.CameraRight * timestep * CameraSpeed;
+                Camera.Position += Camera.CameraRight * distance;
             }
             if (PressedKeys.HasFlag(KeyStates.Q))
             {
-                Camera.Position -= Vector3.UnitZ * timestep * CameraSpeed;
+                Camera.Position -= Vector3.UnitZ * distance;
             }
             if (PressedKeys.HasFlag(KeyStates.E))
             {
-                Camera.Position += Vector3.UnitZ * timestep * CameraSpeed;
+                Camera.Position += Vector3.UnitZ * distance;
             }
         }
 
@@ -1984,13 +1995,13 @@ public class MeshRenderContext : RenderContext
             {
                 case MouseButtons.Left:
                     var camFwd = (Camera.CameraForward with { Z = 0 }).Normal();
-                    Camera.Position += camFwd * -yDiff * (CameraSpeed / FPS);
+                    Camera.Position += camFwd * -yDiff * (CameraSpeed * DragPixelSeconds);
                     Camera.Yaw += xDiff * 0.01f;
                     handled = true;
                     break;
                 case MouseButtons.Middle:
-                    Camera.Position += Camera.CameraRight * -xDiff * (CameraSpeed / FPS);
-                    Camera.Position += Camera.CameraUp * yDiff * (CameraSpeed / FPS);
+                    Camera.Position += Camera.CameraRight * -xDiff * (CameraSpeed * DragPixelSeconds);
+                    Camera.Position += Camera.CameraUp * yDiff * (CameraSpeed * DragPixelSeconds);
                     handled = true;
                     break;
                 case MouseButtons.Right:
@@ -2028,7 +2039,7 @@ public class MeshRenderContext : RenderContext
         return handled;
     }
 
-    public override bool MouseScroll(int delta)
+    public override bool MouseScroll(int delta, ModifierKeys modifiers)
     {
         if (Camera.IsOrthographic)
         {
@@ -2037,7 +2048,9 @@ public class MeshRenderContext : RenderContext
         }
         else if (Camera.FirstPerson)
         {
-            Camera.Position += Camera.CameraForward * (CameraSpeed / FPS ) * (delta / 10f);
+            float notches = delta / (float)Mouse.MouseWheelDeltaForOneLine;
+            float speed = CameraSpeed * (modifiers.HasFlag(ModifierKeys.Shift) ? FastCameraMultiplier : 1);
+            Camera.Position += Camera.CameraForward * (speed * ScrollNotchSeconds * notches);
         }
         else
         {
@@ -2073,6 +2086,10 @@ public class MeshRenderContext : RenderContext
             case Key.E:
                 PressedKeys |= KeyStates.E;
                 return true;
+            //tracked for fast movement, but left unhandled: Shift is also a modifier for clicks
+            case Key.LeftShift or Key.RightShift:
+                PressedKeys |= KeyStates.Shift;
+                return false;
             default:
                 return false;
         }
@@ -2105,6 +2122,9 @@ public class MeshRenderContext : RenderContext
             case Key.E:
                 PressedKeys &= ~KeyStates.E;
                 return true;
+            case Key.LeftShift or Key.RightShift:
+                PressedKeys &= ~KeyStates.Shift;
+                return false;
             default:
                 return false;
         }

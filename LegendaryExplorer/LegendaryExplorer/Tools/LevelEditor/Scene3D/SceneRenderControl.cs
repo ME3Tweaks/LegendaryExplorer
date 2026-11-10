@@ -416,7 +416,7 @@ public abstract class RenderContext
         return false;
     }
 
-    public virtual bool MouseScroll(int delta)
+    public virtual bool MouseScroll(int delta, ModifierKeys modifiers)
     {
         return false;
     }
@@ -778,7 +778,7 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
 
     private void SceneRenderControlWPF_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
     {
-        e.Handled = Context.MouseScroll(e.Delta);
+        e.Handled = Context.MouseScroll(e.Delta, Keyboard.Modifiers);
     }
 
     public void OnKeyDown(object sender, KeyEventArgs e)

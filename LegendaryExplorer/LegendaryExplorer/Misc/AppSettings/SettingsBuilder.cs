@@ -192,6 +192,11 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _pathfindingnetworkeditor_rotationarrowminzoom;
             set => SetProperty(ref _pathfindingnetworkeditor_rotationarrowminzoom, value);
         }
+        private static int _leveleditor_cameraspeed = 500;
+        public static int LevelEditor_CameraSpeed {
+            get => _leveleditor_cameraspeed;
+            set => SetProperty(ref _leveleditor_cameraspeed, value);
+        }
         private static string _assetdb_defaultgame = "";
         public static string AssetDB_DefaultGame {
             get => _assetdb_defaultgame;
@@ -449,6 +454,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             PathfindingEditor_ShowArtLayer = TryGetSetting(settingsJson, "pathfindingeditor_showartlayer", false);
             PathfindingEditor_ShowSplinesLayer = TryGetSetting(settingsJson, "pathfindingeditor_showsplineslayer", false);
             PathfindingEditor_ShowEverythingElseLayer = TryGetSetting(settingsJson, "pathfindingeditor_showeverythingelselayer", false);
+            LevelEditor_CameraSpeed = TryGetSetting(settingsJson, "leveleditor_cameraspeed", 500);
             AssetDB_DefaultGame = TryGetSetting(settingsJson, "assetdb_defaultgame", "");
             AssetDBGame = TryGetSetting(settingsJson, "assetdbgame", "LE3");
             AssetDBPath = TryGetSetting(settingsJson, "assetdbpath", "");
@@ -533,6 +539,7 @@ namespace LegendaryExplorer.Misc.AppSettings
                     settingsJson["pathfindingeditor_showartlayer"] = PathfindingEditor_ShowArtLayer.ToString();
                     settingsJson["pathfindingeditor_showsplineslayer"] = PathfindingEditor_ShowSplinesLayer.ToString();
                     settingsJson["pathfindingeditor_showeverythingelselayer"] = PathfindingEditor_ShowEverythingElseLayer.ToString();
+                    settingsJson["leveleditor_cameraspeed"] = LevelEditor_CameraSpeed.ToString();
                     settingsJson["assetdb_defaultgame"] = AssetDB_DefaultGame.ToString();
                     settingsJson["assetdbgame"] = AssetDBGame.ToString();
                     settingsJson["assetdbpath"] = AssetDBPath.ToString();
