@@ -44,9 +44,9 @@ internal sealed record ActorRecipe(PlacementCategory Category, IReadOnlyList<str
     /// <summary>What each of <see cref="Classes"/> is, in a line, for the list it's placed from</summary>
     internal required IReadOnlyDictionary<string, string> Descriptions { get; init; }
 
-    /// <param name="asset">The <see cref="AssetClass"/> chosen for it, an entry of its package, if it needs one</param>
+    /// <param name="asset">The <see cref="AssetClass"/> chosen for it, an entry of its package or another file's, if it needs one</param>
     /// <param name="template">The subobject of its class default that <see cref="ComponentProperty"/> refers to, if it has one</param>
-    internal delegate ActorProxy MakeDraft(IActorEditorContext editor, ActorRecord record, PropertyCollection properties, IEntry asset, ExportEntry template);
+    internal delegate ActorProxy MakeDraft(IActorEditorContext editor, ActorRecord record, PropertyCollection properties, AssetReference asset, ExportEntry template);
 
     /// <summary>The kind of asset to choose before placing one, or null if it needs none</summary>
     internal AssetKind? Asset { get; init; }
@@ -292,14 +292,15 @@ public static class ActorCreation
     /// caller to record. Its package is untouched until Commit Changes
     /// </summary>
     /// <param name="gridSize">The grid it's snapped to if its class asks to be (<see cref="SnapsToGrid(IEntry, PackageCache)"/>), or 0 for none</param>
-    /// <param name="asset">For a class with an <see cref="AssetClass"/>: what it uses, an entry of <paramref name="file"/>'s package</param>
-    public static IUndoAction Place(IActorEditorContext editor, OpenLevelFile file, string className, Vector3 location, float gridSize = 0, IEntry asset = null)
+    /// <param name="asset">For a class with an <see cref="AssetClass"/>: what it uses, an entry of <paramref name="file"/>'s package or another file's export</param>
+    public static IUndoAction Place(IActorEditorContext editor, OpenLevelFile file, string className, Vector3 location, float gridSize = 0, AssetReference asset = null)
     {
         var cache = editor.RenderContext.PackageCache;
         if (PlacementRefusal(file, className, cache, out var actorClass) is { } refusal) throw new InvalidOperationException(refusal);
         var recipe = RecipeFor(className);
-        if (recipe.AssetClass is { } assetClass && (asset is null || asset.FileRef != file.Package || !asset.IsA(assetClass)))
-            throw new ArgumentException($"A {className} needs a {assetClass} of {file.FileName}.", nameof(asset));
+        if (recipe.AssetClass is { } assetClass && (asset is null || asset.Entry is { } entry && entry.FileRef != file.Package
+            || asset.Find(cache) is not { } found || !found.IsA(assetClass)))
+            throw new ArgumentException($"A {className} needs a {assetClass}: of {file.FileName}, or another file of {file.Package.Game}'s.", nameof(asset));
         if (editor.RenderContext.IsDragging || editor.RenderContext.IsEditingScene) throw new InvalidOperationException("Finish the current scene operation first.");
         if (!float.IsFinite(location.X) || !float.IsFinite(location.Y) || !float.IsFinite(location.Z)) throw new ArgumentException("The location isn't finite.", nameof(location));
         //appRound, which rounds halves up

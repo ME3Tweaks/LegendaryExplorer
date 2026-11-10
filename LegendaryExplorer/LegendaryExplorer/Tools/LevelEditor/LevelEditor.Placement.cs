@@ -98,7 +98,7 @@ public partial class LevelEditor
 
     private PlacementOption placing;
     //the asset chosen for the actor being placed, for a class that needs one
-    private IEntry placingAsset;
+    private AssetReference placingAsset;
 
     private ICommand togglePlacementCommand;
     /// <summary>Starts placing an option's class, or stops if it's the one being placed</summary>
@@ -143,7 +143,7 @@ public partial class LevelEditor
             UpdatePlacementOptions();
             return;
         }
-        IEntry asset = null;
+        AssetReference asset = null;
         if (ActorCreation.AssetKindOf(className) is { } assetKind)
         {
             asset = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest($"The new {className}'s {AssetPicking.ClassOf(assetKind)}", placementFile.Package, assetKind));
@@ -158,7 +158,7 @@ public partial class LevelEditor
         placingAsset = asset;
         RenderContext.PlaceAt = PlaceAt;
         SceneViewer.Cursor = Cursors.Cross;
-        string what = asset is null ? className : $"{className} of {asset.ObjectName.Instanced}";
+        string what = asset is null ? className : $"{className} of {asset.Name}";
         PlacementStatus = $"Click where the {what} goes in {placementFile.FileName}: on a surface, or anywhere else to place it in front of the camera. Esc cancels.";
     }
 
@@ -176,7 +176,7 @@ public partial class LevelEditor
             return;
         }
         string className = placing.ClassName;
-        IEntry asset = placingAsset;
+        AssetReference asset = placingAsset;
         EndPlacement();
         //from a viewport click: finding where it goes reads the level's geometry and the class, which mustn't escape the mouse handler if they fail
         try

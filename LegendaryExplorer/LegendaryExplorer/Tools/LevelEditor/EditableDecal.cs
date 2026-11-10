@@ -14,10 +14,10 @@ public readonly record struct DecalSettings(float Width, float Height, float Nea
 {
     public DecalFilterSettings Filter { get; init; }
     /// <summary>
-    /// The DecalMaterial, as the component has or inherits it (so it may be another package's entry until it's changed), or null for none. Written
-    /// by the commit only when it changes, as an entry of the component's package
+    /// The DecalMaterial, as the component has or inherits it (so it may be another package's, an archetype's, until it's changed), or as it's changed
+    /// to: an entry of the component's package, or another file's asset. Null for none. Written by the commit only when it changes
     /// </summary>
-    public IEntry Material { get; init; }
+    public AssetReference Material { get; init; }
     internal static DecalSettings Read(PropertyCollection props)
     {
         float F(string name, float fallback) => props.GetProp<FloatProperty>(name)?.Value ?? fallback;
@@ -53,22 +53,27 @@ public sealed class EditableDecal : NotifyPropertyChangedBase
         Settings = clean = DecalSettings.Read(props) with
         {
             Filter = DecalFilterSettings.Read(component, owner.Editor.PackageCache, props),
-            Material = material?.ResolveToEntry(package)
+            Material = AssetReference.Of(material?.ResolveToEntry(package), component.FileRef, owner.Editor.PackageCache)
         };
     }
 
     /// <summary>The package the decal's component is in, whose materials it can be given</summary>
     public IMEPackage Package => owner.DecalComponent.Export.FileRef;
-    public string MaterialName => Settings.Material?.InstancedFullPath ?? "None";
+    public string MaterialName => Settings.Material?.Description ?? "None";
     /// <summary>Why the game won't draw the decal's material (<see cref="MaterialUsage.DecalProblem"/>), or null</summary>
-    public string MaterialProblem => MaterialUsage.DecalProblem(Settings.Material, owner.Editor.PackageCache);
+    public string MaterialProblem => MaterialUsage.DecalProblem(Settings.Material?.Find(owner.Editor.PackageCache), owner.Editor.PackageCache);
 
-    /// <summary>Changes the DecalMaterial to a material in the decal's package, unless the game wouldn't draw it on a decal; then returns why</summary>
-    public string SetMaterial(IEntry material)
+    /// <summary>
+    /// Changes the DecalMaterial to a material in the decal's package or another file of its game's, unless the game wouldn't draw it on a decal; then
+    /// returns why
+    /// </summary>
+    public string SetMaterial(AssetReference material)
     {
         if (!IsEditable) return "The decal can't be edited.";
-        if (material is null || material.FileRef != Package || !material.IsA("MaterialInterface")) return "Choose a material in the decal's package.";
-        if (MaterialUsage.DecalProblem(material, owner.Editor.PackageCache) is { } problem) return problem;
+        var cache = owner.Editor.PackageCache;
+        if (material is null || material.Entry is { } entry && entry.FileRef != Package) return "Choose a material in the decal's package, or another file's.";
+        if (material.Find(cache) is not { } found || !found.IsA("MaterialInterface")) return $"{material.Description} isn't a material that can be found.";
+        if (MaterialUsage.DecalProblem(found, cache) is { } problem) return problem;
         Set(Settings with { Material = material }, "Material");
         return null;
     }

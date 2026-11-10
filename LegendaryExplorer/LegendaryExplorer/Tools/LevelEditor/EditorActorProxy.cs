@@ -266,14 +266,14 @@ public sealed class KAssetProxy : SkeletalMeshActorProxy
 /// <see cref="ActorProxy.NewComponent"/>), with no binary. The component's only value is its Template: UE3's UActorFactoryEmitter sets no other, and the others
 /// shipping ones have (OldPosition, bJustAttached, LightingChannels) are the engine's. The actor refers to it as its ParticleSystemComponent, with no Components array
 /// </summary>
-internal sealed class EmitterDraftProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, ActorClassInfo info, IEntry particleSystem, ExportEntry componentTemplate)
+internal sealed class EmitterDraftProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, ActorClassInfo info, AssetReference particleSystem, ExportEntry componentTemplate)
     : EditorActorProxy(context, draft, properties, info)
 {
     public override void CommitChanges(PackageCache packageCache = null)
     {
         if (Materialized)
         {
-            var component = NewComponent(componentTemplate, [new ObjectProperty(particleSystem, "Template")], null);
+            var component = NewComponent(componentTemplate, [new ObjectProperty(particleSystem.EntryIn(Pcc), "Template")], null);
             Properties.AddOrReplaceProp(new ObjectProperty(component, "ParticleSystemComponent"));
         }
         base.CommitChanges(packageCache);

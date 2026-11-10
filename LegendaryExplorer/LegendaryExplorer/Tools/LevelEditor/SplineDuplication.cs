@@ -44,7 +44,7 @@ public sealed partial class SplineActorProxy
                 .Where(n => !RecreatedProperties.Contains(n) && !CopiedProperties.Contains(n, StringComparer.OrdinalIgnoreCase)).ToArray();
             if (unknown.Length > 0) return $"It has {string.Join(", ", unknown)}, which a copy can't be made with yet.";
             // Whichever way the new connection goes, its mesh is the point's: its own, or the copy's copy of it
-            if (IsLoft && (deformMesh == 0 || Pcc.GetEntry(deformMesh)?.IsA("StaticMesh") != true))
+            if (IsLoft && (deformMesh is null || !IsAsset(deformMesh, "StaticMesh")))
                 return "Its connection to the copy needs a DeformMesh. Assign one first.";
             return null;
         }

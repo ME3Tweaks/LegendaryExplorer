@@ -46,8 +46,10 @@ public sealed class AssetChoice
     };
 }
 
-/// <summary>What a choice is, opened: the entry a pick would use, the export it is (an import resolved), and why it can't be used, or null</summary>
-public sealed record ResolvedAssetChoice(IEntry Entry, ExportEntry Export, string Problem);
+/// <summary>
+/// What a choice is, opened: what a pick refers to (<see cref="AssetReference"/>), the export it is (an import resolved), and why it can't be used, or null
+/// </summary>
+public sealed record ResolvedAssetChoice(AssetReference Reference, ExportEntry Export, string Problem);
 
 public static class AssetPicking
 {
@@ -90,15 +92,17 @@ public static class AssetPicking
 
     /// <summary>
     /// Opens the choice: an entry of the destination as it is, resolved through <paramref name="cache"/>; another file's asset from the copy the catalog
-    /// prefers, opened through it. Then runs the use's check on it. Can be called off the UI thread
+    /// prefers, opened through it, which a pick refers to by that file and its path. Then runs the use's check on it. Can be called off the UI thread
     /// </summary>
     public static ResolvedAssetChoice Resolve(AssetChoice choice, AssetPickRequest request, PackageCache cache)
     {
         IEntry entry = choice.Entry;
         ExportEntry export;
+        AssetReference reference;
         if (entry is not null)
         {
             export = EffectiveLightingProperties.Resolve(entry, cache);
+            reference = AssetReference.To(entry);
         }
         else
         {
@@ -112,11 +116,9 @@ public static class AssetPicking
                 return new(null, null, $"{choice.InstancedFullPath} isn't in {copy.File.FileName} any more, so the asset database is out of date. Rebuild it to use this asset.");
             }
             entry = export;
+            reference = AssetReference.InFile(copy.File.FilePath, export.InstancedFullPath);
         }
-        string problem = request.Problem?.Invoke(entry, cache);
-        if (problem is null && choice.Entry is null)
-            problem = "For now, only assets already in this file can be used. Copying assets in from other files isn't supported yet.";
-        return new(entry, export, problem);
+        return new(reference, export, request.Problem?.Invoke(entry, cache));
     }
 }
 

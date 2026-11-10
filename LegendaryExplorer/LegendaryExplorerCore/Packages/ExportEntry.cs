@@ -72,7 +72,8 @@ namespace LegendaryExplorerCore.Packages
             }
 
             _commonHeaderFields._dataOffset = 0;
-            ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
+            //sensible defaults?
+            _commonHeaderFields._objectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit;
 
             var ms = new EndianWriter { Endian = file.Endian };
             if (prePropBinary == null)

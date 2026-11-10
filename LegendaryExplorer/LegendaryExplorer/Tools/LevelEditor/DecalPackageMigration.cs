@@ -53,7 +53,7 @@ internal sealed class DecalPackageMigration : IDisposable
         // The pending filter is written with destination indices after import, just like the receiver list.
         donorComponent.WriteProperty(new ArrayProperty<ObjectProperty>("Filter"));
         // A pending material is a source package entry, so the donor (a copy of it) has it at the same index, and the import carries it across
-        if (actor.Decal.MaterialChanged) donorComponent.WriteProperty(new ObjectProperty(actor.Decal.Settings.Material.UIndex, "DecalMaterial"));
+        if (actor.Decal.MaterialChanged) donorComponent.WriteProperty(new ObjectProperty(actor.Decal.Settings.Material?.EntryIn(actor.Export.FileRef).UIndex ?? 0, "DecalMaterial"));
         donorComponent.WriteBinary(DecalComponent.Create());
         var subtree = donorActor.GetAllDescendants().Append(donorActor).ToHashSet();
         if (subtree.GetEntriesThatReferenceThese().Values.Any(referrers => referrers.Keys.Any(e => !subtree.Contains(e) && e.UIndex != sourceLevel.UIndex)))

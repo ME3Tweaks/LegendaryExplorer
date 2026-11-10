@@ -119,7 +119,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     private readonly DecalActorProxy owner;
     private DecalProjection projection;
     //the decal's material, and the one it's drawn with: the game's default decal material in place of one the game can't draw on a decal
-    private IEntry materialEntry;
+    private AssetReference materialEntry;
     private ExportEntry material;
     private string failure;
     private string lastCoverage;
@@ -177,7 +177,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
             if (export.Parent != actor.Export || export.Parent?.Parent?.ClassName != "Level")
                 throw new NotSupportedException("Prefab/template decal receiver remapping is not implemented.");
             var (reference, package) = EffectiveLightingProperties.Reference(export, "DecalMaterial", context.PackageCache);
-            UseMaterial(reference?.ResolveToEntry(package), context.PackageCache);
+            UseMaterial(AssetReference.Of(reference?.ResolveToEntry(package), export.FileRef, context.PackageCache), context.PackageCache);
             if (material is null) throw new NotSupportedException("Decal material could not be resolved.");
             if (Properties.GetProp<ArrayProperty<ObjectProperty>>("ReceiverImages") is { Count: > 0 })
                 EditUnsupportedReason = "Reprojection with ReceiverImages is not supported.";
@@ -207,9 +207,10 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     /// Draws the decal with <paramref name="entry"/>, as the game would (UDecalComponent::CaptureDecalState): a material it can't draw on a decal,
     /// or none, is drawn with the engine's DefaultDecalMaterial (<see cref="MaterialUsage.DecalDrawsDefault"/>). Receiver meshes are rebuilt with it
     /// </summary>
-    private void UseMaterial(IEntry entry, PackageCache cache)
+    private void UseMaterial(AssetReference reference, PackageCache cache)
     {
-        materialEntry = entry;
+        materialEntry = reference;
+        var entry = reference?.Find(cache);
         var drawn = MaterialUsage.DecalDrawsDefault(entry, cache) && MaterialUsage.EngineMaterial(Export.Game, "DefaultDecalMaterial", cache) is { } fallback
             ? fallback : EffectiveLightingProperties.Resolve(entry, cache);
         if (drawn == material) return;
@@ -405,7 +406,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         if (owner.Decal.FilterChanged || destination != Export)
             settings.Filter.Write(props, ProjectionPackage, destination.FileRef);
         //a moved decal's new material is carried into its new package with the rest of it (DecalPackageMigration)
-        if (owner.Decal.MaterialChanged && destination == Export) props.AddOrReplaceProp(new ObjectProperty(settings.Material, "DecalMaterial"));
+        if (owner.Decal.MaterialChanged && destination == Export) props.AddOrReplaceProp(new ObjectProperty(settings.Material?.EntryIn(destination.FileRef).UIndex ?? 0, "DecalMaterial"));
         if (HasReprojectedReceivers)
         {
             settings = settings with { Width = projection.Width, Height = projection.Height, NearPlane = projection.NearPlane, FarPlane = projection.FarPlane };
@@ -590,7 +591,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
 
     public override bool TestUIndexes(HashSet<int> exports) => base.TestUIndexes(exports)
         || receivers.Any(r => r.Export?.FileRef == Export.FileRef && (exports.Contains(r.Export.UIndex) || exports.Contains(r.Export.idxLink)))
-        || materialEntry?.FileRef == Export.FileRef && exports.Contains(materialEntry.UIndex);
+        || materialEntry?.Entry is { } entry && entry.FileRef == Export.FileRef && exports.Contains(entry.UIndex);
 
     protected override void Dispose(bool disposing)
     {

@@ -16,8 +16,9 @@ public sealed partial class SplineActorProxy
     private List<Connection> cleanConnections = [];
     //LinksFrom, in order, by actor id: the points with a connection to this one
     private List<ActorId> linksFrom = [], cleanLinksFrom = [];
-    private int deformMesh, cleanDeformMesh;
-    private int[] deformMaterials = [], cleanDeformMaterials = [];
+    //DeformMesh and DeformMeshMaterials (null for none), each an entry of the package or another file's asset, which a commit has to copy in
+    private AssetReference deformMesh, cleanDeformMesh;
+    private AssetReference[] deformMaterials = [], cleanDeformMaterials = [];
     private readonly HashSet<Connection> connectionResources = [];
 
     private void InitializeConnections()
@@ -31,8 +32,8 @@ public sealed partial class SplineActorProxy
         }
         linksFrom = Properties.GetProp<ArrayProperty<ObjectProperty>>("LinksFrom")?.Select(p => Registry.IdForStored(Pcc, p.Value)).ToList() ?? [];
         cleanLinksFrom = linksFrom.ToList();
-        deformMesh = cleanDeformMesh = Properties.GetProp<ObjectProperty>("DeformMesh")?.Value ?? 0;
-        deformMaterials = Properties.GetProp<ArrayProperty<ObjectProperty>>("DeformMeshMaterials")?.Select(p => p.Value).ToArray() ?? [];
+        deformMesh = cleanDeformMesh = AssetReference.To(Properties.GetProp<ObjectProperty>("DeformMesh")?.ResolveToEntry(Pcc));
+        deformMaterials = Properties.GetProp<ArrayProperty<ObjectProperty>>("DeformMeshMaterials")?.Select(p => AssetReference.To(p.ResolveToEntry(Pcc))).ToArray() ?? [];
         cleanDeformMaterials = deformMaterials.ToArray();
     }
 
@@ -44,17 +45,18 @@ public sealed partial class SplineActorProxy
     public IReadOnlyList<ActorId> LinkedFrom => linksFrom.AsReadOnly();
     public IEnumerable<SplineConnectionItem> OutgoingConnections => connections.Select(c => new SplineConnectionItem(this, FindPoint(c.Target), Registry.NameOf(c.Target)));
     public IEnumerable<SplineConnectionItem> IncomingConnections => IncomingPoints.Select(p => new SplineConnectionItem(p, this, Registry.NameOf(p.Id)));
-    public int DeformMesh => deformMesh;
-    public IReadOnlyList<int> DeformMeshMaterials => Array.AsReadOnly(deformMaterials);
-    public string DeformMeshName => Pcc.GetEntry(deformMesh)?.InstancedFullPath ?? "None";
+    public AssetReference DeformMesh => deformMesh;
+    /// <summary>By section MaterialIndex; null for a section that has none</summary>
+    public IReadOnlyList<AssetReference> DeformMeshMaterials => Array.AsReadOnly(deformMaterials);
+    public string DeformMeshName => deformMesh?.Description ?? "None";
     public bool CanClearDeformMesh => connections.Count == 0;
-    public IEnumerable<SplineMaterialSlot> MaterialSlots => deformMaterials.Select((i, slot) => new SplineMaterialSlot(this, slot, Pcc.GetEntry(i)?.InstancedFullPath ?? "Mesh material"));
+    public IEnumerable<SplineMaterialSlot> MaterialSlots => deformMaterials.Select((m, slot) => new SplineMaterialSlot(this, slot, m?.Description ?? "Mesh material"));
 
     private bool CanEditWith(SplineActorProxy other) => other is not null && other != this && !IsReadOnly && !other.IsReadOnly
         && !IsDisposed && !other.IsDisposed && Pcc == other.Pcc;
 
     /// <summary>Cooked lofts require a mesh for every outgoing connection; mixed point types are unsupported.</summary>
-    public bool CanConnectTo(SplineActorProxy other) => CanEditWith(other) && IsLoft == other.IsLoft && (!IsLoft || deformMesh != 0);
+    public bool CanConnectTo(SplineActorProxy other) => CanEditWith(other) && IsLoft == other.IsLoft && (!IsLoft || deformMesh is not null);
 
     public bool IsConnectedTo(SplineActorProxy other) => other is not null && connections.Any(c => c.Target == other.Id);
 
@@ -151,32 +153,45 @@ public sealed partial class SplineActorProxy
     }
 
     /// <summary>
-    /// Changes the loft's mesh and material overrides and refreshes its components, keeping exports until Commit Changes. A newly assigned override
-    /// must be a material the game draws on a spline mesh (<see cref="SplineMeshMaterialProblem"/>)
+    /// Changes the loft's mesh and material overrides and refreshes its components, keeping exports until Commit Changes. Each is an entry of the point's
+    /// package or another file's asset (null for none). A newly assigned override must be a material the game draws on a spline mesh
+    /// (<see cref="SplineMeshMaterialProblem"/>)
     /// </summary>
-    public IUndoAction SetDeformMesh(int mesh, IEnumerable<int> materials)
+    public IUndoAction SetDeformMesh(AssetReference mesh, IEnumerable<AssetReference> materials)
     {
-        if (!IsLoft || IsReadOnly || mesh != 0 && Pcc.GetEntry(mesh)?.IsA("StaticMesh") != true) return null;
-        if (mesh == 0 && !CanClearDeformMesh) return null;
-        int[] values = materials.ToArray();
-        if (values.Any(i => i != 0 && Pcc.GetEntry(i)?.IsA("MaterialInterface") != true)) return null;
-        if (values.Any(i => i != 0 && !deformMaterials.Contains(i) && SplineMeshMaterialProblem(i) is not null)) return null;
+        if (!IsLoft || IsReadOnly || mesh is not null && !IsAsset(mesh, "StaticMesh")) return null;
+        if (mesh is null && !CanClearDeformMesh) return null;
+        AssetReference[] values = materials.ToArray();
+        if (values.Any(m => m is not null && !IsAsset(m, "MaterialInterface"))) return null;
+        if (values.Any(m => m is not null && !deformMaterials.Contains(m) && SplineMeshMaterialProblem(m) is not null)) return null;
         return EditConnections("Edit spline mesh", [this], () => { deformMesh = mesh; deformMaterials = values; });
     }
 
+    //for a draft copy of a point: its mesh and materials (see CreateDraft)
+    private void ChooseMeshesOf(SplineActorProxy source)
+    {
+        deformMesh = source.deformMesh;
+        deformMaterials = [.. source.deformMaterials];
+    }
+
+    //an entry of the point's package, or another file's asset, of the class
+    private bool IsAsset(AssetReference asset, string className) => (asset.Entry is null || asset.Entry.FileRef == Pcc)
+        && asset.Find(Editor.PackageCache)?.IsA(className) == true;
+
     /// <summary>Why the game won't draw a material on a spline mesh, or null (<see cref="MaterialUsage.SplineMeshProblem"/>)</summary>
-    public string SplineMeshMaterialProblem(int material) => MaterialUsage.SplineMeshProblem(Pcc.GetEntry(material), Editor.PackageCache);
+    public string SplineMeshMaterialProblem(AssetReference material) => MaterialUsage.SplineMeshProblem(material?.Find(Editor.PackageCache), Editor.PackageCache);
 
     /// <summary>
     /// The problems (<see cref="SplineMeshMaterialProblem"/>) with the materials the game would draw a mesh's sections with on this point's
     /// connections: each section's override, or the mesh's own material where there's none
     /// </summary>
-    public IEnumerable<string> SplineMeshMaterialProblems(int mesh, IReadOnlyList<int> overrides)
+    public IEnumerable<string> SplineMeshMaterialProblems(AssetReference mesh, IReadOnlyList<AssetReference> overrides)
     {
-        if (EffectiveLightingProperties.Resolve(Pcc.GetEntry(mesh), Editor.PackageCache) is not { } meshExport) return [];
+        var cache = Editor.PackageCache;
+        if (EffectiveLightingProperties.Resolve(mesh?.Find(cache), cache) is not { } meshExport) return [];
         return Editor.RenderContext.GetStaticMesh(meshExport).LODModels.SelectMany(lod => lod.Elements)
-            .Select(element => element.MaterialIndex >= 0 && element.MaterialIndex < overrides.Count && overrides[element.MaterialIndex] != 0
-                ? Pcc.GetEntry(overrides[element.MaterialIndex]) : meshExport.FileRef.GetEntry(element.Material))
+            .Select(element => element.MaterialIndex >= 0 && element.MaterialIndex < overrides.Count && overrides[element.MaterialIndex] is { } material
+                ? material.Find(cache) : meshExport.FileRef.GetEntry(element.Material))
             //a section with no material is drawn with the default material however it's drawn
             .Where(material => material is not null).Distinct().Select(material => MaterialUsage.SplineMeshProblem(material, Editor.PackageCache))
             .Where(problem => problem is not null).Distinct();
@@ -204,7 +219,8 @@ public sealed partial class SplineActorProxy
     /// A point's connections (the connection objects themselves, which keep their components, meshes' lighting models and defects), backlinks,
     /// spline values and mesh choices, as a topology step restores them. Not its transform
     /// </summary>
-    private sealed record TopologyState(Connection[] Connections, ActorId[] LinksFrom, SplineLoftSettings Settings, int DeformMesh, int[] DeformMaterials);
+    private sealed record TopologyState(Connection[] Connections, ActorId[] LinksFrom, SplineLoftSettings Settings,
+        AssetReference DeformMesh, AssetReference[] DeformMaterials);
 
     private TopologyState CaptureTopology() => new([.. connections], [.. linksFrom], settings, deformMesh, [.. deformMaterials]);
 
@@ -277,18 +293,23 @@ public sealed partial class SplineActorProxy
         connection.Mesh.Dispose(); connection.Mesh = null;
     }
 
-    private string MeshConfiguration => $"{deformMesh}:{string.Join(',', deformMaterials)}";
+    //which mesh and materials a preview was made with
+    private string MeshConfiguration => string.Join(',', deformMaterials.Prepend(deformMesh).Select(Key));
+    private static string Key(AssetReference asset) => asset is null ? "0" : asset.Entry is { } entry ? $"{entry.UIndex}" : $"{asset.SourceFile}|{asset.SourcePath}";
+
+    //for a commit: the mesh and materials as the point's package's entries, which another file's assets have to be copied in to be
+    private int Stored(AssetReference asset) => asset?.EntryIn(Pcc).UIndex ?? 0;
 
     private void WriteMeshConfiguration(PropertyCollection props)
     {
-        props.AddOrReplaceProp(new ObjectProperty(deformMesh, "StaticMesh"));
-        props.AddOrReplaceProp(new ArrayProperty<ObjectProperty>(deformMaterials.Select(i => new ObjectProperty(i)), "Materials"));
+        props.AddOrReplaceProp(new ObjectProperty(Stored(deformMesh), "StaticMesh"));
+        props.AddOrReplaceProp(new ArrayProperty<ObjectProperty>(deformMaterials.Select(m => new ObjectProperty(Stored(m))), "Materials"));
     }
 
+    //a new connection mesh's, with its mesh and materials left for WriteMeshConfiguration (a preview's are its PreviewAssets)
     private PropertyCollection NewMeshProperties()
     {
-        var props = new PropertyCollection();
-        WriteMeshConfiguration(props);
+        var props = new PropertyCollection { new ObjectProperty(0, "StaticMesh"), new ArrayProperty<ObjectProperty>("Materials") };
         props.Add(new ObjectProperty(Properties.GetProp<ObjectProperty>("MeshLightEnvironment")?.Value ?? 0, "LightEnvironment"));
         props.Add(new BoolProperty(!(Properties.GetProp<BoolProperty>("bMovable")?.Value ?? false), "bUsePrecomputedShadows"));
         props.Add(new BoolProperty(Properties.GetProp<BoolProperty>("bAcceptsLights")?.Value ?? true, "bAcceptsLights"));
@@ -308,7 +329,7 @@ public sealed partial class SplineActorProxy
             if (!connections.Contains(connection)) { ReleaseConnectionMesh(connection); continue; }
             bool original = !MeshConfigurationDirty && connection.MeshExport is not null;
             bool wantsMesh = IsLoft && Registry[connection.Target]?.IsLoft == true
-                && (original || deformMesh != 0 && (MeshConfigurationDirty || !cleanConnections.Contains(connection) || connection.SplineComponent is null));
+                && (original || deformMesh is not null && (MeshConfigurationDirty || !cleanConnections.Contains(connection) || connection.SplineComponent is null));
             string configuration = original ? "stored" : MeshConfiguration;
             if (connection.Mesh is not null && connection.PreviewConfiguration is null) connection.PreviewConfiguration = "stored";
             if (!wantsMesh || connection.PreviewConfiguration != configuration) ReleaseConnectionMesh(connection);
@@ -322,9 +343,9 @@ public sealed partial class SplineActorProxy
                     // None already exists in every package. Pending properties bypass serialization, so even the package's name table stays untouched.
                     preview ??= new ExportEntry(Pcc, Export, "None", new byte[8], binary: StaticMeshComponent.Create());
                     pending = connection.MeshExport?.GetProperties() ?? NewMeshProperties();
-                    WriteMeshConfiguration(pending);
                 }
-                connection.Mesh = new SplineMeshComponentProxy(Editor.RenderContext, preview, this, pending, connection.MeshExport is not null, connection.Lighting);
+                connection.Mesh = new SplineMeshComponentProxy(Editor.RenderContext, preview, this, pending, connection.MeshExport is not null, connection.Lighting,
+                    original ? null : new PreviewAssets(deformMesh, [.. deformMaterials]));
                 Components.Add(connection.Mesh); SplineMeshComps.Add(connection.Mesh);
                 connection.PreviewConfiguration = configuration;
             }
@@ -414,8 +435,8 @@ public sealed partial class SplineActorProxy
         if (IsLoft && (TopologyDirty || MeshConfigurationDirty || referencesChanged))
         {
             SetArray(new ArrayProperty<ObjectProperty>(connections.Select(c => new ObjectProperty(committed[c].MeshExport.UIndex)), "SplineMeshComps"));
-            Properties.AddOrReplaceProp(new ObjectProperty(deformMesh, "DeformMesh"));
-            SetArray(new ArrayProperty<ObjectProperty>(deformMaterials.Select(i => new ObjectProperty(i)), "DeformMeshMaterials"));
+            Properties.AddOrReplaceProp(new ObjectProperty(Stored(deformMesh), "DeformMesh"));
+            SetArray(new ArrayProperty<ObjectProperty>(deformMaterials.Select(m => new ObjectProperty(Stored(m))), "DeformMeshMaterials"));
         }
     }
 

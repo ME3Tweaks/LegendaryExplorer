@@ -339,6 +339,8 @@ namespace LegendaryExplorerCore.Packages
             //    Debugger.Break(); // Found duplicate.
 
             exportEntry.DataChanged = true;
+            //a new export is a change to the package, header and all (which also marks the package modified)
+            exportEntry.HeaderChanged = true;
             exportEntry.HeaderOffset = 1; //This will make it so when setting idxLink it knows the export has been attached to the tree, even though this doesn't do anything. Find by offset may be confused by this. Updates on save
             exportEntry.Index = exports.Count;
             if (exportEntry.Parent is ExportEntry parent)

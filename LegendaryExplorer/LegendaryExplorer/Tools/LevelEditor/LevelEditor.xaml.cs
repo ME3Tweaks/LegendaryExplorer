@@ -2310,12 +2310,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
         var mesh = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest($"DeformMesh of {point.ActorName}", point.Package, AssetKind.StaticMesh));
-        if (mesh is null || point.SetDeformMesh(mesh.UIndex, point.DeformMeshMaterials) is null) return;
+        if (mesh is null || point.SetDeformMesh(mesh, point.DeformMeshMaterials) is null) return;
         //allowed, since its sections can be given overrides next
-        var problems = point.SplineMeshMaterialProblems(mesh.UIndex, [.. point.DeformMeshMaterials]).ToList();
+        var problems = point.SplineMeshMaterialProblems(mesh, [.. point.DeformMeshMaterials]).ToList();
         if (problems.Count > 0)
         {
-            MessageBox.Show(this, $"In game, some of {mesh.ObjectName.Instanced}'s sections won't be drawn with their materials on a spline. " +
+            MessageBox.Show(this, $"In game, some of {mesh.Name}'s sections won't be drawn with their materials on a spline. " +
                 $"Give them DeformMeshMaterials overrides that can be:\n\n{string.Join("\n", problems)}", "DeformMesh");
         }
     }
@@ -2328,21 +2328,21 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         new(title, point.Package, AssetKind.Material) { Problem = MaterialUsage.SplineMeshProblem };
 
     //the game draws a material it can't draw on a spline mesh with its default material instead
-    private bool RefuseSplineMaterial(SplineActorProxy point, IEntry material)
+    private bool RefuseSplineMaterial(SplineActorProxy point, AssetReference material)
     {
-        if (point.SplineMeshMaterialProblem(material.UIndex) is not { } problem) return false;
+        if (point.SplineMeshMaterialProblem(material) is not { } problem) return false;
         MessageBox.Show(this, problem, "DeformMeshMaterials");
         return true;
     }
     private void SplineClearMesh_Click(object sender, RoutedEventArgs e)
     {
-        if (SelectedSpline is { } point) point.SetDeformMesh(0, point.DeformMeshMaterials);
+        if (SelectedSpline is { } point) point.SetDeformMesh(null, point.DeformMeshMaterials);
     }
     private void SplineMaterials_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
         var material = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, SplineMaterialRequest($"Add a DeformMeshMaterials override to {point.ActorName}", point));
-        if (material is not null && !RefuseSplineMaterial(point, material)) point.SetDeformMesh(point.DeformMesh, point.DeformMeshMaterials.Append(material.UIndex));
+        if (material is not null && !RefuseSplineMaterial(point, material)) point.SetDeformMesh(point.DeformMesh, point.DeformMeshMaterials.Append(material));
     }
     private void SplineClearMaterials_Click(object sender, RoutedEventArgs e)
     {
@@ -2357,9 +2357,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             case "Choose":
                 var material = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, SplineMaterialRequest($"Material override for slot {slot.Index} of {slot.Point.ActorName}", slot.Point));
                 if (material is null || RefuseSplineMaterial(slot.Point, material)) return;
-                values[slot.Index] = material.UIndex;
+                values[slot.Index] = material;
                 break;
-            case "Clear": values[slot.Index] = 0; break;
+            case "Clear": values[slot.Index] = null; break;
             case "Remove": values.RemoveAt(slot.Index); break;
         }
         slot.Point.SetDeformMesh(slot.Point.DeformMesh, values);

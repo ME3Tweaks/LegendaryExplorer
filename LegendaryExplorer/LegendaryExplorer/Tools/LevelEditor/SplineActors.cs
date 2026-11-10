@@ -107,15 +107,13 @@ public sealed partial class SplineActorProxy : ActorProxy
             if (source.Properties.GetProp<Property>(copied) is { } prop) props.AddOrReplaceProp(prop.DeepClone());
         }
         source.settings.Write(props, source.defaults);
-        if (source.IsLoft)
-        {
-            props.AddOrReplaceProp(new ObjectProperty(source.deformMesh, "DeformMesh"));
-            props.AddOrReplaceProp(new ArrayProperty<ObjectProperty>(source.deformMaterials.Select(i => new ObjectProperty(i)), "DeformMeshMaterials"));
-        }
         ActorRegistry registry = context.RenderContext.Registry;
         IEntry actorClass = source.Export?.Class ?? registry[source.Id].Class;
         ActorRecord record = registry.CreateDraft(source.Pcc, actorClass, name, isSpline: true, source.IsLoft);
-        return new SplineActorProxy(context, record, props) { OwningFile = source.OwningFile };
+        var copy = new SplineActorProxy(context, record, props) { OwningFile = source.OwningFile };
+        //its mesh choices, which may be another file's assets, are pending, as everything of a draft's is, so its commit writes them
+        if (source.IsLoft) copy.ChooseMeshesOf(source);
+        return copy;
     }
 
     private protected override bool WritesAllValuesWhenCreated => true;
@@ -311,8 +309,8 @@ public sealed partial class SplineActorProxy : ActorProxy
             if (TopologyDirty) status = "Connections changed. " + status;
             if (IsLoft && connections.Any(c => c.Mesh is not null && (c.MeshExport is null || c.NeedsRebake)))
                 status += " New meshes have no baked lighting and need a rebake.";
-            if (MeshConfigurationDirty) status += " Reassigned meshes keep their existing baked lighting until a rebake.";
-            if (IsLoft && deformMesh == 0) status += " Assign a DeformMesh before adding outgoing connections or reversing incoming ones.";
+            if (MeshConfigurationDirty && !IsDraft) status += " Reassigned meshes keep their existing baked lighting until a rebake.";
+            if (IsLoft && deformMesh is null) status += " Assign a DeformMesh before adding outgoing connections or reversing incoming ones.";
             if (ConnectionCommitProblem is { } problem) status += " Cannot commit: " + problem;
             return problems.Length > 0 ? status + " " + string.Join(" ", problems) : status;
         }

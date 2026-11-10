@@ -16,16 +16,16 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 
 /// <summary>
 /// Picks an asset of a kind for a file being edited, from the file's own entries and every asset of the kind in the game that the asset database lists,
-/// marked with where each is, with search and a preview. The highlighted asset is opened and checked as its use asks; one in another file can't be
-/// chosen yet, since copying it in isn't done
+/// marked with where each is, with search and a preview. The highlighted asset is opened and checked as its use asks. One in another file is chosen by
+/// that file and its path (<see cref="AssetReference"/>): choosing it adds nothing to the file
 /// </summary>
 public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
 {
     /// <summary>
-    /// The entry of <see cref="AssetPickRequest.Destination"/> chosen, or null if none was. If the game's asset database is missing or out of date,
+    /// The asset chosen, an entry of <see cref="AssetPickRequest.Destination"/> or another file's export, or null if none was. If the game's asset database is missing or out of date,
     /// it asks to rebuild it, unless its game is in <paramref name="declinedDatabasePrompts"/>; it adds the game when that's declined
     /// </summary>
-    public static IEntry Pick(Window owner, ISet<MEGame> declinedDatabasePrompts, AssetPickRequest request)
+    public static AssetReference Pick(Window owner, ISet<MEGame> declinedDatabasePrompts, AssetPickRequest request)
     {
         var window = new AssetPickerWindow(request, declinedDatabasePrompts) { Owner = owner };
         return window.ShowDialog() == true ? window.chosen : null;
@@ -41,7 +41,8 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
     //the export previewed, to show again on another shape
     private ExportEntry previewed;
     private CancellationTokenSource selectionCancellation;
-    private IEntry chosen;
+    //what the highlighted choice refers to, once it's been opened and can be used, and what was chosen
+    private AssetReference usable, chosen;
     private bool closed;
 
     private AssetPickerWindow(AssetPickRequest request, ISet<MEGame> declinedDatabasePrompts) : base("Asset Picker", false)
@@ -241,6 +242,7 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
         selectionCancellation?.Cancel();
         var cancellation = selectionCancellation = new CancellationTokenSource();
         CanUse = false;
+        usable = null;
         HasPreview = false;
         previewed = null;
         preview.Clear(MaxCachedPackages);
@@ -272,7 +274,8 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
         if (cancellation.IsCancellationRequested || closed) return;
         SelectedDetails = Details(choice, resolved.Export);
         SelectedProblem = resolved.Problem;
-        CanUse = choice.Entry is not null && resolved.Problem is null;
+        CanUse = resolved.Problem is null;
+        if (CanUse) usable = resolved.Reference;
         if (resolved.Export is not { } export)
         {
             PreviewNote = "It can't be previewed: it couldn't be found.";
@@ -309,6 +312,7 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
             not null => $"In {fileName}",
             _ => $"From {choice.Indexed.Source.File.FileName} ({choice.SourceLabel})"
         });
+        if (choice.Entry is null) lines.Add($"Using it adds nothing to {fileName} until a commit, which can't copy it in yet: that comes next.");
         if (choice.Indexed is { } indexed)
         {
             //the file being edited may be a game file the database lists
@@ -327,8 +331,8 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
 
     private void Use()
     {
-        if (!CanUse || selected?.Entry is not { } entry) return;
-        chosen = entry;
+        if (!CanUse || usable is null) return;
+        chosen = usable;
         DialogResult = true;
     }
 

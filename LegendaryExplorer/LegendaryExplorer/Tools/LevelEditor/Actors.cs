@@ -1006,22 +1006,28 @@ public class StaticMeshActorProxy : ActorProxy
 
     //a draft's: the class default's component its own is made from, and the mesh it draws
     private readonly ExportEntry componentTemplate;
-    private readonly IEntry mesh;
+    private readonly AssetReference mesh;
 
     /// <summary>
-    /// A new static mesh actor (a draft) drawing <paramref name="mesh"/>, an entry of its package. Its component is drawn as the commit makes it: from
-    /// <paramref name="componentTemplate"/>'s values with the mesh. Its package is untouched until then
+    /// A new static mesh actor (a draft) drawing <paramref name="mesh"/>, an entry of its package or another file's mesh. Its component is drawn as the
+    /// commit makes it: from <paramref name="componentTemplate"/>'s values with the mesh, and the material overrides it inherits from the template. Its
+    /// package is untouched until then
     /// </summary>
-    internal StaticMeshActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, IEntry mesh, ExportEntry componentTemplate)
+    internal StaticMeshActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, AssetReference mesh, ExportEntry componentTemplate)
         : base(context, draft, properties)
     {
         this.componentTemplate = componentTemplate;
         this.mesh = mesh;
-        var componentProperties = EffectiveLightingProperties.ReadValues(componentTemplate, context.PackageCache);
-        componentProperties.AddOrReplaceProp(new ObjectProperty(mesh, "StaticMesh"));
+        var cache = context.PackageCache;
+        var componentProperties = EffectiveLightingProperties.ReadValues(componentTemplate, cache);
+        var (materials, materialPackage) = EffectiveLightingProperties.Inherited<ArrayProperty<ObjectProperty>>(componentTemplate, "Materials", cache);
+        var assets = new PreviewAssets(mesh, [.. (materials ?? Enumerable.Empty<ObjectProperty>()).Select(m => AssetReference.Of(m.ResolveToEntry(materialPackage), Pcc, cache))]);
         // None already exists in every package. Pending properties bypass serialization, so even the package's name table stays untouched
         var preview = new ExportEntry(Pcc, null, "None", new byte[8], binary: LegendaryExplorerCore.Unreal.BinaryConverters.StaticMeshComponent.Create());
-        StaticMeshComponent = new StaticMeshComponentProxy(context.RenderContext, preview, this, componentProperties) { ActorPropertyName = nameof(StaticMeshComponent) };
+        StaticMeshComponent = new StaticMeshComponentProxy(context.RenderContext, preview, this, componentProperties, previewAssets: assets)
+        {
+            ActorPropertyName = nameof(StaticMeshComponent)
+        };
         Components.Add(StaticMeshComponent);
         IsVolumetricMesh = StaticMeshComponent.IsVolumetric;
         //a draft is wholly uncommitted
@@ -1039,7 +1045,7 @@ public class StaticMeshActorProxy : ActorProxy
         // binary (no light-maps until a bake). The actor refers to it as its StaticMeshComponent and CollisionComponent; neither has a Components array
         if (Materialized && componentTemplate is not null)
         {
-            var component = NewComponent(componentTemplate, [new ObjectProperty(mesh, "StaticMesh")],
+            var component = NewComponent(componentTemplate, [new ObjectProperty(mesh.EntryIn(Pcc), "StaticMesh")],
                 LegendaryExplorerCore.Unreal.BinaryConverters.StaticMeshComponent.Create());
             StaticMeshComponent.ExistingLighting?.Write(component);
             Properties.AddOrReplaceProp(new ObjectProperty(component, nameof(StaticMeshComponent)));

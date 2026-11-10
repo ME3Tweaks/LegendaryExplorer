@@ -373,18 +373,28 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
         }
     }
 
-    protected MeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null) : base(context, componentExport, parent, previewProperties)
+    /// <summary>A preview's mesh and material overrides, in place of its pending properties' (which can't refer to another file's): see <see cref="PreviewAssets"/></summary>
+    protected readonly PreviewAssets PreviewAssets;
+
+    protected MeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null,
+        PreviewAssets previewAssets = null) : base(context, componentExport, parent, previewProperties)
     {
+        PreviewAssets = previewAssets;
         ReadMaterialOverrides();
     }
 
     protected void ReadMaterialOverrides()
     {
         MaterialOverrides.Clear();
+        if (PreviewProperties is not null)
+        {
+            //a material another file no longer has is drawn as none is: with the mesh's own
+            MaterialOverrides.AddRange((PreviewAssets?.Materials ?? []).Select(m => m?.Find(RenderContext.PackageCache)));
+            return;
+        }
         //as the bake reads them: from the nearest object in the archetype chain that sets them (an empty array overrides its archetypes' too),
         //including archetypes in other packages (prefabs in the persistent level, class defaults' subobjects), which condensed properties leave out
-        var (mats, package) = PreviewProperties is not null ? (PreviewProperties.GetProp<ArrayProperty<ObjectProperty>>("Materials"), Export.FileRef)
-            : EffectiveLightingProperties.Inherited<ArrayProperty<ObjectProperty>>(Export, "Materials", RenderContext.PackageCache);
+        var (mats, package) = EffectiveLightingProperties.Inherited<ArrayProperty<ObjectProperty>>(Export, "Materials", RenderContext.PackageCache);
         if (mats is not null)
         {
             MaterialOverrides.AddRange(mats.Select(x => x.Value != 0 ? x.ResolveToEntry(package) : null));
@@ -474,7 +484,11 @@ public class StaticMeshComponentProxy : MeshComponentProxy
     private PreviewMeshDependencies Dependencies;
     private readonly bool preservePreviewLighting;
 
-    public StaticMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null, bool preservePreviewLighting = false, EditableActorLighting lighting = null) : base(context, componentExport, parent, previewProperties)
+    /// <param name="previewProperties">For a preview (a draft's, or a pending edit's): its values, which its export doesn't have. Its mesh and materials
+    /// are <paramref name="previewAssets"/></param>
+    public StaticMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null,
+        bool preservePreviewLighting = false, EditableActorLighting lighting = null, PreviewAssets previewAssets = null)
+        : base(context, componentExport, parent, previewProperties, previewAssets)
     {
         this.preservePreviewLighting = preservePreviewLighting;
         if (lighting is not null) RestoreLighting(lighting);
@@ -485,13 +499,13 @@ public class StaticMeshComponentProxy : MeshComponentProxy
     {
         var context = RenderContext;
         Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
-        var meshReference = PreviewProperties?.GetProp<ObjectProperty>("StaticMesh")?.ResolveToEntry(Export.FileRef);
-        //a preview's mesh and materials are its pending properties' (its export, which the package doesn't have, has none of its own)
+        //a preview's mesh and materials are its PreviewAssets, which may be another file's (its export, if the package doesn't have it, has none of its own)
+        IEntry meshReference = null;
         if (PreviewProperties is not null)
         {
+            meshReference = PreviewAssets?.Mesh?.Find(context.PackageCache);
             Dependencies.Track(meshReference);
-            foreach (var material in PreviewProperties.GetProp<ArrayProperty<ObjectProperty>>("Materials") ?? Enumerable.Empty<ObjectProperty>())
-                Dependencies.Track(material.ResolveToEntry(Export.FileRef));
+            foreach (var material in MaterialOverrides) Dependencies.Track(material);
         }
         if ((PreviewProperties is not null ? EffectiveLightingProperties.Resolve(meshReference, context.PackageCache)
             : EffectiveLightingProperties.ResolveReference(Export, "StaticMesh", context.PackageCache)) is { } meshExport)
@@ -641,8 +655,9 @@ public class StaticMeshComponentProxy : MeshComponentProxy
 /// <summary>
 /// A SplineMeshComponent: its static mesh's LOD 0 deformed along its stored SplineParams, or along the ones its loft actor rebuilt after an edit
 /// </summary>
-public sealed class SplineMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null, bool preservePreviewLighting = false, EditableActorLighting lighting = null)
-    : StaticMeshComponentProxy(context, componentExport, parent, previewProperties, preservePreviewLighting, lighting)
+public sealed class SplineMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null,
+    bool preservePreviewLighting = false, EditableActorLighting lighting = null, PreviewAssets previewAssets = null)
+    : StaticMeshComponentProxy(context, componentExport, parent, previewProperties, preservePreviewLighting, lighting, previewAssets)
 {
     /// <summary>The deformation the mesh is drawn with</summary>
     public SplineMeshDeformation Deformation { get; private set; }
