@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
     /// <summary>
     /// Specifies options used for relinking, as well as containing objects that can be passed through the entry porting process without having to modify method signatures.
     /// </summary>
-    public class RelinkerOptionsPackage
+    public class RelinkerOptionsPackage : IDisposable
     {
 #if DEBUG
         /// <summary>
@@ -141,6 +141,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public bool CheckImportsWhenExportingToPackage { get; set; } = true;
 
         /// <summary>
+        /// Determines whether a parent encountered by <see cref="EntryExporter.PortParents"/> should be replaced
+        /// in the destination by a Package export with the same name, rather than porting the original object. A null
+        /// value preserves the normal parent porting behavior.
+        /// </summary>
+        public delegate bool PortParentAsPackageDelegate(IEntry parent);
+
+        /// <summary>
+        /// Optional selector for parents that should be converted to same-named Package entries while porting.
+        /// </summary>
+        public PortParentAsPackageDelegate PortParentAsPackage { get; set; }
+
+        /// <summary>
         /// When relinking only objects within the same package, setting this to true will force imports to be considered for relink. This is useful for repointing import references to different objects.
         /// </summary>
         public bool ForceSamePackageImportRelink { get; set; }
@@ -175,6 +187,82 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// Set to true to ignore the game check when porting materials between games. Only use if you know what you're doing.
         /// </summary>
         public bool ForceAllowMaterialPorting { get; set; }
+
+        /// <summary>
+        /// Cache used to look up source-game packages during cross-game function relinking (see <see cref="IsCrossGame"/>
+        /// and <see cref="Relinker.RelinkAll"/>). Lazily created by <see cref="GetOrCreateCrossGameFunctionSourceCache"/>
+        /// on first use and reused for every relink call that shares this RelinkerOptionsPackage instance, instead of a
+        /// new cache being created per call.
+        /// </summary>
+        public TieredPackageCache CrossGameFunctionSourceCache { get; private set; }
+
+        /// <summary>
+        /// If <see cref="CrossGameFunctionSourceCache"/> was lazily created by this instance (rather than supplied via
+        /// <see cref="SetCrossGameFunctionSourceCache"/>), and should therefore be disposed by <see cref="Dispose"/>.
+        /// </summary>
+        private bool _ownsCrossGameFunctionSourceCache;
+
+        /// <summary>
+        /// Supplies an existing chained cache to use for cross-game function relinking (see
+        /// <see cref="CrossGameFunctionSourceCache"/>) instead of one being lazily created. The caller retains
+        /// ownership - this RelinkerOptionsPackage will not dispose a cache supplied this way.
+        /// </summary>
+        public void SetCrossGameFunctionSourceCache(TieredPackageCache cache)
+        {
+            CrossGameFunctionSourceCache = cache;
+            _ownsCrossGameFunctionSourceCache = false;
+        }
+
+        /// <summary>
+        /// Returns the cache to use for cross-game function source package lookups, lazily creating and caching one
+        /// on this instance for <paramref name="sourceGame"/> if the caller hasn't supplied one via
+        /// <see cref="SetCrossGameFunctionSourceCache"/>. Chains off <see cref="Cache"/> when that's already a
+        /// <see cref="TieredPackageCache"/> not in filename-only mode (avoiding a second, independent global cache
+        /// hierarchy); otherwise chains off a fresh global root for <paramref name="sourceGame"/>. Called by
+        /// <see cref="Relinker.RelinkAll"/> - not normally something callers need to call directly.
+        /// </summary>
+        internal TieredPackageCache GetOrCreateCrossGameFunctionSourceCache(MEGame sourceGame)
+        {
+            if (CrossGameFunctionSourceCache == null)
+            {
+                // Filename-only mode is excluded: a same-named file from the source game could otherwise incorrectly
+                // resolve to the destination game's copy if chained onto it.
+                var parent = Cache is TieredPackageCache { FilenameOnlyMode: false } destTiered
+                    ? destTiered
+                    : TieredPackageCache.GetGlobalPackageCache(sourceGame, debugName: $"RelinkerOptionsPackage cross-game function relink root ({sourceGame})");
+
+                CrossGameFunctionSourceCache = parent.ChainNewCache(debugName: $"RelinkerOptionsPackage cross-game function relink cache ({sourceGame})");
+                _ownsCrossGameFunctionSourceCache = true;
+            }
+
+            return CrossGameFunctionSourceCache;
+        }
+
+        /// <summary>
+        /// Invoked, if not null, before a cross-game function relink compiles a function (see
+        /// <see cref="Relinker.RelinkAll"/>), given the source function export and its decompiled source text.
+        /// Return the text that should actually be compiled - e.g. to substitute a hand-authored override in place
+        /// of the decompiled source. Return the passed-in text unchanged to leave the function as-is.
+        /// </summary>
+        public Func<ExportEntry, string, string> CrossGameFunctionSourceOverride { get; set; }
+
+        /// <summary>
+        /// Enables some extra code paths that retry entry lookup using memory paths rather than the existing InstancedFullPath. Set as an option here because it may break backwards compatibilty if on by default.
+        /// </summary>
+        public bool AllowMemoryPathLookups { get; set; }
+
+        /// <summary>
+        /// Disposes <see cref="CrossGameFunctionSourceCache"/> if it was lazily created by this instance. Callers
+        /// that want this cleanup should wrap their RelinkerOptionsPackage in a <c>using</c> block; existing callers
+        /// that don't dispose their instance are unaffected (same as before this cache existed).
+        /// </summary>
+        public void Dispose()
+        {
+            if (_ownsCrossGameFunctionSourceCache)
+            {
+                CrossGameFunctionSourceCache?.Dispose();
+            }
+        }
     }
 
     public static class Relinker
@@ -224,9 +312,23 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var functionsToRelink = rop.CrossPackageMap.Keys.OfType<ExportEntry>().Where(x => x.ClassName == "Function").ToList();
                 if (functionsToRelink.Any())
                 {
+                    // 10/22/2026 - Observed difference between ME3 and LE3 Singularity power causing fun crashes
+                    // A target-game class donor may omit a source-game override that was imported separately.
+                    // Register it before FileLib initializes against the destination package or it won't be linked in
+                    RegisterCrossGameClassFunctions(rop);
+
+                    // 11/04/2026 - Add function to determine if it's actually the destination game so we relink against the correct game
+                    var destPcc = rop.CrossPackageMap[functionsToRelink[0]].FileRef;
+                    bool IsDestinationGameFunction(ExportEntry func) => func.Game == destPcc.Game || (func.Game.IsLEGame3() && destPcc.Game.IsLEGame3());
+                    // If every function is from the destination's game, usopSource is never used, so the fallback doesn't matter.
+                    var sourceGame = functionsToRelink.FirstOrDefault(x => !IsDestinationGameFunction(x))?.Game ?? rop.CrossPackageMap.First().Key.Game;
+
+                    // Reused for every cross-game function relink that shares this rop instance (instead of a new
+                    // cache root being created per call) via RelinkerOptionsPackage.GetOrCreateCrossGameFunctionSourceCache.
+                    // Disposed when rop is, if rop owns it - see RelinkerOptionsPackage.Dispose.
                     UnrealScriptOptionsPackage usopSource = new UnrealScriptOptionsPackage()
                     {
-                        Cache = TieredPackageCache.GetGlobalPackageCache(rop.CrossPackageMap.First().Key.Game).ChainNewCache(), // Cross game source will use its own cache
+                        Cache = rop.GetOrCreateCrossGameFunctionSourceCache(sourceGame), // Cross game source will use its own cache
                         CustomFileResolver = rop.SourceCustomImportFileResolver,
                     };
 
@@ -252,7 +354,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             // We use different USOP objects depending on what game we are initializing the FileLib for. If a
                             // class is donated from the target game we use the dest one. If there is no donor, it might be coming cross
                             // game and we want to use the source game instead.
-                            sourceOK &= sourceLib.Initialize(funcToRelink.FileRef.Game == rop.CrossPackageMap.First().Key.Game ? usopSource : usopDest);
+                            sourceOK &= sourceLib.Initialize(IsDestinationGameFunction(funcToRelink) ? usopDest : usopSource);
                             if (!sourceOK)
                             {
                                 rop.RelinkReport.Add(new EntryStringPair(funcToRelink, $"{funcToRelink.UIndex} {funcToRelink.InstancedFullPath} function relinking failed. Could not initialize the FileLib! This will likely be unusable. {string.Join("\n", sourceLib.InitializationLog.AllErrors.Select(x => x.Message))}"));
@@ -262,7 +364,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                     }
 
-                    var destPcc = rop.CrossPackageMap[functionsToRelink[0]].FileRef;
                     FileLib destFL = new FileLib(destPcc);
                     var destOK = destFL.Initialize(usopDest);
 
@@ -293,14 +394,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             var debugTargetEntry = rop.CrossPackageMap[f];
 #endif
 
-                            var sourceInfo = UnrealScriptCompiler.DecompileExport(f, sourceFileLibs[f.FileRef], usopSource);
+                            var sourceInfo = UnrealScriptCompiler.DecompileExport(f, sourceFileLibs[f.FileRef], IsDestinationGameFunction(f) ? usopDest : usopSource);
                             //    var targetFunc = ObjectBinary.From<UFunction>(targetFuncExp);
                             //    targetFunc.ScriptBytes = new byte[0]; // Zero out function
                             //    targetFuncExp.WriteBinary(targetFunc);
 
                             // Debug.WriteLine($"Recompiling function after cross game porting: {targetFuncExp.InstancedFullPath}");
 
-                            (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(targetFuncExp, sourceInfo.text, destFL, usopDest);
+                            var textToCompile = rop.CrossGameFunctionSourceOverride?.Invoke(f, sourceInfo.text) ?? sourceInfo.text;
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(targetFuncExp, textToCompile, destFL, usopDest);
                             if (log.AllErrors.Any())
                             {
                                 rop.RelinkReport.Add(new EntryStringPair(targetFuncExp, $"{targetFuncExp.UIndex} {targetFuncExp.InstancedFullPath} binary relinking failed. Could not recompile function. Errors: {string.Join("\n", log.AllErrors.Select(x => x.Message))}"));
@@ -315,6 +417,99 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Repairs a broken probe chain when porting across games; donors in target game may not reference things from the original,
+        /// so you can end up with orphaned functions that when the class GC's will crash on invocation
+        /// </summary>
+        /// <returns>The number of destination functions whose ownership or existing virtual slots changed</returns>
+        public static int RegisterCrossGameClassFunctions(RelinkerOptionsPackage rop)
+        {
+            int registered = 0;
+            foreach (var mapping in rop.CrossPackageMap)
+            {
+                // Filter out non-matching functions
+                if (mapping.Key is not ExportEntry { ClassName: "Function", Parent: ExportEntry { IsClass: true } sourceOwner } source ||
+                    mapping.Value is not ExportEntry { ClassName: "Function", Parent: ExportEntry { IsClass: true } targetOwner } target ||
+                    source.Game == target.Game || source.ObjectName != target.ObjectName)
+                    continue;
+
+                // Check local function map in the source class
+                var sourceClass = ObjectBinary.From<UClass>(sourceOwner);
+                if (!sourceClass.LocalFunctionMap.Any(kv => kv.Key == source.ObjectName && kv.Value == source.UIndex))
+                {
+                    continue;
+                }
+                // Check target function map
+                var targetClass = ObjectBinary.From<UClass>(targetOwner);
+                var namedEntries = targetClass.LocalFunctionMap.Where(kv => kv.Key == target.ObjectName).ToList();
+                if (namedEntries.Any(kv => kv.Value != target.UIndex))
+                {
+                    throw new InvalidDataException($"Cannot register {target.InstancedFullPath}: its class maps the name to another function.");
+                }
+
+                // Validate the complete chain before changing anything. We must ensure order so we don't break native classes. 
+                var seen = new HashSet<int>();
+                UField tail = null;
+                int next = targetClass.Children;
+                while (next != 0)
+                {
+                    if (!seen.Add(next) || !target.FileRef.TryGetUExport(next, out var child) || child.Parent != targetOwner || ObjectBinary.From(child) is not UField field)
+                    {
+                        throw new InvalidDataException($"Cannot register {target.InstancedFullPath}: invalid child chain at {next}.");
+                    }
+                    tail = field;
+                    next = field.Next;
+                }
+
+                bool changed = false;
+                if (!seen.Contains(target.UIndex))
+                {
+                    // The copied function's old Next belongs to its source chain. Appending must terminate
+                    // that link, rather than reconnecting part of the donor's chain and creating a cycle
+                    var function = ObjectBinary.From<UFunction>(target);
+                    function.Next = 0;
+                    target.WriteBinary(function);
+                    if (tail == null)
+                    {
+                        targetClass.Children = target.UIndex;
+                    }
+                    else
+                    {
+                        tail.Next = target.UIndex;
+                        tail.Export.WriteBinary(tail);
+                    }
+                    changed = true;
+                }
+
+                if (namedEntries.Count == 0)
+                {
+                    targetClass.LocalFunctionMap.Add(target.ObjectName, target.UIndex);
+                    changed = true;
+                }
+
+                // An override keeps the inherited slot's index. Do not sort, insert or remove virtual slots
+                if (targetClass.VirtualFunctionTable != null)
+                {
+                    for (int slot = 0; slot < targetClass.VirtualFunctionTable.Length; slot++)
+                    {
+                        int implementation = targetClass.VirtualFunctionTable[slot];
+                        if (implementation != target.UIndex && target.FileRef.GetEntry(implementation)?.ObjectName == target.ObjectName)
+                        {
+                            targetClass.VirtualFunctionTable[slot] = target.UIndex;
+                            changed = true;
+                        }
+                    }
+                }
+
+                if (changed)
+                {
+                    targetOwner.WriteBinary(targetClass);
+                    registered++;
+                }
+            }
+            return registered;
         }
 
         /// <summary>
@@ -776,7 +971,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 // END CROSSGEN-V
 
-                if (rop.PortImportsMemorySafe && !rop.IsCrossGame)
+
+                if (rop.PortImportsMemorySafe /* && !rop.IsCrossGame*/)
                 {
                     if (importFullName.HasParent)
                     {
@@ -952,7 +1148,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             // Typically global files are not ForceExport'd 
             // which means objects in them will sit at the root instead of under a package export
-            if (rop.GenerateImportsForGlobalFiles && EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef))
+            if (rop.GenerateImportsForGlobalFiles && EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef) && !rop.IsCrossGame)
             {
                 importingFromGlobalFile = true;
                 instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";
@@ -965,7 +1161,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // because it's fairly easy to swap; others could probably be implemented here and in ImportExport().
             // To allow all items to substitute, use the ROP's RelinkAllowDifferingClassesInRelink item.
             IEntry existingEntry = FindExistingEntry(instancedFullPath, relinkingExport, sourceExport, rop);
-
             if (existingEntry != null)
             {
 #if DEBUG
@@ -990,20 +1185,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     IEntry parent = null;
                     if (sourceExport.Parent != null && !rop.CrossPackageMap.TryGetValue(sourceExport.Parent, out parent))
                     {
-                        //if (sourceExport.Parent is ExportEntry parExp)
-                        //{
-                        //    // Parent is export
-                        //    // How to find parent UIndex from here if it might not yet exist?
-
-                        //    // Note: This doesn't work if it's nested deeper than one link we can find. Might be best to put this in a loop to ensure parent creation?
-
-                        //    // Port parents recursively
-
-                        //    var parParLink = parExp.Parent != null ? relinkingExport.FileRef.FindEntry(parExp.ParentInstancedFullPath) : null; // This is pretty weak...
-                        //    parent = relinkingExport.FileRef.FindEntry(parExp.InstancedFullPath) ?? EntryImporter.ImportExport(relinkingExport.FileRef, parExp, parParLink?.UIndex ?? 0, true, crossPCCObjectMappingList, targetGameDB: targetGameDonorDB);
-                        //}
-                        //else
-                        //{
                         //Parent is import
                         parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, relinkingExport.FileRef, rop);
 

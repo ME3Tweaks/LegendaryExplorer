@@ -65,6 +65,15 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         public virtual uint ID => hircObject?.ID ?? 0;
 
+        /// <summary>
+        /// Type shown when another graph node refers to this node. Exports override this implicitly by not being
+        /// valid HIRC targets; keeping it here lets event-action labels describe targets without knowing the
+        /// concrete node subclass.
+        /// </summary>
+        public virtual string GraphTypeName => hircObject == null
+            ? null
+            : WwiseStreamHelper.GetHircObjTypeString(hircObject.Type);
+
         public string Comment => comment.Text;
 
         protected WwiseHircObjNode(WwiseBankParsed.HIRCObject hircObj, WwiseGraphEditor grapheditor)
@@ -85,7 +94,37 @@ namespace LegendaryExplorer.Tools.WwiseEditor
         {
         }
         public virtual void Layout(float x, float y) => SetOffset(x, y);
-        protected string GetComment() => GetIDString(ID);
+
+        /// <summary>
+        /// Comment shown above the node. If this object's ID is itself a known Wwise bus, shows its design-time
+        /// name. Otherwise, if bus routing info is available for this bank, shows which bus ultimately plays this
+        /// object - either one it sets directly, or one it inherits by walking up the actor-mixer hierarchy.
+        /// </summary>
+        protected string GetComment()
+        {
+            if (g?.BusNames != null && g.BusNames.TryGetValue(ID, out string busName))
+            {
+                return $"{busName} ({GetIDString(ID)})";
+            }
+
+            string objectName = g?.NameResolver != null && g.NameResolver.TryResolve(ID, out string resolvedObjectName)
+                ? $"{resolvedObjectName} ({GetIDString(ID)})"
+                : GetIDString(ID);
+
+            if (g?.BusRouting != null)
+            {
+                (uint resolvedBusId, bool isOwnOverride) = g.BusRouting.ResolveBus(ID);
+                if (resolvedBusId != 0)
+                {
+                    string resolvedName = g.BusNames != null && g.BusNames.TryGetValue(resolvedBusId, out string n)
+                        ? n
+                        : GetIDString(resolvedBusId);
+                    return $"{objectName} → {resolvedName} ({(isOwnOverride ? "set" : "inherited")})";
+                }
+            }
+
+            return objectName;
+        }
 
         public static string GetIDString(uint id)
         {
@@ -95,6 +134,39 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             }
 
             return $"{id:X8}";
+        }
+
+        /// <summary>
+        /// Produces a useful label for a Wwise object reference. Cooked banks only contain hashed IDs, but bus
+        /// names are available from the game's design-time ID map and the graph can identify targets that are
+        /// present in the currently loaded bank.
+        /// </summary>
+        protected string GetReferenceDescription(uint id, WwiseHircObjNode target = null)
+        {
+            string idString = GetIDString(id);
+            if (id == 0)
+            {
+                return $"not specified ({idString})";
+            }
+
+            if (g?.BusNames != null && g.BusNames.TryGetValue(id, out string busName))
+            {
+                string busType = target?.GraphTypeName;
+                return busType != null
+                    ? $"Bus \"{busName}\" [{busType}] ({idString})"
+                    : $"Bus \"{busName}\" ({idString})";
+            }
+
+            if (g?.NameResolver != null && g.NameResolver.TryResolve(id, out string objectName))
+            {
+                return target?.GraphTypeName != null
+                    ? $"{target.GraphTypeName} \"{objectName}\" ({idString})"
+                    : $"Wwise object \"{objectName}\" ({idString})";
+            }
+
+            return target?.GraphTypeName != null
+                ? $"{target.GraphTypeName} ({idString})"
+                : $"HIRC object ({idString})";
         }
 
         protected Color GetColor(HIRCType t)
@@ -168,21 +240,33 @@ namespace LegendaryExplorer.Tools.WwiseEditor
         public readonly List<OutputLink> Outlinks = new();
         public readonly List<VarLink> Varlinks = new();
         private static readonly PointF[] downwardTrianglePoly = { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) };
-        protected PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
+        public PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
         protected PPath CreateVarLinkBox() => PPath.CreateRectangle(-4, 0, 8, 10);
 
         public virtual void CreateConnections(IList<WwiseHircObjNode> objects)
         {
-            foreach (OutputLink outLink in Outlinks)
+            for (int outLinkIndex = 0; outLinkIndex < Outlinks.Count; outLinkIndex++)
             {
+                OutputLink outLink = Outlinks[outLinkIndex];
                 foreach (uint idLink in outLink.Links)
                 {
                     foreach (var destObj in objects.Except(objects.OfType<WExport>()))
                     {
                         if (destObj.ID == idLink)
                         {
+                            if (this is WEventAction eventAction && outLink.Desc.StartsWith("Target:", StringComparison.Ordinal))
+                            {
+                                outLink.Desc = $"Target: {GetReferenceDescription(idLink, destObj)}";
+                                eventAction.SetTargetNode(destObj);
+                                Outlinks[outLinkIndex] = outLink;
+                            }
+
                             PPath p1 = outLink.node;
                             var edge = new ActionEdge();
+                            if (outLink.Desc == "Bus Routing Children")
+                            {
+                                edge.Pen = Pens.White;
+                            }
                             p1.Tag ??= new List<ActionEdge>();
                             ((List<ActionEdge>)p1.Tag).Add(edge);
                             destObj.InputEdges.Add(edge);
@@ -685,8 +769,22 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         protected override string GetTitle()
         {
-            return $"{base.GetTitle()}: {WwiseStreamHelper.GetEventActionTypeString(EventAction.ActionType)}";
+            string target = GetReferenceDescription(EventAction.ReferencedObjectID, targetNode);
+            return $"{base.GetTitle()}: {WwiseStreamHelper.GetEventActionTypeString(EventAction.ActionType)}\n" +
+                   $"Target: {target}\n" +
+                   $"Scope: {GetScopeName(EventAction.Scope)}";
         }
+
+        private WwiseHircObjNode targetNode;
+
+        internal void SetTargetNode(WwiseHircObjNode target) => targetNode = target;
+
+        private static string GetScopeName(WwiseBankParsed.EventActionScope scope) => scope switch
+        {
+            WwiseBankParsed.EventActionScope.Global or WwiseBankParsed.EventActionScope.Global_LE => "Global",
+            WwiseBankParsed.EventActionScope.GameAction or WwiseBankParsed.EventActionScope.GameObject_LE => "Game object",
+            _ => scope.ToString()
+        };
 
         protected override void GetLinks()
         {
@@ -694,7 +792,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             {
                 var l = new OutputLink
                 {
-                    Desc = "Referenced object",
+                    Desc = $"Target: {GetReferenceDescription(EventAction.ReferencedObjectID)}",
                     Links = new List<uint>{EventAction.ReferencedObjectID},
                     Edges = new List<ActionEdge>(),
                     node = CreateActionLinkBox()

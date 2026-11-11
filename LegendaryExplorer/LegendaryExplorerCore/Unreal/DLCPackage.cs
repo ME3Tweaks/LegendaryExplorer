@@ -247,7 +247,7 @@ namespace LegendaryExplorerCore.Unreal
             byte[] inputBlock;
             byte[] outputBlock = new byte[Header.MaxBlockSize];
             long left = e.RealUncompressedSize;
-            FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+            using FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
             fs.Seek(e.BlockOffsets[0], SeekOrigin.Begin);
             byte[] buff;
             if (e.BlockSizeTableIndex == 0xFFFFFFFF)
@@ -302,7 +302,7 @@ namespace LegendaryExplorerCore.Unreal
             MemoryStream result;
             uint count = 0;
             long left = e.RealUncompressedSize;
-            var fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+            using var fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
             fs.Seek(e.BlockOffsets[0], SeekOrigin.Begin);
             
             if (e.BlockSizeTableIndex == 0xFFFFFFFF)
@@ -501,7 +501,7 @@ namespace LegendaryExplorerCore.Unreal
         public void ReBuild()
         {
             string path = Path.Combine(Path.GetDirectoryName(FileName), Path.GetFileNameWithoutExtension(FileName) + ".tmp");
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+            using FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
 
             Debug.WriteLine("Creating Header Dummy...");
             for (int i = 0; i < 8; i++)
@@ -598,14 +598,13 @@ namespace LegendaryExplorerCore.Unreal
         {
             try
             {
-                FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+                using FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
                 Debug.WriteLine("Searching TOC...");
                 int f = FindTOC();
                 if (f == -1)
                     return;
                 Debug.WriteLine("Found TOC, deleting line...");
                 MemoryStream m = DecompressEntry(f, fs);
-                fs.Close();
                 FileEntryStruct e = Files[Index];
                 string toc = Encoding.UTF8.GetString(m.ToArray(), 0, (int)m.Length);
                 string file = e.FileName + "\r\n";
@@ -633,7 +632,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 Index.Sort();
                 Index.Reverse();
-                FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+                using FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
                 Debug.WriteLine("Searching TOC...");
                 int f = FindTOC();
                 if (f == -1)
@@ -641,7 +640,6 @@ namespace LegendaryExplorerCore.Unreal
                 Debug.WriteLine("Found TOC, deleting lines...");
                 MemoryStream m = DecompressEntry(f, fs);
                 string toc = Encoding.UTF8.GetString(m.ToArray(), 0, (int)m.Length);
-                fs.Close();
                 for (int i = 0; i < Index.Count; i++)
                 {
                     FileEntryStruct e = Files[Index[i]];
@@ -671,7 +669,7 @@ namespace LegendaryExplorerCore.Unreal
         public void AddFileQuick(string filein, string path)
         {
             string DLCPath = FileName;
-            FileStream fs = new FileStream(DLCPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            using FileStream fs = new FileStream(DLCPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             byte[] FileIN = File.ReadAllBytes(filein);
             //Create Entry
             List<FileEntryStruct> tmp = new List<FileEntryStruct>(Files);
@@ -687,6 +685,7 @@ namespace LegendaryExplorerCore.Unreal
             tmp.Add(e);
             e = new FileEntryStruct();
             Files.ReplaceAll(tmp);
+            Header.FileCount += 1; // New file added.
             //
             //Find TOC
             Debug.WriteLine("Searching TOC...");
@@ -702,13 +701,12 @@ namespace LegendaryExplorerCore.Unreal
             m.WriteByte(0xA);
             //
             //Append new FileTable
-            int count = (int)Header.FileCount + 1;
             long oldsize = fs.Length;
             long offset = oldsize;
             Debug.WriteLine("File End Offset : 0x" + offset.ToString("X10"));
             fs.Seek(oldsize, 0);
             Header.EntryOffset = (uint)offset;
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < Header.FileCount; i++)
             {
                 e = Files[i];
                 fs.Write(e.Hash, 0, 16);
@@ -718,12 +716,12 @@ namespace LegendaryExplorerCore.Unreal
                 fs.Write(BitConverter.GetBytes(e.DataOffset), 0, 4);
                 fs.WriteByte(e.DataOffsetAdder);
             }
-            offset += count * 0x1E;
+            offset += Header.FileCount * 0x1E;
             Debug.WriteLine("Table End Offset : 0x" + offset.ToString("X10"));
             Header.BlockTableOffset = (uint)offset;
             //
             //Append blocktable
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < Header.FileCount; i++)
             {
                 e = Files[i];
                 if (e.BlockSizeTableIndex != 0xFFFFFFFF && i != f)
@@ -745,7 +743,7 @@ namespace LegendaryExplorerCore.Unreal
             //update filetable
             fs.Seek(oldsize, 0);
             uint blocksizeindex = 0;
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < Header.FileCount; i++)
             {
                 e = Files[i];
                 fs.Write(e.Hash, 0, 16);
@@ -766,7 +764,7 @@ namespace LegendaryExplorerCore.Unreal
                     byte b = (byte)((tocoffset & 0xFF00000000) >> 32);
                     fs.WriteByte(b);
                 }
-                else if (i == count - 1)
+                else if (i == Header.FileCount - 1)
                 {
                     fs.Write(BitConverter.GetBytes(e.UncompressedSize), 0, 4);
                     fs.WriteByte(0);
@@ -785,7 +783,7 @@ namespace LegendaryExplorerCore.Unreal
             //Update Header
             fs.Seek(0xC, 0);
             fs.Write(BitConverter.GetBytes(Header.EntryOffset), 0, 4);
-            fs.Write(BitConverter.GetBytes(count), 0, 4);
+            fs.Write(BitConverter.GetBytes(Header.FileCount), 0, 4);
             fs.Write(BitConverter.GetBytes(Header.BlockTableOffset), 0, 4);
             //
             fs.Close();
@@ -817,7 +815,7 @@ namespace LegendaryExplorerCore.Unreal
 
         public void ReplaceEntry(byte[] newData, int entryIndex)
         {
-            FileStream fs = new FileStream(FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            using FileStream fs = new FileStream(FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             FileEntryStruct e = Files[entryIndex];
             if (e.BlockSizeTableIndex == 0xFFFFFFFF && e.RealUncompressedSize == newData.Length)
             {
@@ -989,7 +987,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                MemoryStream decompressedData = MemoryManager.GetMemoryStream();
+                MemoryStream decompressedData = MemoryManager.GetMemoryStream(uncompressedAmountToRead);
                 fs.Seek(entry.BlockOffsets[0], SeekOrigin.Begin);
 
                 // Seek to the first block we must decompress that contains the data offset we are looking for
@@ -1013,7 +1011,7 @@ namespace LegendaryExplorerCore.Unreal
                         if (!hasBegunReading && (position <= uncompressedOffsetInEntry) && (position + uncompressedAmountToRead > uncompressedOffsetInEntry))
                         {
                             // We have found the first block we must decompress
-                            Debug.WriteLine($@"Begin read at 0x{position:X8}");
+                            //Debug.WriteLine($@"Begin read at 0x{position:X8}");
                             startUncompPosition = position;
                             hasBegunReading = true;
                         }
@@ -1021,7 +1019,7 @@ namespace LegendaryExplorerCore.Unreal
                         // If position (uncomp) > uncompressedoffset + size, we no longer need to read anything.
                         if (position >= uncompressedOffsetInEntry + uncompressedAmountToRead)
                         {
-                            Debug.WriteLine($@"End read at 0x{position:X8}");
+                            //Debug.WriteLine($@"End read at 0x{position:X8}");
                             break;
                         }
 
@@ -1048,7 +1046,7 @@ namespace LegendaryExplorerCore.Unreal
                         if (!hasBegunReading && (position <= uncompressedOffsetInEntry) && (position + uncompressedBlockSize > uncompressedOffsetInEntry))
                         {
                             // We have found the first block we must decompress
-                            Debug.WriteLine($@"Begin read at 0x{position:X8}");
+                            //Debug.WriteLine($@"Begin read at 0x{position:X8}");
                             startUncompPosition = position;
                             hasBegunReading = true;
                         }
@@ -1056,7 +1054,7 @@ namespace LegendaryExplorerCore.Unreal
                         // If position (uncomp) > uncompressedoffset + size, we no longer need to read anything.
                         if (position >= uncompressedOffsetInEntry + uncompressedAmountToRead)
                         {
-                            Debug.WriteLine($@"End read at 0x{position:X8}");
+                            //Debug.WriteLine($@"End read at 0x{position:X8}");
                             break;
                         }
 
@@ -1129,7 +1127,7 @@ namespace LegendaryExplorerCore.Unreal
                             endBlockIndex = i;
                         }
 
-                        position += (int)entry.RealUncompressedSize; // It's not compressed
+                        position += (int) compressedBlockSize; // It's not compressed
                     }
                     else
                     {

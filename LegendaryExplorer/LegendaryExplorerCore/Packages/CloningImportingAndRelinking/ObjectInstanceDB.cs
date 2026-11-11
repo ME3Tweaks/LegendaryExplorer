@@ -33,21 +33,69 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public int Version { get; init; }
 
         /// <summary>
+        /// List of distinct class names. Objects reference these by index rather than storing the
+        /// name, since a handful of class names cover hundreds of thousands of objects.
+        /// </summary>
+        private readonly List<string> ClassNames;
+
+        /// <summary>
+        /// Reverse of <see cref="ClassNames"/>, used only while building.
+        /// </summary>
+        private readonly CaseInsensitiveDictionary<int> ClassNameIndexes = new();
+
+        /// <summary>
         /// Map of Instanced Full Paths to the files that contain them (indexes into FilePaths)
         /// </summary>
         private readonly CaseInsensitiveDictionary<ObjectInstanceInfo> ExportMap;
 
-        private ObjectInstanceDB(MEGame game, List<string> filePaths, CaseInsensitiveDictionary<ObjectInstanceInfo> exportMap)
+        private ObjectInstanceDB(MEGame game, List<string> filePaths, CaseInsensitiveDictionary<ObjectInstanceInfo> exportMap, List<string> classNames = null)
         {
             Game = game;
             FilePaths = filePaths;
             ExportMap = exportMap;
+            ClassNames = classNames ?? new List<string>();
+            for (int i = 0; i < ClassNames.Count; i++)
+            {
+                ClassNameIndexes[ClassNames[i]] = i;
+            }
         }
+
+        /// <summary>
+        /// Index of a class name, adding it to the table if new.
+        /// </summary>
+        private int IndexForClass(string className)
+        {
+            if (string.IsNullOrEmpty(className)) return -1;
+            if (ClassNameIndexes.TryGetValue(className, out int existing)) return existing;
+            int index = ClassNames.Count;
+            ClassNames.Add(className);
+            ClassNameIndexes[className] = index;
+            return index;
+        }
+
+        /// <summary>
+        /// Class name of the given object, or null when this database predates class indexing
+        /// (version 2 and below) or does not contain the object. Callers must treat null as
+        /// "unknown" rather than "no match".
+        /// </summary>
+        public string GetClassName(string ifp)
+        {
+            if (!ExportMap.TryGetValue(ifp, out ObjectInstanceInfo info)) return null;
+            if (info.ClassIndex < 0 || info.ClassIndex >= ClassNames.Count) return null;
+            return ClassNames[info.ClassIndex];
+        }
+
+        /// <summary>
+        /// True when this database carries class information; false for databases serialized before
+        /// version 3, which need regenerating to gain it.
+        /// </summary>
+        public bool HasClassNames => ClassNames.Count > 0;
 
         private const uint MAGIC = 0x1552D027;
 
         // V2 05/14/2024 - Add NetIndex
-        private const uint CURRENT_VERSION = 2;
+        // V3 08/23/2026 - Add class name table; objects reference it by index
+        private const uint CURRENT_VERSION = 3;
 
         public void Serialize(Stream outStream)
         {
@@ -60,12 +108,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 outStream.WriteStringUtf8WithLength(filePath);
             }
 
+            outStream.WriteInt32(ClassNames.Count); // V3
+            foreach (string className in ClassNames)
+            {
+                outStream.WriteStringUtf8WithLength(className);
+            }
+
             outStream.WriteInt32(ExportMap.Count);
             foreach ((string ifp, ObjectInstanceInfo oii) in ExportMap)
             {
                 outStream.WriteStringUtf8WithLength(ifp);
                 outStream.WriteInt32(oii.NetIndex); // V2
                 outStream.WriteInt32(oii.GenerationNetObjCount); // V2
+                outStream.WriteInt32(oii.ClassIndex); // V3
                 outStream.WriteInt32(oii.Files.Count);
                 outStream.Write(oii.Files.AsSpan().AsBytes());
             }
@@ -130,6 +185,44 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                         return new ObjectInstanceDB(game, filePaths, exportMap) { Version = 2 };
                     }
+                case 3:
+                    {
+                        int filePathsCount = inStream.ReadInt32();
+                        var filePaths = new List<string>(filePathsCount);
+                        for (int i = 0; i < filePathsCount; i++)
+                        {
+                            filePaths.Add(inStream.ReadStringUtf8WithLength());
+                        }
+
+                        int classNamesCount = inStream.ReadInt32();
+                        var classNames = new List<string>(classNamesCount);
+                        for (int i = 0; i < classNamesCount; i++)
+                        {
+                            classNames.Add(inStream.ReadStringUtf8WithLength());
+                        }
+
+                        int exportMapCount = inStream.ReadInt32();
+                        var exportMap = new CaseInsensitiveDictionary<ObjectInstanceInfo>(exportMapCount);
+                        for (int i = 0; i < exportMapCount; i++)
+                        {
+                            string key = inStream.ReadStringUtf8WithLength();
+                            int netIndex = inStream.ReadInt32();
+                            int generationNetObjsCount = inStream.ReadInt32();
+                            int classIndex = inStream.ReadInt32();
+
+                            int filesCount = inStream.ReadInt32();
+                            var files = new List<int>(filesCount);
+                            CollectionsMarshal.SetCount(files, filesCount);
+                            inStream.ReadToSpan(files.AsSpan().AsBytes());
+                            exportMap.Add(key, new ObjectInstanceInfo(files)
+                            {
+                                NetIndex = netIndex,
+                                GenerationNetObjCount = generationNetObjsCount,
+                                ClassIndex = classIndex
+                            });
+                        }
+                        return new ObjectInstanceDB(game, filePaths, exportMap, classNames) { Version = 3 };
+                    }
                 case var unsupportedVersion:
                     throw new Exception($"{unsupportedVersion} is not a supported {nameof(ObjectInstanceDB)} version!");
             }
@@ -161,7 +254,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             return null;
         }
 
-        public static ObjectInstanceDB Create(MEGame game, List<string> files, Action<int> numDoneReporter = null, Action<int> addExtraFiles = null)
+        /// <summary>
+        /// Creates an empty database to be filled with <see cref="AddFileToDB(IMEPackage,string,bool,Func{ExportEntry,bool},string)"/>.
+        /// For callers that do their own file enumeration -- e.g. one that inventories a package for
+        /// several databases at once and does not want <see cref="Create"/> to open every file again.
+        /// </summary>
+        public static ObjectInstanceDB CreateEmpty(MEGame game)
+        {
+            return new ObjectInstanceDB(game, [], new CaseInsensitiveDictionary<ObjectInstanceInfo>()) { Version = 3 }; // Make sure is latest
+        }
+
+        public static ObjectInstanceDB Create(MEGame game, List<string> files, Action<int> numDoneReporter = null, Action<int> addExtraFiles = null, string gamePathOverride = null)
         {
             var objectDB = new ObjectInstanceDB(game, new List<string>(files.Count), new CaseInsensitiveDictionary<ObjectInstanceInfo>());
             int numDone = 0;
@@ -179,7 +282,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             var decompress = dlc.DecompressEntry(f);
                             using var dlcP = MEPackageHandler.OpenMEPackageFromStream(decompress, f.FileName);
-                            objectDB.AddFileToDB(dlcP, f.FileName);
+                            objectDB.AddFileToDB(dlcP, f.FileName, true, null, gamePathOverride);
                             numDone++;
                             numDoneReporter?.Invoke(numDone);
                         }
@@ -187,7 +290,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else if (files[i].RepresentsPackageFilePath())
                 {
-                    objectDB.AddFileToDB(files[i], false);
+                    objectDB.AddFileToDB(files[i], false, gamePathOverride);
                 }
                 else
                 {
@@ -207,24 +310,36 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="filePath">Path to package file on disk</param>
         /// <param name="insertAtStart">If true, add new instances of objects to the start of a list, so they will be preferred.</param>
         /// <param name="objectsToAddPredicate">Predicate to determine which objects to add to the database. If null, all objects will be added.</param>
-        public void AddFileToDB(IMEPackage package, string filePath, bool insertAtStart = true, Func<ExportEntry, bool> objectsToAddPredicate = null)
+        public void AddFileToDB(IMEPackage package, string filePath, bool insertAtStart = true, Func<ExportEntry, bool> objectsToAddPredicate = null, string gamePathOverride = null)
         {
             int filePathIndex = FilePaths.Count;
-            if (package.Game != Game)
+            // LMP installations may still contain unconverted LE3 packages. Their object metadata
+            // uses the same format, and belongs in the LMP install's index alongside LMP packages.
+            if (package.Game != Game && !(Game == MEGame.LMP && package.Game == MEGame.LE3))
             {
                 throw new InvalidOperationException($"Cannot add a {package.Game} file to a {Game} database");
             }
 
-            string defaultGamePath = MEDirectories.GetDefaultGamePath(Game);
-            if (package.FilePath.StartsWith(defaultGamePath))
+            // Relativize the path the CALLER gave, not the one the package happens to carry. A
+            // package opened from an SFAR stream has no path of its own beyond the archive entry
+            // name, and a caller doing its own enumeration may already know the game-relative path it
+            // wants stored. Every in-tree caller passes package.FilePath here, so this is unchanged
+            // for them.
+            string pathToStore = filePath ?? package.FilePath;
+
+            // An explicit root allows indexing a game that is only present as a backup; without
+            // one GetDefaultGamePath returns null for an uninstalled game and this threw.
+            string defaultGamePath = gamePathOverride ?? MEDirectories.GetDefaultGamePath(Game);
+            if (!string.IsNullOrEmpty(defaultGamePath) && pathToStore != null
+                && pathToStore.StartsWith(defaultGamePath, StringComparison.OrdinalIgnoreCase))
             {
                 // Store relative path
-                FilePaths.Add(package.FilePath.Substring(defaultGamePath.Trim('\\', '/').Length + 1));
+                FilePaths.Add(pathToStore.Substring(defaultGamePath.Trim('\\', '/').Length + 1));
             }
             else
             {
-                // Store full path
-                FilePaths.Add(package.FilePath);
+                // Store full path, or whatever relative path the caller supplied
+                FilePaths.Add(pathToStore);
             }
 
             // Index objects
@@ -241,7 +356,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // Index it
                 if (!ExportMap.TryGetValue(ifp, out ObjectInstanceInfo records))
                 {
-                    records = new ObjectInstanceInfo(new List<int>(), exp);
+                    records = new ObjectInstanceInfo(new List<int>(), exp) { ClassIndex = IndexForClass(exp.ClassName) };
                     ExportMap.Add(ifp, records);
                 }
 
@@ -297,10 +412,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="filePath">Path to package file on disk</param>
         /// <param name="insertAtStart">If true, add new instances of objects to the start of a list, so they will be preferred.</param>
         //keep public; is used by external tools
-        public void AddFileToDB(string filePath, bool insertAtStart = true)
+        public void AddFileToDB(string filePath, bool insertAtStart = true, string gamePathOverride = null)
         {
             using IMEPackage package = MEPackageHandler.OpenMEPackage(filePath);
-            AddFileToDB(package, filePath, insertAtStart);
+            AddFileToDB(package, filePath, insertAtStart, null, gamePathOverride);
         }
 
         /// <summary>
@@ -337,7 +452,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             string defaultGamePath = MEDirectories.GetDefaultGamePath(Game);
-            if (export.FileRef.FilePath.StartsWith(defaultGamePath))
+            if (!string.IsNullOrEmpty(defaultGamePath) && export.FileRef.FilePath != null
+                && export.FileRef.FilePath.StartsWith(defaultGamePath, StringComparison.OrdinalIgnoreCase))
             {
                 // Store relative path
                 FilePaths.Add(export.FileRef.FilePath.Substring(defaultGamePath.Trim('\\', '/').Length + 1));
@@ -351,7 +467,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // Index it
             if (!ExportMap.TryGetValue(ifp, out ObjectInstanceInfo records))
             {
-                records = new ObjectInstanceInfo(new List<int>(), export);
+                records = new ObjectInstanceInfo(new List<int>(), export) { ClassIndex = IndexForClass(export.ClassName) };
                 ExportMap.Add(ifp, records);
             }
 
@@ -371,6 +487,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public List<int> Files;
         public int NetIndex;
         public int GenerationNetObjCount; // Set on Package only
+
+        /// <summary>
+        /// Index into the database's class name table, or -1 when unknown (databases serialized
+        /// before version 3).
+        /// </summary>
+        public int ClassIndex = -1;
 
         /// <summary>
         /// For serialization

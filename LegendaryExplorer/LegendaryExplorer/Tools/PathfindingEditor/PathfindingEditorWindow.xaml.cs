@@ -16,6 +16,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Pathing;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
@@ -277,6 +278,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         public ICommand ShowWwiseAudioVolumesCommand { get; set; }
         public ICommand FlipLevelCommand { get; set; }
         public ICommand BuildPathfindingChainCommand { get; set; }
+        public ICommand InitializePathfindingNetworkCommand { get; set; }
         public ICommand ShowNodeSizesCommand { get; set; }
         public ICommand AddExportToLevelCommand { get; set; }
         public ICommand PopoutInterpreterCommand { get; set; }
@@ -332,6 +334,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
             FlipLevelCommand = new GenericCommand(FlipLevel, PackageIsLoaded);
             BuildPathfindingChainCommand = new GenericCommand(BuildPathfindingChainExperiment, PackageIsLoaded);
+            InitializePathfindingNetworkCommand = new GenericCommand(InitializePathfindingNetworkExperiment, PackageIsLoaded);
 
             ShowNodeSizesCommand = new GenericCommand(ToggleNodeSizesDisplay);
             AddExportToLevelCommand = new GenericCommand(AddExportToLevel, PackageIsLoaded);
@@ -1501,6 +1504,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 var currentlocation = PathEdUtils.GetLocation(export);
                 CurrentNodeXY = $"{s.GlobalBounds.X},{s.GlobalBounds.Y}";
             }
+            contextMenu.PlacementTarget = this;
             contextMenu.IsOpen = true;
             graphEditor.DisableDragging();
         }
@@ -3670,6 +3674,70 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 //rsr.ShowDialog(this);
                 Debug.WriteLine("Done");
             }
+        }
+
+        private void InitializePathfindingNetworkExperiment()
+        {
+            var level = PersistentLevelExport.GetBinaryData<Level>();
+            if (level.NavListStart > 0)
+            {
+                MessageBox.Show("This level already has a pathfinding network (NavListStart is set).", "Initialize pathfinding network");
+                return;
+            }
+
+            ExportEntry CreatePathNode(float x, float y, float z)
+            {
+                var node = Pcc.CreateExport("PathNode", "PathNode", PersistentLevelExport, createWithStack: true);
+                node.WriteProperty(new ArrayProperty<ObjectProperty>("PathList"));
+                PathEdUtils.SetLocation(node, x, y, z);
+                PathEdUtils.GenerateNewNavGUID(node);
+                level.Actors.Add(node.UIndex);
+                return node;
+            }
+
+            var startNode = CreatePathNode(0, 0, 0);
+            var endNode = CreatePathNode(20, 20, 0);
+
+            startNode.WriteProperty(new ObjectProperty(endNode, "nextNavigationPoint"));
+            endNode.RemoveProperty("nextNavigationPoint");
+
+            level.NavListStart = startNode.UIndex;
+            level.NavListEnd = endNode.UIndex;
+            if (!level.NavRefs.Contains(startNode.UIndex))
+            {
+                level.NavRefs.Add(startNode.UIndex);
+            }
+            if (!level.NavRefs.Contains(endNode.UIndex))
+            {
+                level.NavRefs.Add(endNode.UIndex);
+            }
+
+            PersistentLevelExport.WriteBinary(level);
+
+            if (Pcc.Exports.Any(x => x.ClassName == "ReachSpec"))
+            {
+                PathEdUtils.CreateReachSpec(startNode, true, endNode, "Engine.ReachSpec", new ReachSpecSize(null, ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
+            }
+            else
+            {
+                ExportEntry CreateReachSpecAndAttach(ExportEntry sourceNode, ExportEntry destinationNode)
+                {
+                    int specIndex = Pcc.ExportCount;
+                    PathTools.CreateReachSpec(sourceNode, false, destinationNode, "ReachSpec", ReachSpecSize.BOSS_RADIUS, ReachSpecSize.BOSS_HEIGHT);
+                    var createdSpec = Pcc.GetUExport(specIndex + 1);
+                    var pathList = sourceNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList") ?? new ArrayProperty<ObjectProperty>("PathList");
+                    pathList.Add(new ObjectProperty(createdSpec));
+                    sourceNode.WriteProperty(pathList);
+                    return createdSpec;
+                }
+
+                CreateReachSpecAndAttach(startNode, endNode);
+                CreateReachSpecAndAttach(endNode, startNode);
+            }
+
+            PathfindingEditorWPF_ValidationPanel.RecalculateReachspecs();
+            RefreshGraph();
+            MessageBox.Show("Initialized a new pathfinding network with two PathNodes and two ReachSpecs.", "Initialize pathfinding network");
         }
 
         private void FlipLevel()

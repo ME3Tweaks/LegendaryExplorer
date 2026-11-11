@@ -176,6 +176,7 @@ namespace LegendaryExplorerCore.UnrealScript
             MEGame.ME3 => ["Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc"],
             MEGame.ME2 => ["Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"],
             MEGame.ME1 => ["Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u"],
+            MEGame.LMP => ["Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "BIOP_MP_COMMON.pcc"],
             MEGame.LE3 => ["Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc"],
             MEGame.LE2 => ["Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"],
             MEGame.LE1 => ["Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "SFXStrategicAI.pcc", "SFXGameContent_Powers.pcc"],
@@ -304,7 +305,15 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                     foreach (string fileName in Enumerable.Reverse(associatedFiles))
                     {
-                        if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
+                        if (usop.CustomFileResolver != null && usop.CustomFileResolver.Invoke(fileName, usop.Cache) != null)
+                        {
+                            // Custom resolution, given a cache, will be relatively fast on a second invocation
+                            if (!ResolveAllClassesInPackage(usop.CustomFileResolver.Invoke(fileName, usop.Cache), ref _baseSymbols, InitializationLog, usop))
+                            {
+                                return false;
+                            }
+                        }
+                        else if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
                         {
                             IMEPackage pcc = usop.Cache.GetCachedPackage(path, true);
                             if (!ResolveAllClassesInPackage(pcc, ref _baseSymbols, InitializationLog, usop))

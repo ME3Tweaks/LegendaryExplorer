@@ -26,16 +26,16 @@ public class EventLinkInfo
     /// <summary>
     /// Factory method to create a <see cref="EventLinkInfo"/> from a SeqEventLink struct
     /// </summary>
-    /// <param name="sp">SeqVarLink struct property</param>
+    /// <param name="sp">SeqEventLink struct property</param>
     /// <param name="package">Package containing sequence object</param>
-    /// <returns>New VarLinkInfo</returns>
+    /// <returns>New EventLinkInfo</returns>
     public static EventLinkInfo FromStruct(StructProperty sp, IMEPackage package)
     {
         return new EventLinkInfo()
         {
             LinkDesc = sp.GetProp<StrProperty>("LinkDesc"),
             ExpectedType = sp.GetProp<ObjectProperty>("ExpectedType").ResolveToEntry(package),
-            LinkedNodes = sp.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables")?.Select(x => x.ResolveToEntry(package)).ToList() ?? new List<IEntry>()
+            LinkedNodes = sp.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents")?.Select(x => x.ResolveToEntry(package)).ToList() ?? new List<IEntry>()
         };
     }
 }

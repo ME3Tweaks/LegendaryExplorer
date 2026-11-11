@@ -19,7 +19,7 @@
         <converters:BoolEnabledConverter x:Key="BoolEnabledConverter"/>
     </Window.Resources>
     <DockPanel>
-        <TextBlock DockPanel.Dock="Top"  Padding="5" Background="LightGray" TextWrapping="Wrap" 
+        <TextBlock DockPanel.Dock="Top"  Padding="5" Background="{DynamicResource Theme.Background.InfoBar}" Foreground="{DynamicResource Theme.Foreground.Primary}" TextWrapping="Wrap"
                    Text="AFC Compactor can compact your DLC mod's Audio File Cache (AFC) file, removing unused data that is created when replacing existing audio in the same AFC that is no longer used. It can also pull in audio from other AFCs into yours, removing dependencies on official DLC."/>
         <DockPanel Margin="5">
             <DockPanel Dock="Bottom" Margin="0,5,0,0">

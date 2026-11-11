@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Text;
 
 namespace LegendaryExplorerCore.UnrealScript.Utilities
@@ -8,6 +9,11 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
         protected byte[] _data;
         protected readonly int Size;
         protected int Position;
+
+        /// <summary>
+        /// Console platforms (Xenon, PS3, WiiU) store multi-byte values big endian
+        /// </summary>
+        protected bool BigEndian;
 
         protected ObjectReader(byte[] data)
         {
@@ -44,37 +50,51 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
 
         protected int ReadInt32()
         {
-            return Position + 4 > Size ? 0 : BitConverter.ToInt32(_data, _position(4));
+            if (Position + 4 > Size) return 0;
+            var span = _data.AsSpan(_position(4), 4);
+            return BigEndian ? BinaryPrimitives.ReadInt32BigEndian(span) : BinaryPrimitives.ReadInt32LittleEndian(span);
         }
 
         protected short ReadInt16()
         {
-            return Position + 2 > Size ? (short)0 : BitConverter.ToInt16(_data, _position(2));
+            if (Position + 2 > Size) return 0;
+            var span = _data.AsSpan(_position(2), 2);
+            return BigEndian ? BinaryPrimitives.ReadInt16BigEndian(span) : BinaryPrimitives.ReadInt16LittleEndian(span);
         }
 
         protected long ReadInt64()
         {
-            return Position + 8 > Size ? 0 : BitConverter.ToInt64(_data, _position(8));
+            if (Position + 8 > Size) return 0;
+            var span = _data.AsSpan(_position(8), 8);
+            return BigEndian ? BinaryPrimitives.ReadInt64BigEndian(span) : BinaryPrimitives.ReadInt64LittleEndian(span);
         }
 
         protected uint ReadUInt32()
         {
-            return Position + 4 > Size ? 0 : BitConverter.ToUInt32(_data, _position(4));
+            if (Position + 4 > Size) return 0;
+            var span = _data.AsSpan(_position(4), 4);
+            return BigEndian ? BinaryPrimitives.ReadUInt32BigEndian(span) : BinaryPrimitives.ReadUInt32LittleEndian(span);
         }
 
         protected ushort ReadUInt16()
         {
-            return Position + 2 > Size ? (ushort)0 : BitConverter.ToUInt16(_data, _position(2));
+            if (Position + 2 > Size) return 0;
+            var span = _data.AsSpan(_position(2), 2);
+            return BigEndian ? BinaryPrimitives.ReadUInt16BigEndian(span) : BinaryPrimitives.ReadUInt16LittleEndian(span);
         }
 
         protected ulong ReadUInt64()
         {
-            return Position + 8 > Size ? 0 : BitConverter.ToUInt64(_data, _position(8));
+            if (Position + 8 > Size) return 0;
+            var span = _data.AsSpan(_position(8), 8);
+            return BigEndian ? BinaryPrimitives.ReadUInt64BigEndian(span) : BinaryPrimitives.ReadUInt64LittleEndian(span);
         }
 
         protected float ReadFloat()
         {
-            return Position + 4 > Size ? 0 : BitConverter.ToSingle(_data, _position(4));
+            if (Position + 4 > Size) return 0;
+            var span = _data.AsSpan(_position(4), 4);
+            return BigEndian ? BinaryPrimitives.ReadSingleBigEndian(span) : BinaryPrimitives.ReadSingleLittleEndian(span);
         }
 
         protected string ReadString()
@@ -94,7 +114,7 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
             if (unicode)
             {
                 var bytes = ReadRawData((size * 2));
-                return Encoding.Unicode.GetString(bytes).Substring(0, size - 1);
+                return (BigEndian ? Encoding.BigEndianUnicode : Encoding.Unicode).GetString(bytes).Substring(0, size - 1);
             }
             else
             {

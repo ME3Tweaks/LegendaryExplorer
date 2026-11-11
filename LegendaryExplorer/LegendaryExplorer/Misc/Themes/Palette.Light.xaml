@@ -1,0 +1,46 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Same semantic keys as Palette.Dark.xaml, mapped to today's existing (unthemed) look.
+         Only referenced by DynamicResource "Theme.X" spots created during hardcoded-color remediation,
+         so that light mode keeps rendering exactly as it does today. -->
+
+    <Color x:Key="Theme.Color.Selected">#FFADD8E6</Color>
+    <Color x:Key="Theme.Color.OnAccent">#FF000000</Color>
+
+    <SolidColorBrush x:Key="Theme.Background.Window" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="Theme.Background.Panel" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="Theme.Background.Control" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="Theme.Background.ControlHover" Color="#FFE5E5E5"/>
+    <SolidColorBrush x:Key="Theme.Background.ControlPressed" Color="#FFCCCCCC"/>
+    <SolidColorBrush x:Key="Theme.Background.Selected" Color="#FF0078D7"/>
+    <SolidColorBrush x:Key="Theme.Background.Overlay" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="Theme.Background.InfoBar" Color="#FFD3D3D3"/>
+    <!-- Matches the literal "GhostWhite" used behind Dialogue Editor's list-header Labels (ID, Speaker Tag, etc). -->
+    <SolidColorBrush x:Key="Theme.Background.HeaderLabel" Color="GhostWhite"/>
+    <!-- Matches the literal "LightGray" used for read-only TextBoxes (e.g. Plot Editor's Codex title/description fields). -->
+    <SolidColorBrush x:Key="Theme.Background.ReadOnly" Color="LightGray"/>
+    <!-- Matches the literal "LightYellow" used behind the Asset Database texture preview pane. -->
+    <SolidColorBrush x:Key="Theme.Background.TexturePreview" Color="LightYellow"/>
+
+    <SolidColorBrush x:Key="Theme.Foreground.Primary" Color="#FF000000"/>
+    <SolidColorBrush x:Key="Theme.Foreground.Secondary" Color="#FF808080"/>
+    <SolidColorBrush x:Key="Theme.Foreground.Disabled" Color="#FFA0A0A0"/>
+    <SolidColorBrush x:Key="Theme.Foreground.OnAccent" Color="#FFFFFFFF"/>
+
+    <SolidColorBrush x:Key="Theme.Border" Color="#FFABADB3"/>
+    <SolidColorBrush x:Key="Theme.BorderFocus" Color="#FF0078D7"/>
+    <SolidColorBrush x:Key="Theme.Accent" Color="#FF182574"/>
+    <!-- Matches the literal "DarkBlue" used for fa:ImageAwesome action icons in Dialogue Editor. -->
+    <SolidColorBrush x:Key="Theme.Foreground.IconAccent" Color="DarkBlue"/>
+    <!-- Matches the literal "Orange" used for a couple of hand-rolled toolbox/panel highlights - kept as
+         its own key (rather than reusing Theme.Accent) since those spots are specifically orange, not the
+         app's blue accent. -->
+    <SolidColorBrush x:Key="Theme.Accent.Warm" Color="Orange"/>
+
+    <SolidColorBrush x:Key="Theme.Error" Color="#FFFF0000"/>
+
+    <!-- Matches the literal "Yellow" used app-wide for the "modified/pending changes" row highlight. -->
+    <SolidColorBrush x:Key="Theme.Background.Modified" Color="Yellow"/>
+
+</ResourceDictionary>

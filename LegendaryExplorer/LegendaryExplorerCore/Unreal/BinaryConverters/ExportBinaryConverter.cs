@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -42,7 +42,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 // IDK if this works as internal busses have changed identifiers.
                 // You likely would need to correct bus IDs internally for this to properly work.
                 // Todo: LE3 -> LE2
-                else if (objbin is WwiseEvent we && export.Game is MEGame.LE2 or MEGame.LE3 && newGame is /*MEGame.LE2 or*/ MEGame.LE3 && export.Game != newGame)
+                else if (objbin is WwiseEvent we && export.Game is MEGame.LE2 or MEGame.LE3 or MEGame.LMP && newGame is /*MEGame.LE2 or*/ MEGame.LE3 or MEGame.LMP && export.Game != newGame)
                 {
                     // We can't convert ME2 -> ME3, only LE versions work
 
@@ -215,10 +215,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 var format = export.GetProperty<EnumProperty>("Format");
                 if (format is { Value.Name: "PF_BC7" })
                 {
-                    // UDK doesn't support BC7
-                    var unused = new MemoryStream(); // We don't want to modify source export
-                    var convertedImage = new Texture2D(export).ToImage(PixelFormat.DXT1);
-                    var t2d = new Texture2D(export) { TextureFormat = "PF_DXT1" };
+                    var decision = UdkTextureEncodingPolicy.Plan(export);
+                    using var unused = new MemoryStream();
+                    var convertedImage = UdkTextureEncodingPolicy.CreateImage(export, decision);
+                    var t2d = new Texture2D(export) { TextureFormat = decision.TargetFormat };
                     t2d.Replace(convertedImage, export.GetProperties(), isPackageStored: true, outDataOverride: unused);
                     bin = new MemoryStream();
                     t2d.SerializeNewData(bin); // This serializes binary data.

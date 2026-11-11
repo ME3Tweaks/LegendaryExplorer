@@ -108,15 +108,44 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         [UIndexRefContainer]
         public MaterialResource SM2StaticPermutationResource;
         public StaticParameterSet SM2StaticParameterSet;
+
+        /// <summary>
+        /// UDK only: whether a low quality (MSQ_LOW) permutation follows the high quality one. UDK keeps the
+        /// high quality permutation in the SM3 fields and the low quality one in the SM2 fields.
+        /// </summary>
+        public bool UDKHasLowQualityPermutation;
+
         protected override void Serialize(SerializingContainer sc)
         {
+            if (sc.Game == MEGame.UDK)
+            {
+                // UDK (package version > 857) starts with a bitmask of the quality levels that follow: bit 0 is
+                // high, bit 1 is low. Each set bit is a resource followed by a parameter set. Without the mask,
+                // UDK reads the resource's first int as the mask, loads nothing, and fails with a serial size
+                // mismatch. See UMaterialInstance::Serialize (UDK.exe 0x7ff64de6e440).
+                int qualityMask = UDKHasLowQualityPermutation ? 3 : 1;
+                sc.Serialize(ref qualityMask);
+                if (sc.IsLoading)
+                {
+                    UDKHasLowQualityPermutation = (qualityMask & 2) != 0;
+                }
+                if ((qualityMask & 1) != 0)
+                {
+                    sc.Serialize(ref SM3StaticPermutationResource);
+                    sc.Serialize(ref SM3StaticParameterSet);
+                }
+                if (UDKHasLowQualityPermutation)
+                {
+                    sc.Serialize(ref SM2StaticPermutationResource);
+                    sc.Serialize(ref SM2StaticParameterSet);
+                }
+                return;
+            }
+
             sc.Serialize(ref SM3StaticPermutationResource);
             sc.Serialize(ref SM3StaticParameterSet);
-            if (sc.Game != MEGame.UDK)
-            {
-                sc.Serialize(ref SM2StaticPermutationResource);
-                sc.Serialize(ref SM2StaticParameterSet);
-            }
+            sc.Serialize(ref SM2StaticPermutationResource);
+            sc.Serialize(ref SM2StaticParameterSet);
         }
 
         public static MaterialInstance Create()
@@ -136,7 +165,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             names.AddRange(SM3StaticPermutationResource.GetNames(game));
             names.AddRange(SM3StaticParameterSet.GetNames(game));
-            if (game != MEGame.UDK)
+            if (game != MEGame.UDK || UDKHasLowQualityPermutation)
             {
                 names.AddRange(SM2StaticPermutationResource.GetNames(game));
                 names.AddRange(SM2StaticParameterSet.GetNames(game, "ShaderModel2StaticParameterSet."));
@@ -148,7 +177,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
             SM3StaticPermutationResource.ForEachUIndex(game, action, "SM3StaticPermutationResource.");
-            if (game is not MEGame.UDK)
+            if (game is not MEGame.UDK || UDKHasLowQualityPermutation)
             {
                 SM2StaticPermutationResource.ForEachUIndex(game, action, "SM2StaticPermutationResource.");
             }
@@ -192,7 +221,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public bool bUsesDynamicParameter;
         public bool bUsesLightmapUVs;
         public bool bUsesMaterialVertexPositionOffset;
-        public bool unkBool1;
+        public bool bUsesVertexColor; //full use unknown, might be a bitfield according to decomp
         //end >= ME3
         public uint UsingTransforms; //ECoordTransformUsage
         public TextureLookup[] TextureLookups; //not ME1
@@ -413,7 +442,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 mat.bUsesDynamicParameter = reader.ReadBoolProp(nameof(bUsesDynamicParameter));
                 mat.bUsesLightmapUVs = reader.ReadBoolProp(nameof(bUsesLightmapUVs));
                 mat.bUsesMaterialVertexPositionOffset = reader.ReadBoolProp(nameof(bUsesMaterialVertexPositionOffset));
-                mat.unkBool1 = reader.ReadBoolProp(nameof(unkBool1));
+                mat.bUsesVertexColor = reader.ReadBoolProp(nameof(bUsesVertexColor));
                 reader.ReadNumProp(out mat.UsingTransforms, nameof(UsingTransforms));
                 mat.TextureLookups = reader.ReadList(nameof(TextureLookups), static (ref Utf8JsonReader reader) =>
                 {
@@ -477,7 +506,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 writer.WriteBoolean(nameof(bUsesDynamicParameter), value.bUsesDynamicParameter);
                 writer.WriteBoolean(nameof(bUsesLightmapUVs), value.bUsesLightmapUVs);
                 writer.WriteBoolean(nameof(bUsesMaterialVertexPositionOffset), value.bUsesMaterialVertexPositionOffset);
-                writer.WriteBoolean(nameof(unkBool1), value.unkBool1);
+                writer.WriteBoolean(nameof(bUsesVertexColor), value.bUsesVertexColor);
                 writer.WriteNumber(nameof(UsingTransforms), value.UsingTransforms);
                 writer.WriteStartArray(nameof(TextureLookups));
                 foreach (TextureLookup texLookup in value.TextureLookups)
@@ -793,6 +822,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 "FMaterialUniformExpressionClamp" => new MaterialUniformExpressionClamp(),
                 "FMaterialUniformExpressionConstant" => new MaterialUniformExpressionConstant(),
                 "FMaterialUniformExpressionFmod" => new MaterialUniformExpressionFmod(),
+                "FMaterialUniformExpressionBIOMod" => new MaterialUniformExpressionBIOMod(),
+                "FMaterialUniformExpressionBIOSineSubtend" => new MaterialUniformExpressionBIOSineSubtend(),
                 "FMaterialUniformExpressionMax" => new MaterialUniformExpressionMax(),
                 "FMaterialUniformExpressionMin" => new MaterialUniformExpressionMin(),
                 "FMaterialUniformExpressionFoldedMath" => new MaterialUniformExpressionFoldedMath(),
@@ -806,8 +837,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 "FMaterialUniformExpressionTextureParameter" => new MaterialUniformExpressionTextureParameter(),
                 "FMaterialUniformExpressionVectorParameter" => new MaterialUniformExpressionVectorParameter(),
                 "FMaterialUniformExpressionFlipbookParameter" => new MaterialUniformExpressionFlipbookParameter(),
-                "FMaterialUniformExpressionBIOSineSubtend" => new MaterialUniformExpressionBIOSineSubtend(),
-                "FMaterialUniformExpressionBIOMod" => new MaterialUniformExpressionBIOMod(),
                 _ => throw new ArgumentException(expressionTypeName)
             };
         }
@@ -846,6 +875,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public abstract partial class MaterialUniformExpressionUnaryOp : MaterialUniformExpression
     {
+        // LE3 appFloor/appCeil use float32 double/offset arithmetic, CVTSS2SI,
+        // arithmetic shift, then integer-to-float. Mathematical Floor/Ceiling
+        // differ near zero, at large magnitudes, and for nonfinite values.
+        protected static float NativeFloor(float value) => NativeRoundToInt32((value + value) - 0.5f) >> 1;
+        protected static float NativeCeiling(float value) => -(NativeRoundToInt32(-0.5f - (value + value)) >> 1);
+
+        private static int NativeRoundToInt32(float value)
+        {
+            if (System.Runtime.Intrinsics.X86.Sse.IsSupported)
+                return System.Runtime.Intrinsics.X86.Sse.ConvertToInt32(System.Runtime.Intrinsics.Vector128.CreateScalar(value));
+            // Portable fallback for default round-to-nearest/even and the x86
+            // masked-invalid sentinel, not .NET's saturating float-to-int cast.
+            float rounded = MathF.Round(value, MidpointRounding.ToEven);
+            return float.IsNaN(rounded) || rounded >= 2147483648f || rounded < -2147483648f
+                ? int.MinValue : (int)rounded;
+        }
+
         [UIndexRefContainer]
         public MaterialUniformExpression X;
         public override void Serialize(SerializingContainer sc)
@@ -878,10 +924,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
         {
             X.GetNumberValue(context, ref outVal);
-            outVal.R = MathF.Ceiling(outVal.R);
-            outVal.G = MathF.Ceiling(outVal.G);
-            outVal.B = MathF.Ceiling(outVal.B);
-            outVal.A = MathF.Ceiling(outVal.A);
+            outVal.R = NativeCeiling(outVal.R);
+            outVal.G = NativeCeiling(outVal.G);
+            outVal.B = NativeCeiling(outVal.B);
+            outVal.A = NativeCeiling(outVal.A);
         }
     }
 
@@ -890,10 +936,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
         {
             X.GetNumberValue(context, ref outVal);
-            outVal.R = MathF.Floor(outVal.R);
-            outVal.G = MathF.Floor(outVal.G);
-            outVal.B = MathF.Floor(outVal.B);
-            outVal.A = MathF.Floor(outVal.A);
+            outVal.R = NativeFloor(outVal.R);
+            outVal.G = NativeFloor(outVal.G);
+            outVal.B = NativeFloor(outVal.B);
+            outVal.A = NativeFloor(outVal.A);
         }
     }
 
@@ -902,10 +948,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
         {
             X.GetNumberValue(context, ref outVal);
-            outVal.R = outVal.R - MathF.Floor(outVal.R);
-            outVal.G = outVal.G - MathF.Floor(outVal.G);
-            outVal.B = outVal.B - MathF.Floor(outVal.B);
-            outVal.A = outVal.A - MathF.Floor(outVal.A);
+            outVal.R = outVal.R - NativeFloor(outVal.R);
+            outVal.G = outVal.G - NativeFloor(outVal.G);
+            outVal.B = outVal.B - NativeFloor(outVal.B);
+            outVal.A = outVal.A - NativeFloor(outVal.A);
         }
     }
 
@@ -915,10 +961,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             LinearColor temp = LinearColor.Black;
             X.GetNumberValue(context, ref temp);
-            outVal.R = temp.R - MathF.Floor(temp.R);
-            outVal.G = temp.G - MathF.Floor(temp.G);
-            outVal.B = temp.B - MathF.Floor(temp.B);
-            outVal.A = temp.A - MathF.Floor(temp.A);
+            outVal.R = temp.R - NativeFloor(temp.R);
+            outVal.G = temp.G - NativeFloor(temp.G);
+            outVal.B = temp.B - NativeFloor(temp.B);
+            outVal.A = temp.A - NativeFloor(temp.A);
         }
     }
 
@@ -1045,6 +1091,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
+
     public class MaterialUniformExpressionMax : MaterialUniformExpressionBinaryOp
     {
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
@@ -1053,10 +1100,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             A.GetNumberValue(context, ref tempA);
             LinearColor tempB = LinearColor.Black;
             B.GetNumberValue(context, ref tempB);
-            outVal.R = MathF.Max(tempA.R, tempB.R);
-            outVal.G = MathF.Max(tempA.G, tempB.G);
-            outVal.B = MathF.Max(tempA.B, tempB.B);
-            outVal.A = MathF.Max(tempA.A, tempB.A);
+            // LE3 MAXSS selects its second operand on equality or unordered comparison.
+            outVal.R = tempA.R > tempB.R ? tempA.R : tempB.R;
+            outVal.G = tempA.G > tempB.G ? tempA.G : tempB.G;
+            outVal.B = tempA.B > tempB.B ? tempA.B : tempB.B;
+            outVal.A = tempA.A > tempB.A ? tempA.A : tempB.A;
         }
     }
 
@@ -1068,10 +1116,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             A.GetNumberValue(context, ref tempA);
             LinearColor tempB = LinearColor.Black;
             B.GetNumberValue(context, ref tempB);
-            outVal.R = MathF.Min(tempA.R, tempB.R);
-            outVal.G = MathF.Min(tempA.G, tempB.G);
-            outVal.B = MathF.Min(tempA.B, tempB.B);
-            outVal.A = MathF.Min(tempA.A, tempB.A);
+            // LE3 MINSS selects its second operand on equality or unordered comparison.
+            outVal.R = tempA.R < tempB.R ? tempA.R : tempB.R;
+            outVal.G = tempA.G < tempB.G ? tempA.G : tempB.G;
+            outVal.B = tempA.B < tempB.B ? tempA.B : tempB.B;
+            outVal.A = tempA.A < tempB.A ? tempA.A : tempB.A;
         }
     }
 
@@ -1136,10 +1185,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 EFoldedMathOperation.Sub => (LinearColor)(aVec - bVec),
                 EFoldedMathOperation.Mul => (LinearColor)(aVec * bVec),
                 EFoldedMathOperation.Div => new LinearColor(aVec.X / SafeDiv(bVec.X), aVec.Y / SafeDiv(bVec.Y), aVec.Z / SafeDiv(bVec.Z), aVec.W / SafeDiv(bVec.W)),
-                EFoldedMathOperation.Dot => new LinearColor(Vector4.Dot(aVec, bVec)),
+                EFoldedMathOperation.Dot => new LinearColor(OrderedDot(aVec, bVec)),
                 _ => throw new Exception($"Unknown folded math operation {Op}")
             };
             return;
+
+            static float OrderedDot(Vector4 a, Vector4 b)
+            {
+                // LE3 FoldedMath op4 uses separate scalar products and left-associated
+                // additions, then broadcasts. Vector4.Dot can reduce pairwise instead,
+                // changing cancellation-sensitive values (e.g. 1e20 + 1 - 1e20 + 1).
+                float result = b.Y * a.Y + b.X * a.X;
+                result += b.Z * a.Z;
+                result += b.W * a.W;
+                return result;
+            }
 
             static float SafeDiv(float divisor)
             {
@@ -1342,7 +1402,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Serialize(ref mres.bUsesMaterialVertexPositionOffset);
                 if (Game == MEGame.ME3 || Game.IsLEGame())
                 {
-                    Serialize(ref mres.unkBool1);
+                    Serialize(ref mres.bUsesVertexColor);
                 }
             }
             Serialize(ref mres.UsingTransforms);

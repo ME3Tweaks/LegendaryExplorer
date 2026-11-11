@@ -383,7 +383,8 @@ namespace LegendaryExplorerCore.Packages
                 // LEGENDARY
                 version == MEPackage.LE1UnrealVersion && licenseVersion == MEPackage.LE1LicenseeVersion ||
                 version == MEPackage.LE2UnrealVersion && licenseVersion == MEPackage.LE2LicenseeVersion ||
-                version == MEPackage.LE3UnrealVersion && licenseVersion == MEPackage.LE3LicenseeVersion
+                version == MEPackage.LE3UnrealVersion && licenseVersion == MEPackage.LE3LicenseeVersion ||
+                version == MEPackage.LE3UnrealVersion && licenseVersion == MEPackage.LMPLicenseeVersion
                 )
             {
                 stream.Position -= 8; //reset to start
@@ -406,7 +407,7 @@ namespace LegendaryExplorerCore.Packages
             }
             else
             {
-                throw new FormatException("Not an ME1, ME2, ME3, LE1, LE2, LE3,or UDK (2015) package file.");
+                throw new FormatException("Not an ME1, ME2, ME3, LE1, LE2, LE3, LMP, or UDK (2015) package file.");
             }
 
             if (useSharedCache)
@@ -578,6 +579,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 MEGame.LE1 => 4,
                 MEGame.LE3 => 6,
+                MEGame.LMP => 6,
                 MEGame.ME2 => 7,
                 _ => 1
             });
@@ -669,6 +671,18 @@ namespace LegendaryExplorerCore.Packages
         }
 
         // LEGENDARY EDITION
+        public static IMEPackage OpenLMPPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
+        {
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
+            if (pck.Game == MEGame.LMP)
+            {
+                return pck;
+            }
+
+            pck.Release(user);
+            throw new FormatException("Not an LMP package file.");
+        }
+
         public static IMEPackage OpenLE3Package(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);

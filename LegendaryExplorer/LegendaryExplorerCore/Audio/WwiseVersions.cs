@@ -23,6 +23,7 @@ namespace LegendaryExplorerCore.Audio
             MEGame.LE1 => null,
             MEGame.LE2 => "2019.1.6.7110",
             MEGame.LE3 => "2019.1.6.7110",
+            MEGame.LMP => "2019.1.6.7110",
             _ => null
         };
 
@@ -39,6 +40,7 @@ namespace LegendaryExplorerCore.Audio
             MEGame.LE1 => null,
             MEGame.LE2 => 7110,
             MEGame.LE3 => 7110,
+            MEGame.LMP => 7110,
             _ => null
         };
 

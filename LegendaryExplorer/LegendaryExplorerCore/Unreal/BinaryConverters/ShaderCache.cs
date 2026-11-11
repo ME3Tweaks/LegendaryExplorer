@@ -457,12 +457,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
+    [DebuggerDisplay("ShaderReference {Id}->{ShaderType}")]
     public class ShaderReference
     {
         public Guid Id;
         public NameReference ShaderType;
     }
 
+    [DebuggerDisplay("MeshShaderMap VF {VertexFactoryType.Name}")]
     public class MeshShaderMap
     {
         public UMultiMap<NameReference, ShaderReference> Shaders; //TODO: Make this a UMap

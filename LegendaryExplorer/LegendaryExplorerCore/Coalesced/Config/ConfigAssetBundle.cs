@@ -53,7 +53,7 @@ namespace LegendaryExplorerCore.Coalesced.Config
             {
                 Assets = CoalescedConverter.DecompileLE1LE2ToAssets(stream, filename ?? @"Coalesced_INT.bin", stripExtensions: true);
             }
-            else if (Game == MEGame.LE3)
+            else if (Game.IsLEGame3())
             {
                 Assets = CoalescedConverter.DecompileGame3ToAssets(stream, filename ?? @"Coalesced.bin", stripExtensions: true);
             }

@@ -346,12 +346,6 @@ namespace LegendaryExplorer.UnrealExtensions
                 _ => "UNKNOWN HIRCOBJECT TYPE!"
             };
 
-        public static string GetEventActionTypeString(WwiseBankParsed.EventActionType actionType) =>
-            actionType switch
-            {
-                WwiseBankParsed.EventActionType.Play => "Play",
-                WwiseBankParsed.EventActionType.Stop => "Stop",
-                _ => "Unknown Action"
-            };
+        public static string GetEventActionTypeString(WwiseBankParsed.EventActionType actionType) => actionType.ToString();
     }
 }

@@ -278,7 +278,7 @@ public static class ToolSet
             open = () =>
             {
                 var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor with.", "Live Level Editor game selector",
-                                          ["LE3", "LE2", "LE1", "ME3", "ME2"], "LE3", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate([MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3]));
+                                          ["LMP", "LE3", "LE2", "LE1", "ME3", "ME2"], "LE3", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate([MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3]));
 
                 if (Enum.TryParse(gameStr, out MEGame game))
                 {

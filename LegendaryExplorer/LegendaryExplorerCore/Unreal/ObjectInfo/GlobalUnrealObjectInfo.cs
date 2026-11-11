@@ -32,6 +32,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.LE2 => LE2UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.LE3 => LE3UnrealObjectInfo.IsImmutableStruct(structType),
+                MEGame.LMP => LMPUnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.UDK => UDKUnrealObjectInfo.IsImmutableStruct(structType),
                 _ => false,
             };
@@ -163,8 +164,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case MEGame.LE1: return LE1UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 case MEGame.LE2: return LE2UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 case MEGame.LE3: return LE3UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
+                case MEGame.LMP: return LMPUnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 default: return false;
-            };
+            }
+            ;
         }
 
         /// <summary>
@@ -445,6 +448,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case MEGame.LE3:
                     p = LE3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
                     break;
+                case MEGame.LMP:
+                    p = LMPUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
+                    break;
             }
             if (p == null)
             {
@@ -474,6 +480,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     case MEGame.LE3:
                         p = LE3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
+                    case MEGame.LMP:
+                        p = LMPUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
+                        break;
                 }
             }
             return p;
@@ -498,6 +507,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => stripTransients ? LE1UnrealObjectInfo.defaultStructValuesLE1 : DefaultStructValuesWithTransientsLE1,
                 MEGame.LE2 => stripTransients ? LE2UnrealObjectInfo.defaultStructValuesLE2 : DefaultStructValuesWithTransientsLE2,
                 MEGame.LE3 => stripTransients ? LE3UnrealObjectInfo.defaultStructValuesLE3 : DefaultStructValuesWithTransientsLE3,
+                MEGame.LMP => stripTransients ? LMPUnrealObjectInfo.defaultStructValuesLMP : DefaultStructValuesWithTransientsLMP,
                 MEGame.UDK => stripTransients ? UDKUnrealObjectInfo.defaultStructValuesUDK : DefaultStructValuesWithTransientsUDK,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
             };
@@ -580,6 +590,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                                 MEGame.LE1 => "GAMERESOURCES_LE1",
                                 MEGame.LE2 => "GAMERESOURCES_LE2",
                                 MEGame.LE3 => "GAMERESOURCES_LE3",
+                                // Not supported for LMP
                                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
                             };
                             loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource(
@@ -673,6 +684,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE1 = new();
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE2 = new();
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE3 = new();
+        private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLMP = new();
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsUDK = new();
 
         public static UMultiMap<NameReference, PropertyInfo> GetAllProperties(MEGame game, string typeName)
@@ -714,6 +726,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Classes,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Classes,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Classes,
+                MEGame.LMP => LMPUnrealObjectInfo.ObjectInfo.Classes,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Classes,
                 _ => null
             };
@@ -729,6 +742,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Structs,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Structs,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Structs,
+                MEGame.LMP => LMPUnrealObjectInfo.ObjectInfo.Structs,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Structs,
                 _ => null
             };
@@ -744,6 +758,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Enums,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Enums,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Enums,
+                MEGame.LMP => LMPUnrealObjectInfo.ObjectInfo.Enums,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Enums,
                 _ => null
             };
@@ -759,6 +774,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.SequenceObjects,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.SequenceObjects,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.SequenceObjects,
+                MEGame.LMP => LMPUnrealObjectInfo.ObjectInfo.SequenceObjects,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.SequenceObjects,
                 _ => null
             };
@@ -791,6 +807,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.LE2 => LE2UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.LE3 => LE3UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.LMP => LMPUnrealObjectInfo.generateClassInfo(export, isStruct), 
                 _ => null
             };
         }
@@ -948,7 +965,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             if (type is not null)
                             {
                                 bool transient = Enums.Has(uProperty.PropertyFlags, UnrealFlags.EPropertyFlags.Transient);
-                                info.properties.Add(childExport.ObjectName.Instanced, new PropertyInfo((PropertyType)type, reference, transient, uProperty.ArraySize));
+                                // Key by the NameReference itself, not its Instanced string: the implicit
+                                // string -> NameReference conversion doesn't split "_N" suffixes, so
+                                // "Unnamed_1" would become ("Unnamed_1", 0) and never match the ("Unnamed", 2)
+                                // that real property tags carry - RemoveIncompatibleProperties then strips
+                                // every numbered member (e.g. LightingChannels.Unnamed_1) on cross-game ports.
+                                info.properties.Add(childExport.ObjectName, new PropertyInfo((PropertyType)type, reference, transient, uProperty.ArraySize));
                             }
                             break;
                     }

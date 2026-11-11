@@ -50,25 +50,35 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public AudioInfo GetAudioInfo()
         {
+            Stream dataStream;
+            if (IsPCCStored)
+            {
+                dataStream = new MemoryStream(EmbeddedData);
+            }
+            else
+            {
+                var afc = GetPathToAFC();
+                if (string.IsNullOrWhiteSpace(afc) || !File.Exists(afc))
+                {
+                    return null; // We have access to where the audio is contained
+                }
+
+                dataStream = ExternalFileHelper.ReadExternalData(afc, DataOffset, DataSize);
+            }
+
+            return GetAudioInfo(dataStream);
+        }
+
+        /// <summary>
+        /// Parses audio info from an already-open stream of this WwiseStream's raw WEM/RIFF data,
+        /// bypassing the normal AFC auto-discovery in <see cref="GetPathToAFC"/> - useful when the
+        /// caller already resolved/read the data itself (e.g. via an explicit AFC path override).
+        /// </summary>
+        public AudioInfo GetAudioInfo(Stream dataStream)
+        {
             try
             {
                 AudioInfo ai = new AudioInfo();
-                Stream dataStream;
-                if (IsPCCStored)
-                {
-                    dataStream = new MemoryStream(EmbeddedData);
-                }
-                else
-                {
-                    var afc = GetPathToAFC();
-                    if (string.IsNullOrWhiteSpace(afc) || !File.Exists(afc))
-                    {
-                        return null; // We have access to where the audio is contained
-                    }
-
-                    dataStream = ExternalFileHelper.ReadExternalData(afc, DataOffset, DataSize);
-                }
-
                 EndianReader er = new EndianReader(dataStream);
                 var header = er.ReadStringASCII(4);
                 if (header == "RIFX") er.Endian = Endian.Big;

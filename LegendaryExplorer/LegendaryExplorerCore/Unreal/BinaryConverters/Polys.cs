@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             set => Array.Resize(ref Elements, value);
         }
         public int PolyMax;
-        [UIndexRef("Polys")]
+        [UIndexRef("Model")]
         public UIndex Owner;
         [UIndexRefContainer]
         public Poly[] Elements;

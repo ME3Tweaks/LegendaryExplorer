@@ -50,7 +50,7 @@ namespace LegendaryExplorer.Misc
                 return null;
             }
 
-            if (currentGenPackage.Game == MEGame.LE3)
+            if (currentGenPackage.Game.IsLEGame3())
             {
                 // Check SFARs of ME3
                 var me3DlcPath = ME3Directory.GetDLCPath();

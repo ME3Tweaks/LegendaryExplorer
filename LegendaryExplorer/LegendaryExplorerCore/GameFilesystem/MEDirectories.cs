@@ -28,6 +28,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.BasegameTFCs,
                 MEGame.LE2 => LE2Directory.BasegameTFCs,
                 MEGame.LE3 => LE3Directory.BasegameTFCs,
+                MEGame.LMP => LMPDirectory.BasegameTFCs,
                 _ => new string[] { }
 
             };
@@ -50,6 +51,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.GetCookedPCPath(gamePathRoot),
                 MEGame.LE2 => LE2Directory.GetCookedPCPath(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetCookedPCPath(gamePathRoot),
+                MEGame.LMP => LMPDirectory.GetCookedPCPath(gamePathRoot),
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -70,6 +72,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.DefaultGamePath,
                 MEGame.LE2 => LE2Directory.DefaultGamePath,
                 MEGame.LE3 => LE3Directory.DefaultGamePath,
+                MEGame.LMP => LMPDirectory.DefaultGamePath,
                 MEGame.UDK => UDKDirectory.DefaultGamePath,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
@@ -92,6 +95,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.GetBioGamePath(gamePathRoot),
                 MEGame.LE2 => LE2Directory.GetBioGamePath(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetBioGamePath(gamePathRoot),
+                MEGame.LMP => LMPDirectory.GetBioGamePath(gamePathRoot),
                 MEGame.UDK => UDKDirectory.GetUDKGamePath(gamePathRoot),
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
@@ -114,6 +118,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.GetDLCPath(gamePathRoot),
                 MEGame.LE2 => LE2Directory.GetDLCPath(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetDLCPath(gamePathRoot),
+                MEGame.LMP => LMPDirectory.GetDLCPath(gamePathRoot),
                 MEGame.LELauncher => null,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
@@ -137,6 +142,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE2 => LE2Directory.GetExecutablePath(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetExecutablePath(gamePathRoot),
                 MEGame.LELauncher => LEDirectory.GetLauncherExecutable(gamePathRoot),
+                MEGame.LMP => LMPDirectory.GetExecutablePath(gamePathRoot),
                 MEGame.UDK => UDKDirectory.GetExecutablePath(gamePathRoot),
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
@@ -160,6 +166,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE2 => LE2Directory.GetExecutableDirectory(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetExecutableDirectory(gamePathRoot),
                 MEGame.LELauncher => LEDirectory.GetExecutableDirectory(gamePathRoot),
+                MEGame.LMP => LMPDirectory.GetExecutableDirectory(gamePathRoot),
                 MEGame.UDK => UDKDirectory.GetExecutableDirectory(gamePathRoot),
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
@@ -182,6 +189,9 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.GetASIPath(gamePathRoot),
                 MEGame.LE2 => LE2Directory.GetASIPath(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetASIPath(gamePathRoot),
+                MEGame.LELauncher => LEDirectory.GetLauncherASIPath(gamePathRoot),
+                MEGame.LMP => LMPDirectory.GetASIPath(gamePathRoot),
+
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -203,6 +213,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.GetTextureModMarkerPath(gamePathRoot),
                 MEGame.LE2 => LE2Directory.GetTextureModMarkerPath(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetTextureModMarkerPath(gamePathRoot),
+                MEGame.LMP => LMPDirectory.GetTextureModMarkerPath(gamePathRoot),
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -224,13 +235,14 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE2 => LE2Directory.ExecutableNames,
                 MEGame.LE3 => LE3Directory.ExecutableNames,
                 MEGame.LELauncher => LEDirectory.ExecutableNames,
+                MEGame.LMP => LMPDirectory.ExecutableNames,
                 MEGame.UDK => UDKDirectory.ExecutableNames,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
 
         /// <summary>
-        /// Gets path to the LOD config file for an input game
+        /// Gets path to the LOD config file for an input game (GamerSettings)
         /// </summary>
         /// <param name="game">Game to get config file for</param>
         /// <param name="gamePathOverride">Optional: override game path root</param>
@@ -246,6 +258,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.GetLODConfigFile(gamePathOverride),
                 MEGame.LE2 => LE2Directory.GetLODConfigFile(gamePathOverride),
                 MEGame.LE3 => LE3Directory.GetLODConfigFile(gamePathOverride),
+                MEGame.LMP => LMPDirectory.GetLODConfigFile(gamePathOverride),
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -268,6 +281,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE2 => LE2Directory.VanillaDlls,
                 MEGame.LE3 => LE3Directory.VanillaDlls,
                 MEGame.LELauncher => LEDirectory.VanillaLauncherDlls,
+                MEGame.LMP => LMPDirectory.VanillaDlls,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -289,6 +303,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.CookedName,
                 MEGame.LE2 => LE2Directory.CookedName,
                 MEGame.LE3 => LE3Directory.CookedName,
+                MEGame.LMP => LMPDirectory.CookedName,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -308,6 +323,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.TocFile,
                 MEGame.LE2 => LE2Directory.TocFile,
                 MEGame.LE3 => LE3Directory.TocFile,
+                MEGame.LMP => LMPDirectory.TocFile,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -328,6 +344,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.OfficialDLC,
                 MEGame.LE2 => LE2Directory.OfficialDLC,
                 MEGame.LE3 => LE3Directory.OfficialDLC,
+                MEGame.LMP => LMPDirectory.OfficialDLC,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -347,6 +364,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.OfficialDLCNames,
                 MEGame.LE2 => LE2Directory.OfficialDLCNames,
                 MEGame.LE3 => LE3Directory.OfficialDLCNames,
+                MEGame.LMP => LMPDirectory.OfficialDLCNames,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -453,6 +471,8 @@ namespace LegendaryExplorerCore.GameFilesystem
             LE1Directory.ReloadDefaultGamePath(forceUseRegistry);
             LE2Directory.ReloadDefaultGamePath(forceUseRegistry);
             LE3Directory.ReloadDefaultGamePath(forceUseRegistry);
+            LMPDirectory.ReloadDefaultGamePath(forceUseRegistry);
+            // Should we somehow do launcher?
             UDKDirectory.ReloadDefaultGamePath();
         }
 
@@ -490,6 +510,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                     LE1Directory.ReloadDefaultGamePath();
                     LE2Directory.ReloadDefaultGamePath();
                     LE3Directory.ReloadDefaultGamePath();
+                    LMPDirectory.ReloadDefaultGamePath();
                 }
             }
             catch (Exception e)
@@ -537,6 +558,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                     case MEGame.LE1:
                     case MEGame.LE2:
                     case MEGame.LE3:
+                    case MEGame.LMP:
                         predicate = s => s.EndsWith(".pcc", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".tfc", StringComparison.OrdinalIgnoreCase);
                         break;
                     case MEGame.UDK:
@@ -560,6 +582,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.LocalProfilePath,
                 MEGame.LE2 => LE2Directory.LocalProfilePath,
                 MEGame.LE3 => LE3Directory.LocalProfilePath,
+                MEGame.LMP => LMPDirectory.LocalProfilePath,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }

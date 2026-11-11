@@ -965,12 +965,15 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             if (existingClass is not null)
             {
-                foreach (Struct existingNativeStruct in existingClass.TypeDeclarations.OfType<Struct>().Where(s => s.IsNative))
+                if (!usop.AllowNativeStructEdits)
                 {
-                    if (cls.TypeDeclarations.FirstOrDefault(t => t.Name == existingNativeStruct.Name) is Struct newStruct
-                        && !existingNativeStruct.IsNativeCompatibleWith(newStruct, pcc.Game, usop))
+                    foreach (Struct existingNativeStruct in existingClass.TypeDeclarations.OfType<Struct>().Where(s => s.IsNative))
                     {
-                        log.LogError($"Cannot modify native struct: {existingNativeStruct.Name}", newStruct.StartPos, newStruct.EndPos);
+                        if (cls.TypeDeclarations.FirstOrDefault(t => t.Name == existingNativeStruct.Name) is Struct newStruct
+                            && !existingNativeStruct.IsNativeCompatibleWith(newStruct, pcc.Game, usop))
+                        {
+                            log.LogError($"Cannot modify native struct: {existingNativeStruct.Name}", newStruct.StartPos, newStruct.EndPos);
+                        }
                     }
                 }
             }

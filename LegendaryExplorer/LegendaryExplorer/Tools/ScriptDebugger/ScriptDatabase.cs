@@ -19,6 +19,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         private readonly CaseInsensitiveDictionary<List<(string filePath, int uIndex, bool forcedExport)>> FuncPathToExportDict = new();
         private readonly Dictionary<(string filePath, int uIndex), List<(string text, int position)>> ExportIdToTokensDict = new(ValueTupleEqualityComparer.Create(StringComparer.OrdinalIgnoreCase, EqualityComparer<int>.Default));
 
+        private static readonly string LMPScriptDatabasePath = Path.Combine(ScriptDebuggerWindow.ScriptDebuggerDataFolder, @"LMPScriptDatabase.bin");
         private static readonly string LE3ScriptDatabasePath = Path.Combine(ScriptDebuggerWindow.ScriptDebuggerDataFolder, @"LE3ScriptDatabase.bin");
         private static readonly string LE2ScriptDatabasePath = Path.Combine(ScriptDebuggerWindow.ScriptDebuggerDataFolder, @"LE2ScriptDatabase.bin");
         private static readonly string LE1ScriptDatabasePath = Path.Combine(ScriptDebuggerWindow.ScriptDebuggerDataFolder, @"LE1ScriptDatabase.bin");
@@ -27,6 +28,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             MEGame.LE1 => LE1ScriptDatabasePath,
             MEGame.LE2 => LE2ScriptDatabasePath,
             MEGame.LE3 => LE3ScriptDatabasePath,
+            MEGame.LMP => LMPScriptDatabasePath,
             _ => throw new ArgumentOutOfRangeException(nameof(Game))
         };
 

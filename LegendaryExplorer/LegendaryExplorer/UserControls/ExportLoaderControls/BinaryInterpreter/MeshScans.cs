@@ -191,7 +191,7 @@ public partial class BinaryInterpreterWPF
                                 }
                             }
                         }));
-                    if (Pcc.Game < MEGame.UDK)
+                    if (Pcc.Game.IsMEGame())
                     {
                         lodNode.Items.Add(new BinInterpNode(bin.Position, "ShadowExtrusionVertexBuffer")
                         {
@@ -209,7 +209,7 @@ public partial class BinaryInterpreterWPF
                     lodNode.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt16Node(bin, $"{j}")));
                     lodNode.Items.Add(MakeInt32Node(bin, "ushort size"));
                     lodNode.Items.Add(MakeArrayNode(bin, "WireframeIndexBuffer", j => MakeUInt16Node(bin, $"{j}")));
-                    if (Pcc.Game < MEGame.UDK)
+                    if (Pcc.Game.IsMEGame())
                     {
                         lodNode.Items.Add(MakeInt32Node(bin, "FMeshEdge size"));
                         lodNode.Items.Add(MakeArrayNode(bin, "Edges", j => new BinInterpNode(bin.Position, $"{j}")
@@ -264,7 +264,7 @@ public partial class BinaryInterpreterWPF
                 subnodes.Add(MakeArrayNode(bin, "LODInfo (Editor only)", x=> null)); // This appears to be TArray; however cannot find any examples in game files for verification. It seems like it doesn't actually serialize, maybe it's editor only transient?
                 subnodes.Add(new BinInterpNode(bin.Position, $"ThumbnailAngle: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})"));
                 subnodes.Add(MakeFloatNode(bin, "ThumbnailDistance"));
-                if (Pcc.Game < MEGame.UDK)
+                if (Pcc.Game.IsMEGame())
                 {
                     subnodes.Add(MakeUInt32Node(bin, "unk"));
                 }

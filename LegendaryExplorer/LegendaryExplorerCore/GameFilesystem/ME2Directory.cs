@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
-#if WINDOWS
 using Microsoft.Win32;
-#endif
 
 namespace LegendaryExplorerCore.GameFilesystem
 {
@@ -228,8 +224,6 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
             else
             {
-#pragma warning disable CA1416
-#if WINDOWS
                 string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
                 string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
                 string subkey = @"BioWare\Mass Effect 2";
@@ -250,8 +244,6 @@ namespace LegendaryExplorerCore.GameFilesystem
                     DefaultGamePath += Path.DirectorySeparatorChar;
                     LegendaryExplorerCoreLibSettings.Instance.ME2Directory = DefaultGamePath;
                 }
-#endif
-#pragma warning restore CA1416
             }
         }
 

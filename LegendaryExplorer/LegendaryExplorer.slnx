@@ -1,0 +1,89 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <BuildType Name="WinAzureRelease" />
+    <BuildType Name="WinAzureTest" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/submodules/" />
+  <Folder Name="/submodules/Wwiser.NET/">
+    <Project Path="submodules/Wwiser.NET/ME3Tweaks.Wwiser/ME3Tweaks.Wwiser.csproj">
+      <BuildType Solution="WinAzureRelease|*" Project="Debug" />
+      <BuildType Solution="WinAzureTest|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/submodules/Wwiser.NET/BinarySerializer/">
+    <Project Path="submodules/Wwiser.NET/BinarySerializer/BinarySerializer/BinarySerializer.csproj">
+      <BuildType Solution="WinAzureRelease|*" Project="Debug" />
+      <BuildType Solution="WinAzureTest|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Project Path="../SharedProjects/Be.Windows.Forms.HexBox/Be.Windows.Forms.HexBox.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="../SharedProjects/HexConverterWPF/HexConverterWPF.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="../SharedProjects/Piccolo/Piccolo.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="LegendaryExplorer.Tests/LegendaryExplorer.Tests.csproj">
+    <BuildType Solution="WinAzureRelease|*" Project="Release" />
+    <BuildType Solution="WinAzureTest|*" Project="Debug" />
+    <Platform Project="x64" />
+    <Build Solution="Release|*" Project="false" />
+    <Build Solution="WinAzureRelease|*" Project="false" />
+    <Build Solution="WinAzureTest|*" Project="false" />
+  </Project>
+  <Project Path="LegendaryExplorer/LegendaryExplorer.csproj">
+    <BuildDependency Project="TexConverter/TexConverter.vcxproj" />
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="LegendaryExplorerCore.SourceGenerators/LegendaryExplorerCore.SourceGenerators.csproj">
+  </Project>
+  <Project Path="LegendaryExplorerCore.Tests/LegendaryExplorerCore.Tests.csproj">
+    <Platform Project="x64" />
+    <Build Solution="Release|*" Project="false" />
+    <Build Solution="WinAzureRelease|*" Project="false" />
+  </Project>
+  <Project Path="LegendaryExplorerCore/LegendaryExplorerCore.csproj">
+    <BuildDependency Project="TexConverter/TexConverter.vcxproj" />
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="LegendaryExplorerUnrealDoc/LegendaryExplorerUnrealDoc.csproj">
+    <BuildType Solution="WinAzureRelease|*" Project="Release" />
+    <BuildType Solution="WinAzureTest|*" Project="Release" />
+  </Project>
+  <Project Path="submodules/WwiseParser/WwiseParserLib/WwiseParserLib.csproj">
+    <BuildType Solution="WinAzureRelease|*" Project="Release" />
+    <BuildType Solution="WinAzureTest|*" Project="Debug" />
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="submodules/WwiseTools/WwiseTools_DotNet6/WwiseTools_DotNet6.csproj">
+    <BuildType Solution="WinAzureRelease|*" Project="Release" />
+    <BuildType Solution="WinAzureTest|*" Project="Debug" />
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="TexConverter/TexConverter.vcxproj" Id="371b9fa9-4c90-4ac6-a123-aced756d6c77">
+    <BuildType Solution="Debug|*" Project="WinDebug" />
+    <BuildType Solution="Release|*" Project="WinRelease" />
+    <BuildType Solution="WinAzureTest|*" Project="WinDebug" />
+    <Build Solution="WinAzureTest|*" Project="false" />
+  </Project>
+  <Project Path="WaveFormRendererLib/WaveFormRendererLib.csproj">
+    <BuildType Solution="WinAzureRelease|*" Project="Release" />
+    <BuildType Solution="WinAzureTest|*" Project="Debug" />
+    <Platform Project="x64" />
+    <Build Solution="WinAzureTest|*" Project="false" />
+  </Project>
+  <Project Path="WwiseAudioPlayer/WwiseAudioPlayer.vcxproj" Id="d9f415bc-1ddc-4da1-a2bd-9ec8f27c81a2">
+    <BuildType Project="WinDebug" />
+  </Project>
+  <Project Path="Xceed.Wpf.Toolkit/DotNetProjects.Wpf.Extended.Toolkit.csproj">
+    <Platform Project="x64" />
+  </Project>
+</Solution>

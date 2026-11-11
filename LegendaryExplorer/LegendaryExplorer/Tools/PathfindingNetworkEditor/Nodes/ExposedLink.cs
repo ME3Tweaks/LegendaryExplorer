@@ -49,8 +49,7 @@ namespace LegendaryExplorer.Tools.PathfindingNetworkEditor.Nodes
                 }
                 else
                 {
-                    targetActorGuid = level.CrossLevelCoverGuidRefs
-                        .FirstOrDefault(x => x.CoverIndexIdx == (int)cover.CoverIndexIdx).Guid;
+                    targetActorGuid = level.CrossLevelCoverGuidRefs[(int)cover.CoverIndexIdx];
                 }
             }
 

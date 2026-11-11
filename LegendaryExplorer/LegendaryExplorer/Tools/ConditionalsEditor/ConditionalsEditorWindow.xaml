@@ -25,7 +25,24 @@
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
+        <!-- This explicit local Style (and the ItemContainerStyle below) bypass the app's implicit
+             ListBox/ListBoxItem theme styles entirely, so their Background/Foreground/Template Setters
+             are duplicated here alongside the pre-existing app-specific triggers. -->
         <Style TargetType="{x:Type ListBox}" x:Key="ListBoxStyle">
+            <Setter Property="Background" Value="{DynamicResource Theme.Background.Panel}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBox}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                            <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="HasItems" Value="True">
                     <Setter Property="SelectedIndex" Value="0" />
@@ -90,8 +107,28 @@
                     <DataTemplate>
                         <Grid>
                             <StackPanel>
-                                <TextBlock Text="{Binding ID}" VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding PlotPath}" FontSize="10" Visibility="{Binding PlotPath, Converter={StaticResource NullVisibilityConverter}}"/>
+                                <TextBlock Text="{Binding ID}" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsModified}" Value="true">
+                                                    <Setter Property="Foreground" Value="Black" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="{Binding PlotPath}" FontSize="10" Visibility="{Binding PlotPath, Converter={StaticResource NullVisibilityConverter}}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsModified}" Value="true">
+                                                    <Setter Property="Foreground" Value="Black" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                                 <StackPanel.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Change Id"
@@ -107,7 +144,7 @@
                                 <Style TargetType="{x:Type Grid}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=IsModified}" Value="true">
-                                            <Setter Property="Background" Value="Yellow" />
+                                            <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}" />
                                             <Setter Property="ToolTip" Value="This conditional has been modified but the file has not yet been saved" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -117,10 +154,33 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ItemContainerStyle>
-                    <Style>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Padding" Value="2"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                        <ContentPresenter/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.Selected}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                         <Style.Triggers>
+                            <!-- Theme.Foreground.Primary is black in light mode (matching this trigger's
+                                 original hardcoded value against the native highlight color) and light
+                                 gray in dark mode, where black text would be unreadable against the dark
+                                 blue Theme.Background.Selected set above. -->
                             <Trigger Property="Selector.IsSelected" Value="True">
-                                <Setter Property="TextElement.Foreground" Value="Black" />
+                                <Setter Property="TextElement.Foreground" Value="{DynamicResource Theme.Foreground.Primary}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>

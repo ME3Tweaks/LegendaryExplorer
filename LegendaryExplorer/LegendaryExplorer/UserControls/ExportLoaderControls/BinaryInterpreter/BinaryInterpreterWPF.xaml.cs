@@ -947,6 +947,30 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
+        /// <summary>
+        /// Selects (and scrolls to) the node for the item at <paramref name="index"/> under the currently loaded
+        /// WwiseBank's top-level "HIRC" chunk, if this export is a WwiseBank and one is loaded. Used by WwiseEditor
+        /// to jump straight to a specific HIRC object's full field breakdown from the graph.
+        /// </summary>
+        public bool TrySelectHIRCItem(int index)
+        {
+            if (index < 0)
+            {
+                return false;
+            }
+
+            BinInterpNode hircChunkNode = TreeViewItems.OfType<BinInterpNode>().FirstOrDefault(n => n.Header?.Contains("HIRC:") == true);
+            if (hircChunkNode is not { Items: [BinInterpNode itemsNode, ..] } || index >= itemsNode.Items.Count
+                || itemsNode.Items[index] is not BinInterpNode target)
+            {
+                return false;
+            }
+
+            target.IsProgramaticallySelecting = true;
+            target.IsSelected = true;
+            return true;
+        }
+
         public override void UnloadExport()
         {
             //Todo: convert to this single byteprovider and clear bytes rather than instantiating new ones.

@@ -14,9 +14,15 @@ namespace LegendaryExplorerCore.Pathing
         public float Y { get; set; }
         public float Z { get; set; }
 
-        public Point3D()
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="other"></param>
+        public Point3D(Point3D other)
         {
-
+            X = other.X;
+            Y = other.Y;
+            Z = other.Z;
         }
 
         public Point3D(float X, float Y, float Z)
@@ -24,6 +30,10 @@ namespace LegendaryExplorerCore.Pathing
             this.X = X;
             this.Y = Y;
             this.Z = Z;
+        }
+
+        public Point3D()
+        {
         }
 
         public double GetDistanceToOtherPoint(Point3D other)

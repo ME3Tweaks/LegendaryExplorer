@@ -199,6 +199,7 @@ namespace LegendaryExplorer.GameInterop
                     MEGame.LE1 => ASIModIDs.LE1_LEX_INTEROP,
                     MEGame.LE2 => ASIModIDs.LE2_LEX_INTEROP,
                     MEGame.LE3 => ASIModIDs.LE3_LEX_INTEROP,
+                    MEGame.LMP => ASIModIDs.LMP_LEX_INTEROP,
                     _ => 0
                 };
 
@@ -207,7 +208,8 @@ namespace LegendaryExplorer.GameInterop
                     throw new Exception($"Unsupported game passed to {nameof(IsInteropASIInstalled)}");
                 }
 
-                foreach (var asi in ASIModIDs.GetInstalledASIModIds(MEDirectories.GetExecutableFolderPath(game)))
+                var installedASIs = ASIModIDs.GetInstalledASIModIds(MEDirectories.GetExecutableFolderPath(game));
+                foreach (var asi in installedASIs)
                 {
                     if (asi.id == interopId && asi.version >= GameController.GetInteropVersion(game))
                     {
@@ -283,6 +285,9 @@ namespace LegendaryExplorer.GameInterop
                         break;
                     case MEGame.LE3:
                         requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE3_LEX_INTEROP, LE3InteropTarget.InteropASIVersion);
+                        break;
+                    case MEGame.LMP:
+                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LMP_LEX_INTEROP, LMPInteropTarget.InteropASIVersion);
                         break;
                 }
             }

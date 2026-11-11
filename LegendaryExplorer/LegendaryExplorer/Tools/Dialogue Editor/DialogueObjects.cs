@@ -1,4 +1,5 @@
-﻿using LegendaryExplorerCore.Dialogue;
+﻿using LegendaryExplorer.Misc.Themes;
+using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -73,7 +74,7 @@ namespace LegendaryExplorer.DialogueEditor
         public virtual IEnumerable<DiagEdEdge> Edges => Enumerable.Empty<DiagEdEdge>();
 
         protected Color getColor(EReplyCategory t) =>
-            t switch
+            DarkSafe(t switch
             {
                 EReplyCategory.REPLY_CATEGORY_PARAGON_INTERRUPT => paraintColor,
                 EReplyCategory.REPLY_CATEGORY_RENEGADE_INTERRUPT => renintColor,
@@ -82,7 +83,25 @@ namespace LegendaryExplorer.DialogueEditor
                 EReplyCategory.REPLY_CATEGORY_FRIENDLY => friendlyColor,
                 EReplyCategory.REPLY_CATEGORY_HOSTILE => hostileColor,
                 _ => Color.Black
-            };
+            });
+
+        // These edge/line colors are user-customizable (see the Layout menu's color pickers in
+        // DialogueEditorWindow) and were designed against the graph canvas's original mid-gray
+        // background (130,130,130) - several defaults (near-black, dark navy friendlyColor, dark
+        // maroon hostileColor) are still readable there, but the canvas goes much darker in dark mode
+        // (see ApplyGraphEditorTheme in DialogueEditorWindow.xaml.cs), leaving them nearly invisible.
+        // Lift only colors that are actually too dark to read against that darker background - already
+        // bright choices (DodgerBlue, Tomato, etc) pass through unchanged - and leave light mode alone.
+        public static Color DarkSafe(Color c)
+        {
+            if (!ThemeManager.IsDarkMode) return c;
+            const double minLuminance = 130;
+            double luminance = 0.299 * c.R + 0.587 * c.G + 0.114 * c.B;
+            if (luminance >= minLuminance) return c;
+            double t = (minLuminance - luminance) / (255 - luminance);
+            int Lift(byte ch) => (int)(ch + (255 - ch) * t);
+            return Color.FromArgb(c.A, Lift(c.R), Lift(c.G), Lift(c.B));
+        }
 
         public virtual void Dispose()
         {
@@ -96,7 +115,12 @@ namespace LegendaryExplorer.DialogueEditor
     public abstract class DBox : DObj
     {
         public override IEnumerable<DiagEdEdge> Edges => Outlinks.SelectMany(l => l.Edges);
-        protected static readonly Brush outputBrush = new SolidBrush(Color.Black);
+        // Was a `static readonly` solid black brush - the small In/Out connector-pin squares it paints sit
+        // directly on the dark canvas background (see ApplyGraphEditorTheme), same as the edge lines DarkSafe
+        // already fixes for getColor(), so it needs the same live lift. A property (not a field) so it's
+        // recomputed against the current theme each time a pin is created, rather than being frozen black
+        // forever from its one-time static initializer.
+        protected static Brush outputBrush => new SolidBrush(DarkSafe(Color.Black));
         public static Color lineColor = Color.FromArgb(74, 63, 190);
         public static float LineScaleOption = 1.0f;
         public static bool LinesAtTop;
@@ -252,7 +276,7 @@ namespace LegendaryExplorer.DialogueEditor
             DText line = null;
             if (LineScaleOption > 0)
             {
-                line = new DText(l, lineColor, false, LineScaleOption) //Add line string to right side
+                line = new DText(l, DarkSafe(lineColor), false, LineScaleOption) //Add line string to right side
                 {
                     TextAlignment = StringAlignment.Near,
                     ConstrainWidthToTextWidth = false,

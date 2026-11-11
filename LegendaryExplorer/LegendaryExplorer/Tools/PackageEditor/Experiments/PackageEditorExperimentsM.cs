@@ -1,4 +1,4 @@
-﻿using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Packages;
 using LegendaryExplorer.Tools.AssetDatabase;
@@ -53,6 +53,171 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// </summary>
     public static class PackageEditorExperimentsM
     {
+        public static void ExternalizeBankAudio(PackageEditorWindow pe)
+        {
+            if (pe.Pcc == null || !pe.TryGetSelectedExport(out var bankExport) || bankExport.ClassName != "WwiseBank")
+            {
+                MessageBox.Show("Select a WwiseBank export first.");
+                return;
+            }
+
+            var referencedEvents = pe.Pcc.Exports
+                .Where(x => x.ClassName == "WwiseEvent" && ReferencesSelectedBank(x))
+                .ToList();
+            if (referencedEvents.Count == 0)
+            {
+                MessageBox.Show("No WwiseEvents reference the selected bank.");
+                return;
+            }
+
+            var referencedStreams = new List<(ExportEntry StreamExport, WwiseStream StreamBinary, string SourceAfcPath)>();
+            var seenStreams = new HashSet<int>();
+            foreach (var wwiseEvent in referencedEvents)
+            {
+                foreach (var streamExport in EnumerateReferencedStreams(wwiseEvent))
+                {
+                    if (!seenStreams.Add(streamExport.UIndex))
+                    {
+                        continue;
+                    }
+
+                    var streamBinary = ObjectBinary.From<WwiseStream>(streamExport);
+                    if (streamBinary.IsPCCStored || string.IsNullOrWhiteSpace(streamBinary.Filename) || streamBinary.DataSize <= 0)
+                    {
+                        continue;
+                    }
+
+                    var sourceAfcPath = streamBinary.GetPathToAFC();
+                    if (string.IsNullOrWhiteSpace(sourceAfcPath) || !File.Exists(sourceAfcPath))
+                    {
+                        MessageBox.Show($"Could not find source AFC '{streamBinary.Filename}.afc' for {streamExport.InstancedFullPath}.");
+                        return;
+                    }
+
+                    referencedStreams.Add((streamExport, streamBinary, sourceAfcPath));
+                }
+            }
+
+            if (referencedStreams.Count == 0)
+            {
+                MessageBox.Show("No external WwiseStreams were found for the selected bank.");
+                return;
+            }
+
+            var saveDialog = new SaveFileDialog
+            {
+                Title = "Choose new AFC destination",
+                Filter = "AFC files|*.afc",
+                DefaultExt = ".afc",
+                AddExtension = true,
+                OverwritePrompt = true,
+                FileName = $"{bankExport.ObjectName.Name}.afc",
+                InitialDirectory = Path.GetDirectoryName(pe.Pcc.FilePath),
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
+            if (saveDialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            var destinationAfcPath = saveDialog.FileName;
+            var destinationAfcName = Path.GetFileNameWithoutExtension(destinationAfcPath);
+            if (string.IsNullOrWhiteSpace(destinationAfcName))
+            {
+                MessageBox.Show("The selected AFC file name is invalid.");
+                return;
+            }
+
+            var normalizedDestinationPath = NormalizePath(destinationAfcPath);
+            if (referencedStreams.Any(x => NormalizePath(x.SourceAfcPath) == normalizedDestinationPath))
+            {
+                MessageBox.Show("The destination AFC must be different from the source AFC files.");
+                return;
+            }
+
+            var relocationMap = new Dictionary<(string SourceAfcPath, int DataOffset, int DataSize), int>();
+            using (var destinationStream = new FileStream(destinationAfcPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                foreach (var referencedStream in referencedStreams)
+                {
+                    var relocationKey = (NormalizePath(referencedStream.SourceAfcPath), referencedStream.StreamBinary.DataOffset, referencedStream.StreamBinary.DataSize);
+                    if (!relocationMap.TryGetValue(relocationKey, out var newOffset))
+                    {
+                        using var sourceAudio = ExternalFileHelper.ReadExternalData(referencedStream.SourceAfcPath, referencedStream.StreamBinary.DataOffset, referencedStream.StreamBinary.DataSize);
+                        if (sourceAudio == null)
+                        {
+                            MessageBox.Show($"Could not read source AFC data for {referencedStream.StreamExport.InstancedFullPath}.");
+                            return;
+                        }
+
+                        newOffset = checked((int)destinationStream.Position);
+                        sourceAudio.CopyTo(destinationStream);
+                        relocationMap[relocationKey] = newOffset;
+                    }
+
+                    referencedStream.StreamBinary.Filename = destinationAfcName;
+                    referencedStream.StreamBinary.DataOffset = newOffset;
+                    referencedStream.StreamExport.WriteProperty(new NameProperty(destinationAfcName, "Filename"));
+                    referencedStream.StreamExport.WriteBinary(referencedStream.StreamBinary);
+                }
+            }
+
+            MessageBox.Show($"Externalized {referencedStreams.Count} WwiseStreams from {referencedEvents.Count} WwiseEvents to {Path.GetFileName(destinationAfcPath)}.");
+
+            bool ReferencesSelectedBank(ExportEntry wwiseEvent)
+            {
+                StructProperty relationships;
+                if (wwiseEvent.Game.IsGame3())
+                {
+                    relationships = wwiseEvent.GetProperty<StructProperty>("Relationships");
+                }
+                else
+                {
+                    var references = wwiseEvent.GetProperty<ArrayProperty<StructProperty>>("References");
+                    relationships = references is { Count: > 0 } ? references[0].GetProp<StructProperty>("Relationships") : null;
+                }
+
+                return relationships?.GetProp<ObjectProperty>("Bank")?.Value == bankExport.UIndex;
+            }
+
+            IEnumerable<ExportEntry> EnumerateReferencedStreams(ExportEntry wwiseEvent)
+            {
+                if (wwiseEvent.Game.IsGame3())
+                {
+                    var eventBinary = ObjectBinary.From<WwiseEvent>(wwiseEvent);
+                    if (eventBinary.Links is { Count: > 0 })
+                    {
+                        foreach (var streamUIndex in eventBinary.Links[0].WwiseStreams)
+                        {
+                            if (pe.Pcc.IsUExport(streamUIndex) && pe.Pcc.GetUExport(streamUIndex) is { ClassName: "WwiseStream" } streamExport)
+                            {
+                                yield return streamExport;
+                            }
+                        }
+                    }
+
+                    yield break;
+                }
+
+                var references = wwiseEvent.GetProperty<ArrayProperty<StructProperty>>("References");
+                var relationships = references is { Count: > 0 } ? references[0].GetProp<StructProperty>("Relationships") : null;
+                if (relationships?.GetProp<ArrayProperty<ObjectProperty>>("Streams") is not { } streamsProp)
+                {
+                    yield break;
+                }
+
+                foreach (var streamReference in streamsProp)
+                {
+                    if (streamReference.ResolveToEntry(pe.Pcc) is ExportEntry { ClassName: "WwiseStream" } streamExport)
+                    {
+                        yield return streamExport;
+                    }
+                }
+            }
+
+            static string NormalizePath(string path) => Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).ToLowerInvariant();
+        }
+
         public static void GenerateBlankDocuDBs()
         {
 #if DEBUG
@@ -1720,6 +1885,32 @@ return;
                 JsonConvert.SerializeObject(le1VertexMap));
         }
 
+        /// <summary>
+        /// Regenerates the lower mips of the selected Texture2D from its top mip, even if it only has 1 mip
+        /// (Texture2D.Replace() will not generate mips for a single-mip texture on its own).
+        /// </summary>
+        /// <param name="options">How to filter the mips; null is the historical box filter.</param>
+        public static void GenerateMipsForSelectedTexture(PackageEditorWindow pe, MipGenerationOptions options = null)
+        {
+            if (pe.Pcc == null || !pe.TryGetSelectedExport(out var texExport) || !texExport.IsTexture())
+            {
+                MessageBox.Show("Select a Texture2D export first.");
+                return;
+            }
+
+            try
+            {
+                var tex = new Texture2D(texExport);
+                int oldMipCount = tex.Mips.Count;
+                tex.GenerateMips(options: options);
+                MessageBox.Show($"Generated mips for {texExport.InstancedFullPath}.\nMip count: {oldMipCount} -> {new Texture2D(texExport).Mips.Count}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error generating mips: {ex.Message}");
+            }
+        }
+
         public static void ShowTextureFormats(PackageEditorWindow pe)
         {
             List<string> texFormats = [];
@@ -2207,6 +2398,77 @@ defaultproperties
             }
         }
 
+        /// <summary>
+        /// Scans all exports in the package, determines which would resolve if they were imports, and converts those to imports.
+        /// An export is only converted if all of its export descendants are also convertible, so no export is left parented under a converted import.
+        /// </summary>
+        public static void ConvertAllImportableExportsToImports(PackageEditorWindow pe)
+        {
+            if (pe.Pcc == null)
+                return;
+
+            var pcc = pe.Pcc;
+            pe.SetBusy("Scanning exports for importability...");
+            Task.Run(() =>
+            {
+                var cache = new PackageCache();
+                var exports = pcc.Exports.Where(x => !x.IsTrash()).ToList();
+                var resolvable = new HashSet<ExportEntry>();
+                int done = 0;
+                foreach (var exp in exports)
+                {
+                    pe.BusyText = $"Scanning exports for importability [{++done}/{exports.Count}]";
+                    var testImport = new ImportEntry(exp, exp.idxLink, pcc);
+                    var resolved = EntryImporter.ResolveImport(testImport, cache, unsafeLoad: true);
+                    if (resolved != null
+                        && resolved.ClassName == exp.ClassName
+                        && !resolved.FileRef.FilePath.Equals(pcc.FilePath, StringComparison.InvariantCultureIgnoreCase)) // Don't resolve against ourself
+                    {
+                        resolvable.Add(exp);
+                    }
+                }
+
+                // An export can only be converted if every export below it can also be converted
+                var childExports = exports.Where(x => x.idxLink > 0).ToLookup(x => x.idxLink);
+                var canConvertMemo = new Dictionary<ExportEntry, bool>();
+                bool canConvert(ExportEntry exp)
+                {
+                    if (canConvertMemo.TryGetValue(exp, out var result))
+                        return result;
+                    result = resolvable.Contains(exp) && childExports[exp.UIndex].All(canConvert);
+                    canConvertMemo[exp] = result;
+                    return result;
+                }
+
+                return exports.Where(canConvert).ToList();
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                pe.IsBusy = false;
+                if (prevTask.Exception != null)
+                {
+                    MessageBox.Show(pe, $"Error scanning exports: {prevTask.Exception.FlattenException()}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                var toConvert = prevTask.Result;
+                if (toConvert.Count == 0)
+                {
+                    MessageBox.Show(pe, "No exports in this package would resolve as imports.", "Nothing to convert");
+                    return;
+                }
+
+                var proceed = MessageBox.Show(pe, $"{toConvert.Count} export(s) would resolve as imports. Convert them all to imports?\n\nThis modifies the package and cannot be undone except by reloading it.",
+                    "Convert exports to imports", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+                if (proceed != MessageBoxResult.Yes)
+                    return;
+
+                var converted = toConvert.Select(x => x.InstancedFullPath).ToList();
+                EntryImporter.ConvertExportsToImports(toConvert);
+
+                new ListDialog(converted, "Converted exports", $"Converted {converted.Count} export(s) to imports.", pe).Show();
+            });
+        }
+
         private static Dictionary<string, IMEPackage> TestPatchPackageMap = null;
 
         public static ExportEntry GetTestPatchClass(string className)
@@ -2420,8 +2682,71 @@ defaultproperties
             }
         }
 
+        private static void GreenScreenLevel()
+        {
+            var inputFolder = @"S:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\LMP\BioGame\DLC\DLC_MOD_PMR3\CookedPCConsole\Levels\BioP_MPArmaxBlasteroid";
+            string[] inputFiles = [
+                @"BioD_CitSim_Blasteroid.pcc",
+            ];
+
+
+
+
+            foreach (var f in inputFiles)
+            {
+                var filePath = Path.Combine(inputFolder, f);
+                using var package = MEPackageHandler.OpenMEPackage(filePath);
+
+
+
+                foreach (var exp in package.Exports)
+                {
+                    if (exp.ClassName == "Material")
+                    {
+                        ObjectBinary.EditBinary<Material>(exp, bin =>
+                        {
+                            bin.SM3MaterialResource.ID = Guid.NewGuid();
+                        });
+                    }
+
+                    if (exp.IsA("MaterialInstance") && exp.GetProperty<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
+                    {
+                        exp.RemoveProperty("bHasStaticPermutationResource");
+                        exp.WriteBinary([]);
+                        exp.WriteProperty(new ObjectProperty(0, "Parent"));
+                    }
+
+                    if (exp.ClassName == "StaticMeshComponent")
+                    {
+                        var smc = ObjectBinary.From<StaticMeshComponent>(exp);
+                        foreach (var lod in smc.LODData)
+                        {
+                            lod.LightMap = new LightMap(); // This means no lightmap.
+                        }
+                        exp.WriteBinary(smc);
+                    }
+                }
+
+                package.Save();
+            }
+        }
+
         public static void MScanner(PackageEditorWindow pe)
         {
+            {
+                CaseInsensitiveConcurrentDictionary<int> values = new();
+                foreach (var f in MELoadedFiles.GetFilesLoadedInGame(MEGame.LE3))
+                {
+                    using var pack = MEPackageHandler.UnsafePartialLoad(f.Value, _ => false);
+                    foreach (var c in pack.Exports.Where(x => x.ClassName.Contains("Wwise")))
+                    {
+                        values[c.ObjectName] = 0;
+                    }
+                }
+
+                File.WriteAllLines(@"C:\users\public\wwisenames.txt", values.Keys);
+                return;
+            }
             if (pe.TryGetSelectedExport(out var sExp))
             {
                 var outDir = @"Redacted";
@@ -4571,6 +4896,30 @@ defaultproperties
         {
             var hosted = new ExportLoaderHostedWindow(loader);
             hosted.Show();
+        }
+
+        internal static void ViewTerrainMaterials(ExportEntry exp)
+        {
+            if (exp.ClassName != "Terrain")
+            {
+                return;
+            }
+
+            var terrain = ObjectBinary.From<Terrain>(exp);
+            if (terrain.CachedTerrainMaterials is not { Length: > 0 })
+            {
+                MessageBox.Show("No cached terrain materials found on this export.", "View Terrain Materials");
+                return;
+            }
+
+            var firstMaterialId = terrain.CachedTerrainMaterials[0].ID;
+            var loader = new ShaderExportLoader { AutoLoad = true };
+            var hosted = new ExportLoaderHostedWindow(loader)
+            {
+                Title = $"Shader Viewer - Terrain {exp.UIndex} {exp.InstancedFullPath} - {exp.FileRef.FilePath}"
+            };
+            hosted.Show();
+            loader.LoadByMaterialId(firstMaterialId, exp.FileRef);
         }
 
         internal static void TestTLKSystem(PackageEditorWindow packageEditorWindow)

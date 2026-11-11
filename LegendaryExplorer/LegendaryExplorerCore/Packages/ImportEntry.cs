@@ -279,6 +279,7 @@ namespace LegendaryExplorerCore.Packages
                     }
                     _header.Link = value;
                     HeaderChanged = true;
+                    FileRef.IsModified = true;
                     FileRef.InvalidateLookupTable();
                 }
             }

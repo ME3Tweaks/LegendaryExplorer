@@ -152,6 +152,8 @@
                         <ColumnDefinition Width="5"/>
                         <ColumnDefinition Width="33*"/>
                         <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="5"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="20"/>
@@ -163,11 +165,12 @@
                     <TextBlock Text="Mass Effect 1 LE TLKs" Grid.Row="0" Grid.Column="0" TextAlignment="Center" FontWeight="Bold"/>
                     <TextBlock Text="Mass Effect 2 LE TLKs" Grid.Row="0" Grid.Column="2" TextAlignment="Center" FontWeight="Bold"/>
                     <TextBlock Text="Mass Effect 3 LE TLKs" Grid.Row="0" Grid.Column="4" TextAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Text="Mass Effect LE MP TLKs" Grid.Row="0" Grid.Column="6" TextAlignment="Center" FontWeight="Bold"/>
 
                     <xctk:CheckListBox Name="LE1TLKList" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding LE1TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
                     <xctk:CheckListBox Name="LE2TLKList" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding LE2TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
                     <xctk:CheckListBox Name="LE3TLKList" Grid.Column="4" Grid.Row="1" ItemsSource="{Binding LE3TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
-                    
+                    <xctk:CheckListBox Name="LMPTLKList" Grid.Column="6" Grid.Row="1" ItemsSource="{Binding LMPTLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
                     <!-- LE1 -->
                     <Grid Grid.Column="0" Grid.Row="2">
                         <Grid.ColumnDefinitions>
@@ -261,9 +264,38 @@
                         <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding LE3ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
                     </Grid>
 
+                    <!-- LMP-->
+                    <Grid Grid.Column="6" Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Button Content="Auto find TLKs" Margin="2" Command="{Binding LMPAutoFindTLK}"  ToolTip="Automatically finds TLK files in game directory"/>
+                        <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding LMPApplyChanges}" ToolTip="Apply changes and loads strings from the selected TLKs"/>
+                        <xctk:WatermarkComboBox Name="LMPTLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="LMPTLKLangCombobox_SelectionChanged">
+                            <ComboBoxItem>INT</ComboBoxItem>
+                            <ComboBoxItem>ESN</ComboBoxItem>
+                            <ComboBoxItem>DEU</ComboBoxItem>
+                            <ComboBoxItem>FRA</ComboBoxItem>
+                            <ComboBoxItem>ITA</ComboBoxItem>
+                            <ComboBoxItem>POL</ComboBoxItem>
+                            <ComboBoxItem>RUS</ComboBoxItem>
+                            <ComboBoxItem>JPN</ComboBoxItem>
+                        </xctk:WatermarkComboBox>
+                        <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding LMPAddManualTLK}"/>
+                        <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding LMPExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
+                        <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding LMPReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
+                    </Grid>
+
                     <TextBlock Text="{Binding Path=(local:TLKManagerWPF.LE1LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="0" TextAlignment="Center"/>
                     <TextBlock Text="{Binding Path=(local:TLKManagerWPF.LE2LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="2" TextAlignment="Center"/>
                     <TextBlock Text="{Binding Path=(local:TLKManagerWPF.LE3LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="4" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding Path=(local:TLKManagerWPF.LMPLastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="6" TextAlignment="Center"/>
 
                     <GridSplitter Grid.Row="0" Grid.RowSpan="4" Grid.Column="1"/>
                     <GridSplitter Grid.Row="0" Grid.RowSpan="4" Grid.Column="3"/>

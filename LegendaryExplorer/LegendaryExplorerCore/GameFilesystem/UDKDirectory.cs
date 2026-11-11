@@ -151,11 +151,6 @@ namespace LegendaryExplorerCore.GameFilesystem
             set => _DefaultGamePath = value;
         }
 
-        static UDKDirectory()
-        {
-            ReloadDefaultGamePath();
-        }
-
         /// <summary>
         /// Reloads the default ME3 game path, either from LEC settings or from the registry
         /// </summary>
@@ -168,8 +163,6 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
             else
             {
-#pragma warning disable CA1416
-#if WINDOWS
                 string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
 
                 var uninstallList = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\");
@@ -195,8 +188,6 @@ namespace LegendaryExplorerCore.GameFilesystem
                         }
                     }
                 }
-#endif
-#pragma warning restore CA1416
             }
         }
 

@@ -19,6 +19,9 @@
                 <Setter Property="IsIndeterminate" Value="False"/>
                 <Setter Property="Height" Value="14"/>
                 <Setter Property="Margin" Value="5,0,5,5"/>
+                <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Theme.Accent}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
             </Style>
         </xctk:BusyIndicator.ProgressBarStyle>
         <Grid Margin="5">

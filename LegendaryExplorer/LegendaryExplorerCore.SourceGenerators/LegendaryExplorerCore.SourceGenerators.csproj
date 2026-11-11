@@ -10,14 +10,12 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <!-- RS2008/RS1032 are for analyzer packages shipped to third parties; these diagnostics are internal to this repo. -->
     <NoWarn>$(NoWarn);RS2008;RS1032</NoWarn>
-    <!-- Mirrors the configurations used by the rest of the solution so that building
-         LegendaryExplorerCore with -c WinDebug etc. resolves this project reference. -->
-    <Configurations>Debug;Release;WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
+    <Configurations>Debug;Release;WinAzureRelease;WinAzureTest</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,8 +25,7 @@
          This means UIndexRefVerification.cs must not take a dependency on the rest of LegendaryExplorerCore.
          It currently only uses System. If that ever changes, this reference fails to compile and Parser.cs has
          to go back to matching the attributes by string. -->
-    <Compile Include="..\LegendaryExplorerCore\Unreal\BinaryConverters\UIndexRefVerification.cs"
-             Link="UIndexRefVerification.cs" />
+    <Compile Include="..\LegendaryExplorerCore\Unreal\BinaryConverters\UIndexRefVerification.cs" Link="UIndexRefVerification.cs" />
   </ItemGroup>
 
 </Project>

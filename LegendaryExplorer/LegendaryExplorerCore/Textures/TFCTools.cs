@@ -21,6 +21,26 @@ namespace LegendaryExplorerCore.Textures
     /// </summary>
     public static class TFCTools
     {
+        public static string GetIndexedTFCName(string type, string dlcName, int index, bool indexFirstFile = false)
+        {
+            if (index < 1) throw new ArgumentOutOfRangeException(nameof(index));
+            return !indexFirstFile && index == 1 ? $"{type}_{dlcName}" : $"{type}{index}_{dlcName}";
+        }
+
+        /// <summary>Matches the base TFC and numbered siblings, including the old DLCName2 suffix format.</summary>
+        public static bool IsTFCFamilyMember(string name, string baseName)
+        {
+            if (name.Equals(baseName, StringComparison.OrdinalIgnoreCase)) return true;
+            static bool IsIndex(string value) => value.Length > 0 && value.All(c => c >= '0' && c <= '9') &&
+                int.TryParse(value, out var index) && index >= 1;
+            if (name.StartsWith(baseName, StringComparison.OrdinalIgnoreCase) && IsIndex(name[baseName.Length..])) return true;
+            int separator = baseName.IndexOf('_');
+            if (separator < 0) return false;
+            string type = baseName[..separator], suffix = baseName[separator..];
+            return name.StartsWith(type, StringComparison.OrdinalIgnoreCase) && name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase) &&
+                name.Length > type.Length + suffix.Length && IsIndex(name[type.Length..^suffix.Length]);
+        }
+
         public static void FindExternalizableTextures(string dir)
         {
             // Todo: Add to texture map so you don't have to put duplicates into TFC again.

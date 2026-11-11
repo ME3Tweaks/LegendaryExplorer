@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Packages;
 
@@ -82,9 +83,17 @@ namespace LegendaryExplorerCore.Coalesced.Config
                         {
                             if (targetSection.TryGetValue(incomingProperty.Name, out var values))
                             {
+                                var newValue = new CoalesceValue(prop.Value, game == MEGame.LE1 ? CoalesceParseAction.Add : prop.ParseAction);
+                                if (values.Count == 1 && values[0].ValueType == newValue.ValueType && string.Equals(values[0].Value, newValue.Value, StringComparison.Ordinal))
+                                {
+                                    LECLog.Debug($@"ConfigMerge::MergeEntry - Value {incomingProperty.Name}->{prop.Value} in {targetSection.Name} is already set", shouldLog: DebugConfigMerge);
+                                    continue;
+                                }
+
                                 values.Clear(); // Remove all existing values on this property.
                                 LECLog.Debug($@"ConfigMerge::MergeEntry - Setting value {incomingProperty.Name}->{prop.Value} in {targetSection.Name}", shouldLog: DebugConfigMerge);
-                                values.Add(new CoalesceValue(prop.Value, game == MEGame.LE1 ? CoalesceParseAction.Add : prop.ParseAction)); // Add our entry to this property.
+                                values.Add(newValue); // Add our entry to this property.
+                                hasChanged = true;
                                 continue;
                             }
 
@@ -104,14 +113,20 @@ namespace LegendaryExplorerCore.Coalesced.Config
                         {
                             if (targetSection.TryGetValue(incomingProperty.Name, out var values))
                             {
+                                bool shouldAdd = true;
                                 for (int i = values.Count - 1; i >= 0; i--)
                                 {
                                     if (values[i].Value == prop.Value)
                                     {
-                                        LECLog.Debug($@"ConfigMerge::MergeEntry - Not adding duplicate value {incomingProperty.Name}->{prop.Value} on {targetSection.Name}",
-                                            shouldLog: DebugConfigMerge);
-                                        continue;
+                                        LECLog.Debug($@"ConfigMerge::MergeEntry - Not adding duplicate value {incomingProperty.Name}->{prop.Value} on {targetSection.Name}", shouldLog: DebugConfigMerge);
+                                        shouldAdd = false;
+                                        break;
                                     }
+                                }
+                                if (shouldAdd == false)
+                                {
+                                    // Skip adding.
+                                    continue;
                                 }
                             }
                             // It's new just add the whole thing or did not find existing one

@@ -231,6 +231,11 @@ namespace LegendaryExplorerCore.Packages
         void restoreNames(List<string> list);
 
         /// <summary>
+        /// Used to rollback changes to an import table for certain operations. Unless you really know what you're doing, you probably shouldn't use this, as lots of things will break if misused.
+        /// </summary>
+        void restoreImports(List<ImportEntry> list);
+
+        /// <summary>
         /// Removes trashed imports and exports if they are at the end of their respective lists
         /// can only remove from the end because doing otherwise would mess up the indexing
         /// </summary>
@@ -347,10 +352,11 @@ namespace LegendaryExplorerCore.Packages
         public void setFlags(EPackageFlags newFlags);
 
         /// <summary>
-        /// Compares the size of the imports + exports table against the lookup table and returns true if they don't match, indicating that some objects have duplicate names.
+        /// Returns if the package has duplicate objects. If <paramref name="excludeTrash"/> is true, trash package objects are excluded.
         /// </summary>
+        /// <param name="excludeTrash">If trash package objects should be excluded from duplicate detection.</param>
         /// <returns></returns>
-        public bool HasDuplicateObjects();
+        public bool HasDuplicateObjects(bool excludeTrash = false);
     }
 
     /// <summary>
@@ -374,6 +380,14 @@ namespace LegendaryExplorerCore.Packages
             return LoadExport(export, loadParents);
         }
         public ExportEntry LoadExport(ExportEntry exportEntry, bool loadParents = false);
+
+        /// <summary>
+        /// Opens a bounded, read-only view of an export's serialized data without allocating or
+        /// installing its data block. Position/Length are relative to the export. The source package
+        /// stream must remain open; disposing this view does not close it. Not thread-safe. Reads
+        /// reflect the original package stream, not edits to an already-loaded export.
+        /// </summary>
+        public Stream OpenExportDataStream(ExportEntry exportEntry);
 
         /// <summary>
         /// Unloads export data from memory. Optionally can unload parent exports as well, up until the first import encountered.

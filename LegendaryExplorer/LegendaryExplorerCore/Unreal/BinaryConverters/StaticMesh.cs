@@ -79,6 +79,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         break;
                     case MEGame.ME3:
                     case MEGame.LE3:
+                    case MEGame.LMP:
                     case MEGame.LE2:
                     case MEGame.UDK:
                         InternalVersion = 18;
@@ -667,7 +668,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Serialize(ref data.ColorVertexBuffer);
             }
 
-            if (Game < MEGame.UDK)
+            if (Game.IsMEGame())
             {
                 Serialize(ref data.ShadowExtrusionVertexBuffer);
             }
