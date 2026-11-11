@@ -80,7 +80,7 @@
                                 <Setter Property="ToolTip" Value="Change audio by importing a Wave file"/>
                                 <Style.Triggers>
                                     <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="ToolTip" Value="Change audio by importing a Wave file&#x0a;You may only replace audio from a package file, not an audio bank"/>
+                                        <Setter Property="ToolTip" Value="Change audio by importing a Wave file&#x0a;Select a replaceable audio entry first"/>
                                     </Trigger>
                                     <DataTrigger Binding="{Binding CurrentLoadedExport.FileRef.Game}" Value="ME2">
                                         <Setter Property="ToolTip" Value="Change audio by importing a Wave file&#x0a;It is not possible to replace audio in ME2"/>
