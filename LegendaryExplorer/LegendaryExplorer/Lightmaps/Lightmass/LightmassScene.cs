@@ -282,7 +282,20 @@ public sealed class LightmassScene
     public IEnumerable<LightmassMapping> Mappings => BspMappings.Where(b => b.Lightmaps.Count > 0).Cast<LightmassMapping>()
         .Concat(Instances.Where(i => i.HasOutput)).Concat(TerrainMappings.Where(t => t.Target != null));
 
+    /// <summary>
+    /// How many primitives the scene couldn't read (an error, or a mesh that didn't resolve): they're missing from the bake, as receivers and as casters of
+    /// shadows and bounced light, so no level's bake is as its level is now (<see cref="LightmassBake.ClearMarks"/>)
+    /// </summary>
+    public int UnreadPrimitives { get; private set; }
+
     public void Count(string why) => Report[why] = Report.GetValueOrDefault(why) + 1;
+
+    /// <summary><see cref="Count"/> for a primitive the scene couldn't read</summary>
+    public void CountUnread(string why)
+    {
+        Count(why);
+        UnreadPrimitives++;
+    }
 }
 
 public sealed class LightmassSceneOptions
@@ -380,12 +393,12 @@ public sealed class LightmassSceneBuilder : IDisposable
             foreach (var (component, ownerClass) in StaticMeshComponents(package, level))
             {
                 try { AddComponent(component, ownerClass, levelId, ref meshIndex); }
-                catch (Exception e) { scene.Count($"component failed to load: {e.GetType().Name}"); log?.Invoke($"{component.InstancedFullPath}: {e.Message}"); }
+                catch (Exception e) { scene.CountUnread($"component failed to load: {e.GetType().Name}"); log?.Invoke($"{component.InstancedFullPath}: {e.Message}"); }
             }
             try { AddModel(package, level, levelId); }
-            catch (Exception e) { scene.Count($"BSP failed to load: {e.GetType().Name}"); log?.Invoke($"{package.FileNameNoExtension} BSP: {e.Message}"); }
+            catch (Exception e) { scene.CountUnread($"BSP failed to load: {e.GetType().Name}"); log?.Invoke($"{package.FileNameNoExtension} BSP: {e.Message}"); }
             try { AddTerrains(package, level, levelId); }
-            catch (Exception e) { scene.Count($"terrain failed to load: {e.GetType().Name}"); log?.Invoke($"{package.FileNameNoExtension} terrain: {e.Message}"); }
+            catch (Exception e) { scene.CountUnread($"terrain failed to load: {e.GetType().Name}"); log?.Invoke($"{package.FileNameNoExtension} terrain: {e.Message}"); }
         }
         scene.Meshes = meshes.Values.ToList();
         scene.Materials = materials.Values.ToList();
@@ -522,7 +535,8 @@ public sealed class LightmassSceneBuilder : IDisposable
 
     // ================= meshes =================
 
-    static bool IsStaticMeshComponent(ExportEntry component) => component.ClassName is "StaticMeshComponent" or "SplineMeshComponent";
+    /// <summary>Whether the component is of a class the bake reads as a static mesh</summary>
+    internal static bool IsStaticMeshComponent(ExportEntry component) => component.ClassName is "StaticMeshComponent" or "SplineMeshComponent";
 
     /// <summary>Static mesh components of the level's actors, with their owner's class (collection actors list theirs in their binary).</summary>
     static IEnumerable<(ExportEntry Component, string OwnerClass)> StaticMeshComponents(IMEPackage package, Level level)
@@ -555,9 +569,8 @@ public sealed class LightmassSceneBuilder : IDisposable
         // BioWare baked (InterpActors that never move, ...) have static shadowing. Neither visibility nor a light environment changes that; a light
         // environment only keeps the level's lights off the primitive (ULightComponent::AffectsPrimitive).
         bool staticShadowing = LightAssignment.HasStaticShadowing(component, props, smc);
-        bool acceptsLights = props.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false };
         bool contextOnly = options.ContextOnly.Contains(component.FileRef);
-        if (!staticShadowing || !acceptsLights)
+        if (!staticShadowing || !LightAssignment.AcceptsLights(props))
         {
             // An existing lightmap stays as it is, and the report says why.
             scene.Count(hasLightmap && !contextOnly
@@ -574,7 +587,7 @@ public sealed class LightmassSceneBuilder : IDisposable
         var (meshExport, staticMesh) = resolver.Get(meshEntry);
         if (staticMesh == null || staticMesh.LODModels.Length == 0)
         {
-            scene.Count(resolver.Failure(meshEntry) is { } why ? $"mesh: StaticMesh import failed ({why})" : "mesh: StaticMesh not resolved");
+            scene.CountUnread(resolver.Failure(meshEntry) is { } why ? $"mesh: StaticMesh import failed ({why})" : "mesh: StaticMesh not resolved");
             return;
         }
         var mesh = GetMesh(meshExport, staticMesh);
@@ -863,7 +876,7 @@ public sealed class LightmassSceneBuilder : IDisposable
     /// A mesh's world-space box, and its bounds as UE3 gives a primitive (its local bounds transformed, as UPrimitiveComponent::Bounds) for
     /// deciding which lights reach it
     /// </summary>
-    static (Vector3 Min, Vector3 Max, BoxSphereBounds Receiver) MeshBounds(Vector3[] positions, Matrix4x4 l2w, SplineMeshDeformation spline = null)
+    internal static (Vector3 Min, Vector3 Max, BoxSphereBounds Receiver) MeshBounds(Vector3[] positions, Matrix4x4 l2w, SplineMeshDeformation spline = null)
     {
         var min = new Vector3(float.MaxValue); var max = new Vector3(float.MinValue);
         var local = new Box();

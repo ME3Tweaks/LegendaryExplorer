@@ -440,14 +440,34 @@ public sealed class MeshStaticLighting : IDisposable
         {
             staticLighting.Load(component.LODData[lod], componentExport.FileRef, mesh, lod);
         }
-        //judged on LOD 0, whichever LOD is shown: it's the one other meshes are shadowed by, and the one a receiver is seen with up close
-        staticLighting.HasCompatibleBakeMapping = staticLighting.ReceivesStaticLighting && component.LODData.Length > 0 && mesh.LODModels.Length > 0
-            && (LightmapMapping.IsCompatible(componentExport.FileRef, component.LODData[0].LightMap, mesh.LODModels[0], ComponentGeometry.CoordinateIndex(mesh.Export))
-                || component.LODData[0].LightMap.LightMapType == ELightMapType.LMT_None
-                    && LightmapMapping.ShadowAllocation(new LightmapRef(componentExport, "LOD0", component.LODData[0].LightMap, component),
-                        mesh.LODModels[0], ComponentGeometry.CoordinateIndex(mesh.Export)) != null);
+        staticLighting.HasCompatibleBakeMapping = staticLighting.ReceivesStaticLighting && HasCompatibleMapping(componentExport, component, mesh);
         context.RegisterStaticLighting(staticLighting);
         return staticLighting;
+    }
+
+    /// <summary>
+    /// Whether the component has a bake mapping that fits <paramref name="mesh"/>: a lightmap made for its UVs and vertices, or a shadow-only layout.
+    /// Judged on LOD 0, whichever LOD is shown: it's the one other meshes are shadowed by, and the one a receiver is seen with up close
+    /// </summary>
+    internal static bool HasCompatibleMapping(ExportEntry componentExport, StaticMeshComponent component, StaticMesh mesh) =>
+        component.LODData.Length > 0 && mesh.LODModels.Length > 0
+        && (LightmapMapping.IsCompatible(componentExport.FileRef, component.LODData[0].LightMap, mesh.LODModels[0], ComponentGeometry.CoordinateIndex(mesh.Export))
+            || component.LODData[0].LightMap.LightMapType == ELightMapType.LMT_None
+                && LightmapMapping.ShadowAllocation(new LightmapRef(componentExport, "LOD0", component.LODData[0].LightMap, component),
+                    mesh.LODModels[0], ComponentGeometry.CoordinateIndex(mesh.Export)) != null);
+
+    /// <summary>
+    /// Whether the game draws the component's LOD 0 baked lighting on its mesh: a lightmap that fits it, whether or not a bake could replace it, or none and
+    /// shadow maps that fit it. Unlike <see cref="HasCompatibleMapping"/>, which asks whether a bake can rebake it
+    /// </summary>
+    internal static bool HasFittingMapping(ExportEntry componentExport, StaticMeshComponent component, StaticMesh mesh)
+    {
+        if (component.LODData.Length == 0 || mesh.LODModels.Length == 0) return false;
+        var lightMap = component.LODData[0].LightMap;
+        int coordinateIndex = ComponentGeometry.CoordinateIndex(mesh.Export);
+        return lightMap.LightMapType == ELightMapType.LMT_None
+            ? LightmapMapping.ShadowAllocation(new LightmapRef(componentExport, "LOD0", lightMap, component), mesh.LODModels[0], coordinateIndex) != null
+            : LightmapMapping.FitsMesh(lightMap, mesh.LODModels[0], coordinateIndex);
     }
 
     /// <summary>
@@ -547,7 +567,7 @@ public sealed class MeshStaticLighting : IDisposable
         CastsShadow = ShadowSettings.CastShadow;
         LightingChannels = LightingChannels.FromProperty(condensedProps.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false, defaultChannels);
         //Component archetypes set bAcceptsLights. Only an explicit false is trusted, in case the archetype chain couldn't be resolved
-        AcceptsLights = condensedProps.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false };
+        AcceptsLights = LightAssignment.AcceptsLights(condensedProps);
         AcceptsDynamicLights = condensedProps.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false };
         LevelName = componentExport.FileRef.FileNameNoExtension;
         HasSelfContainedLighting = componentExport.FileRef.Flags.Has(UnrealFlags.EPackageFlags.SelfContainedLighting);

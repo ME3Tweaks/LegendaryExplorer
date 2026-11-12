@@ -360,6 +360,11 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
                 pendingPreview = null;
                 Status = "Done: no lighting changes to preview.";
             }
+            else if (result.Rewrites.Count == 0)
+            {
+                Status = "No lighting changed, but the levels' marks of what's changed since their last bake were cleared. Save to keep that.";
+                LogBox.AppendText("The levels have not been saved to their destination.\n");
+            }
             else
             {
                 Status = result.Complete ? "Ready to preview. Save or discard after inspecting the lighting."
@@ -388,7 +393,8 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
             IsBaking = false;
             Validate();
         }
-        if (pendingPreview != null) await ShowPreviewAsync();
+        // Nothing to look at when only marks of what's changed since the last bake were cleared
+        if (pendingPreview is { Result.Rewrites.Count: > 0 }) await ShowPreviewAsync();
     }
 
     private async void Preview_Click(object sender, RoutedEventArgs e) => await ShowPreviewAsync();

@@ -183,13 +183,19 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
             if (!export.Game.IsLEGame()) throw new NotSupportedException("Cooked decal preview currently supports LE1, LE2 and LE3.");
             try { projection = DecalProjection.Read(Properties); }
             catch (NotSupportedException) { projection = DecalProjection.FromActor(Properties, DecalSettings.Read(Properties), owner.SnapshotTransform(), owner.ProjectionBaseline); }
-            if (actor.Export.IsA("DecalActorMovable") || Properties.GetProp<BoolProperty>("bMovableDecal") is { Value: true })
-                throw new NotSupportedException("Movable decal reprojection is not implemented.");
-            if (export.Parent != actor.Export || export.Parent?.Parent?.ClassName != "Level")
-                throw new NotSupportedException("Prefab/template decal receiver remapping is not implemented.");
+            // Read for every decal, movable and prefab ones too: the game draws its default material in place of one it can't draw on a decal
             var (reference, package) = EffectiveLightingProperties.Reference(export, "DecalMaterial", context.PackageCache);
             UseMaterial(AssetReference.Of(reference?.ResolveToEntry(package), export.FileRef, context.PackageCache), context.PackageCache);
-            if (material is null) throw new NotSupportedException("Decal material could not be resolved.");
+            if (actor.Export.IsA("DecalActorMovable") || Properties.GetProp<BoolProperty>("bMovableDecal") is { Value: true })
+            {
+                projectedByGame = true;
+                throw new NotSupportedException("Movable decal reprojection is not implemented.");
+            }
+            if (export.Parent != actor.Export || export.Parent?.Parent?.ClassName != "Level")
+            {
+                unreadReason = "it's a prefab's decal, whose surfaces LEX doesn't read.";
+                throw new NotSupportedException("Prefab/template decal receiver remapping is not implemented.");
+            }
             if (Properties.GetProp<ArrayProperty<ObjectProperty>>("ReceiverImages") is { Count: > 0 })
                 EditUnsupportedReason = "Reprojection with ReceiverImages is not supported.";
             foreach (var data in export.GetBinaryData<DecalComponent>().StaticReceivers)
@@ -207,8 +213,15 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                 else if (data.InstanceIndex is not (0 or -1)) receiver.Failure = EditUnsupportedReason = "Instanced receiver is not supported.";
             }
             if (receivers.Count == 0) failure = "No cooked static receivers. Move or resize the projector to build a projection.";
+            receiversRead = true;
+            // (Its receivers don't depend on it, so they're read first)
+            if (material is null) throw new NotSupportedException("Decal material could not be resolved.");
         }
-        catch (Exception e) when (e is not OutOfMemoryException) { failure = EditUnsupportedReason = e.Message; }
+        catch (Exception e) when (e is not OutOfMemoryException)
+        {
+            failure = EditUnsupportedReason = e.Message;
+            unreadReason ??= e.Message;
+        }
         originalProjection = projection;
         originalReceivers = receivers;
         originalFailure = failure;
@@ -221,6 +234,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     private void UseMaterial(AssetReference reference, PackageCache cache)
     {
         materialEntry = reference;
+        materialRead = true;
         var entry = reference?.Find(cache);
         var drawn = MaterialUsage.DecalDrawsDefault(entry, cache) && MaterialUsage.EngineMaterial(Export.Game, "DefaultDecalMaterial", cache) is { } fallback
             ? fallback : EffectiveLightingProperties.Resolve(entry, cache);
@@ -231,6 +245,64 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
             receiver.Mesh?.Dispose();
             receiver.Mesh = null;
         }
+    }
+
+    //a static decal whose cooked receivers were read: not a movable one, or one whose component couldn't be read
+    private readonly bool receiversRead;
+
+    //a movable decal, which the game projects itself: it has no cooked receivers to check
+    private readonly bool projectedByGame;
+
+    //whether the constructor got as far as reading its material: it doesn't if its properties couldn't be read
+    private bool materialRead;
+
+    private readonly string unreadReason;
+
+    /// <summary>For the level scan: why its cooked receivers couldn't be read. Null if they were, or it's movable</summary>
+    internal string ReceiversUnreadReason => receiversRead || projectedByGame ? null : unreadReason;
+
+    /// <summary>
+    /// For the level scan: its receivers as it's shown (a reprojection's, if it has one), other than those pending deletion, which a commit drops. Binds
+    /// them to the views they're on, as drawing it does
+    /// </summary>
+    /// <param name="Live">Those the game draws it on</param>
+    /// <param name="Empty">Those with no cooked triangles, which it isn't drawn on</param>
+    /// <param name="Gone">Receivers that don't resolve to a component, or that are trashed</param>
+    /// <param name="Changed">Receivers moved or changed since the projection was made in this session, or since the level was opened, which it no longer fits</param>
+    /// <param name="Malformed">Receivers whose cooked triangles can't be drawn</param>
+    /// <param name="Deleting">Receivers pending deletion, which the commit drops</param>
+    internal sealed record ReceiverState(int Live, int Empty, IReadOnlyList<string> Gone, IReadOnlyList<string> Changed, IReadOnlyList<string> Malformed,
+        int Deleting);
+
+    /// <returns>Null if its receivers couldn't be read, or it's movable (the game projects those itself)</returns>
+    internal ReceiverState CheckReceivers(LevelEditorRenderContext context)
+    {
+        if (!receiversRead) return null;
+        BindReceivers(context);
+        List<string> gone = [], changed = [], malformed = [];
+        int live = 0, empty = 0;
+        foreach (var r in receivers.Where(r => !PendingDeletion(r)))
+        {
+            if (r.Export is null || r.Export.IsTrash())
+            {
+                gone.Add(r.Export?.InstancedFullPath ?? $"#{r.Data.Component}");
+                continue;
+            }
+            string name = r.Export.Parent?.ObjectName.Instanced ?? r.Export.ObjectName.Instanced;
+            if (!ValidGeometry(r.Data)) malformed.Add(name);
+            else if (r.Data.NumTriangles == 0) empty++;
+            else if (Stale(r)) changed.Add(name);
+            else live++;
+        }
+        return new(live, empty, gone, changed, malformed, receivers.Count(PendingDeletion));
+    }
+
+    /// <summary>Why the game draws its default decal material in place of the decal's, as it's shown; null if it draws the decal's own, or its material wasn't read</summary>
+    internal string DefaultMaterialReason(PackageCache cache)
+    {
+        if (!materialRead) return null;
+        var entry = materialEntry?.Find(cache);
+        return MaterialUsage.DecalDrawsDefault(entry, cache) ? MaterialUsage.DecalProblem(entry, cache) : null;
     }
 
     internal static bool ValidGeometry(StaticReceiverData data) => data.NumTriangles <= int.MaxValue / 3

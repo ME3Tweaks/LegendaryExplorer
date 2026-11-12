@@ -126,11 +126,24 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
             context.ReplaceLights(previous is null ? [] : [previous], rebuilt is null ? [] : [rebuilt]);
     }
 
+    /// <summary>
+    /// Whether a bake reads the light, as it's shown or as the package has it (an edit can make it stop contributing): it's static, casts static
+    /// shadows, or only adds bounced light
+    /// </summary>
+    internal bool ContributesToStaticLighting(ILightProxy light, PackageCache cache)
+    {
+        static bool Contributes(Scene3D.SceneLight scene) => scene is { HasStaticLighting: true } or { HasStaticShadowing: true } or { BakedGIOnly: true };
+        // A new light's is its values', if the preview hasn't drawn it yet
+        if (Contributes(Lighting?.Find(light.Light.Component) ?? (light is LightActorProxy { Light.IsDraft: true } draft ? DraftLight(draft, cache) : null))) return true;
+        return light is ActorProxy { IsDraft: false } && Contributes(PackageLight(light, cache, edit: null));
+    }
+
     /// <summary>A light of the package, with its proxy's pending edits</summary>
-    private Scene3D.SceneLight PackageLight(ILightProxy light, PackageCache cache)
+    private Scene3D.SceneLight PackageLight(ILightProxy light, PackageCache cache) => PackageLight(light, cache, PreviewOverride(light));
+
+    private Scene3D.SceneLight PackageLight(ILightProxy light, PackageCache cache, Scene3D.LightPreviewOverride edit)
     {
         ExportEntry component = light.Light.Component;
-        Scene3D.LightPreviewOverride edit = PreviewOverride(light);
         //the same owner transform the level's loader uses when the light isn't moved: a collection's is read from the level's collection by index
         Matrix4x4? ownerTransform = edit?.OwnerTransform ?? light switch
         {

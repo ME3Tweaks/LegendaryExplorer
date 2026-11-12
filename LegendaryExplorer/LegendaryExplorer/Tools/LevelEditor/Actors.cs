@@ -327,6 +327,9 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     protected virtual bool HasUncommittedChanges() => IsDraft || IsTransformDirty
         || Components.OfType<MeshComponentProxy>().Any(mesh => mesh.ExistingLighting?.HasChanges == true);
 
+    /// <summary>Whether its uncommitted changes are more than a pending upgrade, which moves a collection member under an actor of its own unchanged</summary>
+    internal virtual bool HasChangesBesidesUpgrade => HasUncommittedChanges();
+
     internal void RefreshLightingDirty() => UpdateDirty();
 
     internal void OnActorLightingEdited(MeshComponentProxy mesh, ActorLightingSettings before, ActorLightingSettings after)
@@ -1178,6 +1181,9 @@ public class BrushProxy : ActorProxy
 
     private protected override bool WritesAllValuesWhenCreated => true;
 
+    /// <summary>Whether its scale differs from the committed one, so that its commit cooks its collision again (if it has cooked data)</summary>
+    internal bool IsScaleDirty => DrawScale * DrawScale3D != _cleanSnapshot.DrawScale * _cleanSnapshot.DrawScale3D;
+
     public override void CommitChanges(PackageCache packageCache = null)
     {
         // Its export was just made (Materialize): its component is made with it, as shipping levels' volumes' are (see NewComponent), with its hull and
@@ -1195,7 +1201,7 @@ public class BrushProxy : ActorProxy
         // Its cached PhysX data, which is cooked at the actor's scale, so a new scale makes it stale; its hull is unscaled, and its location and rotation are
         // applied at runtime (UE3's BuildPhysBrushData, MakeCachedConvexDataForAggGeom). With none, there's nothing to go stale: if it has rigid-body
         // collision, the game cooks it at load, at the scale it has then
-        else if (DrawScale * DrawScale3D != _cleanSnapshot.DrawScale * _cleanSnapshot.DrawScale3D
+        else if (IsScaleDirty
                  && Export.GetProperty<ObjectProperty>(nameof(BrushComponent))?.ResolveToEntry(Pcc) is ExportEntry own
                  && own.GetBinaryData<LegendaryExplorerCore.Unreal.BinaryConverters.BrushComponent>().CachedPhysBrushData.CachedConvexElements.Length > 0)
         {
@@ -1407,7 +1413,10 @@ public abstract class CollectionActorComponentProxy : ActorProxy
     public override string DeleteRefusal => base.DeleteRefusal ?? (upgradeRequested ? "Its upgrade to an actor is pending: undo that first."
         // A projection that only lands on it moves off it, as it does a mesh with an actor of its own. A Filter is the user's, and would be left listing nothing
         : neededBy.Any(d => d.Decal?.Settings.Filter.Actors.Contains(Export) == true) ? "A decal's uncommitted Filter lists it: uncheck it there first." : null);
-    protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || UpgradePending;
+    // Subclasses add their own changes to the member's (HasMemberChanges), so that what's more than an upgrade is known from one place
+    protected sealed override bool HasUncommittedChanges() => HasMemberChanges() || UpgradePending;
+    protected virtual bool HasMemberChanges() => base.HasUncommittedChanges();
+    internal sealed override bool HasChangesBesidesUpgrade => HasMemberChanges();
 
     protected CollectionActorComponentProxy(IActorEditorContext context, StaticCollectionActor collectionActor, ExportEntry componentActor, int index) : base(componentActor)
     {

@@ -485,6 +485,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 _outlinerGroupStates.Remove(key);
             }
+            OnScannedFilesChanged();
         };
     }
 
@@ -753,6 +754,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private async Task AddLevelPackage(IMEPackage pcc, int fileNumber = 1, int fileCount = 1)
     {
         string path = pcc.FilePath;
+        if (!pcc.Game.IsLEGame())
+        {
+            MessageBox.Show(this, $"{Path.GetFileName(path)} is a {pcc.Game} file. The Level Editor opens only Legendary Edition (LE1, LE2 and LE3) levels.");
+            return;
+        }
         if (OpenFiles.Count > 0 && pcc.Game != Game)
         {
             MessageBox.Show(this, $"Cannot mix games. The open files are {Game}, but {Path.GetFileName(path)} is {pcc.Game}.");
@@ -1319,6 +1325,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         OnPropertyChanged(nameof(CanUndo));
         OnPropertyChanged(nameof(CanRedo));
         RefreshCommandStates();
+        //every edit is a step, and undo or redo moves one
+        MarkScanStale();
     }
 
     /// <summary>
@@ -1755,22 +1763,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
         }
 
-        string fileFilter;
-        switch (fileToSave.Package.Game)
-        {
-            case MEGame.ME1:
-                fileFilter = GameFileFilters.ME1SaveFileFilter;
-                break;
-            case MEGame.ME2:
-            case MEGame.ME3:
-                fileFilter = GameFileFilters.ME3ME2SaveFileFilter;
-                break;
-            default:
-                string extension = Path.GetExtension(fileToSave.FilePath);
-                fileFilter = $"*{extension}|*{extension}";
-                break;
-        }
-        var d = new SaveFileDialog { Filter = fileFilter };
+        //only LE levels are opened (AddLevelPackage)
+        string extension = Path.GetExtension(fileToSave.FilePath);
+        var d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
         if (d.ShowDialog() == true)
         {
             var filesToSave = LinkedEdits.GetLinkedFiles(fileToSave).ToList();
@@ -1830,6 +1825,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             return;
         }
         if (PreviewClosed || OpenFiles.Count == 0) return;
+        MarkScanStale();
         // A class default object, or a package an import resolves through, may have changed
         EffectiveLightingProperties.InvalidateDefaults(RenderContext.PackageCache);
         //the level's BSP and terrain actors are read again if its Level or Model changed; any update (a class default, say) can change which terrain sections cast
@@ -2950,6 +2946,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
 
         CloseAllFiles();
+        //a search of the game's files for missing assets
+        scanCancellation?.Cancel();
+        scanCancellation?.Dispose();
+        scanCancellation = null;
 
         PreviewClosed = true;
         PreviewUpdateTimer.Stop();

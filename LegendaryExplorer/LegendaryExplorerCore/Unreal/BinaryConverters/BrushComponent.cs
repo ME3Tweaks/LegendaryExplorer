@@ -34,6 +34,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         /// <param name="packageCache">For values inherited from archetypes in other packages</param>
         public void RegenCachedPhysBrushData(PackageCache packageCache = null)
         {
+            var cooked = CookCachedPhysBrushData(packageCache);
+            // With no hulls, data from before can't be left to mismatch the brush the game cooks instead
+            CachedPhysBrushData.CachedConvexElements = cooked ?? [];
+            if (cooked is null) return;
+            // What every LE1-LE3 blocking volume with cached data has. Volumes that never build rigid-body collision have none or older versions
+            var props = Export.GetProperties();
+            props.AddOrReplaceProp(new IntProperty(CurrentCachedPhysBrushDataVersion, "CachedPhysBrushDataVersion"));
+            Export.WriteProperties(props);
+        }
+
+        /// <summary>The CachedPhysBrushDataVersion of the data <see cref="RegenCachedPhysBrushData"/> cooks, in LE1-LE3</summary>
+        public const int CurrentCachedPhysBrushDataVersion = 34079762;
+
+        /// <summary>
+        /// What <see cref="RegenCachedPhysBrushData"/> would cook for the export as it is now, leaving the binary and the export unchanged. Null if it
+        /// has no hulls to cook; empty if none of them can be cooked (no vertices, or flat)
+        /// </summary>
+        /// <param name="packageCache">For values inherited from archetypes in other packages</param>
+        public KCachedConvexDataElement[] CookCachedPhysBrushData(PackageCache packageCache = null)
+        {
             if (Export is null)
             {
                 throw new Exception($"No export associated with this {nameof(BrushComponent)}");
@@ -48,9 +68,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (convexElemsProp is null || convexElemsProp.Count is 0)
             {
                 // Nothing to cook: with no cached data, the game builds the hulls and cooks them from the brush at load (UBrushComponent::InitComponentRBPhys),
-                // as it does for the few shipping blocking volumes that have their own brush and no hulls. Data from before can't be left to mismatch it
-                CachedPhysBrushData.CachedConvexElements = [];
-                return;
+                // as it does for the few shipping blocking volumes that have their own brush and no hulls
+                return null;
             }
             var scale3DProp = effective.GetProp<StructProperty>("Scale3D");
             Vector3 scale = (effective.GetProp<FloatProperty>("Scale") ?? 1f) * (scale3DProp is null ? Vector3.One : CommonStructs.GetVector3(scale3DProp));
@@ -60,9 +79,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             // As MakeCachedConvexDataForAggGeom does, a hull with no vertices is skipped, and one PhysX can't cook (as a flat one) is left out
-            var cooked = new List<KCachedConvexDataElement>(convexElemsProp.Count);
-            using (var cooker = new PhysXCooker())
+            return PhysXCooker.Use(cooker =>
             {
+                var cooked = new List<KCachedConvexDataElement>(convexElemsProp.Count);
                 var verts = new List<Vector3>();
                 foreach (var hull in convexElemsProp)
                 {
@@ -74,13 +93,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     }
                     if (cooker.TryGenerateCachedPhysicsData(verts.AsSpan()) is { } data) cooked.Add(new KCachedConvexDataElement { ConvexElementData = data });
                 }
-            }
-            CachedPhysBrushData.CachedConvexElements = [.. cooked];
-
-            // What every LE1-LE3 blocking volume with cached data has. Volumes that never build rigid-body collision have none or older versions
-            var props = Export.GetProperties();
-            props.AddOrReplaceProp(new IntProperty(34079762, "CachedPhysBrushDataVersion"));
-            Export.WriteProperties(props);
+                return cooked.ToArray();
+            });
         }
     }
 }

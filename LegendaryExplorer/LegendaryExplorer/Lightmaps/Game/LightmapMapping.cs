@@ -66,11 +66,15 @@ public static class LightmapMapping
         return (rect.Width, rect.Height);
     }
 
-    public static bool IsCompatible(IMEPackage package, LightMap map, StaticMeshRenderData lod, int coordinateIndex)
-    {
-        if (!IsRebakeable(map)) return false;
-        if (TextureAllocation(package, map) is { } size)
-            return size.Width > 2 && size.Height > 2 && coordinateIndex >= 0 && coordinateIndex < lod.VertexBuffer.NumTexCoords;
-        return VertexSampleCount(map) > 0 && VertexSampleCount(map) == lod.PositionVertexBuffer.VertexData.Length;
-    }
+    public static bool IsCompatible(IMEPackage package, LightMap map, StaticMeshRenderData lod, int coordinateIndex) =>
+        IsRebakeable(map) && FitsMesh(map, lod, coordinateIndex)
+        && (VertexSampleCount(map) > 0 || TextureAllocation(package, map) is { Width: > 2, Height: > 2 });
+
+    /// <summary>
+    /// Whether the game can draw the lightmap on the mesh LOD, whatever its type: a vertex lightmap has a sample for each vertex, and a texture lightmap's
+    /// coordinate channel is one the mesh has
+    /// </summary>
+    public static bool FitsMesh(LightMap map, StaticMeshRenderData lod, int coordinateIndex) => VertexSampleCount(map) is >= 0 and var samples
+        ? samples == lod.PositionVertexBuffer.VertexData.Length
+        : coordinateIndex >= 0 && coordinateIndex < lod.VertexBuffer.NumTexCoords;
 }

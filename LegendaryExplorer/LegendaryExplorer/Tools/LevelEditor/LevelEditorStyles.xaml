@@ -13,6 +13,7 @@
     <SolidColorBrush x:Key="EditorAccent" Color="#286DA8"/>
     <SolidColorBrush x:Key="EditorHover" Color="#424242"/>
     <SolidColorBrush x:Key="EditorDirty" Color="#E7B65B"/>
+    <SolidColorBrush x:Key="EditorProblem" Color="#E0705F"/>
     <SolidColorBrush x:Key="EditorX" Color="#973E3E"/>
     <SolidColorBrush x:Key="EditorY" Color="#426F43"/>
     <SolidColorBrush x:Key="EditorZ" Color="#3C6791"/>

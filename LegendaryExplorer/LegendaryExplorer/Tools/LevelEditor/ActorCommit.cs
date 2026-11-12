@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LegendaryExplorer.Lightmaps.Game;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
@@ -9,7 +10,8 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// <summary>
 /// Writes level files' pending actor edits (transforms, spline points, lights, decals, sculpted terrain and mesh lighting) inside one <see cref="PackageEditScope"/>,
 /// then accepts them. Either every write lands and the actors become clean, or the packages are restored exactly and every actor keeps its pending edits.
-/// Writers change only the packages (and what <see cref="ActorProxy.AbandonCommit"/> puts back); views take on what was written in <see cref="ActorProxy.MarkClean"/>
+/// Writers change only the packages (and what <see cref="ActorProxy.AbandonCommit"/> puts back); views take on what was written in <see cref="ActorProxy.MarkClean"/>.
+/// What it adds, changes or deletes that a bake reads (<see cref="BakeInputs"/>) is marked as changed since the last bake (<see cref="StaticLightingChanges"/>)
 /// </summary>
 public static class ActorCommit
 {
@@ -38,6 +40,11 @@ public static class ActorCommit
                 // Other files' assets are copied in before anything refers to them
                 useChosenAssets = AssetPorting.CopyIn(files.SelectMany(f => f.PendingCreations.Concat(f.Actors.Where(a => a.IsDirty)))
                     .Where(a => skipped?.Contains(a) != true).Distinct().ToList(), sources);
+                // What a bake reads that this commit adds, changes or deletes, judged before anything is written (an edit can make one stop contributing)
+                var unbaked = files.SelectMany(f => f.PendingCreations.Concat(f.Actors.Where(a => a.HasChangesBesidesUpgrade)))
+                    .Where(a => skipped?.Contains(a) != true).Distinct().Where(a => BakeInputs.MayRead(a, a.Editor?.PackageCache)).ToList();
+                var unbakedLevels = files.Where(f => f.PendingDeletions.Any(d => BakeInputs.MayRead(d.Actor, d.Actor.Editor?.PackageCache)))
+                    .Select(f => f.LevelExport).ToList();
                 // Allocate every draft across the batch before writing any references, regardless of proxy family.
                 foreach (var file in files)
                 {
@@ -58,6 +65,9 @@ public static class ActorCommit
                 // Include references written by other participants in this commit before approving any deletion.
                 var deletionPlans = PendingActorDeletion.Revalidate(deletions);
                 ActorDeletionPlan.Apply(deletionPlans);
+                // Until a bake: a deleted actor's light or shadows are still baked into its level, which is marked for it
+                foreach (var actor in unbaked) if (actor.Export is { } export) StaticLightingChanges.Mark(export);
+                foreach (var level in unbakedLevels) StaticLightingChanges.Mark(level);
                 scope.Complete();
             }
             catch

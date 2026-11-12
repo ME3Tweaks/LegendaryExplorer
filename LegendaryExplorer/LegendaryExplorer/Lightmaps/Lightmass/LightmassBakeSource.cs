@@ -32,6 +32,8 @@ public sealed class LightmassBakeSource : ILightingSource, IDisposable
     readonly Dictionary<Guid, Guid> lightGuids;
 
     public Dictionary<string, int> Report { get; } = new();
+    /// <summary>Levels with a lightmap whose result couldn't be applied: what's changed since their last bake stays marked</summary>
+    public HashSet<IMEPackage> Unfinished { get; } = [];
     public int Matched { get; private set; }
 
     public LightmassBakeSource(LightmassScene scene, IReadOnlyDictionary<Guid, LightmassMappingResult> results)
@@ -48,6 +50,12 @@ public sealed class LightmassBakeSource : ILightingSource, IDisposable
 
     void Count(string why) => Report[why] = Report.GetValueOrDefault(why) + 1;
 
+    void CountUnfinished(LightmapRef r, string why)
+    {
+        Count(why);
+        Unfinished.Add(r.Owner.FileRef);
+    }
+
     /// <summary>The light GUIDs Lightmass reported for a lightmap, or null if it wasn't baked.</summary>
     public Guid[] LightGuids(LightmapRef r) => byLightmap.TryGetValue((r.Owner, r.Slot), out var e)
         ? e.Result.LightGuids.Where(lightGuids.ContainsKey).Select(g => lightGuids[g]).Distinct().ToArray() : null;
@@ -56,17 +64,17 @@ public sealed class LightmassBakeSource : ILightingSource, IDisposable
     {
         if (!byLightmap.TryGetValue((r.Owner, r.Slot), out var entry)) { Count("not in the bake"); return null; }
         var (mapping, result) = entry;
-        if (!result.IsTextureMapping || result.SizeX != mapping.SizeX || result.SizeY != mapping.SizeY) { Count("result doesn't match its mapping"); return null; }
+        if (!result.IsTextureMapping || result.SizeX != mapping.SizeX || result.SizeY != mapping.SizeY) { CountUnfinished(r, "result doesn't match its mapping"); return null; }
         bool simple = r.LightMap.LightMapType == ELightMapType.LMT_6;
         bool worldFrame = r.LightMap.LightMapType == ELightMapType.LMT_4;
 
         UvLocator locator = null;
         if (worldFrame)
         {
-            if (mapping is not LightmassInstance instance) { Count("LMT_4 on something other than a static mesh"); return null; }
+            if (mapping is not LightmassInstance instance) { CountUnfinished(r, "LMT_4 on something other than a static mesh"); return null; }
             if (!resolvers.TryGetValue(r.Owner.FileRef, out var resolver)) resolvers[r.Owner.FileRef] = resolver = new MeshResolver(r.Owner.FileRef);
             var g = ComponentGeometry.Load(r.Owner, resolver, out _, instance.LodIndex);
-            if (g == null || g.LightMapCoordinateIndex < 0) { Count("no LE3 geometry for the world-space frame"); return null; }
+            if (g == null || g.LightMapCoordinateIndex < 0) { CountUnfinished(r, "no LE3 geometry for the world-space frame"); return null; }
             locator = new UvLocator(g);
         }
 
@@ -90,7 +98,7 @@ public sealed class LightmassBakeSource : ILightingSource, IDisposable
     {
         if (!byLightmap.TryGetValue((r.Owner, r.Slot), out var entry)) return null;
         var (_, result) = entry;
-        if (result.IsTextureMapping) return null;
+        if (result.IsTextureMapping) { CountUnfinished(r, "result doesn't match its mapping"); return null; }
         var samples = new (Lighting, TangentFrame)[result.SizeX];
         for (int i = 0; i < samples.Length; i++) samples[i] = (FromBasis(result.Directional[i]), Identity);
         Matched++;

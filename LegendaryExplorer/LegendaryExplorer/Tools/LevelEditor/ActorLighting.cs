@@ -119,7 +119,7 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
         return new ActorLightingSettings(props.GetProp<ObjectProperty>("LightEnvironment")?.Value,
             LightingChannels.FromProperty(props.GetProp<StructProperty>("LightingChannels"), default, false,
                 Mesh is StaticMeshComponentProxy && !usesEnvironment ? LightingChannels.StaticPrimitiveDefault : LightingChannels.DynamicPrimitiveDefault).Channels,
-            props.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false },
+            LightAssignment.AcceptsLights(props),
             props.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false },
             props.GetProp<BoolProperty>("CastShadow") is not { Value: false },
             props.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false }, precomputed);

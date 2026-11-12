@@ -1657,7 +1657,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <summary>
         /// Whether an import is of a class defined only in native code, which has no export in any package to find
         /// </summary>
-        internal static bool IsNativeClassImport(ImportEntry entry, string fullPath) =>
+        public static bool IsNativeClassImport(ImportEntry entry) => IsNativeClassImport(entry, entry.InstancedFullPath);
+
+        /// <param name="fullPath">The path it's resolved by, which may be an override of its own</param>
+        private static bool IsNativeClassImport(ImportEntry entry, string fullPath) =>
             entry.ClassName == "Class" && GlobalUnrealObjectInfo.IsAKnownNativeClass(fullPath, entry.Game);
 
         /// <summary>

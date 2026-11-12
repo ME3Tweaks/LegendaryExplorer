@@ -20,7 +20,7 @@ public sealed class LightmassBakePreview : IDisposable
     public LightmassBakeResult Result { get; internal set; }
     public string TemporaryDirectory { get; }
     internal string CopiedCacheSource { get; }
-    public bool HasChanges => Result?.Rewrites.Count > 0;
+    public bool HasChanges => Result?.Rewrites.Count > 0 || Result?.ClearedMarks.Count > 0;
     public bool IsSaved { get; private set; }
 
     readonly FileStream cacheLock;
@@ -95,7 +95,8 @@ public sealed class LightmassBakePreview : IDisposable
         log ??= _ => { };
         if (!HasChanges) { IsSaved = true; return; }
         VerifyUnchanged();
-        var files = Result.Rewrites.Keys.Where(p => destinations.ContainsKey(Path.GetFullPath(p.FilePath)))
+        // A level whose only change is its cleared marks of what's changed since its last bake is saved too
+        var files = Result.Rewrites.Keys.Union(Result.ClearedMarks).Where(p => destinations.ContainsKey(Path.GetFullPath(p.FilePath)))
             .Select(p => (Package: p, Destination: destinations[Path.GetFullPath(p.FilePath)],
                 Staged: Path.Combine(TemporaryDirectory, Path.GetFileName(p.FilePath)))).ToList();
         foreach (var file in files)

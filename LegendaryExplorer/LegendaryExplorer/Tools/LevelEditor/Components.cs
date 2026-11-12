@@ -78,6 +78,12 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
     public bool IsVisible { get; set; } = true;
 
     /// <summary>
+    /// Whether it draws a stand-in export, which isn't in its package: a new actor's component, or a new spline connection's mesh, until a commit makes
+    /// the component
+    /// </summary>
+    public bool IsStandIn => Export.FileRef.GetEntry(Export.UIndex) != Export;
+
+    /// <summary>
     /// Not rendered in game. Shown in the editor when ShowHidden is set or its actor is selected.
     /// </summary>
     public bool HiddenGame { get; private set; }
@@ -281,6 +287,13 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
         return null;
     }
 
+    /// <summary>
+    /// For the level scan: whether the game draws the light on the mesh as a dynamic light, given what's baked on it as the view has it (pending lighting
+    /// edits included), with the mesh bounded by <paramref name="bounds"/>. Null if a light environment lights it, or its lighting couldn't be read
+    /// </summary>
+    internal LightEligibility? GetBakedEligibility(SceneLight light, BoxSphereBounds bounds) =>
+        LightEnvironment is null && StaticLighting is { UsesLightEnvironment: false } ? StaticLighting.GetEligibility(light, bounds, ignorePrecomputed: false) : null;
+
     public IEnumerable<string> ShadowNotes => StaticLighting?.ShadowNotes() ?? [];
 
     public bool HasCompatibleBakeMapping => StaticLighting?.HasCompatibleBakeMapping == true;
@@ -355,7 +368,7 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
             IsInScene = IsInScene,
             IsShown = IsShown,
             LightingChannels = lightingChannels,
-            AcceptsLights = Properties.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false },
+            AcceptsLights = LightAssignment.AcceptsLights(Properties),
             AcceptsDynamicLights = Properties.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false },
             HasStaticShadowing = staticLighting?.HasStaticShadowing ?? Properties.GetProp<BoolProperty>("bUsePrecomputedShadows") is { Value: true },
             HasShadowParent = Properties.GetProp<ObjectProperty>("ShadowParent") is { Value: not 0 } shadowParent ? () => !IsDeleted(shadowParent.Value) : () => false,
@@ -495,6 +508,9 @@ public class StaticMeshComponentProxy : MeshComponentProxy
         LoadMesh();
     }
 
+    /// <summary>The mesh it draws, as it's shown (a preview's <see cref="PreviewAssets"/> mesh). Null if it has none, or it can't be found</summary>
+    internal ExportEntry StaticMeshExport { get; private set; }
+
     private void LoadMesh()
     {
         var context = RenderContext;
@@ -507,8 +523,9 @@ public class StaticMeshComponentProxy : MeshComponentProxy
             Dependencies.Track(meshReference);
             foreach (var material in MaterialOverrides) Dependencies.Track(material);
         }
-        if ((PreviewProperties is not null ? EffectiveLightingProperties.Resolve(meshReference, context.PackageCache)
-            : EffectiveLightingProperties.ResolveReference(Export, "StaticMesh", context.PackageCache)) is { } meshExport)
+        StaticMeshExport = PreviewProperties is not null ? EffectiveLightingProperties.Resolve(meshReference, context.PackageCache)
+            : EffectiveLightingProperties.ResolveReference(Export, "StaticMesh", context.PackageCache);
+        if (StaticMeshExport is { } meshExport)
         {
             StaticMesh stm = context.GetStaticMesh(meshExport);
             Dependencies.TrackData(meshExport.FileRef.GetEntry(stm.BodySetup) as ExportEntry);

@@ -17,9 +17,8 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
 
     private bool isDisposed;
     private NxPhysicsSDK* SDK;
-    private PhysXCooker Cooker;
 
-    public PhysXSDK()
+    private PhysXSDK()
     {
         if (!PhysXDllLoader.EnsureCoreDll())
         {
@@ -45,8 +44,6 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
         }
         SDK = sdk;
 
-        Cooker = new PhysXCooker();
-
         //just duplicating LE3 settings here, probably unnecessary for generating meshes
         SDK->SetParameter(NxParameter.NX_SKIN_WIDTH, 0.025f);
         SDK->SetParameter(NxParameter.NX_ASYNCHRONOUS_MESH_CREATION, 1.0f);
@@ -57,13 +54,18 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
 
     public static KConvexElem GenerateHullData(ReadOnlySpan<Vector3> convexHull)
     {
-        using var sdk = new PhysXSDK();
         var physXScaleHullVerts = new Vector3[convexHull.Length];
         for (int i = 0; i < convexHull.Length; i++)
         {
             physXScaleHullVerts[i] = convexHull[i] * UnrealtoPhysXScale;
         }
-        using NxStream stream = sdk.Cooker.GenerateCachedPhysicsDataStream(physXScaleHullVerts, hullOnly: true);
+        return PhysXCooker.Use(cooker => GenerateHullData(cooker, physXScaleHullVerts));
+    }
+
+    private static KConvexElem GenerateHullData(PhysXCooker cooker, Vector3[] physXScaleHullVerts)
+    {
+        using var sdk = new PhysXSDK();
+        using NxStream stream = cooker.GenerateCachedPhysicsDataStream(physXScaleHullVerts, hullOnly: true);
         NxConvexMesh* mesh = sdk.SDK->CreateConvexMesh(&stream);
         if (mesh is null)
         {
@@ -270,27 +272,14 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
         }
     }
 
-    private void InternalDispose()
+    public void Dispose()
     {
         if (!isDisposed)
         {
-            Cooker?.Dispose();
-            Cooker = null;
             NxReleasePhysicsSDK(SDK);
             SDK = null;
             isDisposed = true;
         }
-    }
-
-    public void Dispose()
-    {
-        InternalDispose();
-        GC.SuppressFinalize(this);
-    }
-
-    ~PhysXSDK()
-    {
-        InternalDispose();
     }
 
 

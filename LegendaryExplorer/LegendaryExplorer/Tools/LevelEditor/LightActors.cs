@@ -743,7 +743,7 @@ public class StaticLightCollectionComponentProxy : CollectionActorComponentProxy
         if (Light is not null) Editor?.OnLightEdited(this);
     }
 
-    protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || Light.HasChanges;
+    protected override bool HasMemberChanges() => base.HasMemberChanges() || Light.HasChanges;
 
     public override void MarkClean()
     {

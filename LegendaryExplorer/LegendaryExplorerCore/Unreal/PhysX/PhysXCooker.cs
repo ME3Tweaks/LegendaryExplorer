@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace LegendaryExplorerCore.Unreal.PhysX
 {
@@ -21,15 +22,34 @@ namespace LegendaryExplorerCore.Unreal.PhysX
         [LibraryImport(PhysXDllLoader.PHYSXCOOKING64_DLL)]
         private static partial void NxCloseCooking();
 
+        /// <summary>
+        /// Held while a cooker exists. Cooking is global to the process: NxInitCooking and NxCloseCooking start and end it for everyone, so a cooker
+        /// on one thread can't overlap another's
+        /// </summary>
+        private static readonly Lock Sync = new();
+
+        public static T Use<T>(Func<PhysXCooker, T> cook)
+        {
+            lock (Sync)
+            {
+                using var cooker = new PhysXCooker();
+                return cook(cooker);
+            }
+        }
+
         private bool isDisposed;
-        public PhysXCooker()
+        private PhysXCooker()
         {
             if (!PhysXDllLoader.EnsureCookingDll())
             {
                 isDisposed = true;
                 throw new Exception($"Unable to load {PhysXDllLoader.PHYSXCOOKING64_DLL}");
             }
-            NxInitCooking(null, null);
+            if (NxInitCooking(null, null) is 0)
+            {
+                isDisposed = true;
+                throw new Exception("PhysX cooking couldn't be started");
+            }
             //as UE3 does (PhysSkinWidth)
             NxCookingParams parms = *NxGetCookingParams();
             parms.skinWidth = 0.025f;
@@ -82,24 +102,14 @@ namespace LegendaryExplorerCore.Unreal.PhysX
             }
         }
 
-        private void InternalDispose()
+        // No finalizer: only Use makes one, and it disposes it inside the lock
+        public void Dispose()
         {
             if (!isDisposed)
             {
                 NxCloseCooking();
                 isDisposed = true;
             }
-        }
-
-        public void Dispose()
-        {
-            InternalDispose();
-            GC.SuppressFinalize(this);
-        }
-
-        ~PhysXCooker()
-        {
-            InternalDispose();
         }
 
         [Flags]

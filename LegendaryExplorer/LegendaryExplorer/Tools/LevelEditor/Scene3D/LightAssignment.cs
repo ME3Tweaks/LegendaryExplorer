@@ -142,10 +142,22 @@ public readonly record struct LightPrimitiveSettings(LightingChannels Channels, 
 
 public static class LightAssignment
 {
-    internal static bool HasStaticShadowing(ExportEntry component, PropertyCollection props, StaticMeshComponent binary) =>
+    internal static bool HasStaticShadowing(ExportEntry component, PropertyCollection props, StaticMeshComponent binary, string ownerClass = null) =>
         props.GetProp<BoolProperty>("bUsePrecomputedShadows")?.Value
-        ?? (component.Parent?.ClassName is "StaticMeshActor" or "StaticMeshCollectionActor"
+        ?? ((ownerClass ?? component.Parent?.ClassName) is "StaticMeshActor" or "StaticMeshCollectionActor"
             || binary.LODData.Any(l => l.LightMap is { LightMapType: not ELightMapType.LMT_None } || l.ShadowMaps.Length > 0 || l.ShadowVertexBuffers.Length > 0));
+
+    /// <summary>
+    /// Whether a bake builds static lighting for a static or spline mesh component: it has static shadowing and accepts lights
+    /// (UStaticMeshComponent::GetStaticLightingInfo). Such a primitive is lit by the bake and casts its static shadows, whether or not a light environment
+    /// lights it at runtime
+    /// </summary>
+    /// <param name="ownerClass">The class of the actor it's a component of, if it isn't the component's outer: a stand-in has none</param>
+    public static bool TakesPartInStaticLighting(ExportEntry component, PropertyCollection props, StaticMeshComponent binary, string ownerClass = null) =>
+        HasStaticShadowing(component, props, binary, ownerClass) && AcceptsLights(props);
+
+    /// <summary>bAcceptsLights. Component archetypes set it; only an explicit false is trusted, in case the archetype chain couldn't be resolved</summary>
+    public static bool AcceptsLights(PropertyCollection props) => props.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false };
 
     /// <summary>Shared spatial/settings checks. Occlusion is evaluated by the renderer or Lightmass afterwards.</summary>
     public static LightEligibility Evaluate(SceneLight light, BoxSphereBounds bounds, LightPrimitiveSettings primitive,

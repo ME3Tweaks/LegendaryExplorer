@@ -45,6 +45,8 @@ public sealed class LightmassBakeResult
     public Dictionary<IMEPackage, LightmapRewriter.Summary> Rewrites = new();
     public Dictionary<IMEPackage, LightmassShadowMapWriter.Summary> ShadowMaps = new();
     public Dictionary<string, int> KeptOriginal = new();
+    /// <summary>Levels that had marks of what's changed since their last bake, which the bake cleared: they're saved even if no lightmap of theirs changed</summary>
+    public HashSet<IMEPackage> ClearedMarks = [];
     public string TfcPath;
     /// <summary>Where the rebaked files were saved (<see cref="LightmassBakeJob"/>).</summary>
     public List<string> SavedFiles = [];
@@ -280,6 +282,35 @@ public static class LightmassBake
         }
         tfc.PreserveUnwrittenTextures(packages);
         foreach (var (why, n) in source.Report) result.KeptOriginal[why] = n;
+        // A lightmap of a level's own that a mapping Lightmass failed or delivered nothing for, or whose result couldn't be applied
+        var unfinished = source.Unfinished
+            .Concat(scene.Mappings.Where(m => !result.Results.ContainsKey(m.Guid)).SelectMany(m => m.OutputTargets).Select(t => t.Owner.FileRef)).ToHashSet();
+        result.ClearedMarks.UnionWith(ClearMarks(levels, settings.Scene.ContextOnly, scene.UnreadPrimitives > 0, unfinished, log));
+    }
+
+    /// <summary>
+    /// After a bake: clears the marks of what's changed since the last bake (<see cref="StaticLightingChanges"/>) in each level it finished, which is baked
+    /// as it is now. A level whose own lightmap kept its original lighting (<paramref name="unfinishedLevels"/>) isn't finished, and none is if the scene
+    /// couldn't read a primitive (<paramref name="unreadPrimitives"/>), which is then missing from every level's shadows and bounced light. A lightmap kept by
+    /// design (an incompatible allocation, say) doesn't count: no bake would change it. A context-only level's own changes aren't baked into it. A light's
+    /// mark is in its own level, so one that reaches another level that wasn't rebaked is cleared all the same: the marks are a reminder, not a guarantee
+    /// </summary>
+    /// <returns>The levels whose marks were cleared</returns>
+    public static List<IMEPackage> ClearMarks(IEnumerable<IMEPackage> levels, IReadOnlySet<IMEPackage> contextOnly, bool unreadPrimitives,
+        IReadOnlySet<IMEPackage> unfinishedLevels, Action<string> log)
+    {
+        var cleared = new List<IMEPackage>();
+        if (unreadPrimitives)
+        {
+            log("Some primitives couldn't be read, so they're missing from the bake, and what's changed since the last bake stays marked.");
+            return cleared;
+        }
+        foreach (var level in levels.Where(l => !contextOnly.Contains(l)))
+        {
+            if (unfinishedLevels.Contains(level)) log($"{level.FileNameNoExtension}: some of its lighting wasn't baked, so what's changed since its last bake stays marked.");
+            else if (StaticLightingChanges.ClearAll(level)) cleared.Add(level);
+        }
+        return cleared;
     }
 }
 
@@ -312,6 +343,8 @@ public static class LightmassBakeReport
         }
         if (result.KeptOriginal.Count > 0)
             lines.Add($"Kept their original lighting: {string.Join(", ", result.KeptOriginal.Select(k => $"{k.Value} {k.Key}"))}.");
+        if (result.ClearedMarks.Count > 0)
+            lines.Add($"No longer marked as changed since their last bake: {string.Join(", ", result.ClearedMarks.Select(l => l.FileNameNoExtension))}.");
         if (result.Alerts.Count > 0)
         {
             lines.Add($"Lightmass reported {result.Alerts.Count} warnings:");
