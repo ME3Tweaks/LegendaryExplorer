@@ -52,6 +52,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UIndex[] ShadowMap1D;//ME3/LE
         public int Data;//ME3/LE
         public int InstanceIndex;//ME3/LE
+
+        /// <summary>A copy of it that shares its arrays and light-map</summary>
+        public StaticReceiverData ShallowCopy() => (StaticReceiverData)MemberwiseClone();
     }
 
     public class DecalVertex

@@ -19,6 +19,11 @@ using System.Windows.Input;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
+/// <summary>Where a click places a new actor (<see cref="LevelEditorRenderContext.PlacementAt(int, int)"/>)</summary>
+/// <param name="Normal">The unit normal of the surface it's on, facing the camera (UE3's ClickPlane), or back along the click's line if the surface's can't
+/// be told; null for a click on no surface (the backdrop, or something the line doesn't meet), whose ClickPlane is zero</param>
+public readonly record struct PlacementPoint(Vector3 Location, Vector3? Normal);
+
 public class LevelEditorRenderContext : MeshRenderContext
 {
     public event Action<ActorProxy> SelectActor;
@@ -181,8 +186,8 @@ public class LevelEditorRenderContext : MeshRenderContext
         return (origin, direction.LengthSquared() > 0 ? Vector3.Normalize(direction) : Camera.CameraForward);
     }
 
-    /// <summary>Where UE3's editor puts an actor created by a click at a pixel: see <see cref="PlacementLocation((Vector3, Vector3), bool, BoxSphereBounds?)"/></summary>
-    public Vector3 PlacementLocation(int x, int y)
+    /// <summary>Where UE3's editor puts an actor created by a click at a pixel: see <see cref="PlacementAt((Vector3, Vector3), bool, BoxSphereBounds?, float?)"/></summary>
+    public PlacementPoint PlacementAt(int x, int y)
     {
         IHitProxy clicked = HitBufferView is not null ? GetHitProxy(x, y) : null;
         var ray = GetPixelRay(x, y);
@@ -198,38 +203,57 @@ public class LevelEditorRenderContext : MeshRenderContext
         };
         //the clicked actor's own surface if it can tell, else its bounding box
         float? surface = actor?.RayHit(ray.Origin, ray.Direction, HalfWorldMax);
-        return PlacementLocation(ray, clicked is not null, surface is null ? actor?.GetBounds() : null, surface);
+        return PlacementAt(ray, clicked is not null, surface is null ? actor?.GetBounds() : null, surface,
+            surface is { } distance ? actor.SurfaceNormalAt(ray.Origin + ray.Direction * distance) : null);
     }
 
     //UE3's HALF_WORLD_MAX, how far a click's line check reaches
     private const float HalfWorldMax = 262144;
 
     /// <summary>
-    /// Where UE3's editor puts an actor created by a click along <paramref name="ray"/> (UEditorEngine::UseActorFactory and PrivateAddActor, with
-    /// GEditor->ClickLocation as ClickActor, ClickSurface and ClickBackdrop leave it). A click on something (a surface or an actor) places it where the
+    /// Where UE3's editor puts an actor created by a click along <paramref name="ray"/>, as a viewport click that adds one does (UnEdViewport.cpp's
+    /// PrivateAddActor, by UEditorEngine::UseActorFactory, with GEditor->ClickLocation as ClickActor, ClickSurface and ClickBackdrop leave it; the
+    /// content browser's, AssetSelection.cpp's, also snaps the click before pushing it out). A click on something (a surface or an actor) places it where the
     /// line first meets the level's geometry within HALF_WORLD_MAX; if it meets none, at the depth the click was unprojected to (2 x UE3's 10 unit near
     /// plane). A click on the backdrop places it in front of the camera (MoveActorInFrontOfCamera), as far as its bounding cylinder's radius, 50 for an
     /// actor with none, as every class with a recipe is. In an orthographic view UE3's camera is at the edge of the world, so its backdrop click
     /// (HALF_WORLD_MAX along the line) is on the world's middle plane: Z = 0 in this top view. Here the level's geometry is its BSP and the meshes
     /// with static shadowing (<see cref="LevelGeometry.FirstHit"/>), in place of the actors' collision. An actor clicked that isn't part of it is
     /// met at <paramref name="clickedSurface"/>, the distance to its own surface (a terrain's), if it's nearer; or else, if the line meets what's
-    /// behind it (outside its <paramref name="clickedBounds"/>: a moving mesh, say), at its bounding box. Not pushed out along the surface's
-    /// normal: FBoxPushOut of no collision extent, 0.1 units
+    /// behind it (outside its <paramref name="clickedBounds"/>: a moving mesh, say), at its bounding box. Pushed out along the surface's normal (the
+    /// geometry's, the actor's own, <paramref name="clickedNormal"/>, or the box face's): FBoxPushOut of no collision extent, 0.1 units. Where a surface's
+    /// normal can't be told (as when the line starts inside the BSP's solid space), it's taken to face back along the line
     /// </summary>
-    public Vector3 PlacementLocation((Vector3 Origin, Vector3 Direction) ray, bool clickedSomething, BoxSphereBounds? clickedBounds = null, float? clickedSurface = null)
+    public PlacementPoint PlacementAt((Vector3 Origin, Vector3 Direction) ray, bool clickedSomething, BoxSphereBounds? clickedBounds = null, float? clickedSurface = null,
+        Vector3? clickedNormal = null)
     {
         (Vector3 origin, Vector3 direction) = ray;
         if (clickedSomething)
         {
             Vector3 end = origin + direction * HalfWorldMax;
-            Vector3? hit = GetLevelGeometry(out _, current: true).FirstHit(origin, end) is { } fraction ? Vector3.Lerp(origin, end, fraction) : null;
-            if (clickedSurface is { } surface && !(hit is { } geometry && Vector3.Distance(origin, geometry) < surface)) return origin + direction * surface;
+            Vector3? hit = GetLevelGeometry(out _, current: true).FirstHit(origin, end, out Vector3? normal) is { } fraction ? Vector3.Lerp(origin, end, fraction) : null;
+            if (clickedSurface is { } surface && !(hit is { } geometry && Vector3.Distance(origin, geometry) < surface))
+                return PushedOut(origin + direction * surface, clickedNormal);
             //(not an actor whose box the camera is inside, a sky dome say, which the line enters where it starts)
-            if (clickedBounds is { } bounds && !(hit is { } point && IsWithin(bounds, point)) && BoxEntry(origin, direction, bounds) is > 0 and var distance)
-                return origin + direction * distance;
-            return hit ?? origin + direction * 20;
+            if (clickedBounds is { } bounds && !(hit is { } point && IsWithin(bounds, point)) && BoxEntry(origin, direction, bounds, out Vector3 face) is > 0 and var distance)
+                return PushedOut(origin + direction * distance, face);
+            return hit is { } location ? PushedOut(location, normal) : new(origin + direction * 20, null);
         }
-        return Camera.IsOrthographic ? origin with { Z = 0 } : origin + direction * 50;
+        return new(Camera.IsOrthographic ? origin with { Z = 0 } : origin + direction * 50, null);
+
+        PlacementPoint PushedOut(Vector3 location, Vector3? normal)
+        {
+            Vector3 n = Facing(normal ?? Vector3.Zero);
+            return new(location + n * 0.1f, n);
+        }
+
+        //a unit normal facing back along the line: the line's own direction reversed if there's none
+        Vector3 Facing(Vector3 normal)
+        {
+            Vector3 unit = Vector3.Normalize(normal);
+            if (!float.IsFinite(unit.X) || !float.IsFinite(unit.Y) || !float.IsFinite(unit.Z)) return -direction;
+            return Vector3.Dot(unit, direction) > 0 ? -unit : unit;
+        }
 
         //within a unit of the box, as a surface it bounds is
         static bool IsWithin(BoxSphereBounds box, Vector3 point) =>
@@ -237,9 +261,11 @@ public class LevelEditorRenderContext : MeshRenderContext
     }
 
     /// <summary>How far along a ray (from <paramref name="origin"/>, a unit <paramref name="direction"/>) it enters a box, within HALF_WORLD_MAX: 0 from inside it</summary>
-    private static float? BoxEntry(Vector3 origin, Vector3 direction, BoxSphereBounds box)
+    /// <param name="face">The outward normal of the face it enters by</param>
+    private static float? BoxEntry(Vector3 origin, Vector3 direction, BoxSphereBounds box, out Vector3 face)
     {
         float near = 0, far = HalfWorldMax;
+        face = default;
         for (int axis = 0; axis < 3; axis++)
         {
             float start = origin[axis], step = direction[axis], min = box.Origin[axis] - box.BoxExtent[axis], max = box.Origin[axis] + box.BoxExtent[axis];
@@ -249,7 +275,12 @@ public class LevelEditorRenderContext : MeshRenderContext
                 continue;
             }
             float t1 = (min - start) / step, t2 = (max - start) / step;
-            near = MathF.Max(near, MathF.Min(t1, t2));
+            if (MathF.Min(t1, t2) > near)
+            {
+                near = MathF.Min(t1, t2);
+                face = default;
+                face[axis] = step > 0 ? -1 : 1;
+            }
             far = MathF.Min(far, MathF.Max(t1, t2));
             if (near > far) return null;
         }

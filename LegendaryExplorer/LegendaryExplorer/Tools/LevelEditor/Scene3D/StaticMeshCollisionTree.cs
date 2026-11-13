@@ -50,20 +50,38 @@ internal sealed class StaticMeshCollisionTree
 
     public bool Intersects(Vector3 start, Vector3 end)
     {
-        Vector3 direction = end - start;
-        if (direction == Vector3.Zero || !IntersectsRoot(start, direction)) return false;
-        return Visit(0, Root, 0, Indices.Length / 3, start, end, direction);
+        var ignored = new IgnoresNormals();
+        return Intersects(start, end, ref ignored);
     }
 
-    private bool Visit(int nodeIndex, Bounds bounds, int first, int count, Vector3 start, Vector3 end, Vector3 direction)
+    /// <summary>The (unnormalized) normal of the first triangle found that the segment hits, in the triangle's winding; null if it hits none</summary>
+    public Vector3? HitNormal(Vector3 start, Vector3 end)
+    {
+        var met = new LastNormal();
+        return Intersects(start, end, ref met) ? met.Normal : null;
+    }
+
+    private bool Intersects<TNormals>(Vector3 start, Vector3 end, ref TNormals normals) where TNormals : struct, ITraceNormals
+    {
+        Vector3 direction = end - start;
+        if (direction == Vector3.Zero || !IntersectsRoot(start, direction)) return false;
+        return Visit(0, Root, 0, Indices.Length / 3, start, end, direction, ref normals);
+    }
+
+    private bool Visit<TNormals>(int nodeIndex, Bounds bounds, int first, int count, Vector3 start, Vector3 end, Vector3 direction, ref TNormals normals)
+        where TNormals : struct, ITraceNormals
     {
         int lastNode = Nodes.Length - 1;
         if (nodeIndex >= lastNode)
         {
             for (int i = first; i < first + count; i++)
             {
-                if (IntersectsTriangle(start, end, direction, Positions[Indices[i * 3]], Positions[Indices[i * 3 + 1]], Positions[Indices[i * 3 + 2]]))
+                Vector3 a = Positions[Indices[i * 3]], b = Positions[Indices[i * 3 + 1]], c = Positions[Indices[i * 3 + 2]];
+                if (IntersectsTriangle(start, end, direction, a, b, c))
+                {
+                    normals.Met(TriangleNormal(a, b, c));
                     return true;
+                }
             }
             return false;
         }
@@ -73,8 +91,8 @@ internal sealed class StaticMeshCollisionTree
         int leftCount = count - count / 2;
         int leftIndex = Math.Min(nodeIndex * 2 + 1, lastNode);
         //Any hit suffices; native traversal also stops at the first one (flag 0x200)
-        return IntersectsChild(left, start, direction) && Visit(leftIndex, left, first, leftCount, start, end, direction)
-            || IntersectsChild(right, start, direction) && Visit(Math.Min(leftIndex + 1, lastNode), right, first + leftCount, count / 2, start, end, direction);
+        return IntersectsChild(left, start, direction) && Visit(leftIndex, left, first, leftCount, start, end, direction, ref normals)
+            || IntersectsChild(right, start, direction) && Visit(Math.Min(leftIndex + 1, lastNode), right, first + leftCount, count / 2, start, end, direction, ref normals);
     }
 
     private static Bounds Decode(Bounds parent, Node node, bool left)
@@ -142,9 +160,11 @@ internal sealed class StaticMeshCollisionTree
         return true;
     }
 
+    private static Vector3 TriangleNormal(Vector3 a, Vector3 b, Vector3 c) => Vector3.Cross(b - c, a - c);
+
     private static bool IntersectsTriangle(Vector3 start, Vector3 end, Vector3 direction, Vector3 a, Vector3 b, Vector3 c)
     {
-        Vector3 normal = Vector3.Cross(b - c, a - c);
+        Vector3 normal = TriangleNormal(a, b, c);
         float plane = Vector3.Dot(normal, a);
         float startDistance = Vector3.Dot(normal, start) - plane;
         float endDistance = Vector3.Dot(normal, end) - plane;

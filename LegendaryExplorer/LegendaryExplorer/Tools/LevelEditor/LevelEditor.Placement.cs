@@ -22,7 +22,7 @@ public partial class LevelEditor
         public string ClassName => Placeable.ClassName;
         public PlacementCategory Category => Placeable.Category;
         public string Description => Placeable.Description;
-        public string AssetHint => Placeable.AssetClass is { } assetClass ? $"Asks for a {assetClass} first" : null;
+        public string AssetHint => Placeable.Asset is { } kind ? $"Asks for a {AssetPicking.NameOf(kind)} first" : null;
 
         private bool isPlacing;
         /// <summary>Whether it's the class a viewport click places now</summary>
@@ -146,7 +146,7 @@ public partial class LevelEditor
         AssetReference asset = null;
         if (ActorCreation.AssetKindOf(className) is { } assetKind)
         {
-            asset = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest($"The new {className}'s {AssetPicking.ClassOf(assetKind)}", placementFile.Package, assetKind));
+            asset = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest($"The new {className}'s {AssetPicking.NameOf(assetKind)}", placementFile.Package, assetKind));
             //(the scene may have become busy, or the file read-only, while the dialog was open)
             if (asset is null || !CanMutateScene || ActorCreation.FileRefusal(placementFile) is not null) return;
         }
@@ -163,7 +163,7 @@ public partial class LevelEditor
     }
 
     /// <summary>
-    /// A viewport click while placing: the new actor goes where UE3's editor would put it (<see cref="LevelEditorRenderContext.PlacementLocation(int, int)"/>),
+    /// A viewport click while placing: the new actor goes where UE3's editor would put it (<see cref="LevelEditorRenderContext.PlacementAt(int, int)"/>),
     /// snapped to the grid if its class's default bEdShouldSnap asks to be, as UE3's Constraints.Snap does
     /// </summary>
     private void PlaceAt(int x, int y)
@@ -182,8 +182,9 @@ public partial class LevelEditor
         try
         {
             var widget = RenderContext.TransformWidget;
-            UndoHistory.Push(ActorCreation.Place(this, placementFile, className, RenderContext.PlacementLocation(x, y),
-                widget.TranslateSnapEnabled ? widget.TranslateSnapValue : 0, asset));
+            var point = RenderContext.PlacementAt(x, y);
+            UndoHistory.Push(ActorCreation.Place(this, placementFile, className, point.Location, widget.TranslateSnapEnabled ? widget.TranslateSnapValue : 0, asset,
+                point.Normal));
         }
         catch (Exception error) when (error is not OutOfMemoryException)
         {

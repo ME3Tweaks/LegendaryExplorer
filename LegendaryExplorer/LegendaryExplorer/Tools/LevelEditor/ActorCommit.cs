@@ -104,7 +104,8 @@ public static class ActorCommit
     private static void Write(OpenLevelFile file, IReadOnlySet<ActorProxy> skipped, List<(OpenLevelFile, ActorProxy)> written, HashSet<ActorProxy> created)
     {
         Dictionary<int, StaticCollectionActor> collectionActorMap = [];
-        foreach (ActorProxy actor in file.Actors)
+        // Decals last: one can land on a mesh actor made in this commit, whose component is made by that actor's commit
+        foreach (ActorProxy actor in file.Actors.OrderBy(a => a is DecalActorProxy))
         {
             if (!created.Contains(actor))
             {

@@ -29,6 +29,12 @@ public sealed class TerrainProxy : ActorProxy
             ? field.RayHit(Vector3.Transform(origin, worldToLocal), Vector3.TransformNormal(direction, worldToLocal), maxDistance, DrawnSections, ignoreHoles)
             : null;
 
+    public override Vector3? SurfaceNormalAt(Vector3 point) =>
+        HeightField is { } field && Matrix4x4.Invert(LocalToWorld, out Matrix4x4 worldToLocal)
+            //a local normal's world direction is by the inverse transpose of the local-to-world transform
+            ? Vector3.TransformNormal(field.LocalNormal(Vector3.Transform(point, worldToLocal)), Matrix4x4.Transpose(worldToLocal))
+            : null;
+
     /// <summary>The height field it's drawn from, with what's been sculpted; null if it couldn't be read</summary>
     public TerrainHeightField HeightField { get; private set; }
     //the sections it has a component for, which it's drawn as

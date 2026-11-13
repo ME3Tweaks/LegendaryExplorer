@@ -602,7 +602,8 @@ public sealed class ActorDeletionPlan
     {
         var deleted = plans.SelectMany(p => p.Entries).ToHashSet();
         var gone = deleted.Concat(actor.OwningFile.PendingDeletions.SelectMany(d => d.Entries)).ToHashSet();
-        return actor.Editor.RenderContext.DrawList_3D.OfType<DecalActorProxy>().Where(d => d.DecalComponent is { } component && !deleted.Contains(d.Export) && Refusal(d) is null
+        //(a new decal, a draft, has no receivers to lose: it's projected again without what's going)
+        return actor.Editor.RenderContext.DrawList_3D.OfType<DecalActorProxy>().Where(d => !d.IsDraft && d.DecalComponent is { } component && !deleted.Contains(d.Export) && Refusal(d) is null
             && (component.HasReprojectedReceivers
                 ? component.Receivers.Any(deleted.Contains) && component.Receivers.All(gone.Contains)
                 : plans.Any(p => p.DecalsLeftEmpty.Contains(component.Export)))).ToArray();

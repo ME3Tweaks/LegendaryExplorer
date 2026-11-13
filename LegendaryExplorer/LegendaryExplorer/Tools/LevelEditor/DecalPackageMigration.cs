@@ -27,7 +27,8 @@ internal sealed class DecalPackageMigration : IDisposable
         var result = new DecalPackageMigration(sources);
         try
         {
-            foreach (var actor in actors.Where(a => a.ProjectionPackage != a.Export.FileRef))
+            //(a new decal is made in its own package: it can't land in another's)
+            foreach (var actor in actors.Where(a => a.ProjectionPackage != a.Package))
                 result.PrepareActor(actor);
             return result;
         }

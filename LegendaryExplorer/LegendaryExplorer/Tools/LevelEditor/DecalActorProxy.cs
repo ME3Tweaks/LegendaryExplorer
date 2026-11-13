@@ -19,8 +19,8 @@ public sealed class DecalActorProxy : EditorActorProxy
     internal TransformSnapshot ProjectionBaseline;
     public EditableDecal Decal { get; }
 
-    //a material is written only when it's changed (one inherited from an archetype in another package isn't)
-    internal override IEnumerable<AssetReference> AssetsToCopy => Decal is { MaterialChanged: true, Settings.Material: { } material } ? [material] : [];
+    //a material is written only when it's changed (one inherited from an archetype in another package isn't), and by a new decal's commit
+    internal override IEnumerable<AssetReference> AssetsToCopy => Decal is { Settings.Material: { } material } && (IsDraft || Decal.MaterialChanged) ? [material] : [];
 
     internal override Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf)
     {
@@ -38,8 +38,33 @@ public sealed class DecalActorProxy : EditorActorProxy
     public override ActorCoverage Coverage => decal?.GetCoverage() ?? base.Coverage;
     internal void BindReceivers(LevelEditorRenderContext context) => decal?.BindReceivers(context);
 
+    private static readonly ActorClassInfo Info = new(ActorKind.Decal, "Effects helpers", "Decal projector helper; no usable cooked surface.");
+
+    //a draft's: the class default's component its own is made from
+    private readonly ExportEntry componentTemplate;
+
+    /// <summary>
+    /// A new decal (a draft) drawing <paramref name="material"/>, an entry of its package or another file's material. Its component is drawn as the commit
+    /// makes it: from <paramref name="componentTemplate"/>'s values, projected onto the meshes of its own file in its box wherever it's put. Its package is
+    /// untouched until then
+    /// </summary>
+    internal DecalActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, AssetReference material, ExportEntry componentTemplate)
+        : base(context, draft, properties, Info)
+    {
+        this.componentTemplate = componentTemplate;
+        ProjectionBaseline = SnapshotTransform();
+        // None already exists in every package. Pending properties bypass serialization, so even the package's name table stays untouched
+        var preview = new ExportEntry(Pcc, null, "None", new byte[8], binary: LegendaryExplorerCore.Unreal.BinaryConverters.DecalComponent.Create());
+        decal = new DecalComponentProxy(context.RenderContext, preview, this, EffectiveLightingProperties.ReadValues(componentTemplate, context.PackageCache), material)
+        {
+            ActorPropertyName = nameof(Decal)
+        };
+        Components.Add(decal);
+        Decal = new EditableDecal(this, decal.Properties, material);
+    }
+
     public DecalActorProxy(IActorEditorContext context, ExportEntry export)
-        : base(context, export, new(ActorKind.Decal, "Effects helpers", "Decal projector helper; no usable cooked surface."))
+        : base(context, export, Info)
     {
         ProjectionBaseline = SnapshotTransform();
         var component = EffectiveLightingProperties.ResolveReference(export, "Decal", context.PackageCache, Properties);
@@ -47,7 +72,7 @@ public sealed class DecalActorProxy : EditorActorProxy
         {
             decal = new DecalComponentProxy(context.RenderContext, component, this);
             Components.Add(decal);
-            Decal = new EditableDecal(this, decal.Properties);
+            Decal = new EditableDecal(this, decal.Properties, EditableDecal.MaterialOf(component, context.PackageCache));
         }
     }
 
@@ -92,6 +117,18 @@ public sealed class DecalActorProxy : EditorActorProxy
     }
     public override void CommitChanges(PackageCache packageCache = null)
     {
+        // Its export was just made (Materialize): its component is made with it, as shipping levels' decals' are (see NewComponent), with its material,
+        // projection and receivers (CommitProjection). The actor refers to it as its Decal, with no Components array
+        if (Materialized && componentTemplate is not null)
+        {
+            PrepareDecalCommit();
+            var component = NewComponent(componentTemplate, [new ObjectProperty(Decal.Settings.Material.EntryIn(Pcc), "DecalMaterial")],
+                LegendaryExplorerCore.Unreal.BinaryConverters.DecalComponent.Create());
+            decal.CommitProjection(component);
+            Properties.AddOrReplaceProp(new ObjectProperty(component, nameof(Decal)));
+            base.CommitChanges(packageCache);
+            return;
+        }
         if (IsReadOnly || !IsDirty) return;
         PrepareDecalCommit();
         if (ProjectionPackage != Export.FileRef)
@@ -100,6 +137,8 @@ public sealed class DecalActorProxy : EditorActorProxy
         base.CommitChanges(packageCache);
     }
     private protected override void OnPendingDeletionChanged() => decal?.UpdateNeededMembers();
+    //(as a draft that's undone or deleted is)
+    private protected override void OnOutOfSceneChanged() => decal?.UpdateNeededMembers();
     /// <summary>Lets go of what a commit deleted, which it took out of this decal's receivers and Filter (<see cref="ActorDeletionPlan"/>)</summary>
     internal void ForgetDeleted(IReadOnlySet<IEntry> deleted) => decal?.ForgetDeleted(deleted);
     public override void MarkClean()
@@ -117,10 +156,13 @@ public sealed class DecalActorProxy : EditorActorProxy
 
     public override bool TryRefreshPreview(IMEPackage package, HashSet<int> exports, bool force = false)
     {
-        if (package == Pcc && exports.Contains(Export.UIndex)
-            || decal is not null && package == decal.Export.FileRef && exports.Contains(decal.Export.UIndex)) return false;
-        if (decal?.Refresh(package, exports, force) == true) { NotifyCoverageChanged(); return true; }
-        return false;
+        if (!IsDraft && (package == Pcc && exports.Contains(Export.UIndex)
+            || decal is not null && package == decal.Export.FileRef && exports.Contains(decal.Export.UIndex))) return false;
+        // An edit of its material is redrawn in place too: a refresh in place keeps it from being made again from its export (and a draft has none)
+        bool changed = decal?.Refresh(package, exports, force) == true;
+        changed |= decal?.RedrawIfMaterialChanged(package, exports) == true;
+        if (changed) NotifyCoverageChanged();
+        return changed;
     }
 }
 
@@ -145,17 +187,32 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     private readonly Dictionary<ExportEntry, StaticMesh> sourceMeshes = [];
     private HashSet<CollectionActorComponentProxy> neededMembers = [];
     private List<(MeshComponentProxy Source, Matrix4x4 Transform)> projectedSources = [];
+    //a new decal's, until the commit that makes it is accepted: it has no cooked receivers, so it's projected wherever it is, and its commit writes them
+    private bool isNew;
     public bool HasReprojectedReceivers => originalReceivers is not null && !ReferenceEquals(receivers, originalReceivers);
     public bool HasReceiverChanges => originalReceivers?.Any(Stale) == true;
     public IMEPackage ProjectionPackage => HasReprojectedReceivers && receivers.Count > 0 ? receivers[0].Export.FileRef : Export.FileRef;
     /// <summary>The components it lands on as it's shown, committed or not</summary>
     internal IEnumerable<ExportEntry> Receivers => receivers.Select(r => r.Export);
     public string EditUnsupportedReason { get; private set; }
-    public string EditingStatus => EditUnsupportedReason ?? reprojectionError ?? FilterPackageProblem ?? (HasReprojectedReceivers
-        ? receivers.Count == 0 ? "No receiving triangles in the projection volume. Committing removes the old projected surfaces."
-        : (ProjectionPackage != Export.FileRef ? $"Committing moves this actor to {System.IO.Path.GetFileName(ProjectionPackage.FilePath)}. " : "")
-          + "Reprojected onto loaded static meshes. Committing clears baked decal lighting and shadows; decal rebaking is not yet supported."
-        : "Move, rotate or resize to reproject onto loaded static meshes. A projection must belong to one package.");
+    public string EditingStatus => EditUnsupportedReason ?? reprojectionError ?? FilterPackageProblem ?? ProjectionStatus;
+
+    private string ProjectionStatus
+    {
+        get
+        {
+            if (isNew)
+            {
+                return receivers.Count == 0
+                    ? "No receiving triangles in the projection volume: it's committed with none, until it's moved onto a static mesh."
+                    : "Projected onto loaded static meshes, with no baked decal lighting or shadows: decal baking is not yet supported.";
+            }
+            if (!HasReprojectedReceivers) return "Move, rotate or resize to reproject onto loaded static meshes. A projection must belong to one package.";
+            if (receivers.Count == 0) return "No receiving triangles in the projection volume. Committing removes the old projected surfaces.";
+            return (ProjectionPackage != Export.FileRef ? $"Committing moves this actor to {System.IO.Path.GetFileName(ProjectionPackage.FilePath)}. " : "")
+                   + "Reprojected onto loaded static meshes. Committing clears baked decal lighting and shadows; decal rebaking is not yet supported.";
+        }
+    }
     private sealed class Receiver(StaticReceiverData data, ExportEntry export)
     {
         public readonly StaticReceiverData Data = data;
@@ -228,17 +285,32 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     }
 
     /// <summary>
+    /// A new decal's component: <paramref name="standIn"/>, which isn't in its package, drawn with <paramref name="previewProperties"/> (its template's values)
+    /// and <paramref name="material"/>. It has no cooked receivers: it's projected wherever it's put (<see cref="EnsureProjection"/>)
+    /// </summary>
+    public DecalComponentProxy(MeshRenderContext context, ExportEntry standIn, DecalActorProxy actor, PropertyCollection previewProperties, AssetReference material)
+        : base(context, standIn, actor, previewProperties)
+    {
+        owner = actor;
+        isNew = true;
+        UseMaterial(material, context.PackageCache);
+        receiversRead = true;
+        originalReceivers = receivers;
+    }
+
+    /// <summary>
     /// Draws the decal with <paramref name="entry"/>, as the game would (UDecalComponent::CaptureDecalState): a material it can't draw on a decal,
     /// or none, is drawn with the engine's DefaultDecalMaterial (<see cref="MaterialUsage.DecalDrawsDefault"/>). Receiver meshes are rebuilt with it
     /// </summary>
-    private void UseMaterial(AssetReference reference, PackageCache cache)
+    /// <param name="redraw">Whether its meshes are rebuilt even if it's drawn with the same material, which was edited</param>
+    private void UseMaterial(AssetReference reference, PackageCache cache, bool redraw = false)
     {
         materialEntry = reference;
         materialRead = true;
         var entry = reference?.Find(cache);
         var drawn = MaterialUsage.DecalDrawsDefault(entry, cache) && MaterialUsage.EngineMaterial(Export.Game, "DefaultDecalMaterial", cache) is { } fallback
             ? fallback : EffectiveLightingProperties.Resolve(entry, cache);
-        if (drawn == material) return;
+        if (drawn == material && !redraw) return;
         material = drawn;
         foreach (var receiver in (originalReceivers ?? []).Concat(receivers).Distinct())
         {
@@ -344,7 +416,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         // The original receiver snapshot stays available for exact undo until a commit.
         if (ReferenceEquals(receivers, originalReceivers)) BindReceivers(context);
         bool receiverChanged = originalReceivers.Any(Stale);
-        bool geometryChanged = owner.IsTransformDirty || owner.Decal.GeometryChanged || receiverChanged;
+        bool geometryChanged = isNew || owner.IsTransformDirty || owner.Decal.GeometryChanged || receiverChanged;
         if (!geometryChanged && !owner.Decal.HasChanges)
         {
             bool changed = projectedTransform is not null || HasReprojectedReceivers;
@@ -354,8 +426,10 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         }
         var transform = owner.SnapshotTransform();
         var settings = owner.Decal.Settings;
+        // A mesh pending deletion has no say in a reprojection, as a receiver pending deletion has none: its deletion's commit would take it out again.
+        // A new mesh actor's is drawn from a stand-in until its commit makes the component (ComponentOf)
         var sources = context.DrawList_3D.SelectMany(a => a.Components).OfType<StaticMeshComponentProxy>()
-            .Where(s => s.Export.ClassName == "StaticMeshComponent" && s.Actor.Editor is not null).ToList();
+            .Where(s => (s.IsStandIn || s.Export.ClassName == "StaticMeshComponent") && s.Actor.Editor is not null && s.Actor.PendingDeletion is null).ToList();
         if (projectedTransform == transform && projectedSettings == settings && sources.Count == projectedSources.Count
             && sources.Select((source, i) => ReferenceEquals(source, projectedSources[i].Source) && source.LocalToWorld == projectedSources[i].Transform).All(x => x)) return;
         projectedTransform = transform;
@@ -391,13 +465,15 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                 foreach (var source in sources)
                 {
                     if (!staticMeshes || !projection.Intersects(source.GetBounds())) continue;
-                    if (source.Export.Parent is not ExportEntry parent || !(parent.IsA("StaticMeshActor") || parent.ClassName == "StaticMeshCollectionActor")) continue;
+                    // (A new one's actor is of a recipe's exact class)
+                    if (source.IsStandIn ? source.Actor.ClassName != "StaticMeshActor"
+                        : source.Export.Parent is not ExportEntry parent || !(parent.IsA("StaticMeshActor") || parent.ClassName == "StaticMeshCollectionActor")) continue;
                     if (!hidden && (source.HiddenGame || source.Actor.IsHidden)) continue;
                     if (!settings.Filter.Allows(source.Export)) continue;
-                    var sourceProps = EffectiveLightingProperties.Read(source.Export, context.PackageCache);
+                    //a stand-in's are the values its commit makes the component with
+                    var sourceProps = source.IsStandIn ? source.Properties : EffectiveLightingProperties.Read(source.Export, context.PackageCache);
                     if (sourceProps.GetProp<BoolProperty>("bAcceptsStaticDecals") is { Value: false }) continue;
-                    var geometry = EffectiveLightingProperties.ResolveReference(source.Export, "StaticMesh", context.PackageCache)
-                        ?? throw new InvalidOperationException("A receiving static mesh could not be resolved.");
+                    var geometry = source.StaticMeshExport ?? throw new InvalidOperationException("A receiving static mesh could not be resolved.");
                     if (!sourceMeshes.TryGetValue(geometry, out var mesh)) sourceMeshes[geometry] = mesh = context.GetStaticMesh(geometry);
                     if (mesh.LODModels.Length == 0) throw new InvalidOperationException("A receiving static mesh has no render LOD.");
                     int uv = geometry.GetCondensedProperties().GetProp<IntProperty>("LightMapCoordinateIndex")?.Value ?? 0;
@@ -405,6 +481,14 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                     if (data.NumTriangles == 0) continue;
                     if (source.Actor is CollectionActorComponentProxy member && CollectionMemberUpgrade.ActorRefusal(member) is { } refusal)
                         throw new NotSupportedException($"{member.ActorName} needs to become an actor to receive this decal, but can't: {refusal}");
+                    // Its commit makes it in the file it was placed in, which it can't then move out of (DecalPackageMigration moves an existing decal's export)
+                    if (isNew && source.Export.FileRef != Export.FileRef)
+                        throw new NotSupportedException($"It lands on {source.Actor.ActorName} in {source.Export.FileRef.FileNameNoExtension}. A new decal can only be "
+                            + $"projected onto meshes in the file it's placed in, {Export.FileRef.FileNameNoExtension}: move it, or place it in that file.");
+                    // Moving a decal to another file comes before a commit makes its new meshes' components (DecalPackageMigration)
+                    if (source.IsStandIn && source.Export.FileRef != Export.FileRef)
+                        throw new NotSupportedException($"It lands on {source.Actor.ActorName}, which is new in {source.Export.FileRef.FileNameNoExtension}. Commit that first, "
+                            + "then move this decal onto it.");
                     if (rebuilt.Count > 0 && rebuilt[0].Export.FileRef != source.Export.FileRef)
                         throw new NotSupportedException("The projection spans meshes in multiple packages. A decal must project onto meshes in a single package.");
                     rebuilt.Add(new Receiver(data, source.Export) { Source = source, Geometry = geometry,
@@ -438,8 +522,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     internal void UpdateNeededMembers()
     {
         IEnumerable<CollectionActorComponentProxy> landedOn = HasReprojectedReceivers ? receivers.Select(r => r.Source?.Actor).OfType<CollectionActorComponentProxy>() : [];
-        // A decal pending deletion doesn't need anything, until that's undone
-        HashSet<CollectionActorComponentProxy> members = owner.PendingDeletion is not null ? []
+        // A decal pending deletion, or out of the scene, doesn't need anything, until that's undone
+        HashSet<CollectionActorComponentProxy> members = owner.PendingDeletion is not null || owner.IsOutOfScene ? []
             : [.. landedOn, .. owner.Decal.Settings.Filter.Actors.Select(owner.Decal.MemberOf).OfType<CollectionActorComponentProxy>()];
         foreach (var member in neededMembers.Except(members)) member.SetNeededBy(owner, false);
         foreach (var member in members.Except(neededMembers)) member.SetNeededBy(owner, true);
@@ -466,14 +550,14 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     {
         owner.Decal.Settings.Filter.Validate(Export.FileRef);
         if (EditUnsupportedReason is not null || reprojectionError is not null)
-            throw new InvalidOperationException($"Cannot commit {owner.Export.ObjectName}: {EditUnsupportedReason ?? reprojectionError}");
-        if (FilterPackageProblem is { } foreign) throw new InvalidOperationException($"Cannot commit {owner.Export.ObjectName}: {foreign}");
+            throw new InvalidOperationException($"Cannot commit {owner.ActorName}: {EditUnsupportedReason ?? reprojectionError}");
+        if (FilterPackageProblem is { } foreign) throw new InvalidOperationException($"Cannot commit {owner.ActorName}: {foreign}");
         foreach (var listed in owner.Decal.Settings.Filter.Actors.Where(DecalFilterSettings.IsMember))
         {
             if (owner.Decal.MemberOf(listed) is not { } member)
-                throw new InvalidOperationException($"Cannot commit {owner.Export.ObjectName}: its Filter lists {listed.ObjectName.Instanced}, which isn't loaded.");
+                throw new InvalidOperationException($"Cannot commit {owner.ActorName}: its Filter lists {listed.ObjectName.Instanced}, which isn't loaded.");
             if (CollectionMemberUpgrade.ActorRefusal(member) is { } refusal)
-                throw new InvalidOperationException($"Cannot commit {owner.Export.ObjectName}: its Filter lists {member.ActorName}, which can't become an actor. {refusal}");
+                throw new InvalidOperationException($"Cannot commit {owner.ActorName}: its Filter lists {member.ActorName}, which can't become an actor. {refusal}");
         }
         if (ProjectionPackage != Export.FileRef && owner.Editor.GetDecalDestinationLevel(ProjectionPackage) is null)
             throw new InvalidOperationException("The receiving package must be open and writable before moving the decal into it.");
@@ -494,17 +578,35 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         {
             settings = settings with { Width = projection.Width, Height = projection.Height, NearPlane = projection.NearPlane, FarPlane = projection.FarPlane };
             projection.WriteFrame(props);
-            props.AddOrReplaceProp(CommonStructs.Vector3Prop(owner.Location, "location"));
+            //(as the actor's is named in each game)
+            props.AddOrReplaceProp(CommonStructs.Vector3Prop(owner.Location, ActorProxy.LocationPropertyName(destination.Game)));
             props.AddOrReplaceProp(CommonStructs.RotatorProp(owner.Rotation, "Orientation"));
-            props.AddOrReplaceProp(new ArrayProperty<StructProperty>(receivers.Select(r => new StructProperty("DecalReceiver",
+            List<Receiver> committed = [.. receivers.Select(Committed)];
+            props.AddOrReplaceProp(new ArrayProperty<StructProperty>(committed.Select(r => new StructProperty("DecalReceiver",
                 new PropertyCollection { new ObjectProperty(r.Export.UIndex, "Component") })), "DecalReceivers"));
             settings.Write(props);
             var binary = DecalComponent.Create();
-            binary.StaticReceivers = receivers.Select(r => r.Data).ToArray();
+            binary.StaticReceivers = committed.Select(r => r.Data).ToArray();
             destination.WritePropertiesAndBinary(props, binary);
         }
         else { settings.Write(props); destination.WriteProperties(props); }
     }
+    /// <summary>
+    /// <paramref name="r"/> as its package has it once the actors written before decals are (<see cref="ActorCommit"/>): one on a new mesh actor, drawn
+    /// from a stand-in, is on the component that actor's commit made (<see cref="MeshActorProxy.CommittedComponent"/>). Itself otherwise. Nothing is
+    /// changed. A view is made again from what was written once the commit is accepted, so this view doesn't take it on
+    /// </summary>
+    private static Receiver Committed(Receiver r)
+    {
+        if (r.Source is not { IsStandIn: true } standIn) return r;
+        if (standIn.Actor is not MeshActorProxy mesh || standIn != mesh.StaticMeshComponent || mesh.CommittedComponent is not { } component)
+            throw new InvalidOperationException($"It lands on {standIn.Actor.ActorName}, whose component hasn't been made.");
+        var data = r.Data.ShallowCopy();
+        data.Component = component.UIndex;
+        return new Receiver(data, component) { Source = standIn, Geometry = r.Geometry, OriginalTransform = r.OriginalTransform, Mesh = r.Mesh,
+            LightingSource = r.LightingSource };
+    }
+
     internal void ForgetDeleted(IReadOnlySet<IEntry> deleted)
     {
         neededMembers.RemoveWhere(member => deleted.Contains(member.Export));
@@ -519,7 +621,11 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     internal void AcceptProjection()
     {
         if (owner.Decal is null || projectedTransform is null) return;
-        if (HasReprojectedReceivers) foreach (var original in originalReceivers) original.Mesh?.Dispose();
+        isNew = false;
+        if (HasReprojectedReceivers)
+        {
+            foreach (var original in originalReceivers) original.Mesh?.Dispose();
+        }
         originalReceivers = receivers; originalProjection = projection; originalFailure = failure;
         foreach (var receiver in receivers) receiver.OriginalData = receiver.Export.Data.ToArray();
         var settings = owner.Decal.Settings with { Width = projection.Width, Height = projection.Height, NearPlane = projection.NearPlane, FarPlane = projection.FarPlane,
@@ -668,6 +774,12 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                 r.Mesh = null;
             }
         }
+        // A mesh it was projected onto but not drawn on (none of its triangles were in its box) may be now
+        foreach (var geometry in sourceMeshes.Keys.Where(g => g.FileRef == package && exports.Contains(g.UIndex)).ToList())
+        {
+            sourceMeshes.Remove(geometry);
+            changed = true;
+        }
         if (changed || force) { projectedTransform = null; if (force) sourceMeshes.Clear(); }
         return changed;
     }
@@ -676,6 +788,14 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         || receivers.Any(r => r.Export?.FileRef == Export.FileRef && (exports.Contains(r.Export.UIndex) || exports.Contains(r.Export.idxLink)))
         //the material drawn, and the one chosen, which it's drawn with from the next update (after a commit, the copy of another file's)
         || UsesAny(materialEntry, exports) || UsesAny(owner.Decal?.Settings.Material, exports);
+
+    /// <summary>Redraws it with its material, read again, if <paramref name="exports"/> of <paramref name="package"/> include it</summary>
+    internal bool RedrawIfMaterialChanged(IMEPackage package, HashSet<int> exports)
+    {
+        if (package != Export.FileRef || !UsesAny(materialEntry, exports) && !UsesAny(owner.Decal?.Settings.Material, exports)) return false;
+        UseMaterial(owner.Decal?.Settings.Material ?? materialEntry, RenderContext.PackageCache, redraw: true);
+        return true;
+    }
 
     private bool UsesAny(AssetReference material, HashSet<int> exports) => material?.Entry is { } entry && entry.FileRef == Export.FileRef && exports.Contains(entry.UIndex);
 

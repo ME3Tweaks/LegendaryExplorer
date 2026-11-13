@@ -166,13 +166,7 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
 
     private string Count(int count) => $"{count:N0} {Noun(count)}";
 
-    private string Noun(int count) => request.Kind switch
-        {
-            AssetKind.StaticMesh => count == 1 ? "static mesh" : "static meshes",
-            AssetKind.ParticleSystem => count == 1 ? "particle system" : "particle systems",
-            AssetKind.DecalMaterial => count == 1 ? "decal material" : "decal materials",
-            _ => count == 1 ? "material" : "materials"
-        };
+    private string Noun(int count) => AssetPicking.NameOf(request.Kind, count);
 
     private async void LoadCatalog()
     {

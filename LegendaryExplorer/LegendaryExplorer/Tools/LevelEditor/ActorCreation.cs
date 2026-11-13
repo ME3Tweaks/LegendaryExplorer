@@ -20,6 +20,7 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 public sealed record PlacementCategory(string Name, EFontAwesomeIcon Icon)
 {
     public static readonly PlacementCategory StaticMeshes = new("Static meshes", EFontAwesomeIcon.Solid_Cube);
+    public static readonly PlacementCategory Dynamics = new("Dynamics", EFontAwesomeIcon.Solid_DoorOpen);
     public static readonly PlacementCategory Lights = new("Lights", EFontAwesomeIcon.Solid_Lightbulb);
     public static readonly PlacementCategory Volumes = new("Volumes", EFontAwesomeIcon.Solid_VectorSquare);
     public static readonly PlacementCategory Effects = new("Effects", EFontAwesomeIcon.Solid_Magic);
@@ -29,8 +30,8 @@ public sealed record PlacementCategory(string Name, EFontAwesomeIcon Icon)
 
 /// <summary>A class that can be placed (<see cref="ActorCreation.PlaceableClasses"/>)</summary>
 /// <param name="Description">What it is, in a line</param>
-/// <param name="AssetClass">The class of the asset chosen before placing one, or null if it needs none</param>
-public sealed record PlaceableClass(string ClassName, PlacementCategory Category, string Description, string AssetClass);
+/// <param name="Asset">The kind of asset chosen before placing one, or null if it needs none</param>
+public sealed record PlaceableClass(string ClassName, PlacementCategory Category, string Description, AssetKind? Asset);
 
 /// <summary>
 /// How new actors of <see cref="Classes"/> are made. Each is a class whose placed actors are known to be made this way, drawn by a view that writes all their
@@ -44,19 +45,25 @@ internal sealed record ActorRecipe(PlacementCategory Category, IReadOnlyList<str
     /// <summary>What each of <see cref="Classes"/> is, in a line, for the list it's placed from</summary>
     internal required IReadOnlyDictionary<string, string> Descriptions { get; init; }
 
-    /// <param name="asset">The <see cref="AssetClass"/> chosen for it, an entry of its package or another file's, if it needs one</param>
+    /// <param name="asset">The <see cref="Asset"/> chosen for it, an entry of its package or another file's, if it needs one</param>
     /// <param name="template">The subobject of its class default that <see cref="ComponentProperty"/> refers to, if it has one</param>
     internal delegate ActorProxy MakeDraft(IActorEditorContext editor, ActorRecord record, PropertyCollection properties, AssetReference asset, ExportEntry template);
 
     /// <summary>The kind of asset to choose before placing one, or null if it needs none</summary>
     internal AssetKind? Asset { get; init; }
     /// <summary>The class of <see cref="Asset"/>, or null</summary>
-    internal string AssetClass => Asset is { } kind ? AssetPicking.ClassOf(kind) : null;
     /// <summary>The property of its class default that refers to the component its own is made from, or null if it has none</summary>
     internal string ComponentProperty { get; init; }
     /// <summary>What else that component has to be, if anything</summary>
     internal Func<ExportEntry, bool> AcceptsComponent { get; init; }
     internal bool IsSpline { get; init; }
+    /// <summary>
+    /// Whether a new one faces the surface it's placed on, backed off it a unit, as UE3's editor places decals (UEditorEngine::UseActorFactory's
+    /// bUseSurfaceOrientation, for DecalActorBase's subclasses, and UActorFactoryDecal::CreateActor)
+    /// </summary>
+    internal bool FacesSurface { get; init; }
+    /// <summary>What a new one has of its own besides its location, rotation and Tag, made afresh for each, if anything</summary>
+    internal Func<IEnumerable<Property>> InitialProperties { get; init; }
 }
 
 /// <summary>
@@ -82,6 +89,12 @@ public static class ActorCreation
         {
             Asset = AssetKind.StaticMesh, ComponentProperty = "StaticMeshComponent",
             Descriptions = new Dictionary<string, string> { ["StaticMeshActor"] = "A mesh fixed in place, lit by the level's baked lighting" }
+        },
+        new(PlacementCategory.Dynamics, ["InterpActor"],
+            (editor, record, properties, mesh, template) => new DynamicSMActorProxy(editor, record, properties, mesh, template))
+        {
+            Asset = AssetKind.StaticMesh, ComponentProperty = "StaticMeshComponent",
+            Descriptions = new Dictionary<string, string> { ["InterpActor"] = "A mesh Matinee and Kismet can move, such as a door. Lit at runtime unless bUsePrecomputedShadows is set" }
         },
         new(PlacementCategory.Lights, LightActorProxy.StandaloneClasses, (editor, record, properties, _, template) => new LightActorProxy(editor, record, properties, template))
         {
@@ -109,11 +122,28 @@ public static class ActorCreation
                 ["BioTriggerVolume"] = "A trigger volume that can be disabled, or set to fire once (Enabled, OneShot)"
             }
         },
+        // Placed disabled, so that it changes nothing until it's set up: its class default's Settings override every setting (each bOverride_ is set) with
+        // the engine's stock values, and the camera takes the settings of the highest-priority enabled volume it's in (AWorldInfo::GetPostProcessSettings)
+        new(PlacementCategory.Volumes, ["PostProcessVolume"], (editor, record, properties, _, template) => new BrushProxy(editor, record, properties, template))
+        {
+            ComponentProperty = "BrushComponent", AcceptsComponent = component => component.ClassName == "BrushComponent",
+            InitialProperties = () => [new BoolProperty(false, "bEnabled")],
+            Descriptions = new Dictionary<string, string>
+            {
+                ["PostProcessVolume"] = "Changes post-processing (bloom, depth of field, color) for a camera inside it, once enabled (bEnabled). The highest Priority wins"
+            }
+        },
         new(PlacementCategory.Effects, ["Emitter"],
             (editor, record, properties, system, template) => new EmitterDraftProxy(editor, record, properties, MarkerInfo(record), system, template))
         {
             Asset = AssetKind.ParticleSystem, ComponentProperty = "ParticleSystemComponent",
             Descriptions = new Dictionary<string, string> { ["Emitter"] = "A particle effect" }
+        },
+        new(PlacementCategory.Effects, ["DecalActor"],
+            (editor, record, properties, material, template) => new DecalActorProxy(editor, record, properties, material, template))
+        {
+            Asset = AssetKind.DecalMaterial, ComponentProperty = "Decal", AcceptsComponent = component => component.ClassName == "DecalComponent", FacesSurface = true,
+            Descriptions = new Dictionary<string, string> { ["DecalActor"] = "A material projected onto the static meshes in its box, as a stain or a sign" }
         },
         new(PlacementCategory.Splines, ["SplineActor", "SplineLoftActor"], (editor, record, properties, _, _) => new SplineActorProxy(editor, record, properties))
         {
@@ -136,7 +166,7 @@ public static class ActorCreation
 
     /// <summary>The classes with a recipe, as they're listed for placing</summary>
     public static IReadOnlyList<PlaceableClass> PlaceableClasses { get; } =
-        [.. Recipes.SelectMany(recipe => recipe.Classes.Select(c => new PlaceableClass(c, recipe.Category, recipe.Descriptions[c], recipe.AssetClass)))];
+        [.. Recipes.SelectMany(recipe => recipe.Classes.Select(c => new PlaceableClass(c, recipe.Category, recipe.Descriptions[c], recipe.Asset)))];
 
     /// <summary>The classes with a recipe</summary>
     public static IReadOnlyList<string> RecipeClasses { get; } = [.. PlaceableClasses.Select(placeable => placeable.ClassName)];
@@ -144,7 +174,6 @@ public static class ActorCreation
     private static ActorRecipe RecipeFor(string className) => Recipes.FirstOrDefault(recipe => recipe.Classes.Contains(className));
 
     /// <summary>The class of the asset to choose for a new <paramref name="className"/>, or null if it needs none</summary>
-    public static string AssetClass(string className) => RecipeFor(className)?.AssetClass;
 
     /// <summary>The kind of asset to choose for a new <paramref name="className"/>, or null if it needs none</summary>
     public static AssetKind? AssetKindOf(string className) => RecipeFor(className)?.Asset;
@@ -292,26 +321,46 @@ public static class ActorCreation
     /// caller to record. Its package is untouched until Commit Changes
     /// </summary>
     /// <param name="gridSize">The grid it's snapped to if its class asks to be (<see cref="SnapsToGrid(IEntry, PackageCache)"/>), or 0 for none</param>
-    /// <param name="asset">For a class with an <see cref="AssetClass"/>: what it uses, an entry of <paramref name="file"/>'s package or another file's export</param>
-    public static IUndoAction Place(IActorEditorContext editor, OpenLevelFile file, string className, Vector3 location, float gridSize = 0, AssetReference asset = null)
+    /// <param name="asset">For a class with an <see cref="AssetKindOf">asset kind</see>: what it uses, an entry of <paramref name="file"/>'s package or another file's export</param>
+    /// <param name="surfaceNormal">The normal of the surface it's placed on, facing the camera, if it's known: a decal faces it (<see cref="ActorRecipe.FacesSurface"/>)</param>
+    public static IUndoAction Place(IActorEditorContext editor, OpenLevelFile file, string className, Vector3 location, float gridSize = 0, AssetReference asset = null,
+        Vector3? surfaceNormal = null)
     {
         var cache = editor.RenderContext.PackageCache;
         if (PlacementRefusal(file, className, cache, out var actorClass) is { } refusal) throw new InvalidOperationException(refusal);
         var recipe = RecipeFor(className);
-        if (recipe.AssetClass is { } assetClass && (asset is null || asset.Entry is { } entry && entry.FileRef != file.Package
-            || asset.Find(cache) is not { } found || !found.IsA(assetClass)))
-            throw new ArgumentException($"A {className} needs a {assetClass}: of {file.FileName}, or another file of {file.Package.Game}'s.", nameof(asset));
+        if (recipe.Asset is { } kind)
+        {
+            if (asset is null || asset.Entry is { } entry && entry.FileRef != file.Package || asset.Find(cache) is not { } found || !found.IsA(AssetPicking.ClassOf(kind)))
+                throw new ArgumentException($"A {className} needs a {AssetPicking.NameOf(kind)}: of {file.FileName}, or another file of {file.Package.Game}'s.", nameof(asset));
+            if (AssetPicking.ProblemOf(kind, found, cache) is { } problem) throw new ArgumentException(problem, nameof(asset));
+        }
         if (editor.RenderContext.IsDragging || editor.RenderContext.IsEditingScene) throw new InvalidOperationException("Finish the current scene operation first.");
         if (!float.IsFinite(location.X) || !float.IsFinite(location.Y) || !float.IsFinite(location.Z)) throw new ArgumentException("The location isn't finite.", nameof(location));
-        //appRound, which rounds halves up
+        if (surfaceNormal is { } n && !(float.IsFinite(n.X) && float.IsFinite(n.Y) && float.IsFinite(n.Z)))
+            throw new ArgumentException("The surface's normal isn't finite.", nameof(surfaceNormal));
+        // FSnappingConstraints::Snap: appRound(Location / Grid) * Grid, once, after the push-out (UnEdViewport.cpp's PrivateAddActor, which a viewport
+        // click that adds an actor uses: see LevelEditorRenderContext.PlacementAt)
         if (gridSize > 0 && SnapsToGrid(actorClass, cache))
-            location = new Vector3(MathF.Floor(location.X / gridSize + 0.5f), MathF.Floor(location.Y / gridSize + 0.5f), MathF.Floor(location.Z / gridSize + 0.5f)) * gridSize;
+            location = new Vector3(AppRound(location.X / gridSize), AppRound(location.Y / gridSize), AppRound(location.Z / gridSize)) * gridSize;
+        // UActorFactoryDecal::CreateActor, given UseActorFactory's ClickPlane.Rotation(): facing the other way, (-Rotation->Vector()).Rotation(), and a unit
+        // off the surface, Location + Rotation->Vector(). With no surface (a backdrop click), ClickPlane is zero, whose rotation is too: so it faces -X,
+        // a unit along +X, as UE3's editor places it
+        Rotator rotation = default;
+        if (recipe.FacesSurface)
+        {
+            Vector3 facing = Direction(Rotation(surfaceNormal ?? Vector3.Zero));
+            rotation = Rotation(-facing);
+            location += facing;
+        }
         var package = file.Package;
         var props = new PropertyCollection
         {
             CommonStructs.Vector3Prop(location, ActorProxy.LocationPropertyName(package.Game)),
             new NameProperty(className, "Tag")
         };
+        if (!rotation.IsZero) props.Add(CommonStructs.RotatorProp(rotation, "Rotation"));
+        if (recipe.InitialProperties is { } initial) props.AddRange(initial());
         var registry = editor.RenderContext.Registry;
         var record = registry.CreateDraft(package, actorClass, registry.ProposeName(package, className),
             isSpline: recipe.IsSpline, isLoft: className == "SplineLoftActor");
@@ -333,6 +382,37 @@ public static class ActorCreation
             throw;
         }
         return new PlaceAction(draft, selection);
+    }
+
+    // Not Rotator.FromDirectionVector and GetDirectionalVector: these round as appRound does and use GMath's sine table, which decide how a decal on a floor
+    // or ceiling is turned
+
+    /// <summary>UE3's FVector::Rotation: the direction's yaw and pitch, rounded to 65535ths of a turn (MAXWORD), with no roll</summary>
+    private static Rotator Rotation(Vector3 direction) =>
+        new(RotationUnits(MathF.Atan2(direction.Z, MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y))), RotationUnits(MathF.Atan2(direction.Y, direction.X)), 0);
+
+    // appAtan2(...) * (FLOAT)MAXWORD / (2.f*PI): a float times a float, divided by a double (PI is one), passed to appRound as a float. A decal placed on
+    // nothing turns half a turn, where that decides it
+    private static int RotationUnits(float radians) => AppRound((float)(radians * 65535f / (2.0 * Math.PI)));
+
+    /// <summary>
+    /// UE3's appRound: _mm_cvt_ss2si(F + F + 0.5f) >> 1. The conversion rounds 2F + 0.5 to the nearest integer (an even one at a half), and the shift halves
+    /// it rounding down, so a half rounds up: -32767.5 to -32767, -32767.502 (as a float) to -32768
+    /// </summary>
+    private static int AppRound(float f) => (int)MathF.Round(f + f + 0.5f, MidpointRounding.ToEven) >> 1;
+
+    /// <summary>
+    /// UE3's FRotator::Vector: FRotationMatrix's X axis, from GMath's table of the sines of 16384 angles (as floats). Its residue at a right angle decides
+    /// which way a decal facing straight up or down is turned
+    /// </summary>
+    private static Vector3 Direction(Rotator rotation)
+    {
+        float cosPitch = CosTab(rotation.Pitch), cosYaw = CosTab(rotation.Yaw);
+        return new Vector3(cosPitch * cosYaw, cosPitch * SinTab(rotation.Yaw), SinTab(rotation.Pitch));
+
+        // FGlobalMath's table: appSin((FLOAT)i * 2.f * PI / (FLOAT)NUM_ANGLES), whose angle is a double (PI is one) cut to a float
+        static float SinTab(int angle) => MathF.Sin((float)(((angle >> 2) & 16383) * 2f * Math.PI / 16384f));
+        static float CosTab(int angle) => SinTab(angle + 16384);
     }
 
     /// <summary>

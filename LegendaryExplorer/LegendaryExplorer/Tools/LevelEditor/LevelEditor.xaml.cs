@@ -1992,6 +1992,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 changed = true;
                 continue;
             }
+            // A draft has no export to be made again from (the rebuild below reads its Export, which it doesn't have): it's left as it is, or as it redrew
+            // itself (TryRefreshPreview: a mesh's or a decal's does)
+            if (alteredActor.IsDraft) continue;
             if (alteredActor.TestUIndexes(updatedExports))
             {
                 changed = updated = true;
@@ -2390,7 +2393,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void DecalMaterial_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedDecal is not { IsEditable: true } decal) return;
-        var material = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest("DecalMaterial", decal.Package, AssetKind.DecalMaterial) { Problem = MaterialUsage.DecalProblem });
+        var material = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest("DecalMaterial", decal.Package, AssetKind.DecalMaterial));
         if (material is not null && decal.SetMaterial(material) is { } problem) MessageBox.Show(this, problem, "DecalMaterial");
     }
 

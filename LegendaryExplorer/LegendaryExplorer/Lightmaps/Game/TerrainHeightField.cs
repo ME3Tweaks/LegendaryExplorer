@@ -146,6 +146,22 @@ public sealed class TerrainHeightField
         }
     }
 
+    /// <summary>
+    /// The normal (unnormalized, and either way up) of the triangle at a terrain-local point over the grid, of the quad it's over split as
+    /// <see cref="QuadHit"/> splits it: the surface a ray met there (<see cref="RayHit"/>)
+    /// </summary>
+    public Vector3 LocalNormal(Vector3 point)
+    {
+        int x = Math.Clamp((int)MathF.Floor(point.X), 0, NumVerticesX - 2), y = Math.Clamp((int)MathF.Floor(point.Y), 0, NumVerticesY - 2);
+        float fx = point.X - x, fy = point.Y - y;
+        Vector3 v00 = LocalVertex(x, y), v10 = LocalVertex(x + 1, y), v01 = LocalVertex(x, y + 1), v11 = LocalVertex(x + 1, y + 1);
+        //a flipped quad is split from (x+1, y) to (x, y+1), another from (x, y) to (x+1, y+1)
+        var (a, b, c) = IsQuadFlipped(x, y)
+            ? fx + fy <= 1 ? (v00, v01, v10) : (v10, v01, v11)
+            : fy >= fx ? (v00, v01, v11) : (v00, v11, v10);
+        return Vector3.Cross(b - a, c - a);
+    }
+
     //where a ray meets the quad whose first vertex is (x, y), split as AddQuad splits it
     private float? QuadHit(int x, int y, Vector3 origin, Vector3 direction, float maxT)
     {

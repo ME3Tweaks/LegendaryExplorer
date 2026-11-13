@@ -162,7 +162,8 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         { IsVolumetricMesh: true } => "Volumetric meshes",
         PawnProxy => "Pawns",
         SkeletalMeshActorProxy or SFXStuntActorProxy => "Skeletal meshes",
-        DynamicSMActorProxy or BioArtPlaceableProxy => "Environment",
+        DynamicSMActorProxy => PlacementCategory.Dynamics.Name,
+        BioArtPlaceableProxy => "Environment",
         StaticMeshActorProxy or StaticMeshComponentActorProxy => "Static meshes",
         PrefabInstanceProxy => "Prefabs",
         SFXDroppedPickupProxy or SFXDroppedAmmoProxy or SFXDroppedGrenadeProxy => "Pickups",
@@ -798,6 +799,9 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// </summary>
     public virtual float? RayHit(Vector3 origin, Vector3 direction, float maxDistance) => null;
 
+    /// <summary>The normal (unnormalized, and either way up) of its surface at <paramref name="point"/>, where <see cref="RayHit"/> met it; null if it can't tell</summary>
+    public virtual Vector3? SurfaceNormalAt(Vector3 point) => null;
+
     public virtual BoxSphereBounds GetBounds()
     {
         if (Components.Count is 0)
@@ -849,7 +853,20 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     }
 
     /// <summary>Whether it was taken out of the scene and not put back (<see cref="LevelEditorRenderContext.RemoveActor"/>): a view kept for undo</summary>
-    internal bool IsOutOfScene { get; set; }
+    internal bool IsOutOfScene
+    {
+        get => isOutOfScene;
+        set
+        {
+            if (isOutOfScene == value) return;
+            isOutOfScene = value;
+            OnOutOfSceneChanged();
+        }
+    }
+    private bool isOutOfScene;
+
+    /// <summary>Called when it leaves the scene (undone, or a draft deleted) or comes back</summary>
+    private protected virtual void OnOutOfSceneChanged() { }
 
     /// <summary>
     /// Takes its meshes out of the scene's lighting and visibility-trace registries if it's out of the scene: a mesh made or reloaded meanwhile
@@ -892,7 +909,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         if (refreshed)
             foreach (var component in Components) component.UpdateLocalToWorld();
         if (refreshed) NotifyCoverageChanged();
-        if (refreshed && this is StaticMeshActorProxy or StaticMeshComponentActorProxy or DynamicSMActorProxy)
+        if (refreshed && this is MeshActorProxy or StaticMeshComponentActorProxy)
             IsVolumetricMesh = Components.OfType<StaticMeshComponentProxy>().Any(component => component.IsVolumetric);
         return refreshed;
     }
@@ -1007,10 +1024,19 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     #endregion
 }
 
-public class StaticMeshActorProxy : ActorProxy
+public sealed class StaticMeshActorProxy : MeshActorProxy
+{
+    public StaticMeshActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport) { }
+
+    internal StaticMeshActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, AssetReference mesh, ExportEntry componentTemplate)
+        : base(context, draft, properties, mesh, componentTemplate) { }
+}
+
+/// <summary>An actor drawn by its StaticMeshComponent: a static mesh actor, or one that can move (<see cref="DynamicSMActorProxy"/>)</summary>
+public abstract class MeshActorProxy : ActorProxy
 {
     public StaticMeshComponentProxy StaticMeshComponent;
-    public StaticMeshActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
+    protected MeshActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref StaticMeshComponent);
         IsVolumetricMesh = StaticMeshComponent?.IsVolumetric == true;
@@ -1021,11 +1047,11 @@ public class StaticMeshActorProxy : ActorProxy
     private AssetReference mesh;
 
     /// <summary>
-    /// A new static mesh actor (a draft) drawing <paramref name="mesh"/>, an entry of its package or another file's mesh. Its component is drawn as the
+    /// A new mesh actor (a draft) drawing <paramref name="mesh"/>, an entry of its package or another file's mesh. Its component is drawn as the
     /// commit makes it: from <paramref name="componentTemplate"/>'s values with the mesh, and the material overrides it inherits from the template. Its
-    /// package is untouched until then
+    /// package is untouched until then. Its light environment, if it has one, is its class default's (its template's references aren't read)
     /// </summary>
-    internal StaticMeshActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, AssetReference mesh, ExportEntry componentTemplate)
+    private protected MeshActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, AssetReference mesh, ExportEntry componentTemplate)
         : base(context, draft, properties)
     {
         this.componentTemplate = componentTemplate;
@@ -1060,6 +1086,13 @@ public class StaticMeshActorProxy : ActorProxy
 
     //a draft's mesh lighting is written to the component its commit makes
     internal override IEnumerable<MeshComponentProxy> LightingMeshes => componentTemplate is null ? base.LightingMeshes : [];
+
+    /// <summary>
+    /// For a draft's commit, once it's written: the component it made, which its StaticMeshComponent now refers to. Null before, and once the commit is
+    /// abandoned (its properties are put back)
+    /// </summary>
+    internal ExportEntry CommittedComponent => Materialized && Properties.GetProp<ObjectProperty>(nameof(StaticMeshComponent)) is { } property
+        ? property.ResolveToEntry(Pcc) as ExportEntry : null;
 
     public override void CommitChanges(PackageCache packageCache = null)
     {
@@ -1114,15 +1147,16 @@ public class SFXSkeletalMeshActorProxy : SkeletalMeshActorProxy
 }
 
 //interpactor, placeables
-public class DynamicSMActorProxy : ActorProxy
+public sealed class DynamicSMActorProxy : MeshActorProxy
 {
-    public StaticMeshComponentProxy StaticMeshComponent;
+    public DynamicSMActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport) { }
 
-    public DynamicSMActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
-    {
-        AddComponent(context.RenderContext, ref StaticMeshComponent);
-        IsVolumetricMesh = StaticMeshComponent?.IsVolumetric == true;
-    }
+    /// <summary>
+    /// A new InterpActor (a draft), made as a static mesh actor is. It has no light environment export of its own, so it has its class default's
+    /// MyLightEnvironment, which is disabled: as 85-94% of LE1-LE3's shipping ones do (the rest have one of their own, mostly enabled)
+    /// </summary>
+    internal DynamicSMActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, AssetReference mesh, ExportEntry componentTemplate)
+        : base(context, draft, properties, mesh, componentTemplate) { }
 }
 
 //volumes

@@ -11,7 +11,8 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 
 /// <summary>
 /// What an asset picker asks for: an asset of <paramref name="Kind"/> for <paramref name="Destination"/>. <see cref="Problem"/> is the use's own check
-/// (such as whether the game draws a material on a decal): why the asset, resolved, can't be used there, or null
+/// (such as whether a spline mesh can use a material), besides the kind's (<see cref="AssetPicking.ProblemOf"/>): why the asset, resolved, can't be
+/// used there, or null
 /// </summary>
 public sealed record AssetPickRequest(string Title, IMEPackage Destination, AssetKind Kind)
 {
@@ -53,6 +54,26 @@ public sealed record ResolvedAssetChoice(AssetReference Reference, ExportEntry E
 
 public static class AssetPicking
 {
+    /// <summary>What <paramref name="count"/> assets of the kind are called, in a sentence</summary>
+    public static string NameOf(AssetKind kind, int count = 1)
+    {
+        var (one, many) = kind switch
+        {
+            AssetKind.StaticMesh => ("static mesh", "static meshes"),
+            AssetKind.ParticleSystem => ("particle system", "particle systems"),
+            AssetKind.DecalMaterial => ("decal material", "decal materials"),
+            _ => ("material", "materials")
+        };
+        return count == 1 ? one : many;
+    }
+
+    /// <summary>
+    /// Why the game couldn't use <paramref name="asset"/> as one of the kind, or null: a decal material has to be one it draws on a decal
+    /// (<see cref="MaterialUsage.DecalProblem"/>, resolving it through <paramref name="cache"/>). Its class is checked apart (<see cref="ClassOf"/>)
+    /// </summary>
+    public static string ProblemOf(AssetKind kind, IEntry asset, PackageCache cache) =>
+        kind == AssetKind.DecalMaterial ? MaterialUsage.DecalProblem(asset, cache) : null;
+
     /// <summary>The class an asset of the kind is</summary>
     public static string ClassOf(AssetKind kind) => kind switch
     {
@@ -62,15 +83,15 @@ public static class AssetPicking
     };
 
     /// <summary>
-    /// The destination's own entries of the kind (exports and imports), by name: of the kind's class, and for a decal material, drawn on a decal by the
-    /// game (<see cref="MaterialUsage.DecalProblem"/>, resolving it through <paramref name="cache"/>). Judged as they are in the file, which may be edited,
-    /// not as the asset database recorded them. Can be called off the UI thread
+    /// The destination's own entries of the kind (exports and imports), by name: of the kind's class, that the game can use as one (<see cref="ProblemOf"/>,
+    /// resolving them through <paramref name="cache"/>). Judged as they are in the file, which may be edited, not as the asset database recorded them.
+    /// Can be called off the UI thread
     /// </summary>
     public static List<AssetChoice> InFile(IMEPackage destination, AssetKind kind, PackageCache cache)
     {
         string className = ClassOf(kind);
         return destination.Exports.Where(e => !e.IsDefaultObject).Cast<IEntry>().Concat(destination.Imports)
-            .Where(e => e.IsA(className) && (kind is not AssetKind.DecalMaterial || MaterialUsage.DecalProblem(e, cache) is null))
+            .Where(e => e.IsA(className) && ProblemOf(kind, e, cache) is null)
             .Select(e => AssetChoice.InFile(e, null))
             .OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase).ThenBy(c => c.InstancedFullPath, StringComparer.OrdinalIgnoreCase).ToList();
     }
@@ -98,7 +119,7 @@ public static class AssetPicking
 
     /// <summary>
     /// Opens the choice: an entry of the destination as it is, resolved through <paramref name="cache"/>; another file's asset from the copy the catalog
-    /// prefers, opened through it, which a pick refers to by that file and its path. Then runs the use's check on it. Can be called off the UI thread
+    /// prefers, opened through it, which a pick refers to by that file and its path. Then runs the kind's check on it and the use's. Can be called off the UI thread
     /// </summary>
     public static ResolvedAssetChoice Resolve(AssetChoice choice, AssetPickRequest request, PackageCache cache)
     {
@@ -124,7 +145,7 @@ public static class AssetPicking
             entry = export;
             reference = AssetReference.InFile(copy.File.FilePath, export.InstancedFullPath);
         }
-        return new(reference, export, request.Problem?.Invoke(entry, cache));
+        return new(reference, export, ProblemOf(request.Kind, entry, cache) ?? request.Problem?.Invoke(entry, cache));
     }
 }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -45,16 +46,20 @@ public sealed class EditableDecal : NotifyPropertyChangedBase
         || Settings.Filter.Mode != clean.Filter.Mode || Settings.Filter.Mode != "FM_None" && !Settings.Filter.SameActors(clean.Filter);
     public bool IsEditable => !owner.IsReadOnly && owner.CanReproject;
     internal bool MaterialChanged => Settings.Material != clean.Material;
-    internal EditableDecal(DecalActorProxy owner, PropertyCollection props)
+    /// <param name="material">Its material: its component's (<see cref="MaterialOf"/>), or a new decal's, whose component is a stand-in</param>
+    internal EditableDecal(DecalActorProxy owner, PropertyCollection props, AssetReference material)
     {
         this.owner = owner;
         var component = owner.DecalComponent.Export;
-        var (material, package) = EffectiveLightingProperties.Reference(component, "DecalMaterial", owner.Editor.PackageCache);
-        Settings = clean = DecalSettings.Read(props) with
-        {
-            Filter = DecalFilterSettings.Read(component, owner.Editor.PackageCache, props),
-            Material = AssetReference.Of(material?.ResolveToEntry(package), component.FileRef, owner.Editor.PackageCache)
-        };
+        var cache = owner.Editor.PackageCache;
+        Settings = clean = DecalSettings.Read(props) with { Filter = DecalFilterSettings.Read(component, cache, props), Material = material };
+    }
+
+    /// <summary>The material <paramref name="component"/> has, or inherits</summary>
+    internal static AssetReference MaterialOf(ExportEntry component, PackageCache cache)
+    {
+        var (material, package) = EffectiveLightingProperties.Reference(component, "DecalMaterial", cache);
+        return AssetReference.Of(material?.ResolveToEntry(package), component.FileRef, cache);
     }
 
     /// <summary>The package the decal's component is in, whose materials it can be given</summary>
@@ -72,8 +77,8 @@ public sealed class EditableDecal : NotifyPropertyChangedBase
         if (!IsEditable) return "The decal can't be edited.";
         var cache = owner.Editor.PackageCache;
         if (material is null || material.Entry is { } entry && entry.FileRef != Package) return "Choose a material in the decal's package, or another file's.";
-        if (material.Find(cache) is not { } found || !found.IsA("MaterialInterface")) return $"{material.Description} isn't a material that can be found.";
-        if (MaterialUsage.DecalProblem(found, cache) is { } problem) return problem;
+        if (material.Find(cache) is not { } found || !found.IsA(AssetPicking.ClassOf(AssetKind.DecalMaterial))) return $"{material.Description} isn't a material that can be found.";
+        if (AssetPicking.ProblemOf(AssetKind.DecalMaterial, found, cache) is { } problem) return problem;
         Set(Settings with { Material = material }, "Material");
         return null;
     }
@@ -120,7 +125,7 @@ public sealed class EditableDecal : NotifyPropertyChangedBase
     }
     public void SetFilterActor(IEntry actor, bool included)
     {
-        if (actor is null || actor.Game != owner.Export.Game) return;
+        if (actor is null || actor.Game != owner.Package.Game) return;
         var entries = included ? Settings.Filter.Actors.Append(actor) : Settings.Filter.Actors.Where(e => e != actor);
         Set(Settings with { Filter = new(Settings.Filter.Mode, entries) }, "Filter");
     }

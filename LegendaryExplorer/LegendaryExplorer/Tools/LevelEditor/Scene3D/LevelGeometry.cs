@@ -8,6 +8,27 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
 /// <summary>
+/// What a trace is told of the surfaces it meets (a BSP node's plane as it crosses it, a mesh's triangle as it hits it). A struct type argument, so that a
+/// trace with no use for them (<see cref="IgnoresNormals"/>, every visibility trace) is compiled without them
+/// </summary>
+internal interface ITraceNormals
+{
+    void Met(Vector3 normal);
+}
+
+internal struct IgnoresNormals : ITraceNormals
+{
+    public readonly void Met(Vector3 normal) { }
+}
+
+/// <summary>The last normal met, if any</summary>
+internal struct LastNormal : ITraceNormals
+{
+    public Vector3? Normal;
+    public void Met(Vector3 normal) => Normal = normal;
+}
+
+/// <summary>
 /// The level's static geometry, for testing whether a line is blocked, as UE3's line checks against level geometry do for light environments' visibility traces:
 /// the levels' BSP, and a BVH of mesh instances, each with its mesh's serialized kDOP tree in local space
 /// </summary>
@@ -65,6 +86,9 @@ public sealed class LevelGeometry
         /// Whether the segment from <paramref name="start"/> to <paramref name="end"/> hits a triangle from either side, contacts at its ends included
         /// </summary>
         public bool IntersectsSegment(Vector3 start, Vector3 end) => Tree.Intersects(start, end);
+
+        /// <summary>The normal (unnormalized, in local space) of a triangle the segment hits, or null if it hits none</summary>
+        public Vector3? HitNormal(Vector3 start, Vector3 end) => Tree.HitNormal(start, end);
     }
 
     private readonly Instance[] Instances;
@@ -114,7 +138,8 @@ public sealed class LevelGeometry
         //UWorld::BSPLineCheck: every level's BSP, whichever light it is (TRACE_Level)
         foreach (Model model in LevelModels)
         {
-            if (model.Nodes.Length > 0 && !IsOutsideAlong(model, 0, end, start, model.RootOutside))
+            var ignored = new IgnoresNormals();
+            if (model.Nodes.Length > 0 && !IsOutsideAlong(model, 0, end, start, model.RootOutside, ref ignored))
             {
                 return true;
             }
@@ -134,8 +159,11 @@ public sealed class LevelGeometry
     /// Where the segment from <paramref name="start"/> to <paramref name="end"/> first meets the level's geometry (its BSP and every mesh in it, whichever
     /// lights they block), as a fraction of the way along it; null if it meets none. Found by halving the part of the segment it's known to be in
     /// </summary>
-    public float? FirstHit(Vector3 start, Vector3 end)
+    /// <param name="normal">The unit normal of the surface met there, facing back along the segment, as a line check gives it (UE3's FCheckResult::Normal);
+    /// null if it can't be told (as when the segment starts inside the BSP's solid space)</param>
+    public float? FirstHit(Vector3 start, Vector3 end, out Vector3? normal)
     {
+        normal = null;
         if (!IsSegmentBlocked(start, end, null, null)) return null;
         float clear = 0, blocked = 1;
         //to a float's precision: 2^-24 of the segment, a 64th of a unit along the longest placement ray (HALF_WORLD_MAX)
@@ -145,7 +173,38 @@ public sealed class LevelGeometry
             if (IsSegmentBlocked(start, Vector3.Lerp(start, end, middle), null, null)) blocked = middle;
             else clear = middle;
         }
+        // What's met is between the last clear point and the first blocked one, give or take the triangle test's tolerance: a tenth of a unit either side
+        Vector3 direction = Vector3.Normalize(end - start);
+        normal = SurfaceNormal(Vector3.Lerp(start, end, clear) - direction * 0.1f, Vector3.Lerp(start, end, blocked) + direction * 0.1f, direction);
         return blocked;
+    }
+
+    // The unit normal of a surface the short segment from start to end crosses, facing back along it; null if none is found. The BSP's is taken first,
+    // then the first mesh triangle found, not the nearest: a mesh within the segment's 0.2 units of a wall at an angle to it gives the wall's
+    private Vector3? SurfaceNormal(Vector3 start, Vector3 end, Vector3 direction)
+    {
+        foreach (Model model in LevelModels)
+        {
+            var crossed = new LastNormal();
+            if (model.Nodes.Length > 0 && !IsOutsideAlong(model, 0, end, start, model.RootOutside, ref crossed) && crossed.Normal is { } plane) return Facing(plane);
+        }
+        Vector3? found = null;
+        InstanceHierarchy.AnyHit(start, end, (index, _, _) =>
+        {
+            Instance instance = Instances[index];
+            //a local normal's world direction is by the inverse transpose of the local-to-world transform
+            found = instance.Mesh.HitNormal(Vector3.Transform(start, instance.WorldToLocal), Vector3.Transform(end, instance.WorldToLocal)) is { } local
+                ? Vector3.TransformNormal(local, Matrix4x4.Transpose(instance.WorldToLocal)) : null;
+            return found is not null;
+        });
+        return found is { } normal ? Facing(normal) : null;
+
+        Vector3? Facing(Vector3 normal)
+        {
+            Vector3 unit = Vector3.Normalize(normal);
+            if (!float.IsFinite(unit.X) || !float.IsFinite(unit.Y) || !float.IsFinite(unit.Z)) return null;
+            return Vector3.Dot(unit, direction) > 0 ? -unit : unit;
+        }
     }
 
     //BSP node flags (UE3's EBspNodeFlags)
@@ -157,7 +216,9 @@ public sealed class LevelGeometry
     /// False if it enters solid space, which blocks it
     /// </summary>
     /// <param name="outside">Whether the space the segment starts in is empty</param>
-    private static bool IsOutsideAlong(Model model, int iNode, Vector3 end, Vector3 start, bool outside)
+    /// <param name="crossings">Told the plane of each node it crosses, in order: the last is where it entered solid space, if it returns false having crossed one</param>
+    private static bool IsOutsideAlong<TNormals>(Model model, int iNode, Vector3 end, Vector3 start, bool outside, ref TNormals crossings)
+        where TNormals : struct, ITraceNormals
     {
         while (iNode >= 0 && iNode < model.Nodes.Length)
         {
@@ -181,10 +242,11 @@ public sealed class LevelGeometry
                 //split: the part on the start's side first, then the rest
                 Vector3 middle = start + (start - end) * (dist1 / (dist2 - dist1));
                 bool frontFirst = dist1 > 0;
-                if (!IsOutsideAlong(model, frontFirst ? node.iFront : node.iBack, middle, start, ChildOutside(node, frontFirst, outside)))
+                if (!IsOutsideAlong(model, frontFirst ? node.iFront : node.iBack, middle, start, ChildOutside(node, frontFirst, outside), ref crossings))
                 {
                     return false;
                 }
+                crossings.Met(node.Plane.Normal);
                 outside = ChildOutside(node, !frontFirst, outside);
                 iNode = frontFirst ? node.iBack : node.iFront;
                 start = middle;
