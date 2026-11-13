@@ -72,7 +72,9 @@ public static class ActorCloning
         {
             // A clone would share its connections
             SplineActorProxy => "A spline point is duplicated with a connection to it, not cloned.",
-            DecalActorProxy => "A decal's surfaces are worked out where it's placed, which a copy can't do yet.",
+            DecalActorProxy { DecalComponent: null } => "It has no decal component.",
+            // A copy's surfaces are worked out where it's put, as a placed decal's are
+            DecalActorProxy { DecalComponent.EditUnsupportedReason: { } reason } => $"A copy of it can't be made yet. {reason}",
             TerrainProxy => "A terrain can't be cloned.",
             FoliageFactoryProxy => "Foliage can't be cloned: its instances are placed in the world, not on the actor.",
             PrefabInstanceProxy => "A prefab instance can't be cloned yet.",
@@ -204,6 +206,10 @@ public static class ActorCloning
                 // A member light's component is the member
                 LightActorProxy or StaticLightCollectionComponentProxy => new LightActorProxy(editor, record, properties,
                     collection is null ? LightActorProxy.GetLightComponent(saved) : saved) { CloneSource = saved, CloneCollection = collection },
+                // Projected where it's put, as a placed decal is, from its source's component, with its source's material and Filter
+                DecalActorProxy => EffectiveLightingProperties.ResolveReference(saved, "Decal", editor.PackageCache, properties) is { } component
+                    ? new DecalActorProxy(editor, record, properties, EditableDecal.MaterialOf(component, editor.PackageCache), component) { CloneSource = saved }
+                    : throw new InvalidOperationException($"{source.ActorName} has no decal component."),
                 EditorActorProxy => new EditorActorProxy(editor, record, properties, ActorClassification.Get(saved)) { CloneSource = saved },
                 _ => new ActorCloneProxy(editor, record, properties, source, saved, isMember: collection is not null) { CloneSource = saved, CloneCollection = collection }
             };

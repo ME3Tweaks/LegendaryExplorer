@@ -19,8 +19,10 @@ public sealed class DecalActorProxy : EditorActorProxy
     internal TransformSnapshot ProjectionBaseline;
     public EditableDecal Decal { get; }
 
-    //a material is written only when it's changed (one inherited from an archetype in another package isn't), and by a new decal's commit
-    internal override IEnumerable<AssetReference> AssetsToCopy => Decal is { Settings.Material: { } material } && (IsDraft || Decal.MaterialChanged) ? [material] : [];
+    //a material is written only when it's changed (one inherited from an archetype in another package isn't), and by a placed decal's commit. A copy's is
+    //its source's, which its clone has, inherited or not
+    internal override IEnumerable<AssetReference> AssetsToCopy =>
+        Decal is { Settings.Material: { } material } && (IsDraft && CloneSource is null || Decal.MaterialChanged) ? [material] : [];
 
     internal override Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf)
     {
@@ -32,7 +34,7 @@ public sealed class DecalActorProxy : EditorActorProxy
     public bool CanReproject => decal?.EditUnsupportedReason is null && decal is not null;
     public string DecalEditingStatus => decal?.EditingStatus ?? "No decal component.";
     public override string Category => "Decals";
-    internal override AssetReference DraftAsset => IsDraft ? Decal?.Settings.Material : null;
+    internal override AssetReference DraftAsset => IsDraft && CloneSource is null ? Decal?.Settings.Material : null;
     public int SortOrder => decal?.SortOrder ?? 0;
     public IMEPackage ProjectionPackage => decal?.ProjectionPackage ?? Export.FileRef;
     internal DecalComponentProxy DecalComponent => decal;
@@ -41,13 +43,14 @@ public sealed class DecalActorProxy : EditorActorProxy
 
     private static readonly ActorClassInfo Info = new(ActorKind.Decal, "Effects helpers", "Decal projector helper; no usable cooked surface.");
 
-    //a draft's: the class default's component its own is made from
+    //a draft's: the class default's component its own is made from, or a copy's, its saved source's, which its commit clones
     private readonly ExportEntry componentTemplate;
 
     /// <summary>
     /// A new decal (a draft) drawing <paramref name="material"/>, an entry of its package or another file's material. Its component is drawn as the commit
     /// makes it: from <paramref name="componentTemplate"/>'s values, projected onto the meshes of its own file in its box wherever it's put. Its package is
-    /// untouched until then
+    /// untouched until then. A copy starts with its source's saved component's settings and Filter: its box is its source's saved width, height and planes,
+    /// scaled as its source's is from where it was saved (<see cref="ProjectionBaseline"/>), and its frame is worked out from where it's put
     /// </summary>
     internal DecalActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, AssetReference material, ExportEntry componentTemplate)
         : base(context, draft, properties, Info)
@@ -61,7 +64,7 @@ public sealed class DecalActorProxy : EditorActorProxy
             ActorPropertyName = nameof(Decal)
         };
         Components.Add(decal);
-        Decal = new EditableDecal(this, decal.Properties, material);
+        Decal = new EditableDecal(this, decal.Properties, material, filterFrom: componentTemplate);
     }
 
     public DecalActorProxy(IActorEditorContext context, ExportEntry export)
@@ -118,6 +121,8 @@ public sealed class DecalActorProxy : EditorActorProxy
     }
     public override void CommitChanges(PackageCache packageCache = null)
     {
+        // A copy is written by CommitClone, onto its clone of its source's component: never here, where a new one would be made for it
+        ThrowIfCopy();
         // Its export was just made (Materialize): its component is made with it, as shipping levels' decals' are (see NewComponent), with its material,
         // projection and receivers (CommitProjection). The actor refers to it as its Decal, with no Components array
         if (Materialized && componentTemplate is not null)
@@ -137,6 +142,18 @@ public sealed class DecalActorProxy : EditorActorProxy
         decal?.CommitProjection();
         base.CommitChanges(packageCache);
     }
+    /// <summary>
+    /// A copy's component is its clone of its source's, whose receivers are where its source is: they're replaced with its own projection's, as a new decal's
+    /// are written (<see cref="DecalComponentProxy.CommitProjection"/>), with its settings and Filter. Its material is its source's unless it's been changed
+    /// </summary>
+    private protected override void CommitCloneEdits(IReadOnlyDictionary<ExportEntry, ExportEntry> copies)
+    {
+        var component = copies.GetValueOrDefault(componentTemplate)
+            ?? throw new InvalidOperationException($"{ActorName} has no copy of {componentTemplate.ObjectName.Instanced}.");
+        PrepareDecalCommit();
+        decal.CommitProjection(component);
+    }
+
     private protected override void OnPendingDeletionChanged() => decal?.UpdateNeededMembers();
     //(as a draft that's undone or deleted is)
     private protected override void OnOutOfSceneChanged() => decal?.UpdateNeededMembers();
@@ -578,8 +595,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         var settings = owner.Decal.Settings;
         if (owner.Decal.FilterChanged || destination != Export)
             settings.Filter.Write(props, ProjectionPackage, destination.FileRef);
-        //a moved decal's new material is carried into its new package with the rest of it (DecalPackageMigration)
-        if (owner.Decal.MaterialChanged && destination == Export) props.AddOrReplaceProp(new ObjectProperty(settings.Material?.EntryIn(destination.FileRef).UIndex ?? 0, "DecalMaterial"));
+        //a moved decal's new material is carried into its new package with the rest of it (DecalPackageMigration). A copy's is written onto its clone
+        if (owner.Decal.MaterialChanged && (destination == Export || owner.CloneSource is not null)) props.AddOrReplaceProp(new ObjectProperty(settings.Material?.EntryIn(destination.FileRef).UIndex ?? 0, "DecalMaterial"));
         if (HasReprojectedReceivers)
         {
             settings = settings with { Width = projection.Width, Height = projection.Height, NearPlane = projection.NearPlane, FarPlane = projection.FarPlane };

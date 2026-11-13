@@ -47,12 +47,15 @@ public sealed class EditableDecal : NotifyPropertyChangedBase
     public bool IsEditable => !owner.IsReadOnly && owner.CanReproject;
     internal bool MaterialChanged => Settings.Material != clean.Material;
     /// <param name="material">Its material: its component's (<see cref="MaterialOf"/>), or a new decal's, whose component is a stand-in</param>
-    internal EditableDecal(DecalActorProxy owner, PropertyCollection props, AssetReference material)
+    /// <param name="filterFrom">
+    /// A draft's: the component it's made from (a class default's, whose Filter is empty, or a copy's source's), whose Filter its stand-in's values,
+    /// without references, don't have. Its own component otherwise
+    /// </param>
+    internal EditableDecal(DecalActorProxy owner, PropertyCollection props, AssetReference material, ExportEntry filterFrom = null)
     {
         this.owner = owner;
-        var component = owner.DecalComponent.Export;
         var cache = owner.Editor.PackageCache;
-        Settings = clean = DecalSettings.Read(props) with { Filter = DecalFilterSettings.Read(component, cache, props), Material = material };
+        Settings = clean = DecalSettings.Read(props) with { Filter = DecalFilterSettings.Read(filterFrom ?? owner.DecalComponent.Export, cache, props), Material = material };
     }
 
     /// <summary>The material <paramref name="component"/> has, or inherits</summary>
