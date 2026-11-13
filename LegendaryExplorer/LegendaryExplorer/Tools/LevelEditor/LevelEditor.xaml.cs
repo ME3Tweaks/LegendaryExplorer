@@ -450,6 +450,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext.TransformWidget.OnDragComplete = OnWidgetDragComplete;
         RenderContext.TransformWidget.OnDuplicateDragStart = BeginDuplicateDrag;
         RenderContext.TransformWidget.OnDuplicateDragComplete = OnDuplicateDragComplete;
+        //once the drag has ended, so the message doesn't arrive in the middle of its mouse input
+        RenderContext.TransformWidget.OnDuplicateDragFailed = error => Dispatcher.InvokeAsync(() => MessageBox.Show(this, error.Message, "Duplicate"));
         RenderContext.LightGizmo.OnDragComplete = OnLightGizmoDragComplete;
         RenderContext.SplineGizmo.OnDragComplete = OnSplineGizmoDragComplete;
         InitTerrainSculpting();
@@ -1232,6 +1234,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand RedoCommand { get; set; }
     public ICommand DeleteActorCommand { get; set; }
     public ICommand UpgradeActorCommand { get; set; }
+    public ICommand DuplicateActorCommand { get; set; }
     public ICommand ToggleOrthoViewCommand { get; set; }
     public ICommand FocusFileCommand { get; set; }
     public ICommand SelectChangedActorCommand { get; set; }
@@ -1327,6 +1330,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RedoCommand = new GenericCommand(Redo);
         DeleteActorCommand = new RelayCommand(DeleteActor, parameter => CanMutateScene
             && (parameter as ActorProxy ?? SelectedActor) is { DeleteRefusal: null });
+        DuplicateActorCommand = new RelayCommand(DuplicateActor, parameter => CanMutateScene
+            && (parameter as ActorProxy ?? SelectedActor) is { DuplicateRefusal: null });
         UpgradeActorCommand = new RelayCommand(UpgradeActor, parameter => CanMutateScene
             && (parameter as ActorProxy ?? SelectedActor) is CollectionActorComponentProxy { UpgradeRefusal: null });
         ToggleOrthoViewCommand = new GenericCommand(() => IsOrthographicView = !IsOrthographicView);
@@ -2172,13 +2177,28 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private bool RemoveActorsGoneFromLevel(OpenLevelFile file, Level level)
     {
         var listed = level.Actors.ToHashSet();
-        var gone = file.Actors.Where(actor => actor is LevelModelProxy bsp
-            ? !bsp.IsReadFrom(level)
-            : actor.Export is { } export && !listed.Contains((actor.CollectionOwner ?? export).UIndex)).ToList();
+        // An uncommitted copy of an actor the level no longer has (another tool took it out) can't be made, so it goes with its source's view
+        var gone = file.Actors.Where(actor => actor switch
+        {
+            LevelModelProxy bsp => !bsp.IsReadFrom(level),
+            { Export: { } export } => !listed.Contains((actor.CollectionOwner ?? export).UIndex),
+            { CloneSource: { } source } => !listed.Contains(source.UIndex),
+            _ => false
+        }).ToList();
+        //as is one that's been undone, which redoing would bring back
+        var goneUndone = file.RetainedActors.Where(actor => actor is { IsDisposed: false, CloneSource: { } source } && !listed.Contains(source.UIndex)
+            && !file.Actors.Contains(actor)).ToList();
         foreach (var actor in gone)
         {
             if (actor == SelectedActor) SelectedActor = null;
+            //(the copy's undo steps are orphaned with it)
+            if (actor.IsDraft) RenderContext.Registry.Discard(actor.Id);
             RemoveActor(actor);
+        }
+        foreach (var copy in goneUndone)
+        {
+            copy.Dispose();
+            RenderContext.Registry.Discard(copy.Id);
         }
         if (gone.OfType<LevelModelProxy>().Any()) RenderContext.SetLevelModel(file.Package, level.Model);
         return gone.Count > 0;
@@ -2263,7 +2283,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RefreshCommandStates();
     }
 
-    private void ActorContextMenu_Opened(object sender, RoutedEventArgs e) => ((sender as FrameworkElement)?.DataContext as ActorProxy)?.NotifyDeleteRefusal();
+    private void ActorContextMenu_Opened(object sender, RoutedEventArgs e) => ((sender as FrameworkElement)?.DataContext as ActorProxy)?.NotifyRefusals();
 
     /// <summary>Lists or unlists an actor pending deletion in the change list</summary>
     internal void ShowPendingDeletion(ActorProxy actor, bool pending)
@@ -2310,14 +2330,47 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         _preEditSnapshot = after;
     }
 
-    private SplineActorProxy.Duplication BeginDuplicateDrag(SplineActorProxy point)
+    //null, which ends the drag, if it can't be duplicated, or its copy can't be made
+    private IActorDuplication BeginDuplicateDrag(ActorProxy actor)
     {
-        string refusal = CanMutateScene ? point.DuplicateRefusal
-            : "Wait for the current operation (such as saving or refreshing the preview) to finish, then try again.";
-        if (refusal is null) return point.BeginDuplicate();
+        string problem;
+        try
+        {
+            if (DuplicateRefusal(actor) is not { } refusal) return BeginDuplicate(actor);
+            problem = $"{actor.ActorName} can't be duplicated. {refusal}";
+        }
+        catch (Exception error) when (error is not OutOfMemoryException) { problem = error.Message; }
         //once the drag has ended, so the message doesn't arrive in the middle of its mouse input
-        Dispatcher.InvokeAsync(() => MessageBox.Show(this, $"{point.ActorName} can't be duplicated. {refusal}", "Duplicate spline point"));
+        Dispatcher.InvokeAsync(() => MessageBox.Show(this, problem, "Duplicate"));
         return null;
+    }
+
+    private string DuplicateRefusal(ActorProxy actor) => CanMutateScene ? actor.DuplicateRefusal
+        : "Wait for the current operation (such as saving or refreshing the preview) to finish, then try again.";
+
+    /// <summary>A spline point's duplicate, which connects the copy to it, or any other actor's copy</summary>
+    private static IActorDuplication BeginDuplicate(ActorProxy actor, Vector3 offset = default) =>
+        actor is SplineActorProxy point ? point.BeginDuplicate(offset) : ActorCloning.BeginClone(actor, offset);
+
+    /// <summary>
+    /// The actor context menu's Duplicate: a copy one grid step from the actor, selected, as UE3's editor duplicates an actor (edactDuplicateSelected).
+    /// CreateLocationOffset (UnEdAct.cpp) offsets it across the view, along X and Y in a perspective or top view, which are the Level Editor's. The grid's
+    /// size, whether or not translations snap to it. The item is disabled for an actor that can't be duplicated, with the reason as its tooltip
+    /// </summary>
+    private void DuplicateActor(object parameter)
+    {
+        if ((parameter as ActorProxy ?? SelectedActor) is not { } actor) return;
+        try
+        {
+            if (DuplicateRefusal(actor) is { } refusal) throw new InvalidOperationException($"{actor.ActorName} can't be duplicated. {refusal}");
+            CancelViewportDrag();
+            //offset before it's selected, so the offset isn't recorded as an edit of it. Completing it cancels it if it fails, or if it's left where the
+            //actor is: far from the origin, a small step is lost to rounding
+            if (BeginDuplicate(actor, new Vector3(TranslateSnapValue, TranslateSnapValue, 0)).Complete() is not { } step)
+                throw new InvalidOperationException($"A grid step of {TranslateSnapValue} is too small to move a copy off {actor.ActorName} where it is. Make the grid larger, or Alt+drag it.");
+            OnDuplicateDragComplete(step);
+        }
+        catch (Exception error) when (error is not OutOfMemoryException) { MessageBox.Show(this, error.Message, "Duplicate"); }
     }
 
     private void OnDuplicateDragComplete(IUndoAction step)

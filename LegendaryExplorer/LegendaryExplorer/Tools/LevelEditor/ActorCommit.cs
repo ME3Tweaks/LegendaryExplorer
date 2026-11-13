@@ -113,6 +113,12 @@ public static class ActorCommit
                 actor.BeginCommit();
                 written.Add((file, actor));
             }
+            // A copy's values are its source's, which its export has (ActorCloning.Materialize made it): only its transform is the view's
+            if (actor.CloneSource is not null)
+            {
+                actor.CommitClone();
+                continue;
+            }
             if (actor is CollectionActorComponentProxy cacp)
             {
                 bool moved = cacp.IsTransformDirty;

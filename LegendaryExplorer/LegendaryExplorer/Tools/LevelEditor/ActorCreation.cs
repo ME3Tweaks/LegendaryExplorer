@@ -384,6 +384,21 @@ public static class ActorCreation
         return new PlaceAction(draft, selection);
     }
 
+    /// <summary>
+    /// A copy of <paramref name="draft"/>, a placed draft, made as it was by its recipe: of its class, with its asset and its own values, as <paramref name="record"/>.
+    /// Not attached; its transform and edits are its caller's to carry (<see cref="ActorCloning"/>)
+    /// </summary>
+    internal static ActorProxy CopyDraft(IActorEditorContext editor, ActorRecord record, ActorProxy draft)
+    {
+        if (!draft.IsDraft || draft.CloneSource is not null || RecipeFor(draft.ClassName) is not { } recipe)
+            throw new InvalidOperationException($"{draft.ActorName} isn't a placed actor's draft.");
+        var template = recipe.ComponentProperty is { } property ? ComponentTemplate(record.Class, property, editor.RenderContext.PackageCache) : null;
+        return recipe.Draft(editor, record, draft.CopyOwnValues(), draft.DraftAsset, template);
+    }
+
+    /// <summary>Whether <paramref name="className"/> has a recipe, so that a placed draft of it can be copied</summary>
+    internal static bool HasRecipe(string className) => RecipeFor(className) is not null;
+
     // Not Rotator.FromDirectionVector and GetDirectionalVector: these round as appRound does and use GMath's sine table, which decide how a decal on a floor
     // or ceiling is turned
 
@@ -416,23 +431,26 @@ public static class ActorCreation
     }
 
     /// <summary>
-    /// A placed draft. Undoing it takes the draft out of the scene, which this step then holds; redoing it attaches the same draft again.
-    /// The draft is disposed once nothing holds it (<see cref="ActorProxy.RetainForHistory"/>) unless it's drawn
+    /// A placed draft (or a copy, <see cref="ActorCloning"/>). Undoing it takes the draft out of the scene, which this step then holds; redoing it attaches
+    /// the same draft again. The draft is disposed once nothing holds it (<see cref="ActorProxy.RetainForHistory"/>) unless it's drawn
     /// </summary>
-    private sealed class PlaceAction : IUndoAction, IDisposable
+    internal sealed class PlaceAction : IUndoAction, IDisposable
     {
         private readonly ActorProxy draft;
         private readonly ActorProxy selection;
         private readonly IDisposable retained;
+        private readonly string description;
 
-        public PlaceAction(ActorProxy draft, ActorProxy selection)
+        /// <param name="description">What the step is called, if it isn't Place and the draft's name</param>
+        public PlaceAction(ActorProxy draft, ActorProxy selection, string description = null)
         {
             this.draft = draft;
             this.selection = selection;
+            this.description = description;
             retained = draft.RetainForHistory();
         }
 
-        public string Description => $"Place {draft.ActorName}";
+        public string Description => description ?? $"Place {draft.ActorName}";
         public bool IsOrphaned => draft.IsDisposed;
         public IReadOnlyCollection<ActorId> Subjects => [draft.Id];
 

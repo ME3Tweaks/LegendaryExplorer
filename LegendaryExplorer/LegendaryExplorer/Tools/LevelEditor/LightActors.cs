@@ -373,14 +373,27 @@ public sealed class EditableLight : NotifyPropertyChangedBase
         [draftValues.GetProp<StructProperty>("LightGuid"), draftValues.GetProp<StructProperty>("LightmapGuid"), .. GetChangedProperties()];
 
     /// <summary>
+    /// For a copy's light, drawn from its source's saved values (a draft's): takes on the settings <paramref name="source"/>, its source's light, is shown
+    /// with, pending on the copy relative to the same saved values (as <see cref="EditableActorLighting.Seed"/> does)
+    /// </summary>
+    internal void Seed(EditableLight source)
+    {
+        if (!IsDraft) throw new InvalidOperationException("Only a copy's light starts from another's settings.");
+        if (source.cleanSettings != cleanSettings) throw new InvalidOperationException("The light's settings can't be copied: its saved values aren't its source's.");
+        SetSettings(source.Settings);
+    }
+
+    /// <summary>
     /// Writes the edited settings to the component. They're still pending until <see cref="MarkClean"/>, so an abandoned commit leaves them as they were
     /// </summary>
     /// <param name="parentToWorld">If the owner was moved, its new transform, which updates the component's cached copy of it (if it has one)</param>
-    public void Commit(Matrix4x4? parentToWorld)
+    /// <param name="component">For a copy's light (a draft's): its copy of its source's component, whose saved values its settings are relative to</param>
+    public void Commit(Matrix4x4? parentToWorld, ExportEntry component = null)
     {
-        if (IsDraft) throw new InvalidOperationException("A new light's component is made by its actor's commit.");
+        if (IsDraft && component is null) throw new InvalidOperationException("A new light's component is made by its actor's commit.");
+        component ??= Component;
         List<Property> changed = GetChangedProperties();
-        PropertyCollection props = Component.GetProperties();
+        PropertyCollection props = component.GetProperties();
         if (parentToWorld is { } transform && props.GetProp<StructProperty>("CachedParentToWorld") is not null)
         {
             changed.Add(CommonStructs.MatrixProp(transform, "CachedParentToWorld"));
@@ -391,7 +404,7 @@ public sealed class EditableLight : NotifyPropertyChangedBase
             {
                 props.AddOrReplaceProp(property);
             }
-            Component.WriteProperties(props);
+            component.WriteProperties(props);
         }
     }
 
@@ -575,7 +588,7 @@ public class LightActorProxy : ActorProxy, ILightProxy
     internal static IReadOnlyList<string> StandaloneClasses { get; } = ["PointLight", "PointLightMovable", "PointLightToggleable", "SpotLight",
         "SpotLightMovable", "SpotLightToggleable", "DirectionalLight", "DirectionalLightToggleable"];
 
-    //a draft's: the class default's light component its own is made from
+    //a draft's: the light component its own is made from, its class default's, or for a copy, its saved actor's (its commit clones it)
     private readonly ExportEntry componentTemplate;
 
     /// <summary>
@@ -604,6 +617,23 @@ public class LightActorProxy : ActorProxy, ILightProxy
 
     private protected override bool WritesAllValuesWhenCreated => true;
 
+    /// <summary>
+    /// A copy's light is drawn from its source's component's values: its settings are written onto its copy of that component, with its cached owner
+    /// transform, since the copy is elsewhere. Its GUIDs are the ones it was drawn with, which replace those its commit made it
+    /// (<see cref="ActorCloning.Materialize"/>), so it's the same light before its commit as after
+    /// </summary>
+    private protected override void CommitCloneEdits(IReadOnlyDictionary<ExportEntry, ExportEntry> copies)
+    {
+        var component = copies.GetValueOrDefault(componentTemplate)
+            ?? throw new InvalidOperationException($"{ActorName} has no copy of {componentTemplate.ObjectName.Instanced}.");
+        var drawn = Light.CopyDraftValues();
+        var properties = component.GetProperties();
+        properties.AddOrReplaceProp(drawn.GetProp<StructProperty>("LightGuid"));
+        properties.AddOrReplaceProp(drawn.GetProp<StructProperty>("LightmapGuid"));
+        component.WriteProperties(properties);
+        Light.Commit(LocalToWorld, component);
+    }
+
     public LightActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         //bHidden doesn't stop a light from lighting, and lights aren't otherwise drawn
@@ -619,7 +649,7 @@ public class LightActorProxy : ActorProxy, ILightProxy
     /// <summary>
     /// The light component, as <see cref="SceneLight.LoadLevelLights"/> finds it
     /// </summary>
-    private static ExportEntry GetLightComponent(ExportEntry actorExport) =>
+    internal static ExportEntry GetLightComponent(ExportEntry actorExport) =>
         actorExport.GetProperty<ObjectProperty>("LightComponent")?.ResolveToEntry(actorExport.FileRef) as ExportEntry;
 
     /// <summary>
@@ -653,6 +683,8 @@ public class LightActorProxy : ActorProxy, ILightProxy
 
     public override void CommitChanges(PackageCache packageCache = null)
     {
+        //(a copy's component is its copy of its source's)
+        ThrowIfCopy();
         // Its export was just made (Materialize): its component is made with it, as shipping levels' are (see NewComponent), with an empty
         // LightComponent binary. The actor refers to it as its LightComponent
         if (Materialized && componentTemplate is not null)

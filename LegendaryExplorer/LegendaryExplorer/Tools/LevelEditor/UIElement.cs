@@ -474,24 +474,27 @@ public class Widget : UIElement
     public Action<ActorProxy, TransformSnapshot, TransformSnapshot> OnDragComplete;
 
     /// <summary>
-    /// Starts duplicating the spline point an Alt+translation drag is on, when the drag first moves it: returns the duplicate, whose copy the rest
-    /// of the drag moves instead, or null if the point can't be duplicated, which ends the drag. Wired by LevelEditor
+    /// Starts duplicating the actor an Alt+translation drag is on, when the drag first moves it: returns the duplicate, whose copy the rest of the drag
+    /// moves instead, or null if the actor can't be duplicated, which ends the drag. Wired by LevelEditor
     /// </summary>
-    public Func<SplineActorProxy, SplineActorProxy.Duplication> OnDuplicateDragStart;
+    public Func<ActorProxy, IActorDuplication> OnDuplicateDragStart;
 
     /// <summary>Called with the undo step of a completed duplicate drag, in place of <see cref="OnDragComplete"/>. Wired by LevelEditor</summary>
     public Action<IUndoAction> OnDuplicateDragComplete;
 
+    /// <summary>Called with why a duplicate drag couldn't be completed, once its copy is discarded and the drag has ended. Wired by LevelEditor</summary>
+    public Action<Exception> OnDuplicateDragFailed;
+
     //latched when the drag starts, so releasing Alt mid-drag changes nothing
     private bool duplicateArmed;
-    private SplineActorProxy.Duplication duplication;
+    private IActorDuplication duplication;
     private ActorProxy duplicateSource;
 
-    /// <param name="duplicate">Whether a translation drag of a spline point moves a copy of it (an Alt+drag)</param>
+    /// <param name="duplicate">Whether a translation drag moves a copy of the actor (an Alt+drag)</param>
     public void BeginDrag(int x, int y, bool duplicate = false)
     {
         IsDragging = true;
-        duplicateArmed = duplicate && Mode is EWidgetMode.Translate && Attach is SplineActorProxy && OnDuplicateDragStart is not null;
+        duplicateArmed = duplicate && Mode is EWidgetMode.Translate && Attach is not null && OnDuplicateDragStart is not null;
         duplication = null;
         PrevDragPos = DragStart = new Vector2(x, y);
         _accumulatedTranslationLocal = Vector3.Zero;
@@ -506,8 +509,8 @@ public class Widget : UIElement
 
     /// <summary>
     /// Moves what a translation drag is on to <paramref name="location"/>, as moving the mouse along an axis does. An Alt+drag's first move
-    /// duplicates the point instead, and moves the copy; the copy starts where the point is, so the drag carries on from where it started.
-    /// The connection between them follows the copy to whichever side of the point it's on
+    /// duplicates the actor instead, and moves the copy; the copy starts where the actor is, so the drag carries on from where it started.
+    /// A spline point's connection to its copy follows the copy to whichever side of the point it's on
     /// </summary>
     public void DragTo(LevelEditorRenderContext context, Vector3 location)
     {
@@ -515,7 +518,7 @@ public class Widget : UIElement
         if (duplicateArmed && duplication is null)
         {
             duplicateSource = Attach;
-            duplication = OnDuplicateDragStart((SplineActorProxy)Attach);
+            duplication = OnDuplicateDragStart(Attach);
             if (duplication is null)
             {
                 context.EndDrag(DragEndReason.Cancelled);
@@ -531,18 +534,20 @@ public class Widget : UIElement
     {
         if (IsDragging && duplication is not null)
         {
-            //the duplicate's step includes moving the copy. Completing one left where the point is cancels it
-            if (reason is DragEndReason.Completed && duplication.Complete() is { } step)
+            //the duplicate's step includes moving the copy. Completing one left where its actor is cancels it, as a failure to complete it does
+            IUndoAction step = null;
+            Exception failure = null;
+            try
             {
-                OnDuplicateDragComplete?.Invoke(step);
+                if (reason is DragEndReason.Completed) step = duplication.Complete();
+                else duplication.Cancel();
             }
-            else
-            {
-                if (reason is DragEndReason.Cancelled) duplication.Cancel();
-                Attach = duplicateSource;
-            }
+            catch (Exception e) when (e is not OutOfMemoryException) { failure = e; }
+            if (step is null) Attach = duplicateSource;
             duplication = null;
             duplicateSource = null;
+            if (step is not null) OnDuplicateDragComplete?.Invoke(step);
+            if (failure is not null) OnDuplicateDragFailed?.Invoke(failure);
         }
         else if (IsDragging && Attach is not null)
         {

@@ -16,10 +16,16 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 internal static class BakeInputs
 {
     /// <summary>
-    /// Whether the mesh is one of the classes the bake reads, static and spline mesh components (a stand-in is drawn as one: a new actor's component, or a
-    /// new spline connection's mesh, until a commit makes it)
+    /// Whether the mesh is one of the classes the bake reads, static and spline mesh components (a new mesh's stand-in is drawn as one: a new actor's
+    /// component, or a new spline connection's mesh, until a commit makes it)
     /// </summary>
-    public static bool IsBakedMesh(StaticMeshComponentProxy mesh) => mesh.IsStandIn || LightmassSceneBuilder.IsStaticMeshComponent(mesh.Export);
+    public static bool IsBakedMesh(StaticMeshComponentProxy mesh) => BakedComponent(mesh) is not { } component || LightmassSceneBuilder.IsStaticMeshComponent(component);
+
+    /// <summary>
+    /// The component the mesh is baked as, with its class and baked lighting: its own, or for a copy's stand-in, the saved one it's drawn from
+    /// (<see cref="PrimitiveComponentProxy.CopiedFrom"/>). Null for any other stand-in, a new mesh's, which has neither until a commit makes it
+    /// </summary>
+    internal static ExportEntry BakedComponent(StaticMeshComponentProxy mesh) => mesh.CopiedFrom ?? (mesh.IsStandIn ? null : mesh.Export);
 
     /// <summary>
     /// Whether the actor is one a bake reads, as it's shown or as the package has it: a light that contributes to static lighting, a terrain with a
@@ -40,8 +46,9 @@ internal static class BakeInputs
         }
         foreach (var mesh in actor.Components.OfType<StaticMeshComponentProxy>().Where(IsBakedMesh))
         {
-            var binary = mesh.IsStandIn ? StaticMeshComponent.Create() : mesh.Export.GetBinaryData<StaticMeshComponent>();
-            if (LightAssignment.TakesPartInStaticLighting(mesh.Export, mesh.Properties, binary, mesh.IsStandIn ? actor.ClassName : null)) return true;
+            var component = BakedComponent(mesh);
+            var binary = component?.GetBinaryData<StaticMeshComponent>() ?? StaticMeshComponent.Create();
+            if (LightAssignment.TakesPartInStaticLighting(component ?? mesh.Export, mesh.Properties, binary, component is null ? actor.ClassName : null)) return true;
         }
         if (actor.IsDraft) return false;
         // As the package has them: the actor's (a collection member's export is its component), and the components under it

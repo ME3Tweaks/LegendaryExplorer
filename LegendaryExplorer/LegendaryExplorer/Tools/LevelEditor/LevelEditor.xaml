@@ -102,6 +102,7 @@
             </DataTemplate>
             <ContextMenu x:Key="ActorContextMenu" Opened="ActorContextMenu_Opened">
                 <MenuItem Header="Delete Actor" Command="{Binding Data.DeleteActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" InputGestureText="Delete" ToolTip="{Binding DeleteRefusal}" ToolTipService.ShowOnDisabled="True"/>
+                <MenuItem Header="Duplicate" Command="{Binding Data.DuplicateActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" ToolTip="{Binding DuplicateRefusal}" ToolTipService.ShowOnDisabled="True"/>
                 <MenuItem Header="Upgrade to Actor" Command="{Binding Data.UpgradeActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" Visibility="{Binding IsCollectionMember, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="{Binding UpgradeRefusal}" ToolTipService.ShowOnDisabled="True"/>
                 <MenuItem Header="Focus Camera" Command="{Binding Data.FocusSelectedCommand, Source={StaticResource bindingProxy}}" InputGestureText="F"/>
                 <MenuItem Header="Open in Package Editor" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}" Command="{Binding Data.OpenInPackageEditorCommand, Source={StaticResource bindingProxy}}"/>

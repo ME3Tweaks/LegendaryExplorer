@@ -39,14 +39,21 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
     private readonly PropertyCollection ChannelFields;
     private PropertyCollection SavedProperties;
     public ExportEntry Component => Mesh.Export;
-    public string ComponentName => $"{Component.ObjectName.Instanced} (#{Component.UIndex})";
+    /// <summary>
+    /// The component whose saved values, baked lighting and actor's light environments its settings are of: its own, or for a copy's stand-in, the saved
+    /// one it's drawn from (<see cref="PrimitiveComponentProxy.CopiedFrom"/>)
+    /// </summary>
+    private ExportEntry SavedComponent => Mesh.CopiedFrom ?? Component;
+    //(a copy's stand-in has no name of its own)
+    public string ComponentName => SavedComponent == Component ? $"{Component.ObjectName.Instanced} (#{Component.UIndex})"
+        : $"copy of {SavedComponent.ObjectName.Instanced} (#{SavedComponent.UIndex})";
     public string ActorPropertyName => Mesh.ActorPropertyName ?? "Mesh component";
     public string MeshName
     {
         get
         {
             string propertyName = Component.IsA("SkeletalMeshComponent") ? "SkeletalMesh" : "StaticMesh";
-            var (property, package) = EffectiveLightingProperties.Reference(Component, propertyName, Context.PackageCache);
+            var (property, package) = EffectiveLightingProperties.Reference(SavedComponent, propertyName, Context.PackageCache);
             return property is { Value: not 0 }
                 ? property.ResolveToEntry(package)?.ObjectName.Instanced ?? "Unresolved mesh"
                 : "None";
@@ -60,15 +67,16 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
     public IReadOnlyList<ActorLightingChannel> Channels { get; }
     public IReadOnlyList<LightEnvironmentOption> Environments { get; private set; }
 
-    internal ExportEntry EnvironmentOwner => Component.Parent is ExportEntry owner && owner.IsA("Actor") ? owner : null;
-    public bool CanCreateEnvironment => !IsReadOnly && !IsOrphaned && EffectiveLightingProperties.IsPlacedActor(EnvironmentOwner);
+    internal ExportEntry EnvironmentOwner => SavedComponent.Parent is ExportEntry owner && owner.IsA("Actor") ? owner : null;
+    //(a copy's stand-in's owner is its source, whose light environments aren't its to make or edit)
+    public bool CanCreateEnvironment => !IsReadOnly && !IsOrphaned && !Mesh.IsStandIn && EffectiveLightingProperties.IsPlacedActor(EnvironmentOwner);
     public bool CanEditEnvironment => !IsReadOnly && !IsOrphaned && EditableEnvironment is not null;
 
     internal ExportEntry EditableEnvironment
     {
         get
         {
-            if (!CanAssignEnvironment(settings.LightEnvironment)) return null;
+            if (Mesh.IsStandIn || !CanAssignEnvironment(settings.LightEnvironment)) return null;
             var effective = SavedProperties.DeepClone();
             foreach (var property in GetChangedProperties()) effective.AddOrReplaceProp(property);
             EffectiveLightingProperties.UsesLightEnvironment(Component, effective, EnvironmentOwner, Context.PackageCache, out var environment);
@@ -91,7 +99,7 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
     {
         Mesh = mesh;
         Context = context;
-        SavedProperties = mesh.Properties.DeepClone();
+        SavedProperties = ReadSaved(mesh.Properties);
         settings = cleanSettings = Read(SavedProperties);
         try
         {
@@ -112,9 +120,13 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
         ReloadAndApply(mesh.Properties);
     }
 
+    //its saved values: those it's drawn with, or a copy's stand-in's saved component's (it's drawn with them, but without its references)
+    private PropertyCollection ReadSaved(PropertyCollection drawn) =>
+        SavedComponent == Component ? drawn.DeepClone() : EffectiveLightingProperties.ReadPrimitive(SavedComponent, Context.PackageCache);
+
     private ActorLightingSettings Read(PropertyCollection props)
     {
-        bool usesEnvironment = Context.ResolveLightEnvironment(Component, props, Mesh.Actor?.Export, out _);
+        bool usesEnvironment = Context.ResolveLightEnvironment(SavedComponent, props, SavedComponent == Component ? Mesh.Actor?.Export : EnvironmentOwner, out _);
         bool precomputed = props.GetProp<BoolProperty>("bUsePrecomputedShadows")?.Value ?? HasBakedLighting();
         return new ActorLightingSettings(props.GetProp<ObjectProperty>("LightEnvironment")?.Value,
             LightingChannels.FromProperty(props.GetProp<StructProperty>("LightingChannels"), default, false,
@@ -128,10 +140,10 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
     private bool HasBakedLighting()
     {
         if (Mesh is not StaticMeshComponentProxy) return false;
-        if (Component.Parent?.ClassName == "StaticMeshCollectionActor") return true;
+        if (SavedComponent.Parent?.ClassName == "StaticMeshCollectionActor") return true;
         try
         {
-            return Component.GetBinaryData<StaticMeshComponent>().LODData.Any(lod =>
+            return SavedComponent.GetBinaryData<StaticMeshComponent>().LODData.Any(lod =>
                 lod.LightMap is { LightMapType: not ELightMapType.LMT_None } || lod.ShadowMaps.Length > 0 || lod.ShadowVertexBuffers.Length > 0);
         }
         catch { return false; }
@@ -213,9 +225,7 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
         var before = settings;
         settings = value;
         // Resolve runtime defaults before recording history, so environment changes and undo agree with the preview.
-        var effective = SavedProperties.DeepClone();
-        foreach (var property in GetChangedProperties()) effective.AddOrReplaceProp(property);
-        settings = Read(effective);
+        settings = Read(Effective());
         if (settings == before) return;
         NotifySettings();
         Mesh.Actor.OnActorLightingEdited(Mesh, before, settings);
@@ -257,13 +267,42 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
     internal void ReloadAndApply(PropertyCollection properties)
     {
         var pending = GetChangedProperties();
-        SavedProperties = properties.DeepClone();
-        cleanSettings = Read(properties);
-        foreach (var property in pending) properties.AddOrReplaceProp(property);
-        settings = Read(properties);
+        SavedProperties = ReadSaved(properties);
+        cleanSettings = Read(SavedProperties);
+        var effective = SavedProperties.DeepClone();
+        foreach (var property in pending)
+        {
+            effective.AddOrReplaceProp(property);
+            // A copy's stand-in isn't drawn in a light environment: one it could be assigned is its source's (or its archetype's), which it would share.
+            // Nor, until its commit, do LevelScan and BakeInputs see the assignment, as they read what it's drawn with
+            if (SavedComponent == Component || property is not ObjectProperty { Name.Name: "LightEnvironment", Value: not 0 }) properties.AddOrReplaceProp(property);
+        }
+        settings = Read(effective);
         RefreshEnvironments();
         NotifySettings();
         Mesh.Actor?.RefreshLightingDirty();
+    }
+
+    /// <summary>
+    /// For a copy's mesh: takes on the settings <paramref name="source"/>, its source's mesh, is shown with, so that it starts as its source is shown. Their
+    /// saved values are the same (a saved actor's component's, or a recipe's), so its source's pending edits are pending on it
+    /// </summary>
+    internal void Seed(EditableActorLighting source)
+    {
+        if (source.cleanSettings != cleanSettings)
+            throw new InvalidOperationException($"{ActorPropertyName}'s lighting can't be copied: its saved values aren't its source's.");
+        settings = source.settings;
+        settings = Read(Effective());
+        RefreshEnvironments();
+        NotifySettings();
+    }
+
+    //its saved values with its pending edits
+    private PropertyCollection Effective()
+    {
+        var effective = SavedProperties.DeepClone();
+        foreach (var property in GetChangedProperties()) effective.AddOrReplaceProp(property);
+        return effective;
     }
 
     /// <summary>Writes and accepts the pending edits</summary>
@@ -275,16 +314,25 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
 
     /// <summary>
     /// Writes the pending edits to <paramref name="component"/> (by default the mesh's own), leaving them pending until <see cref="MarkClean"/>,
-    /// so an abandoned commit leaves them as they were. A spline connection's new mesh is written to the export the commit creates for it
+    /// so an abandoned commit leaves them as they were. A spline connection's new mesh is written to the export the commit creates for it, and a copy's
+    /// stand-in to its copy of its source's component
     /// </summary>
-    internal void Write(ExportEntry component = null)
+    /// <param name="copies">For a copy's stand-in: the UIndexes of its copy's objects, by those of its source's they're copies of. An assignment of one of its
+    /// source's light environments is of its copy of it, which is registered in its actor's Components</param>
+    internal void Write(ExportEntry component = null, IReadOnlyDictionary<int, int> copies = null)
     {
         component ??= Component;
         var changed = GetChangedProperties();
         if (changed.Count is 0) return;
-        if (settings.LightEnvironment != cleanSettings.LightEnvironment && !CanAssignEnvironment(settings.LightEnvironment))
+        bool reassigned = settings.LightEnvironment != cleanSettings.LightEnvironment;
+        if (reassigned && settings.LightEnvironment is { } assigned && copies is not null && copies.TryGetValue(assigned, out int copy))
+        {
+            ActorLightEnvironment.Register((ExportEntry)component.Parent, component.FileRef.GetUExport(copy));
+            changed = [.. changed.Select(p => p is ObjectProperty { Name.Name: "LightEnvironment" } ? new ObjectProperty(copy, "LightEnvironment") : p)];
+        }
+        else if (reassigned && !CanAssignEnvironment(settings.LightEnvironment))
             throw new InvalidOperationException("The light environment must belong to this actor or its archetype.");
-        if (settings.LightEnvironment != cleanSettings.LightEnvironment && settings.LightEnvironment is > 0
+        else if (reassigned && settings.LightEnvironment is > 0
             && EnvironmentOwner is { } owner && component.FileRef.TryGetUExport(settings.LightEnvironment.Value, out var environment)
             && environment.Parent == owner && environment.IsA("LightEnvironmentComponent"))
         {
@@ -300,7 +348,8 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
     /// <summary>Accepts the written edits as the saved settings</summary>
     internal void MarkClean()
     {
-        SavedProperties = EffectiveLightingProperties.ReadPrimitive(Component, Context.PackageCache);
+        //a stand-in's are only its values: what was written was them with its edits
+        SavedProperties = Mesh.IsStandIn ? Effective() : EffectiveLightingProperties.ReadPrimitive(Component, Context.PackageCache);
         cleanSettings = settings;
         RefreshEnvironments();
         NotifySettings();

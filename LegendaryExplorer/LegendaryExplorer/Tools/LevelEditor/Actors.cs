@@ -118,11 +118,33 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     public bool IsCollectionMember => this is CollectionActorComponentProxy;
     /// <summary>Why it can't be upgraded to an actor now, or null</summary>
     public virtual string UpgradeRefusal => "Only a collection's member can be upgraded to an actor.";
-    /// <summary>Asks for <see cref="DeleteRefusal"/> and <see cref="UpgradeRefusal"/> again: they depend on more than the actor (its file, the scene), which don't notify them</summary>
-    internal void NotifyDeleteRefusal()
+    /// <summary>Why it can't be duplicated now (by Duplicate, or an Alt+drag), or null</summary>
+    public virtual string DuplicateRefusal => ActorCloning.Refusal(this);
+
+    /// <summary>
+    /// For a copy (<see cref="ActorCloning"/>): the saved actor it's a copy of, which its commit clones. A copy of a copy is another copy of the same actor.
+    /// Null for anything else
+    /// </summary>
+    internal ExportEntry CloneSource { get; init; }
+
+    /// <summary>For a placed draft whose recipe has an asset (<see cref="ActorCreation.AssetKindOf"/>): the one it uses, which a copy of it uses too. Null otherwise</summary>
+    internal virtual AssetReference DraftAsset => null;
+
+    /// <summary>For a copy of a placed draft: its own values, its transform among them, which the copy is made with (<see cref="ActorCreation.CopyDraft"/>)</summary>
+    internal PropertyCollection CopyOwnValues() => Properties.DeepClone();
+
+    /// <summary>Whether its scale differs from the committed one, so that its commit cooks its brush's collision again (if it has cooked data)</summary>
+    internal bool IsScaleDirty => DrawScale * DrawScale3D != _cleanSnapshot.DrawScale * _cleanSnapshot.DrawScale3D;
+
+    /// <summary>The mesh drawn for <paramref name="component"/>, one of its components (a copy's: one of its source's), or null</summary>
+    internal virtual MeshComponentProxy MeshDrawing(ExportEntry component) => Components.OfType<MeshComponentProxy>().FirstOrDefault(m => m.Export == component);
+
+    /// <summary>Asks for <see cref="DeleteRefusal"/>, <see cref="UpgradeRefusal"/> and <see cref="DuplicateRefusal"/> again: they depend on more than the actor (its file, the scene), which don't notify them</summary>
+    internal void NotifyRefusals()
     {
         OnPropertyChanged(nameof(DeleteRefusal));
         OnPropertyChanged(nameof(UpgradeRefusal));
+        OnPropertyChanged(nameof(DuplicateRefusal));
     }
 
     /// <summary>
@@ -236,14 +258,19 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     internal void Materialize(ExportEntry level, Level levelBinary)
     {
         if (!IsDraft) throw new InvalidOperationException($"{DisplayText} already has an export.");
-        // Not a universal factory: only the classes whose placed actors are known to be made this way, drawn by a view that writes all their values
-        if (!ActorCreation.RecipeClasses.Contains(ClassName) || !WritesAllValuesWhenCreated)
+        // Not a universal factory: only the classes whose placed actors are known to be made this way, drawn by a view that writes all their values,
+        // and copies of actors, which are their sources' values
+        if (CloneSource is null && (!ActorCreation.RecipeClasses.Contains(ClassName) || !WritesAllValuesWhenCreated))
             throw new InvalidOperationException($"{ClassName} has no validated construction recipe.");
-        IEntry actorClass = ActorCreation.ImportOf(ActorClass, Pcc);
         var name = NameReference.FromInstancedString(Editor.RenderContext.Registry.NameOf(Id));
         //the package may have gained the proposed name since
         if (Pcc.Exports.Any(e => e.Parent == level && e.ObjectName.Instanced == name.Instanced)) name = Pcc.GetNextIndexedName(ClassName);
-        BindExport(NewActorExport(Pcc, level, name, actorClass, levelBinary));
+        if (CloneSource is not null)
+        {
+            BindExport(ActorCloning.Materialize(CloneSource, level, levelBinary, name, out var copies));
+            CloneCopies = copies;
+        }
+        else BindExport(NewActorExport(Pcc, level, name, ActorCreation.ImportOf(ActorClass, Pcc), levelBinary));
         Materialized = true;
     }
 
@@ -313,6 +340,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         {
             Materialized = false;
             BindExport(null);
+            CloneCopies = null;
         }
         if (propertiesBeforeCommit is null) return;
         Properties.Clear();
@@ -826,8 +854,49 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     public virtual void CommitChanges(PackageCache packageCache = null)
     {
         if (IsDraft) throw new InvalidOperationException($"{DisplayText} is a draft: it has no export to commit to.");
-        var props = Properties;
+        ThrowIfCopy();
+        WriteTransform(Properties);
+        Export.WriteProperties(Properties);
+    }
 
+    /// <summary>
+    /// A copy's view is drawn with its source's values, which refer to its source's objects, so it's written only by <see cref="CommitClone"/>: a view's
+    /// own commit would point the copy at its source's objects
+    /// </summary>
+    private protected void ThrowIfCopy()
+    {
+        if (CloneSource is not null) throw new InvalidOperationException($"{DisplayText} is a copy, which only its own commit writes (CommitClone).");
+    }
+
+    /// <summary>
+    /// For a commit of a copy's view (<see cref="CloneSource"/>), once <see cref="Materialize"/> has made its export: writes its transform onto the export's
+    /// own properties, which are its source's, with its references to its own objects, and its other pending edits onto the objects they're of
+    /// (<see cref="CommitCloneEdits"/>). Its view is drawn from stand-ins, so nothing else of the view's is written
+    /// </summary>
+    internal void CommitClone()
+    {
+        if (Export is null || CloneSource is null) throw new InvalidOperationException($"{DisplayText} isn't a copy with an export.");
+        var props = Export.GetProperties();
+        WriteTransform(props);
+        Export.WriteProperties(props);
+        CommitCloneEdits(CloneCopies ?? throw new InvalidOperationException($"{DisplayText}'s export wasn't made by a commit."));
+    }
+
+    /// <summary>
+    /// For a copy whose export a commit made (<see cref="Materialize"/>): its objects, by its saved actor's objects they're copies of, as
+    /// EntryCloner.CloneTree copied them. Null otherwise
+    /// </summary>
+    internal IReadOnlyDictionary<ExportEntry, ExportEntry> CloneCopies { get; private set; }
+
+    /// <summary>
+    /// For <see cref="CommitClone"/>: writes the copy's pending edits other than its transform (its meshes' lighting, its light's settings) onto its
+    /// exports, each the copy of the source's object its stand-in was drawn from, found in <paramref name="copies"/>
+    /// </summary>
+    private protected virtual void CommitCloneEdits(IReadOnlyDictionary<ExportEntry, ExportEntry> copies) { }
+
+    /// <summary>Puts the actor's transform in <paramref name="props"/>: each value it has there, or that isn't its default</summary>
+    private void WriteTransform(PropertyCollection props)
+    {
         string locationPropName = LocationPropertyName(Export.Game);
         if (props.ContainsNamedProp(locationPropName) || Location != Vector3.Zero)
         {
@@ -849,7 +918,6 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         {
             props.AddOrReplaceProp(CommonStructs.Vector3Prop(PrePivot, "PrePivot"));
         }
-        Export.WriteProperties(props);
     }
 
     /// <summary>Whether it was taken out of the scene and not put back (<see cref="LevelEditorRenderContext.RemoveActor"/>): a view kept for undo</summary>
@@ -1074,6 +1142,8 @@ public abstract class MeshActorProxy : ActorProxy
 
     private protected override bool WritesAllValuesWhenCreated => true;
 
+    internal override AssetReference DraftAsset => componentTemplate is not null ? mesh : null;
+
     internal override IEnumerable<AssetReference> AssetsToCopy => IsDraft && componentTemplate is not null ? [mesh] : [];
 
     //the preview, already drawing the asset, is left as it is
@@ -1215,9 +1285,6 @@ public class BrushProxy : ActorProxy
 
     private protected override bool WritesAllValuesWhenCreated => true;
 
-    /// <summary>Whether its scale differs from the committed one, so that its commit cooks its collision again (if it has cooked data)</summary>
-    internal bool IsScaleDirty => DrawScale * DrawScale3D != _cleanSnapshot.DrawScale * _cleanSnapshot.DrawScale3D;
-
     public override void CommitChanges(PackageCache packageCache = null)
     {
         // Its export was just made (Materialize): its component is made with it, as shipping levels' volumes' are (see NewComponent), with its hull and
@@ -1236,8 +1303,7 @@ public class BrushProxy : ActorProxy
         // applied at runtime (UE3's BuildPhysBrushData, MakeCachedConvexDataForAggGeom). With none, there's nothing to go stale: if it has rigid-body
         // collision, the game cooks it at load, at the scale it has then
         else if (IsScaleDirty
-                 && Export.GetProperty<ObjectProperty>(nameof(BrushComponent))?.ResolveToEntry(Pcc) is ExportEntry own
-                 && own.GetBinaryData<LegendaryExplorerCore.Unreal.BinaryConverters.BrushComponent>().CachedPhysBrushData.CachedConvexElements.Length > 0)
+                 && Export.GetProperty<ObjectProperty>(nameof(BrushComponent))?.ResolveToEntry(Pcc) is ExportEntry own && HasCookedCollision(own))
         {
             component = own.Parent == Export ? own
                 : throw new InvalidOperationException($"{Export.InstancedFullPath}'s BrushComponent isn't its own, so its collision can't be cooked at its new scale.");
@@ -1247,12 +1313,19 @@ public class BrushProxy : ActorProxy
         bool cook = component is not null && (!Materialized || BrushComponent.Properties.GetProp<BoolProperty>("bDisableAllRigidBody")?.Value != true);
         base.CommitChanges(packageCache);
         // cooked at the scale the actor was just written with
-        if (cook)
-        {
-            var binary = component.GetBinaryData<LegendaryExplorerCore.Unreal.BinaryConverters.BrushComponent>();
-            binary.RegenCachedPhysBrushData(packageCache ?? Editor?.RenderContext.PackageCache);
-            component.WriteBinary(binary);
-        }
+        if (cook) CookCollision(component, packageCache ?? Editor?.RenderContext.PackageCache);
+    }
+
+    /// <summary>Whether <paramref name="component"/>, a BrushComponent, has cached PhysX data, which is cooked at its actor's scale</summary>
+    internal static bool HasCookedCollision(ExportEntry component) =>
+        component.GetBinaryData<LegendaryExplorerCore.Unreal.BinaryConverters.BrushComponent>().CachedPhysBrushData.CachedConvexElements.Length > 0;
+
+    /// <summary>Cooks <paramref name="component"/>'s collision again, at the scale its actor has been written with</summary>
+    internal static void CookCollision(ExportEntry component, PackageCache cache)
+    {
+        var binary = component.GetBinaryData<LegendaryExplorerCore.Unreal.BinaryConverters.BrushComponent>();
+        binary.RegenCachedPhysBrushData(cache);
+        component.WriteBinary(binary);
     }
 
     // A Model and its Polys as the cooker leaves them for a level's volumes to share: under the level, with no geometry, and no properties. The Polys is
@@ -1439,7 +1512,7 @@ public abstract class CollectionActorComponentProxy : ActorProxy
     {
         UpdateDirty();
         NotifyPendingChange();
-        NotifyDeleteRefusal();
+        NotifyRefusals();
     }
 
     private protected override string EditKind => UpgradePending ? "Upgrade" : base.EditKind;

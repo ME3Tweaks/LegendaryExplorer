@@ -159,7 +159,7 @@ public static class LevelScan
                     if (actor.IsDisposed || unmapped.Contains(actor) || failed.Contains(actor)) break;
                     try
                     {
-                        if (UnbakedLights(actor, mesh, staticLights, context) is not var (lightsOnIt, mapped, lightMap, misfit)) continue;
+                        if (UnbakedLights(actor, mesh, staticLights, context) is not var (lightsOnIt, mapped, lightMap, misfit, isNew)) continue;
                         if (mapped)
                         {
                             foreach (var light in lightsOnIt.Where(l => !records.IsKnown(l)))
@@ -173,7 +173,7 @@ public static class LevelScan
                             problems.Add(About(LevelCheck.UnbakedMeshes, ProblemSeverity.Problem, actor,
                                 $"{misfit}, so the game lights it wrongly, and a bake can't replace it."));
                         else if (lightsOnIt.Count > 0)
-                            problems.Add(About(LevelCheck.UnbakedMeshes, ProblemSeverity.Warning, actor, (mesh.IsStandIn ? "It's new, so it has no baked lighting"
+                            problems.Add(About(LevelCheck.UnbakedMeshes, ProblemSeverity.Warning, actor, (isNew ? "It's new, so it has no baked lighting"
                                 : "It has no lightmap") + $": until the level is rebaked, {List(lightsOnIt.Select(l => LightName(l, lightActors)).ToList())} light it " +
                                 "dynamically in game, and it gets no bounced light."));
                         else continue;
@@ -258,18 +258,22 @@ public static class LevelScan
 
     /// <summary>
     /// The static-shadowing lights whose radius reaches the mesh, as it's shown, without its bake having a record of them, whether its baked lighting
-    /// fits it (<see cref="MeshStaticLighting.HasFittingMapping"/>), its LOD 0 lightmap (none for a stand-in), and if that doesn't fit, why. Null if the game doesn't bake it: it has no static shadowing, doesn't accept lights, or a
-    /// light environment lights it
+    /// fits it (<see cref="MeshStaticLighting.HasFittingMapping"/>), its LOD 0 lightmap, and if that doesn't fit, why, and whether it's a new mesh's
+    /// stand-in (which has no lightmap). Null if the game doesn't bake it: it has no static shadowing, doesn't accept lights, or a light environment lights it
     /// </summary>
-    private static (List<SceneLight> Lights, bool Mapped, LightMap LightMap, string Misfit)? UnbakedLights(ActorProxy actor, StaticMeshComponentProxy mesh,
+    private static (List<SceneLight> Lights, bool Mapped, LightMap LightMap, string Misfit, bool IsNew)? UnbakedLights(ActorProxy actor, StaticMeshComponentProxy mesh,
         List<SceneLight> lights, LevelEditorRenderContext context)
     {
         var cache = context.PackageCache;
         if (mesh.StaticMeshExport is not { } meshExport) return null;
         var props = mesh.Properties;
-        var binary = mesh.IsStandIn ? StaticMeshComponent.Create() : mesh.Export.GetBinaryData<StaticMeshComponent>();
-        if (!LightAssignment.TakesPartInStaticLighting(mesh.Export, props, binary, mesh.IsStandIn ? actor.ClassName : null)) return null;
-        if (EffectiveLightingProperties.UsesLightEnvironment(mesh.Export, props, mesh.IsStandIn ? actor.Export : mesh.Export.Parent as ExportEntry, cache, out _)) return null;
+        // A copy's stand-in is as its commit makes it, where it's shown: with the baked lighting and light environment of the component it's drawn from
+        var baked = BakeInputs.BakedComponent(mesh);
+        bool isNew = baked is null;
+        var component = baked ?? mesh.Export;
+        var binary = baked?.GetBinaryData<StaticMeshComponent>() ?? StaticMeshComponent.Create();
+        if (!LightAssignment.TakesPartInStaticLighting(component, props, binary, isNew ? actor.ClassName : null)) return null;
+        if (EffectiveLightingProperties.UsesLightEnvironment(component, props, isNew ? actor.Export : component.Parent as ExportEntry, cache, out _)) return null;
         var stm = context.GetStaticMesh(meshExport);
         // As the game bounds it: its mesh's bounds (UStaticMeshComponent::UpdateBounds), or for a spline mesh, its LOD 0 deformed along its spline, as the
         // bake bounds one
@@ -282,8 +286,8 @@ public static class LevelScan
         // lighting edits
         var unbaked = lights.Where(l => LightmassSceneBuilder.ReachesBox(l, min, max) && mesh.GetBakedEligibility(l, bounds) == LightEligibility.Affects).ToList();
         var lightMap = binary.LODData.FirstOrDefault()?.LightMap;
-        bool mapped = !mesh.IsStandIn && MeshStaticLighting.HasFittingMapping(mesh.Export, binary, stm);
-        return (unbaked, mapped, lightMap, mapped || lightMap is not { LightMapType: not ELightMapType.LMT_None } ? null : Misfit(lightMap, stm));
+        bool mapped = !isNew && MeshStaticLighting.HasFittingMapping(component, binary, stm);
+        return (unbaked, mapped, lightMap, mapped || lightMap is not { LightMapType: not ELightMapType.LMT_None } ? null : Misfit(lightMap, stm), isNew);
     }
 
     // What the game can't draw of a lightmap on its mesh (LightmapMapping.FitsMesh): only what's checked, not where it came from

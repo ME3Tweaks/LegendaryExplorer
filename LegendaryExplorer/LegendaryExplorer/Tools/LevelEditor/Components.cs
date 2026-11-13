@@ -84,6 +84,12 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
     public bool IsStandIn => Export.FileRef.GetEntry(Export.UIndex) != Export;
 
     /// <summary>
+    /// For a copy's stand-in: the saved component it's drawn from, which the copy's commit clones, with its baked lighting and its actor's light
+    /// environments (<see cref="ActorCloneProxy"/>). Null for anything else
+    /// </summary>
+    internal ExportEntry CopiedFrom => (Actor as ActorCloneProxy)?.DrawnFrom(this);
+
+    /// <summary>
     /// Not rendered in game. Shown in the editor when ShowHidden is set or its actor is selected.
     /// </summary>
     public bool HiddenGame { get; private set; }
@@ -396,6 +402,21 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
         ReadMaterialOverrides();
     }
 
+    /// <summary>
+    /// The mesh it draws: its <paramref name="meshProperty"/>, as the bake reads it. A preview's is its <see cref="PreviewAssets"/>' mesh, which may be another
+    /// file's (its export, if the package doesn't have it, has none of its own); that mesh and its materials are tracked in <paramref name="dependencies"/>.
+    /// Null if it has none, or it can't be found
+    /// </summary>
+    private protected ExportEntry ResolveMesh(string meshProperty, PreviewMeshDependencies dependencies)
+    {
+        var cache = RenderContext.PackageCache;
+        if (PreviewProperties is null) return EffectiveLightingProperties.ResolveReference(Export, meshProperty, cache);
+        var meshReference = PreviewAssets?.Mesh?.Find(cache);
+        dependencies.Track(meshReference);
+        foreach (var material in MaterialOverrides) dependencies.Track(material);
+        return EffectiveLightingProperties.Resolve(meshReference, cache);
+    }
+
     protected void ReadMaterialOverrides()
     {
         MaterialOverrides.Clear();
@@ -515,16 +536,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
     {
         var context = RenderContext;
         Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
-        //a preview's mesh and materials are its PreviewAssets, which may be another file's (its export, if the package doesn't have it, has none of its own)
-        IEntry meshReference = null;
-        if (PreviewProperties is not null)
-        {
-            meshReference = PreviewAssets?.Mesh?.Find(context.PackageCache);
-            Dependencies.Track(meshReference);
-            foreach (var material in MaterialOverrides) Dependencies.Track(material);
-        }
-        StaticMeshExport = PreviewProperties is not null ? EffectiveLightingProperties.Resolve(meshReference, context.PackageCache)
-            : EffectiveLightingProperties.ResolveReference(Export, "StaticMesh", context.PackageCache);
+        StaticMeshExport = ResolveMesh("StaticMesh", Dependencies);
         if (StaticMeshExport is { } meshExport)
         {
             StaticMesh stm = context.GetStaticMesh(meshExport);
@@ -717,8 +729,15 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
 
     protected override Matrix4x4 ParentToWorld => TransformParent?.LocalToWorld ?? base.ParentToWorld;
 
-    public SkeletalMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent) : base(context, componentExport, parent)
+    //a preview's: the component its ParentAnimComponent is drawn as, which its pending properties can't refer to
+    private readonly PrimitiveComponentProxy previewAnimParent;
+
+    /// <param name="previewProperties">For a preview (a clone's, until its commit makes the component): its values, which its export (a stand-in) doesn't
+    /// have. Its mesh and materials are <paramref name="previewAssets"/>, and its ParentAnimComponent <paramref name="previewAnimParent"/></param>
+    public SkeletalMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null,
+        PreviewAssets previewAssets = null, PrimitiveComponentProxy previewAnimParent = null) : base(context, componentExport, parent, previewProperties, previewAssets)
     {
+        this.previewAnimParent = previewAnimParent;
         LoadMesh();
     }
 
@@ -728,16 +747,24 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
         var parent = Actor;
         Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
         TransformParent = null;
-        bool bTransformFromAnimParent = Properties.GetProp<BoolProperty>("bTransformFromAnimParent")?.Value ?? true;
-        if (bTransformFromAnimParent
-            && Properties.GetProp<ObjectProperty>("ParentAnimComponent")?.ResolveToEntry(Export.FileRef) is ExportEntry parentAnimExport
-            && parent.Components.FirstOrDefault(cmp => cmp.Export == parentAnimExport) is { } parentAnimComponent)
+        // LE1 declares it an int (Engine.SkeletalMeshComponent.bTransformFromAnimParent is an IntProperty)
+        bool bTransformFromAnimParent = Properties.GetProp<Property>("bTransformFromAnimParent") switch
+        {
+            BoolProperty flag => flag.Value,
+            IntProperty flag => flag.Value != 0,
+            _ => true
+        };
+        var parentAnimComponent = PreviewProperties is not null ? previewAnimParent
+            : Properties.GetProp<ObjectProperty>("ParentAnimComponent")?.ResolveToEntry(Export.FileRef) is ExportEntry parentAnimExport
+                ? parent.Components.FirstOrDefault(cmp => cmp.Export == parentAnimExport) : null;
+        if (bTransformFromAnimParent && parentAnimComponent is not null)
         {
             TransformParent = parentAnimComponent;
             base.UpdateLocalToWorld();
         }
         //like the static mesh, it may come from an archetype in another package
-        if (EffectiveLightingProperties.ResolveReference(Export, "SkeletalMesh", context.PackageCache) is { } meshExport)
+        var meshExport = ResolveMesh("SkeletalMesh", Dependencies);
+        if (meshExport is not null)
         {
             SkeletalMesh skm = meshExport.GetBinaryData<SkeletalMesh>();
             bool usesLightEnvironment = false;

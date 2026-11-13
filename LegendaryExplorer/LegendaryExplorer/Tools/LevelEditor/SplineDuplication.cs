@@ -31,7 +31,7 @@ public sealed partial class SplineActorProxy
     };
 
     /// <summary>Why the point can't be duplicated now, or null</summary>
-    public string DuplicateRefusal
+    public override string DuplicateRefusal
     {
         get
         {
@@ -56,9 +56,10 @@ public sealed partial class SplineActorProxy
     /// the point's outgoing connections and always connects the point to the copy, the new connection follows the copy (<see cref="Duplication.Follow"/>),
     /// so a spline extends either way. Nothing is written to the package. Move the copy, then complete or cancel it
     /// </summary>
-    public Duplication BeginDuplicate() => new(this);
+    /// <param name="offset">Where the copy starts from the point, before it's selected (so it isn't an edit of the copy)</param>
+    public Duplication BeginDuplicate(Vector3 offset = default) => new(this, offset);
 
-    public sealed class Duplication
+    public sealed class Duplication : IActorDuplication
     {
         private readonly SplineActorProxy source;
         private readonly ActorProxy selection;
@@ -68,6 +69,7 @@ public sealed partial class SplineActorProxy
 
         /// <summary>The draft copy. Move it; it's drawn, selected and editable until the duplicate completes or is cancelled</summary>
         public SplineActorProxy Copy { get; }
+        ActorProxy IActorDuplication.Copy => Copy;
 
         /// <summary>
         /// Whether the copy is ahead of the point along the spline (its tangent), so the point connects to it. Behind it, the copy connects to the
@@ -75,13 +77,15 @@ public sealed partial class SplineActorProxy
         /// </summary>
         public bool CopyIsAhead { get; private set; } = true;
 
-        internal Duplication(SplineActorProxy source)
+        internal Duplication(SplineActorProxy source, Vector3 offset)
         {
             if (source.DuplicateRefusal is { } refusal) throw new InvalidOperationException($"{source.DisplayText} can't be duplicated. {refusal}");
             this.source = source;
             var editor = source.Editor;
             selection = editor.RenderContext.SelectedActor;
             Copy = CreateDraft(editor, source, source.Registry.ProposeName(source.Pcc, source.ClassName));
+            //(the connection follows it once it's completed)
+            Copy.Location += offset;
             before = [(source, source.CaptureTopology()), (Copy, Copy.CaptureTopology())];
             try
             {
@@ -131,9 +135,19 @@ public sealed partial class SplineActorProxy
                 Cancel();
                 return null;
             }
-            Follow();
+            DuplicateAction step;
+            try
+            {
+                Follow();
+                step = new DuplicateAction(source.Editor, Copy, selection, before, [.. before.Select(s => (s.Point, s.Point.CaptureTopology()))]);
+            }
+            catch
+            {
+                Cancel();
+                throw;
+            }
             finished = true;
-            return new DuplicateAction(source.Editor, Copy, selection, before, [.. before.Select(s => (s.Point, s.Point.CaptureTopology()))]);
+            return step;
         }
 
         /// <summary>Puts everything back as it was before the duplicate began, and discards the copy</summary>

@@ -32,6 +32,7 @@ public sealed class DecalActorProxy : EditorActorProxy
     public bool CanReproject => decal?.EditUnsupportedReason is null && decal is not null;
     public string DecalEditingStatus => decal?.EditingStatus ?? "No decal component.";
     public override string Category => "Decals";
+    internal override AssetReference DraftAsset => IsDraft ? Decal?.Settings.Material : null;
     public int SortOrder => decal?.SortOrder ?? 0;
     public IMEPackage ProjectionPackage => decal?.ProjectionPackage ?? Export.FileRef;
     internal DecalComponentProxy DecalComponent => decal;
@@ -465,9 +466,11 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                 foreach (var source in sources)
                 {
                     if (!staticMeshes || !projection.Intersects(source.GetBounds())) continue;
-                    // (A new one's actor is of a recipe's exact class)
-                    if (source.IsStandIn ? source.Actor.ClassName != "StaticMeshActor"
-                        : source.Export.Parent is not ExportEntry parent || !(parent.IsA("StaticMeshActor") || parent.ClassName == "StaticMeshCollectionActor")) continue;
+                    // (A new one's actor is of a recipe's exact class. A copy's is as the component it's drawn from is, which its commit clones)
+                    var receiving = source.CopiedFrom ?? (source.IsStandIn ? null : source.Export);
+                    if (receiving is null ? source.Actor.ClassName != "StaticMeshActor"
+                        : receiving.ClassName != "StaticMeshComponent" || receiving.Parent is not ExportEntry parent
+                          || !(parent.IsA("StaticMeshActor") || parent.ClassName == "StaticMeshCollectionActor")) continue;
                     if (!hidden && (source.HiddenGame || source.Actor.IsHidden)) continue;
                     if (!settings.Filter.Allows(source.Export)) continue;
                     //a stand-in's are the values its commit makes the component with
@@ -592,15 +595,20 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         else { settings.Write(props); destination.WriteProperties(props); }
     }
     /// <summary>
-    /// <paramref name="r"/> as its package has it once the actors written before decals are (<see cref="ActorCommit"/>): one on a new mesh actor, drawn
-    /// from a stand-in, is on the component that actor's commit made (<see cref="MeshActorProxy.CommittedComponent"/>). Itself otherwise. Nothing is
-    /// changed. A view is made again from what was written once the commit is accepted, so this view doesn't take it on
+    /// <paramref name="r"/> as its package has it once the actors written before decals are (<see cref="ActorCommit"/>): one on a new mesh actor or a
+    /// copy, drawn from a stand-in, is on the component that actor's commit made (<see cref="MeshActorProxy.CommittedComponent"/>,
+    /// <see cref="ActorCloneProxy.CommittedComponent"/>). Itself otherwise. Nothing is changed. A view is made again from what was written once the commit
+    /// is accepted, so this view doesn't take it on
     /// </summary>
     private static Receiver Committed(Receiver r)
     {
         if (r.Source is not { IsStandIn: true } standIn) return r;
-        if (standIn.Actor is not MeshActorProxy mesh || standIn != mesh.StaticMeshComponent || mesh.CommittedComponent is not { } component)
-            throw new InvalidOperationException($"It lands on {standIn.Actor.ActorName}, whose component hasn't been made.");
+        var component = standIn.Actor switch
+        {
+            MeshActorProxy mesh when standIn == mesh.StaticMeshComponent => mesh.CommittedComponent,
+            ActorCloneProxy clone => clone.CommittedComponent(standIn),
+            _ => null
+        } ?? throw new InvalidOperationException($"It lands on {standIn.Actor.ActorName}, whose component hasn't been made.");
         var data = r.Data.ShallowCopy();
         data.Component = component.UIndex;
         return new Receiver(data, component) { Source = standIn, Geometry = r.Geometry, OriginalTransform = r.OriginalTransform, Mesh = r.Mesh,

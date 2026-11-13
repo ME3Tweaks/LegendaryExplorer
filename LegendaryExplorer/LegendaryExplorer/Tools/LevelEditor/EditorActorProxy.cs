@@ -271,6 +271,8 @@ internal sealed class EmitterDraftProxy(IActorEditorContext context, ActorRecord
 {
     private AssetReference particleSystem = particleSystem;
 
+    internal override AssetReference DraftAsset => particleSystem;
+
     internal override IEnumerable<AssetReference> AssetsToCopy => IsDraft ? [particleSystem] : [];
 
     internal override Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf)
