@@ -132,6 +132,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 }
             }
         }
+        // A hidden outliner (another tab is in front) has no rows to scroll to: scroll when it's shown, if the actor is still selected then.
+        if (!MeshExportsList.IsVisible)
+        {
+            _revealWhenOutlinerShown = actor;
+            return;
+        }
+        _revealWhenOutlinerShown = null;
         MeshExportsList.UpdateLayout();
         // A group that just expanded has its rows placed by estimated heights, so the first scroll can land
         // up to a group's worth off. Its rows are measured by then, so scrolling again lands on the actor.
@@ -140,6 +147,21 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             MeshExportsList.ScrollIntoView(actor);
             MeshExportsList.UpdateLayout();
         }
+    }
+
+    //the actor revealed while the outliner was hidden
+    private ActorProxy _revealWhenOutlinerShown;
+
+    private void MeshExportsList_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (!MeshExportsList.IsVisible || _revealWhenOutlinerShown is null) return;
+        // Once the tab's content is laid out, so the rows can be measured.
+        Dispatcher.BeginInvoke(DispatcherPriority.Loaded, () =>
+        {
+            var actor = _revealWhenOutlinerShown;
+            _revealWhenOutlinerShown = null;
+            if (actor is not null && actor == SelectedActor && MeshExportsList.IsVisible) RevealActorInOutliner(actor);
+        });
     }
 
     private bool IsOutlinerRowInView(ActorProxy actor)
@@ -633,6 +655,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             FocusOnBounds(fullBounds);
         }
+        else if (RenderContext.Camera.IsOrthographic)
+        {
+            PlaceOrthographicCamera(0, 0, RenderContext.Camera.Position.Z);
+        }
         else
         {
             RenderContext.Camera.Position = Vector3.Zero;
@@ -652,20 +678,38 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         return fullBounds;
     }
 
+    private const float OrthoDepthMargin = 1000;
+    //the scene's lowest point when the top view was last placed, which its depth range reaches below
+    private float _orthoSceneBottom;
+
     /// <summary>
-    /// Puts the orthographic camera above everything in the scene, with a depth range that reaches below all of it
+    /// Puts the orthographic camera over (x, y) at <paramref name="clipHeight"/>, the top view's near plane, with a depth range that reaches below everything in the scene
     /// </summary>
-    private void PlaceOrthographicCamera(float x, float y)
+    private void PlaceOrthographicCamera(float x, float y, float clipHeight)
     {
-        const float margin = 1000;
-        float top = 40_000, bottom = -60_000;
-        if (GetSceneBounds() is BoxSphereBounds bounds)
+        _orthoSceneBottom = GetSceneBounds() is BoxSphereBounds bounds ? bounds.Origin.Z - bounds.BoxExtent.Z : -60_000;
+        RenderContext.Camera.Position = new Vector3(x, y, clipHeight);
+        UpdateOrthoDepthRange();
+        OnPropertyChanged(nameof(TopDownClipHeight));
+    }
+
+    private void UpdateOrthoDepthRange() =>
+        RenderContext.Camera.OrthoDepthRange = MathF.Max(RenderContext.Camera.Position.Z - _orthoSceneBottom + OrthoDepthMargin, 100_000);
+
+    /// <summary>
+    /// The height the top view is clipped at: what's above it isn't drawn, so a level can be seen under its ceilings. It's the top view's camera height,
+    /// which starts at the perspective camera's
+    /// </summary>
+    public float TopDownClipHeight
+    {
+        get => RenderContext.Camera.IsOrthographic ? RenderContext.Camera.Position.Z : 0;
+        set
         {
-            top = bounds.Origin.Z + bounds.BoxExtent.Z;
-            bottom = bounds.Origin.Z - bounds.BoxExtent.Z;
+            if (!RenderContext.Camera.IsOrthographic || RenderContext.Camera.Position.Z == value) return;
+            RenderContext.Camera.Position = RenderContext.Camera.Position with { Z = value };
+            UpdateOrthoDepthRange();
+            OnPropertyChanged();
         }
-        RenderContext.Camera.Position = new Vector3(x, y, top + margin);
-        RenderContext.Camera.OrthoDepthRange = MathF.Max(top - bottom + 2 * margin, 100_000);
     }
 
     private void FocusOnBounds(BoxSphereBounds fullBounds)
@@ -673,7 +717,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         Vector3 origin = fullBounds.Origin;
         if (RenderContext.Camera.IsOrthographic)
         {
-            PlaceOrthographicCamera(origin.X, origin.Y);
+            //(focusing keeps the clip height chosen)
+            PlaceOrthographicCamera(origin.X, origin.Y, RenderContext.Camera.Position.Z);
             RenderContext.Camera.OrthoWidth = fullBounds.SphereRadius.Clamp(10, float.MaxValue) * 3f;
         }
         else
@@ -3133,10 +3178,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 if (value)
                 {
+                    //clipped where the camera is, so the view from inside a room is of that room, not its ceiling
+                    float eyeHeight = RenderContext.Camera.EyePosition.Z;
                     RenderContext.Camera.SavePerspectiveState();
                     RenderContext.Camera.IsOrthographic = true;
                     var pos = RenderContext.Camera.Position;
-                    PlaceOrthographicCamera(pos.X, pos.Y);
+                    PlaceOrthographicCamera(pos.X, pos.Y, eyeHeight);
                     float focusDepth = RenderContext.Camera.FocusDepth;
                     RenderContext.Camera.OrthoWidth = MathF.Max(focusDepth * 4f, 500f);
                 }
@@ -3144,6 +3191,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 {
                     RenderContext.Camera.IsOrthographic = false;
                     RenderContext.Camera.RestorePerspectiveState();
+                    OnPropertyChanged(nameof(TopDownClipHeight));
                 }
             }
         }

@@ -366,7 +366,7 @@ public class LevelEditorRenderContext : MeshRenderContext
     /// <summary>Whether a widget, light handle or spline tangent drag, or a terrain stroke, owns the mouse. Drags belong to the left button</summary>
     public bool IsDragging => TransformWidget.IsDragging || LightGizmo.IsDragging || SplineGizmo.IsDragging || TerrainSculpt?.IsStroking == true;
 
-    public override bool HoldsMouseCapture => IsDragging;
+    public override bool HoldsMouseCapture => IsDragging || base.HoldsMouseCapture;
 
     //an Alt+drag's Alt is often released after the mouse, and its release mustn't then open the window's menu
     private bool altReleaseOwed;

@@ -157,13 +157,7 @@ public class MeshRenderContext : RenderContext
         var key = (bias, -decal.SlopeBias, cull, fill);
         if (!decalRasterizers.TryGetValue(key, out var state))
         {
-            var description = new RasterizerStateDescription
-            {
-                CullMode = cull, FillMode = fill,
-                IsFrontCounterClockwise = true, IsMultisampleEnabled = SampleCount > 1,
-                DepthBias = bias, SlopeScaledDepthBias = -decal.SlopeBias
-            };
-            decalRasterizers[key] = state = new RasterizerState(Device, description);
+            decalRasterizers[key] = state = CreateRasterizerState(cull, fill, bias, -decal.SlopeBias);
         }
         ImmediateContext.Rasterizer.State = state;
     }
@@ -1268,14 +1262,15 @@ public class MeshRenderContext : RenderContext
         if (Camera.IsOrthographic)
         {
             float panSpeed = Camera.OrthoWidth * 0.5f;
+            var (right, up) = Camera.OrthoScreenAxes;
             if (PressedKeys.HasFlag(KeyStates.W))
-                Camera.Position += Vector3.UnitY * timestep * panSpeed;
+                Camera.Position += up * timestep * panSpeed;
             if (PressedKeys.HasFlag(KeyStates.S))
-                Camera.Position -= Vector3.UnitY * timestep * panSpeed;
+                Camera.Position -= up * timestep * panSpeed;
             if (PressedKeys.HasFlag(KeyStates.A))
-                Camera.Position -= Vector3.UnitX * timestep * panSpeed;
+                Camera.Position -= right * timestep * panSpeed;
             if (PressedKeys.HasFlag(KeyStates.D))
-                Camera.Position += Vector3.UnitX * timestep * panSpeed;
+                Camera.Position += right * timestep * panSpeed;
             if (PressedKeys.HasFlag(KeyStates.Q))
             {
                 Camera.OrthoWidth *= 1 + timestep;
@@ -1445,7 +1440,7 @@ public class MeshRenderContext : RenderContext
         return 1;
     }
 
-    private RasterizerState CreateRasterizerState(CullMode cullMode, FillMode fillMode = FillMode.Solid, int depthBias = 0)
+    private RasterizerState CreateRasterizerState(CullMode cullMode, FillMode fillMode = FillMode.Solid, int depthBias = 0, float slopeScaledDepthBias = 0)
     {
         return new RasterizerState(Device, new RasterizerStateDescription
         {
@@ -1453,9 +1448,13 @@ public class MeshRenderContext : RenderContext
             FillMode = fillMode,
             //matches UE3's D3D10/11 RHI, whose CM_CW cull mode is D3D11_CULL_BACK
             IsFrontCounterClockwise = true,
+            //(a new description leaves it off, and unclipped geometry in front of the near plane is clamped to the nearest depth and drawn over
+            //everything: the top view's ceilings above its clip height)
+            IsDepthClipEnabled = true,
             IsMultisampleEnabled = SampleCount > 1,
             IsAntialiasedLineEnabled = false,
-            DepthBias = depthBias
+            DepthBias = depthBias,
+            SlopeScaledDepthBias = slopeScaledDepthBias
         });
     }
 
@@ -1947,6 +1946,9 @@ public class MeshRenderContext : RenderContext
         }
     }
 
+    //a camera drag keeps moving the camera outside the viewport, and its release there still ends it
+    public override bool HoldsMouseCapture => PressedMouseButton is not MouseButtons.None;
+
     private System.Drawing.Point mouseDownPos;
     public override bool MouseDown(MouseButtons button, int x, int y)
     {
@@ -1978,8 +1980,10 @@ public class MeshRenderContext : RenderContext
             {
                 case MouseButtons.Left:
                 case MouseButtons.Middle:
+                    //the view follows the cursor (screen y grows downward)
                     float worldPerPixel = Camera.OrthoWidth / Width;
-                    Camera.Position += new Vector3(-xDiff * worldPerPixel, yDiff * worldPerPixel, 0);
+                    var (right, up) = Camera.OrthoScreenAxes;
+                    Camera.Position += (-xDiff * right + yDiff * up) * worldPerPixel;
                     handled = true;
                     break;
                 case MouseButtons.Right:

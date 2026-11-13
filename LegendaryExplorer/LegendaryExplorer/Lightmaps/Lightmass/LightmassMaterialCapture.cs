@@ -206,7 +206,7 @@ public sealed class LightmassMaterialCapture : IDisposable
         dc.Rasterizer.State = rasterizer;
         dc.OutputMerger.SetDepthStencilState(noDepth);
         dc.ClearRenderTargetView(view, new RawColor4(Unwritten, Unwritten, Unwritten, 0));
-        effect.BeginFrame(dc, Matrix4x4.Identity, UvProjection, EyePosition);
+        effect.BeginFrame(dc, Matrix4x4.Identity, UvProjection, new Vector4(EyePosition, 1));
 
         effect.PixelShaderResources.Reset();
         PixelShader ps = context.GetCachedPixelShader(pixelShader.Guid, pixelShader.ShaderByteCode);

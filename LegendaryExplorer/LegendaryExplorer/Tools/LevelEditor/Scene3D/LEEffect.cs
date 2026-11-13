@@ -33,11 +33,15 @@ public unsafe class LEEffect : IDisposable
     public Matrix4x4 ViewMatrix { get; private set; }
     public Matrix4x4 ViewProjectionMatrix { get; private set; }
     public Matrix4x4 InverseViewProjectionMatrix { get; private set; }
-    /// <summary>The world-space position the view is from: what game shaders get as CameraWorldPos</summary>
+    /// <summary>
+    /// What game shaders get as CameraWorldPos: the world-space position the view is from, or for an orthographic view the direction towards its
+    /// camera (see <see cref="SceneCamera.ViewOrigin"/>)
+    /// </summary>
     public Vector3 ViewOrigin { get; private set; }
     /// <summary>
-    /// FSceneView::PreViewTranslation, -<see cref="ViewOrigin"/>. Game vertex shaders work in this translated world space: positions given to them
-    /// (LocalToWorld, light positions, shadow projections) include it, and materials rebuild world positions by adding CameraWorldPos back
+    /// FSceneView::PreViewTranslation, -<see cref="ViewOrigin"/> for a perspective view and zero for an orthographic one. Game vertex shaders work in
+    /// this translated world space: positions given to them (LocalToWorld, light positions, shadow projections) include it, and materials rebuild
+    /// world positions by adding CameraWorldPos back
     /// </summary>
     public Vector3 PreViewTranslation { get; private set; }
     /// <summary>From translated world space (see <see cref="PreViewTranslation"/>) to clip space</summary>
@@ -128,27 +132,29 @@ public unsafe class LEEffect : IDisposable
     /// remain valid even when another effect temporarily changes the context's bindings.
     /// </summary>
     public void BeginFrame(MeshRenderContext context) =>
-        BeginFrame(context.ImmediateContext, context.Camera.ViewMatrix, context.Camera.ProjectionMatrix, context.Camera.EyePosition);
+        BeginFrame(context.ImmediateContext, context.Camera.ViewMatrix, context.Camera.ProjectionMatrix, context.Camera.ViewOrigin);
 
     /// <summary>
     /// Updates the view constants for an arbitrary view, e.g. one that isn't of the scene camera
     /// </summary>
-    public void BeginFrame(DeviceContext deviceContext, Matrix4x4 view, Matrix4x4 projection, Vector3 eyePosition)
+    /// <param name="viewOrigin">FSceneView::ViewOrigin: an eye position with W 1, or for an orthographic view the direction towards its camera with W 0</param>
+    public void BeginFrame(DeviceContext deviceContext, Matrix4x4 view, Matrix4x4 projection, Vector4 viewOrigin)
     {
         ViewMatrix = view;
         ViewProjectionMatrix = ViewMatrix * projection;
         Matrix4x4.Invert(ViewMatrix, out Matrix4x4 inverseView);
         Matrix4x4.Invert(projection, out Matrix4x4 inverseProjection);
         InverseViewProjectionMatrix = inverseProjection * inverseView;
-        //FSceneView translates world space to the view origin (UE3 does so only for perspective views, but every view here has an eye position)
-        ViewOrigin = eyePosition;
-        PreViewTranslation = -eyePosition;
+        //FSceneView translates world space to a perspective view's origin; an orthographic one's is a direction, so it isn't translated
+        ViewOrigin = new Vector3(viewOrigin.X, viewOrigin.Y, viewOrigin.Z);
+        PreViewTranslation = viewOrigin.W > 0 ? -ViewOrigin : Vector3.Zero;
         TranslatedViewProjectionMatrix = Matrix4x4.CreateTranslation(-PreViewTranslation) * ViewProjectionMatrix;
-        //as SetViewParameters sets them: the view origin is translated too
+        //as SetViewParameters sets them: the view origin is translated too. Vertex shaders' camera vector is CameraPosition.xyz - WorldPosition * CameraPosition.w,
+        //so an orthographic view's is the same everywhere
         var vertexConstants = new LEVSConstants
         {
             ViewProjectionMatrix = TranslatedViewProjectionMatrix,
-            CameraPosition = new Vector4(ViewOrigin + PreViewTranslation, 1),
+            CameraPosition = new Vector4(ViewOrigin + PreViewTranslation, viewOrigin.W),
             PreViewTranslation = new Vector4(PreViewTranslation, 0)
         };
         // The projection already uses reversed depth.

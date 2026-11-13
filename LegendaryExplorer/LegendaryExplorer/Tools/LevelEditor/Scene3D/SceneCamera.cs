@@ -128,6 +128,20 @@ public class SceneCamera
     /// </summary>
     public Vector3 EyePosition => FirstPerson || IsOrthographic ? Position : Position - CameraForward * FocusDepth;
 
+    /// <summary>
+    /// FSceneView::ViewOrigin, what game shaders get as the camera: the eye position (W 1) for a perspective view; for the top view, the unit direction
+    /// back towards the camera (W 0), so every pixel has the same camera vector, as in UE3's orthographic views
+    /// </summary>
+    public Vector4 ViewOrigin
+    {
+        get
+        {
+            if (!IsOrthographic) return new Vector4(EyePosition, 1);
+            Matrix4x4 view = OrthoView(Vector3.Zero);
+            return new Vector4(-new Vector3(view.M13, view.M23, view.M33), 0);
+        }
+    }
+
     public SceneCamera()
     {
         CalcViewMatrix();
@@ -154,6 +168,18 @@ public class SceneCamera
         Yaw = MathF.Atan2(y, x);
     }
 
+    /// <summary>The world directions the top view's screen right and up show (looking down with +Y up, right is -X)</summary>
+    public (Vector3 Right, Vector3 Up) OrthoScreenAxes
+    {
+        get
+        {
+            Matrix4x4 view = OrthoView(Vector3.Zero);
+            return (new Vector3(view.M11, view.M21, view.M31), new Vector3(view.M12, view.M22, view.M32));
+        }
+    }
+
+    private static Matrix4x4 OrthoView(Vector3 position) => Matrix4x4.CreateLookToLeftHanded(position, -Vector3.UnitZ, Vector3.UnitY);
+
     private Matrix4x4 firstPersonViewMatrix;
     public Matrix4x4 ViewMatrix
     {
@@ -161,7 +187,7 @@ public class SceneCamera
         {
             if (IsOrthographic)
             {
-                return Matrix4x4.CreateLookToLeftHanded(Position, -Vector3.UnitZ, Vector3.UnitY);
+                return OrthoView(Position);
             }
             if (FirstPerson)
             {

@@ -59,8 +59,12 @@ public partial class LevelEditor
                 && (option.ClassName.Contains(search, StringComparison.OrdinalIgnoreCase)
                     || option.Description.Contains(search, StringComparison.OrdinalIgnoreCase)
                     || option.Category.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
+            OnPropertyChanged(nameof(IsPlacementFiltered));
         }
     }
+
+    /// <summary>Whether <see cref="PlacementSearch"/> filters the list, so its categories show expanded</summary>
+    public bool IsPlacementFiltered => PlacementOptions.Filter is not null;
 
     private string placementRefusal;
     /// <summary>Why nothing can be placed in <see cref="PlacementFile"/> now, or null</summary>

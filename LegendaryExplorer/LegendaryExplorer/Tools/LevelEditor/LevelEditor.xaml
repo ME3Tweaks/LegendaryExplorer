@@ -267,7 +267,7 @@
                                     <Button Grid.Column="2" Content="Go to" Click="GotoButton_Clicked" IsEnabled="{Binding HasAnyFileOpen}" Padding="8,3" Margin="5,0,0,0"/>
                                 </Grid>
                                 <TextBlock DockPanel.Dock="Bottom" Text="{Binding Actors.BindableCount, StringFormat='{}{0} actors loaded'}" Margin="9,7" Foreground="{StaticResource EditorMuted}" FontSize="11"/>
-                                <ListBox x:Name="MeshExportsList" ItemsSource="{Binding ActorsView}" SelectedItem="{Binding SelectedActor}" ItemContainerStyle="{StaticResource ActorRow}"
+                                <ListBox x:Name="MeshExportsList" ItemsSource="{Binding ActorsView}" SelectedItem="{Binding SelectedActor}" ItemContainerStyle="{StaticResource ActorRow}" IsVisibleChanged="MeshExportsList_IsVisibleChanged"
                                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True">
                                     <ListBox.GroupStyle>
                                         <GroupStyle>
@@ -344,7 +344,8 @@
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="GroupItem">
-                                                                    <Expander Style="{StaticResource OutlinerGroupExpander}" IsExpanded="False" Header="{TemplateBinding Content}" HeaderTemplate="{TemplateBinding ContentTemplate}">
+                                                                    <Expander Style="{StaticResource OutlinerGroupExpander}" IsExpanded="{Binding Data.IsPlacementFiltered, Source={StaticResource bindingProxy}, Mode=OneWay}"
+                                                                              Header="{TemplateBinding Content}" HeaderTemplate="{TemplateBinding ContentTemplate}">
                                                                         <ItemsPresenter/>
                                                                     </Expander>
                                                                 </ControlTemplate>
@@ -549,6 +550,11 @@
                                         </MenuItem>
                                     </Menu>
                                     <ToggleButton Content="Top Down" IsChecked="{Binding IsOrthographicView}" Padding="7,4" ToolTip="Toggle top-down orthographic view (Numpad 5)"/>
+                                    <StackPanel Orientation="Horizontal" Margin="6,0,0,0" Visibility="{Binding IsOrthographicView, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                ToolTip="Hide everything above this height, to see beneath a level's ceilings. Starts at the camera's height when Top Down is turned on.">
+                                        <TextBlock Text="Clip height" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <xctk:SingleUpDown Width="90" Value="{Binding TopDownClipHeight}" Increment="100" FormatString="F0" VerticalAlignment="Center" AutomationProperties.Name="Top-down clip height"/>
+                                    </StackPanel>
                                     <Menu Background="Transparent">
                                         <MenuItem Header="Show ▾" Padding="7,4">
                                             <MenuItem Header="Collision" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowCollision}"/>
