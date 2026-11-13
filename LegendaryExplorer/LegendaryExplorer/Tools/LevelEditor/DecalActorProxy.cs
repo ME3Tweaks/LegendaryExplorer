@@ -186,7 +186,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     private DecalSettings projectedSettings;
     //reprojection reads parsed meshes on every move, long after any load has ended
     private readonly Dictionary<ExportEntry, StaticMesh> sourceMeshes = [];
-    private HashSet<CollectionActorComponentProxy> neededMembers = [];
+    //(collections' members, and uncommitted copies of them)
+    private HashSet<ActorProxy> neededMembers = [];
     private List<(MeshComponentProxy Source, Matrix4x4 Transform)> projectedSources = [];
     //a new decal's, until the commit that makes it is accepted: it has no cooked receivers, so it's projected wherever it is, and its commit writes them
     private bool isNew;
@@ -482,7 +483,8 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
                     int uv = geometry.GetCondensedProperties().GetProp<IntProperty>("LightMapCoordinateIndex")?.Value ?? 0;
                     var data = DecalReprojection.Project(projection, mesh.LODModels[0], source.LocalToWorld, source.Export.UIndex, uv, backfaces, angle, noClip);
                     if (data.NumTriangles == 0) continue;
-                    if (source.Actor is CollectionActorComponentProxy member && CollectionMemberUpgrade.ActorRefusal(member) is { } refusal)
+                    // A member, or a new copy of one, is upgraded for it (UpdateNeededMembers)
+                    if (source.Actor is { IsCollectionMember: true } member && CollectionMemberUpgrade.ActorRefusal(member) is { } refusal)
                         throw new NotSupportedException($"{member.ActorName} needs to become an actor to receive this decal, but can't: {refusal}");
                     // Its commit makes it in the file it was placed in, which it can't then move out of (DecalPackageMigration moves an existing decal's export)
                     if (isNew && source.Export.FileRef != Export.FileRef)
@@ -524,9 +526,10 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     /// <summary>Tells the collection members that the uncommitted projection lands on or the Filter lists that they need to be actors, and the others that they don't</summary>
     internal void UpdateNeededMembers()
     {
-        IEnumerable<CollectionActorComponentProxy> landedOn = HasReprojectedReceivers ? receivers.Select(r => r.Source?.Actor).OfType<CollectionActorComponentProxy>() : [];
+        IEnumerable<ActorProxy> landedOn = HasReprojectedReceivers ? receivers.Select(r => r.Source?.Actor).Where(a => a?.IsCollectionMember == true) : [];
         // A decal pending deletion, or out of the scene, doesn't need anything, until that's undone
-        HashSet<CollectionActorComponentProxy> members = owner.PendingDeletion is not null || owner.IsOutOfScene ? []
+        // (A Filter lists saved exports, so the members it lists are never uncommitted copies)
+        HashSet<ActorProxy> members = owner.PendingDeletion is not null || owner.IsOutOfScene ? []
             : [.. landedOn, .. owner.Decal.Settings.Filter.Actors.Select(owner.Decal.MemberOf).OfType<CollectionActorComponentProxy>()];
         foreach (var member in neededMembers.Except(members)) member.SetNeededBy(owner, false);
         foreach (var member in members.Except(neededMembers)) member.SetNeededBy(owner, true);

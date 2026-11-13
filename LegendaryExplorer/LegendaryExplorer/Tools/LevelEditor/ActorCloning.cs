@@ -53,14 +53,21 @@ public static class ActorCloning
         if (!actor.Package.Game.IsLEGame()) return "Only the Legendary Edition's actors can be cloned.";
         // A placed draft is copied by its recipe, as it was made
         if (actor is { IsDraft: true, CloneSource: null }) return ActorCreation.HasRecipe(actor.ClassName) ? null : $"There's no recipe for a new {actor.ClassName}.";
-        // (Its export is its component, which isn't an actor)
-        if (actor is CollectionActorComponentProxy) return "It's a member of a collection, which can't be cloned yet. Upgrade it to an actor first.";
-        // A copy's copy is another copy of the same saved actor
+        // A copy's copy is another copy of the same saved actor, or member
         var saved = actor.Export ?? actor.CloneSource;
+        // However it's shown: as an actor, or as a light collection's member
+        if (saved.IsA("DominantDirectionalLight") || saved.IsA("DominantDirectionalLightComponent")) return "A level has only one dominant directional light.";
+        // A member's copy is added to its collection, as Package Editor's Clone adds one
+        if (actor.MemberCollection is { } collection)
+        {
+            // Drawn from its component as it's saved, which a copy is made of, and in its collection, which it's added to
+            if (ActorDeletionPlan.MembershipProblem(saved, collection) is { } problem) return problem;
+            return collection.Parent is ExportEntry { ClassName: "Level" } ? null : "Its collection isn't one of its level's actors.";
+        }
+        // A member that couldn't be drawn is shown by a marker, which a copy of its component wouldn't be
+        if (actor.CollectionOwner is not null) return "It's a collection's member that couldn't be drawn.";
         // (The level's BSP model is drawn as an actor)
         if (!saved.IsA("Actor")) return "It isn't an actor.";
-        //(however it's shown)
-        if (saved.IsA("DominantDirectionalLight")) return "A level has only one dominant directional light.";
         string kind = actor switch
         {
             // A clone would share its connections
@@ -179,7 +186,8 @@ public static class ActorCloning
     /// actor's values without its exports, which a view of those exports would share their light, light environment and lighting edits with: a light is
     /// drawn as a new light of its values, a marker as a new marker, anything else by stand-ins of its meshes and brush (<see cref="ActorCloneProxy"/>). Its
     /// saved values are the saved actor's, which its commit clones; a copy's copy is another copy of the same actor. Either way it starts as its source is
-    /// shown: its source's uncommitted edits are pending on it, relative to the same saved values (<see cref="CarryEdits"/>)
+    /// shown: its source's uncommitted edits are pending on it, relative to the same saved values (<see cref="CarryEdits"/>). A collection's member is
+    /// copied as its component: a light as a new light of its values, a mesh by a stand-in of it
     /// </summary>
     private static ActorProxy MakeDraft(IActorEditorContext editor, ActorRecord record, ActorProxy source)
     {
@@ -188,12 +196,16 @@ public static class ActorCloning
         else
         {
             var saved = source.Export ?? source.CloneSource;
-            var properties = saved.GetCondensedProperties();
+            var collection = source.MemberCollection;
+            // A member is its component, with no actor's values
+            var properties = collection is null ? saved.GetCondensedProperties() : [];
             copy = source switch
             {
-                LightActorProxy => new LightActorProxy(editor, record, properties, LightActorProxy.GetLightComponent(saved)) { CloneSource = saved },
+                // A member light's component is the member
+                LightActorProxy or StaticLightCollectionComponentProxy => new LightActorProxy(editor, record, properties,
+                    collection is null ? LightActorProxy.GetLightComponent(saved) : saved) { CloneSource = saved, CloneCollection = collection },
                 EditorActorProxy => new EditorActorProxy(editor, record, properties, ActorClassification.Get(saved)) { CloneSource = saved },
-                _ => new ActorCloneProxy(editor, record, properties, source, saved) { CloneSource = saved }
+                _ => new ActorCloneProxy(editor, record, properties, source, saved, isMember: collection is not null) { CloneSource = saved, CloneCollection = collection }
             };
         }
         try
@@ -240,11 +252,8 @@ public static class ActorCloning
 
     /// <summary>
     /// For a commit of a copy of <paramref name="source"/>, inside its package edit: clones the actor and everything under it, named
-    /// <paramref name="name"/>, as one of <paramref name="level"/>'s actors. Its references inside the copy are to the copy's own objects (EntryCloner.CloneTree
-    /// relinks them). Its NetIndexes are INDEX_NONE, as a new actor's (<see cref="ActorProxy.NewActorExport"/>): a shipping one would collide with the
-    /// source's. Its light components have new GUIDs, which baked lighting refers to them by (UE3's ULightComponent::PostDuplicate), and a dominant spot
-    /// light's baked shadow transitions are dropped, being where its source is. Nothing is attached to
-    /// it: the actors in its source's Attached are based on its source, and the engine moves everything in an actor's Attached with it (UWorld::MoveActor,
+    /// <paramref name="name"/>, as one of <paramref name="level"/>'s actors, made unique as <see cref="CloneTree"/> makes it. Nothing is attached to it: the
+    /// actors in its source's Attached are based on its source, and the engine moves everything in an actor's Attached with it (UWorld::MoveActor,
     /// UnLevAct.cpp), so a copy that listed them would pull them away
     /// </summary>
     /// <param name="levelBinary"><paramref name="level"/>'s, which the copy is added to the Actors of. The caller writes it</param>
@@ -253,11 +262,7 @@ public static class ActorCloning
     {
         if (source.Parent != level || source.FileRef.GetEntry(source.UIndex) != source)
             throw new InvalidOperationException($"{source.ObjectName.Instanced} is no longer one of {level.ObjectName.Instanced}'s actors, so it can't be cloned.");
-        var cloned = new ListenableDictionary<IEntry, IEntry>();
-        var copy = EntryCloner.CloneTree(source, objectMap: cloned);
-        //(only exports are cloned)
-        copies = cloned.ToDictionary(pair => (ExportEntry)pair.Key, pair => (ExportEntry)pair.Value);
-        copy.ObjectName = name;
+        var copy = CloneTree(source, name, out copies);
         //(emptied, as a deletion takes actors out of it: ActorDeletionPlan.WithoutAttachment)
         var actorProperties = copy.GetProperties();
         if (actorProperties.GetProp<ArrayProperty<ObjectProperty>>("Attached") is { Count: > 0 })
@@ -265,6 +270,49 @@ public static class ActorCloning
             actorProperties.AddOrReplaceProp(new ArrayProperty<ObjectProperty>("Attached"));
             copy.WriteProperties(actorProperties);
         }
+        levelBinary.Actors.Add(copy.UIndex);
+        return copy;
+    }
+
+    /// <summary>
+    /// For a commit of a copy of <paramref name="source"/>, one of <paramref name="collection"/>'s members, inside its package edit: clones the member and
+    /// everything under it, named <paramref name="name"/>, as another of its members, at <paramref name="transform"/>, as Package Editor's Clone adds one
+    /// (TryAddToStaticCollectionActor). A collection holds its members' transforms in its binary, one for each entry of its component list, which the game
+    /// reads in that order (AStaticMeshCollectionActor::Serialize, AStaticLightCollectionActor::Serialize). Nothing limits how many it has but the cooker's
+    /// configuration (UnContentCookers.cpp). It's made unique as an actor's copy is (<see cref="CloneTree"/>)
+    /// </summary>
+    /// <param name="copies">The copy's objects, by the source's objects they're copies of</param>
+    internal static ExportEntry MaterializeMember(ExportEntry source, ExportEntry collection, ExportEntry level, NameReference name, Matrix4x4 transform,
+        out Dictionary<ExportEntry, ExportEntry> copies)
+    {
+        if (collection.Parent != level || collection.FileRef.GetEntry(collection.UIndex) != collection)
+            throw new InvalidOperationException($"{collection.ObjectName.Instanced} is no longer one of {level.ObjectName.Instanced}'s actors, so {source.ObjectName.Instanced} can't be cloned into it.");
+        if ((source.FileRef.GetEntry(source.UIndex) != source ? "It's no longer in its package." : ActorDeletionPlan.MembershipProblem(source, collection)) is { } problem)
+            throw new InvalidOperationException($"{source.ObjectName.Instanced} can't be cloned. {problem}");
+        var binary = (StaticCollectionActor)ObjectBinary.From(collection);
+        var copy = CloneTree(source, name, out copies);
+        var members = collection.GetProperty<ArrayProperty<ObjectProperty>>(binary.ComponentPropName);
+        members.Add(new ObjectProperty(copy));
+        binary.LocalToWorldTransforms.Add(transform);
+        // Its binary has a transform for each entry of its component list as its properties have it, so they're written first (ActorDeletionPlan.RemoveMembers)
+        collection.WriteProperty(members);
+        collection.WriteBinary(binary);
+        return copy;
+    }
+
+    /// <summary>
+    /// Clones <paramref name="source"/> and everything under it, named <paramref name="name"/>, beside it. Its references inside the copy are to the copy's
+    /// own objects (EntryCloner.CloneTree relinks them). Its NetIndexes are INDEX_NONE, as a new actor's (<see cref="ActorProxy.NewActorExport"/>): a
+    /// shipping one would collide with the source's. Its light components have new GUIDs, which baked lighting refers to them by (UE3's
+    /// ULightComponent::PostDuplicate), and a dominant spot light's baked shadow transitions are dropped, being where its source is
+    /// </summary>
+    private static ExportEntry CloneTree(ExportEntry source, NameReference name, out Dictionary<ExportEntry, ExportEntry> copies)
+    {
+        var cloned = new ListenableDictionary<IEntry, IEntry>();
+        var copy = EntryCloner.CloneTree(source, objectMap: cloned);
+        //(only exports are cloned)
+        copies = cloned.ToDictionary(pair => (ExportEntry)pair.Key, pair => (ExportEntry)pair.Value);
+        copy.ObjectName = name;
         foreach (var export in copy.GetAllDescendants().OfType<ExportEntry>().Prepend(copy))
         {
             export.NetIndex = -1;
@@ -292,7 +340,6 @@ public static class ActorCloning
                 export.WriteProperties(properties);
             }
         }
-        levelBinary.Actors.Add(copy.UIndex);
         return copy;
     }
 }
@@ -316,8 +363,10 @@ internal sealed class ActorCloneProxy : ActorProxy
     public override int HitPriority => hitPriority;
 
     /// <param name="source">What it's a copy of: <paramref name="saved"/>'s view, or a copy of it</param>
-    /// <param name="saved">The saved actor it's a copy of</param>
-    internal ActorCloneProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, ActorProxy source, ExportEntry saved) : base(context, draft, properties)
+    /// <param name="saved">The saved actor it's a copy of, or the collection's member</param>
+    /// <param name="isMember">Whether <paramref name="saved"/> is a collection's member, which is its component alone</param>
+    internal ActorCloneProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, ActorProxy source, ExportEntry saved, bool isMember)
+        : base(context, draft, properties)
     {
         category = source.Category;
         isVolume = source.IsVolume;
@@ -327,17 +376,22 @@ internal sealed class ActorCloneProxy : ActorProxy
         //(the stand-ins drawn so far are disposed with it if it can't be drawn)
         try
         {
-            // The components under it that its own properties refer to (not those only its archetype's do), each named by a property that refers to it:
-            // one of its own (StaticMeshComponent) before an entry in an array (Components[1]), which is serialized first
-            var references = saved.GetProperties().SelectMany(p => p switch
+            // A member is drawn from its component, as its collection's view draws it
+            if (isMember) Draw(saved, null);
+            else
             {
-                ObjectProperty o => [(Name: p.Name.Instanced, o.Value, InArray: false)],
-                ArrayProperty<ObjectProperty> a => a.Select((o, i) => (Name: $"{p.Name.Instanced}[{i}]", o.Value, InArray: true)),
-                _ => []
-            }).OrderBy(r => r.InArray);
-            foreach (var (name, component, _) in references)
-            {
-                if (saved.FileRef.TryGetUExport(component, out var export) && export.Parent == saved) Draw(export, name);
+                // The components under it that its own properties refer to (not those only its archetype's do), each named by a property that refers to it:
+                // one of its own (StaticMeshComponent) before an entry in an array (Components[1]), which is serialized first
+                var references = saved.GetProperties().SelectMany(p => p switch
+                {
+                    ObjectProperty o => [(Name: p.Name.Instanced, o.Value, InArray: false)],
+                    ArrayProperty<ObjectProperty> a => a.Select((o, i) => (Name: $"{p.Name.Instanced}[{i}]", o.Value, InArray: true)),
+                    _ => []
+                }).OrderBy(r => r.InArray);
+                foreach (var (name, component, _) in references)
+                {
+                    if (saved.FileRef.TryGetUExport(component, out var export) && export.Parent == saved) Draw(export, name);
+                }
             }
             IsVolumetricMesh = Components.OfType<StaticMeshComponentProxy>().Any(mesh => mesh.IsVolumetric);
             // A character's head is morphed, as its class's view morphs it (BioPawnProxy, SFXSkeletalMeshActorProxy, SFXStuntActorProxy)

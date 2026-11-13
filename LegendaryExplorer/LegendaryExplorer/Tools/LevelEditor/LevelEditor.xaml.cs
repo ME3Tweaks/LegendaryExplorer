@@ -1333,7 +1333,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         DuplicateActorCommand = new RelayCommand(DuplicateActor, parameter => CanMutateScene
             && (parameter as ActorProxy ?? SelectedActor) is { DuplicateRefusal: null });
         UpgradeActorCommand = new RelayCommand(UpgradeActor, parameter => CanMutateScene
-            && (parameter as ActorProxy ?? SelectedActor) is CollectionActorComponentProxy { UpgradeRefusal: null });
+            && (parameter as ActorProxy ?? SelectedActor) is { UpgradeRefusal: null });
         ToggleOrthoViewCommand = new GenericCommand(() => IsOrthographicView = !IsOrthographicView);
         FocusFileCommand = new RelayCommand(parameter =>
         {
@@ -1616,7 +1616,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void UpgradeActor(object parameter)
     {
-        if (!CanMutateScene || (parameter as ActorProxy ?? SelectedActor) is not CollectionActorComponentProxy member) return;
+        if (!CanMutateScene || (parameter as ActorProxy ?? SelectedActor) is not { } member) return;
         try { UndoHistory.Push(CollectionMemberUpgrade.Upgrade(member)); }
         catch (Exception error) when (error is not OutOfMemoryException) { MessageBox.Show(this, error.Message, "Upgrade to actor"); }
     }
@@ -2083,6 +2083,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
         if (rebuiltViews.Count != 0) file.ReattachTo(rebuiltViews);
         foreach (var collectionActor in collectionActorsToUpdate) RebuildCollection(collectionActor, file);
+        // A collection that lost a member loses its uncommitted copies too
+        if (file.Actors.Concat(file.RetainedActors).Any(a => a.CloneCollection is { } into && collectionActorsToUpdate.Contains(into))
+            && RemoveActorsGoneFromLevel(file, level ?? file.LevelExport.GetBinaryData<Level>()))
+            changed = updated = levelActorsChanged = true;
         if (level is not null && AddActorsNewToLevel(file, level))
         {
             changed = updated = levelActorsChanged = true;
@@ -2170,24 +2174,28 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     /// <summary>
     /// Takes out the views of the actors <paramref name="level"/> no longer lists, and of its BSP if it isn't what the level has (which
-    /// <see cref="AddActorsNewToLevel"/> adds). Not drafts, which it doesn't list until they're committed, nor pending deletions, which are already
-    /// out of the scene and checked again when committed
+    /// <see cref="AddActorsNewToLevel"/> adds). Not drafts, which it doesn't list until they're committed (but copies of what it, or a collection, no
+    /// longer has), nor pending deletions, which are already out of the scene and checked again when committed
     /// </summary>
     /// <returns>Whether any were taken out</returns>
     private bool RemoveActorsGoneFromLevel(OpenLevelFile file, Level level)
     {
         var listed = level.Actors.ToHashSet();
-        // An uncommitted copy of an actor the level no longer has (another tool took it out) can't be made, so it goes with its source's view
+        // An uncommitted copy of an actor the level no longer has, or of a member its collection no longer has (another tool took it out), can't be
+        // made, so it goes with its source's view
+        bool SourceGone(ActorProxy copy) => copy.CloneCollection is { } collection
+            ? !listed.Contains(collection.UIndex) || ActorDeletionPlan.MembershipProblem(copy.CloneSource, collection) is not null
+            : !listed.Contains(copy.CloneSource.UIndex);
         var gone = file.Actors.Where(actor => actor switch
         {
             LevelModelProxy bsp => !bsp.IsReadFrom(level),
             { Export: { } export } => !listed.Contains((actor.CollectionOwner ?? export).UIndex),
-            { CloneSource: { } source } => !listed.Contains(source.UIndex),
+            { CloneSource: not null } => SourceGone(actor),
             _ => false
         }).ToList();
         //as is one that's been undone, which redoing would bring back
-        var goneUndone = file.RetainedActors.Where(actor => actor is { IsDisposed: false, CloneSource: { } source } && !listed.Contains(source.UIndex)
-            && !file.Actors.Contains(actor)).ToList();
+        var goneUndone = file.RetainedActors.Where(actor => actor is { IsDisposed: false, CloneSource: not null } && !file.Actors.Contains(actor) && SourceGone(actor))
+            .ToList();
         foreach (var actor in gone)
         {
             if (actor == SelectedActor) SelectedActor = null;

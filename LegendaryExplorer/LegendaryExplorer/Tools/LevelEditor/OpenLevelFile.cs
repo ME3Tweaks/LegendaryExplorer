@@ -28,7 +28,7 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
     public IEnumerable<ActorProxy> PendingCreations => Actors.Where(a => a.IsDraft);
     public IReadOnlyList<PendingActorDeletion> PendingDeletions => pendingDeletions.AsReadOnly();
     public bool HasPendingLifecycleChanges => pendingDeletions.Count != 0 || PendingCreations.Any()
-        || Actors.OfType<CollectionActorComponentProxy>().Any(member => member.UpgradePending);
+        || Actors.Any(member => member.UpgradePending);
 
     internal void AddDeletion(PendingActorDeletion deletion)
     {

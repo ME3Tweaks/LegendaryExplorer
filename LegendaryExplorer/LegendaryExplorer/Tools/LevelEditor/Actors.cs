@@ -70,8 +70,8 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         Editor.RenderContext.Registry.Bind(Id, export);
     }
 
-    /// <summary>The label for an actor named <paramref name="name"/>: with its Tag, unless that's the class name (the default)</summary>
-    private string Label(string name) => Tag.Name.CaseInsensitiveEquals(actorClass?.ObjectName.Name ?? "Class") ? name : $"{name} ({Tag})";
+    /// <summary>The label for an actor named <paramref name="name"/>: with its Tag, unless that's the class name (the default), or it has none (a member's copy)</summary>
+    private string Label(string name) => Tag == NameReference.None || Tag.Name.CaseInsensitiveEquals(actorClass?.ObjectName.Name ?? "Class") ? name : $"{name} ({Tag})";
 
     /// <summary>A committed draft is labelled by the name its export was given</summary>
     private protected void OnCommittedAsNew()
@@ -113,11 +113,58 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     private protected virtual string EditKind => "Edit";
     public string PendingChangeStatus => PendingDeletion?.Status ?? $"{ChangeKind} {ActorName}";
     /// <summary>Why Delete can't remove this actor now, or null</summary>
-    public virtual string DeleteRefusal => IsDraft ? ActorDeletionPlan.RemovalRefusal(this) : ActorDeletionPlan.Refusal(this);
-    /// <summary>Whether it's one of a collection's members, which can be upgraded to an actor</summary>
-    public bool IsCollectionMember => this is CollectionActorComponentProxy;
+    public virtual string DeleteRefusal => (IsDraft ? ActorDeletionPlan.RemovalRefusal(this) : ActorDeletionPlan.Refusal(this))
+        ?? (upgradeRequested ? "Its upgrade to an actor is pending: undo that first."
+        // A projection that only lands on it moves off it, as it does a mesh with an actor of its own. A Filter is the user's, and would be left listing nothing
+        : neededBy?.Any(d => d.Decal?.Settings.Filter.Actors.Contains(Export) == true) == true ? "A decal's uncommitted Filter lists it: uncheck it there first." : null);
+
+    /// <summary>
+    /// The collection whose member it is (<see cref="CollectionActorComponentProxy"/>), or for a copy of a member, the collection its commit adds it to
+    /// (<see cref="CloneCollection"/>). Null for anything else
+    /// </summary>
+    internal virtual ExportEntry MemberCollection => CloneCollection;
+    /// <summary>Whether it's one of a collection's members, or a copy of one, which can be upgraded to an actor</summary>
+    public bool IsCollectionMember => MemberCollection is not null;
     /// <summary>Why it can't be upgraded to an actor now, or null</summary>
-    public virtual string UpgradeRefusal => "Only a collection's member can be upgraded to an actor.";
+    public string UpgradeRefusal => CollectionMemberUpgrade.Refusal(this);
+
+    private bool upgradeRequested;
+    //(made when a decal first needs it: most actors are never a member a decal lands on)
+    private HashSet<DecalActorProxy> neededBy;
+
+    /// <summary>For a collection's member: whether Upgrade to Actor was used on it, and not undone</summary>
+    internal bool UpgradeRequested
+    {
+        get => upgradeRequested;
+        set
+        {
+            upgradeRequested = value;
+            OnUpgradeChanged();
+        }
+    }
+
+    /// <summary>
+    /// For a collection's member: whether the commit makes it an actor of its own (<see cref="CollectionMemberUpgrade"/>), because it was asked to, or
+    /// because a decal needs one. It looks the same until then, and can be edited as ever. A copy of a member is made one, then upgraded, by the same commit
+    /// </summary>
+    internal bool UpgradePending => upgradeRequested || neededBy?.Count > 0;
+
+    /// <summary>
+    /// For a collection's member: says whether <paramref name="decal"/>'s uncommitted changes need it to be an actor: its Filter lists it, which only an actor
+    /// can be, or its projection lands on it (in LE1-LE3's shipping levels, every static mesh a decal lands on has an actor of its own). This follows the
+    /// decal, so it's no undo step of its own: the decal moving off, its Filter dropping it or its edit being undone ends it
+    /// </summary>
+    internal void SetNeededBy(DecalActorProxy decal, bool needed)
+    {
+        if (needed ? (neededBy ??= []).Add(decal) : neededBy?.Remove(decal) == true) OnUpgradeChanged();
+    }
+
+    private void OnUpgradeChanged()
+    {
+        UpdateDirty();
+        NotifyPendingChange();
+        NotifyRefusals();
+    }
     /// <summary>Why it can't be duplicated now (by Duplicate, or an Alt+drag), or null</summary>
     public virtual string DuplicateRefusal => ActorCloning.Refusal(this);
 
@@ -126,6 +173,12 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// Null for anything else
     /// </summary>
     internal ExportEntry CloneSource { get; init; }
+
+    /// <summary>
+    /// For a copy of a collection's member: the collection its commit adds it to, as one of its members (<see cref="ActorCloning.MaterializeMember"/>).
+    /// Its source's collection when it was made, whatever has happened to its source since. Null for anything else
+    /// </summary>
+    internal ExportEntry CloneCollection { get; init; }
 
     /// <summary>For a placed draft whose recipe has an asset (<see cref="ActorCreation.AssetKindOf"/>): the one it uses, which a copy of it uses too. Null otherwise</summary>
     internal virtual AssetReference DraftAsset => null;
@@ -216,6 +269,8 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public virtual void MarkClean()
     {
+        upgradeRequested = false;
+        neededBy = null;
         propertiesBeforeCommit = null;
         _cleanSnapshot = SnapshotTransform();
         IsDirty = false;
@@ -263,9 +318,15 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         if (CloneSource is null && (!ActorCreation.RecipeClasses.Contains(ClassName) || !WritesAllValuesWhenCreated))
             throw new InvalidOperationException($"{ClassName} has no validated construction recipe.");
         var name = NameReference.FromInstancedString(Editor.RenderContext.Registry.NameOf(Id));
-        //the package may have gained the proposed name since
-        if (Pcc.Exports.Any(e => e.Parent == level && e.ObjectName.Instanced == name.Instanced)) name = Pcc.GetNextIndexedName(ClassName);
-        if (CloneSource is not null)
+        //the package may have gained the proposed name since, under what it's made under
+        var parent = CloneCollection ?? level;
+        if (Pcc.Exports.Any(e => e.Parent == parent && e.ObjectName.Instanced == name.Instanced)) name = Pcc.GetNextIndexedName(ClassName);
+        if (CloneCollection is not null)
+        {
+            BindExport(ActorCloning.MaterializeMember(CloneSource, CloneCollection, level, name, LocalToWorld, out var copies));
+            CloneCopies = copies;
+        }
+        else if (CloneSource is not null)
         {
             BindExport(ActorCloning.Materialize(CloneSource, level, levelBinary, name, out var copies));
             CloneCopies = copies;
@@ -502,7 +563,11 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public virtual bool CanEditTransform => true;
     public virtual bool HasSpatialRepresentation => true;
-    public virtual ExportEntry CollectionOwner => null;
+    /// <summary>
+    /// The collection whose member it draws, or null. A copy of a member is its collection's once its commit has made it (a draft isn't one yet, so a change
+    /// to the collection, which shows the collection again, leaves it)
+    /// </summary>
+    public virtual ExportEntry CollectionOwner => Export is null ? null : CloneCollection;
     public bool IsReadOnly => !CanEditTransform || ((OwningFile is null || OwningFile.IsReadOnly)
                            && !(Editor?.IsApplyingUndoRedo ?? false));
 
@@ -871,14 +936,19 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// <summary>
     /// For a commit of a copy's view (<see cref="CloneSource"/>), once <see cref="Materialize"/> has made its export: writes its transform onto the export's
     /// own properties, which are its source's, with its references to its own objects, and its other pending edits onto the objects they're of
-    /// (<see cref="CommitCloneEdits"/>). Its view is drawn from stand-ins, so nothing else of the view's is written
+    /// (<see cref="CommitCloneEdits"/>). Its view is drawn from stand-ins, so nothing else of the view's is written. A member's transform is its
+    /// collection's, which <see cref="ActorCloning.MaterializeMember"/> wrote (a light's commit also writes it onto its component's cached copy of its
+    /// owner's transform, as a moved collection light's does)
     /// </summary>
     internal void CommitClone()
     {
         if (Export is null || CloneSource is null) throw new InvalidOperationException($"{DisplayText} isn't a copy with an export.");
-        var props = Export.GetProperties();
-        WriteTransform(props);
-        Export.WriteProperties(props);
+        if (CloneCollection is null)
+        {
+            var props = Export.GetProperties();
+            WriteTransform(props);
+            Export.WriteProperties(props);
+        }
         CommitCloneEdits(CloneCopies ?? throw new InvalidOperationException($"{DisplayText}'s export wasn't made by a commit."));
     }
 
@@ -1478,48 +1548,8 @@ public abstract class CollectionActorComponentProxy : ActorProxy
     /// </summary>
     public Matrix4x4 SavedLocalToWorld { get; private set; }
 
-    private bool upgradeRequested;
-    private readonly HashSet<DecalActorProxy> neededBy = [];
-
-    /// <summary>Whether Upgrade to Actor was used on it, and not undone</summary>
-    internal bool UpgradeRequested
-    {
-        get => upgradeRequested;
-        set
-        {
-            upgradeRequested = value;
-            OnUpgradeChanged();
-        }
-    }
-
-    /// <summary>
-    /// Whether the commit makes it an actor of its own (<see cref="CollectionMemberUpgrade"/>): because it was asked to, or because a decal needs one.
-    /// It looks the same until then, and can be edited as ever
-    /// </summary>
-    internal bool UpgradePending => upgradeRequested || neededBy.Count != 0;
-
-    /// <summary>
-    /// Says whether <paramref name="decal"/>'s uncommitted changes need it to be an actor: its Filter lists it, which only an actor can be, or its projection
-    /// lands on it (in LE1-LE3's shipping levels, every static mesh a decal lands on has an actor of its own). This follows the decal, so it's no undo
-    /// step of its own: the decal moving off, its Filter dropping it or its edit being undone ends it
-    /// </summary>
-    internal void SetNeededBy(DecalActorProxy decal, bool needed)
-    {
-        if (needed ? neededBy.Add(decal) : neededBy.Remove(decal)) OnUpgradeChanged();
-    }
-
-    private void OnUpgradeChanged()
-    {
-        UpdateDirty();
-        NotifyPendingChange();
-        NotifyRefusals();
-    }
-
+    internal override ExportEntry MemberCollection => CollectionActorExport;
     private protected override string EditKind => UpgradePending ? "Upgrade" : base.EditKind;
-    public override string UpgradeRefusal => CollectionMemberUpgrade.Refusal(this);
-    public override string DeleteRefusal => base.DeleteRefusal ?? (upgradeRequested ? "Its upgrade to an actor is pending: undo that first."
-        // A projection that only lands on it moves off it, as it does a mesh with an actor of its own. A Filter is the user's, and would be left listing nothing
-        : neededBy.Any(d => d.Decal?.Settings.Filter.Actors.Contains(Export) == true) ? "A decal's uncommitted Filter lists it: uncheck it there first." : null);
     // Subclasses add their own changes to the member's (HasMemberChanges), so that what's more than an upgrade is known from one place
     protected sealed override bool HasUncommittedChanges() => HasMemberChanges() || UpgradePending;
     protected virtual bool HasMemberChanges() => base.HasUncommittedChanges();
@@ -1560,8 +1590,6 @@ public abstract class CollectionActorComponentProxy : ActorProxy
     {
         //the transform the commit wrote, if it was moved
         if (IsTransformDirty) SavedLocalToWorld = ComposedLocalToWorld;
-        upgradeRequested = false;
-        neededBy.Clear();
         base.MarkClean();
     }
 

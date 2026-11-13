@@ -171,6 +171,11 @@ public sealed class ActorDeletionPlan
             && (Collection is null || Actor.Parent == Collection && MemberTransform(Actor) == memberTransform);
     }
 
+    /// <summary>Why <paramref name="member"/> isn't one of <paramref name="collection"/>'s members, listed once with a transform, or null</summary>
+    internal static string MembershipProblem(ExportEntry member, ExportEntry collection) =>
+        member.Parent != collection ? $"It's no longer in {collection.ObjectName.Instanced}."
+        : MemberTransform(member) is null ? $"{collection.ObjectName.Instanced} doesn't list it once." : null;
+
     /// <summary>A collection member's transform in its collection, or null if the collection doesn't list it once, with a transform</summary>
     internal static Matrix4x4? MemberTransform(ExportEntry member)
     {
