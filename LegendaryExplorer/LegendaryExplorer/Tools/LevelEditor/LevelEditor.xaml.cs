@@ -596,6 +596,21 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         else SelectAndRevealActor(actor, false);
     }
 
+    /// <summary>Opens the outliner's actor menu over the viewport, for an actor right-clicked there</summary>
+    private void ViewportActorMenu(ActorProxy actor)
+    {
+        //(after the release has finished routing, so the menu taking the mouse doesn't interrupt the viewport's handling of it)
+        Dispatcher.BeginInvoke(DispatcherPriority.Input, () =>
+        {
+            if (actor != selectedActor) return;
+            var menu = (ContextMenu)FindResource("ActorContextMenu");
+            menu.DataContext = actor;
+            menu.PlacementTarget = SceneViewer;
+            menu.Placement = PlacementMode.MousePoint;
+            menu.IsOpen = true;
+        });
+    }
+
     private void SelectActor(ActorProxy actor, bool focus)
     {
         // A handle drag belongs to the light it started on, so it's recorded before the gizmo moves to another
@@ -1324,7 +1339,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         OpenInPackageEditorCommand = new GenericCommand(() =>
         {
             if (SelectedActor?.Export is { } export) OpenInPackageEditor(export);
-        }, () => CanEditScene && PackageIsLoaded() && SelectedActor is { IsDraft: false });
+        }, () => CanEditScene && PackageIsLoaded() && SelectedActor is { PackageEditorRefusal: null });
         OpenRecentSetCommand = new RelayCommand(obj => { if (obj is RecentFileSet set) OpenRecentFileSet(set); });
         UndoCommand = new GenericCommand(Undo);
         RedoCommand = new GenericCommand(Redo);
@@ -3067,6 +3082,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext.UpdateScene -= UpdateScene;
         RenderContext.RenderScene -= RenderScene;
         RenderContext.SelectActor -= ViewportActorSelect;
+        RenderContext.ActorMenuRequested -= ViewportActorMenu;
 
         UndoHistory.PropertyChanged -= UndoHistory_PropertyChanged;
         UndoHistory.Clear();
@@ -3081,6 +3097,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext.UpdateScene += UpdateScene;
         RenderContext.RenderScene += RenderScene;
         RenderContext.SelectActor += ViewportActorSelect;
+        RenderContext.ActorMenuRequested += ViewportActorMenu;
 
         if (!string.IsNullOrEmpty(FileQueuedForLoad))
         {

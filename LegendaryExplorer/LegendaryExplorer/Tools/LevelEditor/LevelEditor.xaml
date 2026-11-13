@@ -100,12 +100,13 @@
                     </DockPanel>
                 </Border>
             </DataTemplate>
-            <ContextMenu x:Key="ActorContextMenu" Opened="ActorContextMenu_Opened">
+            <!--unshared, so the viewport's menu (whose DataContext is set to its actor) is never the one the outliner rows inherit theirs into-->
+            <ContextMenu x:Key="ActorContextMenu" x:Shared="False" Opened="ActorContextMenu_Opened">
                 <MenuItem Header="Delete Actor" Command="{Binding Data.DeleteActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" InputGestureText="Delete" ToolTip="{Binding DeleteRefusal}" ToolTipService.ShowOnDisabled="True"/>
                 <MenuItem Header="Duplicate" Command="{Binding Data.DuplicateActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" ToolTip="{Binding DuplicateRefusal}" ToolTipService.ShowOnDisabled="True"/>
                 <MenuItem Header="Upgrade to Actor" Command="{Binding Data.UpgradeActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" Visibility="{Binding IsCollectionMember, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="{Binding UpgradeRefusal}" ToolTipService.ShowOnDisabled="True"/>
                 <MenuItem Header="Focus Camera" Command="{Binding Data.FocusSelectedCommand, Source={StaticResource bindingProxy}}" InputGestureText="F"/>
-                <MenuItem Header="Open in Package Editor" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}" Command="{Binding Data.OpenInPackageEditorCommand, Source={StaticResource bindingProxy}}"/>
+                <MenuItem Header="Open in Package Editor" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}" Command="{Binding Data.OpenInPackageEditorCommand, Source={StaticResource bindingProxy}}" ToolTip="{Binding PackageEditorRefusal}" ToolTipService.ShowOnDisabled="True"/>
             </ContextMenu>
             <Style x:Key="ActorRow" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                 <Setter Property="ContextMenu" Value="{StaticResource ActorContextMenu}"/>
@@ -634,6 +635,15 @@
                                 <Expander Header="Decal projection" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding IsDecalSelected, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="{Binding SelectedActor.DecalEditingStatus}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,6,0,8"/>
+                                        <StackPanel DataContext="{Binding SelectedDecal}" Margin="0,10,0,0">
+                                            <TextBlock Text="DecalMaterial" Style="{StaticResource EditorSectionLabel}"/>
+                                            <TextBlock Text="{Binding MaterialName}" TextWrapping="Wrap"/>
+                                            <TextBlock Text="{Binding MaterialProblem}" Visibility="{Binding MaterialProblem, Converter={StaticResource NullVisibilityConverter}}"
+                                                       TextWrapping="Wrap" Foreground="#FF6464" FontSize="11" Margin="0,4,0,0"
+                                                       ToolTip="The game draws the engine's DefaultDecalMaterial in its place, as the preview does."/>
+                                            <Button Content="Choose material…" Click="DecalMaterial_Click" IsEnabled="{Binding IsEditable}" HorizontalAlignment="Left" Margin="0,4,0,0"
+                                                    ToolTip="Only materials the game can draw on a decal: a DecalMaterial, or one whose base material is marked bUsedWithDecals."/>
+                                        </StackPanel>
                                         <Grid DataContext="{Binding SelectedDecal}" IsEnabled="{Binding IsEditable}">
                                             <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="140"/></Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
@@ -653,15 +663,6 @@
                                             <TextBlock Grid.Row="9" Text="Depth bias" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="9" Grid.Column="1" Value="{Binding DepthBias}" Increment="0.00001" FormatString="F6"/>
                                             <TextBlock Grid.Row="10" Text="Sort order" VerticalAlignment="Center"/><xctk:IntegerUpDown Grid.Row="10" Grid.Column="1" Value="{Binding SortOrder}"/>
                                         </Grid>
-                                        <StackPanel DataContext="{Binding SelectedDecal}" Margin="0,10,0,0">
-                                            <TextBlock Text="DecalMaterial" Style="{StaticResource EditorSectionLabel}"/>
-                                            <TextBlock Text="{Binding MaterialName}" TextWrapping="Wrap"/>
-                                            <TextBlock Text="{Binding MaterialProblem}" Visibility="{Binding MaterialProblem, Converter={StaticResource NullVisibilityConverter}}"
-                                                       TextWrapping="Wrap" Foreground="#FF6464" FontSize="11" Margin="0,4,0,0"
-                                                       ToolTip="The game draws the engine's DefaultDecalMaterial in its place, as the preview does."/>
-                                            <Button Content="Choose material…" Click="DecalMaterial_Click" IsEnabled="{Binding IsEditable}" HorizontalAlignment="Left" Margin="0,4,0,0"
-                                                    ToolTip="Only materials the game can draw on a decal: a DecalMaterial, or one whose base material is marked bUsedWithDecals."/>
-                                        </StackPanel>
                                         <StackPanel DataContext="{Binding SelectedDecal}" IsEnabled="{Binding IsEditable}" Margin="0,10,0,0">
                                             <TextBlock Text="Receiving meshes" Style="{StaticResource EditorSectionLabel}"/>
                                             <ComboBox ItemsSource="{x:Static local:EditableDecal.FilterModes}" DisplayMemberPath="Label" SelectedValuePath="Value"

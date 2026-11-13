@@ -102,7 +102,7 @@ internal sealed class DecalPackageMigration : IDisposable
             || !options.CrossPackageMap.TryGetValue(donorComponent, out var component) || component is not ExportEntry newComponent)
             throw new InvalidOperationException($"Could not relink {actor.Export.ObjectName} into the receiving package: {string.Join("; ", errors)}");
         if (external is not null)
-            newComponent.WriteProperty(new ObjectProperty(AssetPorting.Copy(external, destination.Staged, sources).UIndex, "DecalMaterial"));
+            newComponent.WriteProperty(new ObjectProperty(AssetPorting.CopyFor(external, destination.Staged, sources, () => [actor]).UIndex, "DecalMaterial"));
         actor.DecalComponent.CommitProjection(newComponent);
         var targetBinary = targetLevel.GetBinaryData<Level>();
         targetBinary.Actors.Add(newActor.UIndex);

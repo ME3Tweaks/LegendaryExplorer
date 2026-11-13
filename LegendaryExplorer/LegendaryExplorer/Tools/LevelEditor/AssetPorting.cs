@@ -37,15 +37,19 @@ internal static class AssetPorting
         {
             for (int i = restores.Count - 1; i >= 0; i--) restores[i]();
         }
+        var committing = actors.ToList();
         try
         {
-            foreach (var actor in actors)
+            foreach (var actor in committing)
             {
                 var package = actor.Package;
                 var assets = actor.AssetsToCopy.Where(a => a is { IsExternal: true }).Distinct().ToList();
                 if (assets.Count == 0) continue;
                 foreach (var asset in assets.Where(a => !copies.ContainsKey((package, a))))
-                    copies[(package, asset)] = AssetReference.To(Copy(asset, package, sources));
+                {
+                    copies[(package, asset)] = AssetReference.To(CopyFor(asset, package, sources,
+                        () => committing.Where(a => a.Package == package && a.AssetsToCopy.Contains(asset))));
+                }
                 restores.Add(actor.UseCopiedAssets(a => a is { IsExternal: true } && copies.TryGetValue((package, a), out var copy) ? copy : a));
             }
         }
@@ -55,6 +59,28 @@ internal static class AssetPorting
             throw;
         }
         return Restore;
+    }
+
+    /// <summary>
+    /// <see cref="Copy"/>, whose failure names the actors that use <paramref name="asset"/> (<paramref name="users"/>), so they can be given another
+    /// asset or deleted
+    /// </summary>
+    internal static IEntry CopyFor(AssetReference asset, IMEPackage package, PackageCache sources, Func<IEnumerable<ActorProxy>> users)
+    {
+        try
+        {
+            return Copy(asset, package, sources);
+        }
+        catch (Exception error) when (error is not OutOfMemoryException)
+        {
+            var names = users().Select(a => a.DisplayText).Distinct().ToList();
+            if (names.Count == 0) throw;
+            const int listed = 10;
+            string list = string.Join(", ", names.Take(listed)) + (names.Count > listed ? $", and {names.Count - listed} more" : "");
+            string them = names.Count == 1 ? "it" : "them";
+            throw new InvalidOperationException($"{error.Message.TrimEnd()}\n\n{asset.SourcePath} is used by {list}. Choose another asset for {them}, " +
+                $"or delete {them}.", error);
+        }
     }
 
     /// <summary>The entry of <paramref name="package"/> that is <paramref name="asset"/>: one it has at its path that's the same object, or a new copy</summary>

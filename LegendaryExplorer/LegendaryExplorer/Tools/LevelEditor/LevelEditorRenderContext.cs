@@ -27,6 +27,8 @@ public readonly record struct PlacementPoint(Vector3 Location, Vector3? Normal);
 public class LevelEditorRenderContext : MeshRenderContext
 {
     public event Action<ActorProxy> SelectActor;
+    /// <summary>An actor was right-clicked (not dragged) in the viewport, after it was selected</summary>
+    public event Action<ActorProxy> ActorMenuRequested;
     public List<ActorProxy> DrawList_3D = [];
 
     /// <summary>The editing session's actors, which the proxies in the draw list are views of</summary>
@@ -421,19 +423,21 @@ public class LevelEditorRenderContext : MeshRenderContext
 
             TransformWidget.CurrentAxis = EWidgetAxis.None;
             if (button is MouseButtons.Left && EditSplineConnection(selected, modifiers)) return true;
-            switch (selected)
+            ActorProxy picked = selected switch
             {
-                case ActorProxy actor:
-                    SelectActor?.Invoke(actor);
-                    TransformWidget.Attach = actor;
-                    break;
-                case SplinePointHitProxy point:
-                    SelectActor?.Invoke(point.Point);
-                    TransformWidget.Attach = point.Point;
-                    break;
-                case AxisHitProxy axisProxy:
-                    TransformWidget.CurrentAxis = axisProxy.Axis;
-                    break;
+                ActorProxy actor => actor,
+                SplinePointHitProxy point => point.Point,
+                _ => null
+            };
+            if (picked is not null)
+            {
+                SelectActor?.Invoke(picked);
+                TransformWidget.Attach = picked;
+                if (button is MouseButtons.Right) ActorMenuRequested?.Invoke(picked);
+            }
+            else if (selected is AxisHitProxy axisProxy)
+            {
+                TransformWidget.CurrentAxis = axisProxy.Axis;
             }
         }
 

@@ -167,6 +167,8 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     }
     /// <summary>Why it can't be duplicated now (by Duplicate, or an Alt+drag), or null</summary>
     public virtual string DuplicateRefusal => ActorCloning.Refusal(this);
+    /// <summary>Why it can't be opened in Package Editor, or null</summary>
+    public string PackageEditorRefusal => IsDraft ? "It's new: it has no export to open until it's committed." : null;
 
     /// <summary>
     /// For a copy (<see cref="ActorCloning"/>): the saved actor it's a copy of, which its commit clones. A copy of a copy is another copy of the same actor.
@@ -192,12 +194,16 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// <summary>The mesh drawn for <paramref name="component"/>, one of its components (a copy's: one of its source's), or null</summary>
     internal virtual MeshComponentProxy MeshDrawing(ExportEntry component) => Components.OfType<MeshComponentProxy>().FirstOrDefault(m => m.Export == component);
 
-    /// <summary>Asks for <see cref="DeleteRefusal"/>, <see cref="UpgradeRefusal"/> and <see cref="DuplicateRefusal"/> again: they depend on more than the actor (its file, the scene), which don't notify them</summary>
+    /// <summary>
+    /// Asks for <see cref="DeleteRefusal"/>, <see cref="UpgradeRefusal"/>, <see cref="DuplicateRefusal"/> and <see cref="PackageEditorRefusal"/> again: they
+    /// depend on more than the actor (its file, the scene, its commit), which don't notify them
+    /// </summary>
     internal void NotifyRefusals()
     {
         OnPropertyChanged(nameof(DeleteRefusal));
         OnPropertyChanged(nameof(UpgradeRefusal));
         OnPropertyChanged(nameof(DuplicateRefusal));
+        OnPropertyChanged(nameof(PackageEditorRefusal));
     }
 
     /// <summary>
