@@ -14,8 +14,9 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// For a commit, inside its <see cref="PackageEditScope"/> and before any reference is written: copies the other files' assets its actors use into the
 /// actors' packages, and points the actors at the copies (<see cref="ActorProxy.UseCopiedAssets"/>). A failure leaves the rest to the scope's rollback.
 /// <para>
-/// An asset is copied with what it uses, as <see cref="EntryExporter"/> ports an export: imports of packages the game always has loaded stay imports,
-/// and the rest is cloned, since a level is cooked seek-free. Where the package already has an object at a path the copy needs (the asset itself, or
+/// An asset in a file the game always has loaded with the package is imported from it. Another is copied with what it uses, as
+/// <see cref="EntryExporter"/> ports an export: imports of packages the game always has loaded stay imports, and the rest is cloned, since a level is
+/// cooked seek-free. Where the package already has an object at a path the copy needs (the asset itself, or
 /// something it uses), that object is used, as the relinker does, but only if it's the same as the source's (<see cref="SameObject"/>): the game loads
 /// one object per path, so a different one would be drawn in its place
 /// </para>
@@ -66,15 +67,20 @@ internal static class AssetPorting
         if (sourcePackage.FindExport(asset.SourcePath) is not { } source)
             throw new InvalidOperationException($"{asset.SourcePath} isn't in {file} any more. Choose it again, or another asset.");
 
-        if (package.FindEntry(source.InstancedFullPath) is { } existing)
+        // One of a file the game has loaded whenever it has this package loaded (Startup_INT's, say) is used from there, as the game's own levels use them:
+        // an import, at the path it has in memory
+        bool imported = EntryImporter.IsSafeToImportFrom(sourcePackage.FilePath, package);
+        string path = imported ? source.MemoryFullPath : source.InstancedFullPath;
+        if (package.FindEntry(path) is { } existing)
         {
             if (existing.ClassName != source.ClassName || existing is ExportEntry export && !SameObject(export, source))
-                throw new InvalidOperationException($"{destination} already has a different {existing.ClassName} at {source.InstancedFullPath}. The game loads one object " +
+                throw new InvalidOperationException($"{destination} already has a different {existing.ClassName} at {path}. The game loads one object " +
                     $"per path, so it would use that one instead of {file}'s. Use {destination}'s own, or another asset.");
             //and so must everything it uses
             if (existing is ExportEntry same) CheckUsed(same, _ => true, sourcePackage, file, destination);
             return existing;
         }
+        if (imported) return ImportOf(source, package);
 
         int exportsBefore = package.ExportCount;
         var issues = EntryExporter.ExportExportToPackage(source, package, out var copy, sources);
@@ -85,6 +91,23 @@ internal static class AssetPorting
         //what the relinker used of the package's own in place of the source's
         CheckUsed(copied, used => used.UIndex <= exportsBefore, sourcePackage, file, destination);
         return copied;
+    }
+
+    /// <summary>
+    /// <paramref name="source"/>, another package's entry, as an import of <paramref name="destination"/>, with its outers, at the path the game has it in
+    /// memory (<see cref="IEntry.MemoryFullPath"/>): an export that isn't a forced export is under its file's package. Or the entry
+    /// <paramref name="destination"/> already has there
+    /// </summary>
+    internal static IEntry ImportOf(IEntry source, IMEPackage destination)
+    {
+        IEntry parent = source.Parent is { } outer ? ImportOf(outer, destination)
+            : source is ExportEntry { IsForcedExport: false } ? destination.GetEntryOrAddImport(source.FileRef.FileNameNoExtension.StripUnrealLocalization(), "Package") : null;
+        string path = parent is null ? source.ObjectName.Instanced : $"{parent.InstancedFullPath}.{source.ObjectName.Instanced}";
+        if (destination.FindEntry(path, source.ClassName) is { } existing) return existing;
+        var import = source is ExportEntry export ? new ImportEntry(export, parent?.UIndex ?? 0, destination)
+            : new ImportEntry(destination, parent, source.ObjectName) { ClassName = source.ClassName, PackageFile = ((ImportEntry)source).PackageFile };
+        destination.AddImport(import);
+        return import;
     }
 
     /// <summary>

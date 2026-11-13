@@ -54,19 +54,8 @@ public sealed class DecalFilterSettings : IEquatable<DecalFilterSettings>
         // It's in this package, which the commit has checked (DecalComponentProxy.ValidateCommit)
         properties.AddOrReplaceProp(new EnumProperty(Mode, "EFilterMode", destination.Game, "FilterMode"));
         properties.AddOrReplaceProp(new ArrayProperty<ObjectProperty>(Actors.Select(e => new ObjectProperty(
-            e.FileRef == logicalPackage ? e.UIndex : ImportReference(e, destination).UIndex)), "Filter"));
-    }
-    private static IEntry ImportReference(IEntry source, IMEPackage destination)
-    {
-        // Keep foreign filter actors as references; never clone another level's meshes into this level.
-        IEntry parent = source.Parent is { } outer ? ImportReference(outer, destination)
-            : source is ExportEntry ? destination.GetEntryOrAddImport(source.FileRef.FileNameNoExtension, "Package") : null;
-        string path = parent is null ? source.ObjectName.Instanced : parent.InstancedFullPath + "." + source.ObjectName.Instanced;
-        if (destination.FindEntry(path, source.ClassName) is { } existing) return existing;
-        var import = source is ExportEntry export ? new ImportEntry(export, parent?.UIndex ?? 0, destination)
-            : new ImportEntry(destination, parent, source.ObjectName) { ClassName = source.ClassName, PackageFile = ((ImportEntry)source).PackageFile };
-        destination.AddImport(import);
-        return import;
+            // Another level's actors are referred to, never cloned into this level
+            e.FileRef == logicalPackage ? e.UIndex : AssetPorting.ImportOf(e, destination).UIndex)), "Filter"));
     }
 }
 
