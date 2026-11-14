@@ -14,8 +14,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" PrivateAssets="all" />
+    <!-- DO NOT bump these just to stay current. The Microsoft.CodeAnalysis version here is the MINIMUM compiler
+         version that can load this generator. If a build machine's compiler (from its Visual Studio / .NET SDK) is
+         older, the generator is silently skipped (warning CS9057) and the build fails with CS0759 on
+         UStruct.VerifyExtraUIndexRefs, because the generated half of that partial method is never emitted.
+         Only raise this if the generator needs a newer Roslyn API, and only to a version every dev machine and the
+         CI agent (VS 2022 17.14 + .NET SDK 10.0.1xx, compiler 5.0.0) can run. -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
