@@ -80,9 +80,6 @@
     <Platform Project="x64" />
     <Build Solution="WinAzureTest|*" Project="false" />
   </Project>
-  <Project Path="WwiseAudioPlayer/WwiseAudioPlayer.vcxproj" Id="d9f415bc-1ddc-4da1-a2bd-9ec8f27c81a2">
-    <BuildType Project="WinDebug" />
-  </Project>
   <Project Path="Xceed.Wpf.Toolkit/DotNetProjects.Wpf.Extended.Toolkit.csproj">
     <Platform Project="x64" />
   </Project>
