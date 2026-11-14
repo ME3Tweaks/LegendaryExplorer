@@ -393,7 +393,8 @@ public static class ActorCreation
         if (!draft.IsDraft || draft.CloneSource is not null || RecipeFor(draft.ClassName) is not { } recipe)
             throw new InvalidOperationException($"{draft.ActorName} isn't a placed actor's draft.");
         var template = recipe.ComponentProperty is { } property ? ComponentTemplate(record.Class, property, editor.RenderContext.PackageCache) : null;
-        return recipe.Draft(editor, record, draft.CopyOwnValues(), draft.DraftAsset, template);
+        // (as its package refers to it, if it's another level's copy)
+        return recipe.Draft(editor, record, draft.CopyOwnValues(), draft.DraftAsset?.In(record.Package, editor.PackageCache), template);
     }
 
     /// <summary>Whether <paramref name="className"/> has a recipe, so that a placed draft of it can be copied</summary>

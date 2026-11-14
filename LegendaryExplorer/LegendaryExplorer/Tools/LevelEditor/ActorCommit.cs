@@ -23,6 +23,8 @@ public static class ActorCommit
     {
         using var ownSources = sources is null ? new PackageCache() : null;
         sources ??= ownSources;
+        //(released once the commit is done)
+        using var snapshots = new ActorCloning.SourceSnapshots(files.SelectMany(f => f.PendingCreations).Where(a => skipped?.Contains(a) != true), sources);
         var deletions = files.SelectMany(f => f.PendingDeletions).ToArray();
         var deleted = deletions.SelectMany(d => d.Entries).ToHashSet<IEntry>();
         // Each file's own: a UIndex means nothing in another package. Taken now, since trashing can change them
@@ -37,9 +39,9 @@ public static class ActorCommit
                 // First, since it checks that nothing has changed the packages since it was prepared. A moved decal's material from another file is
                 // copied into its new package there
                 beforeActors?.Invoke();
-                // Other files' assets are copied in before anything refers to them
+                // Other files' assets are copied in before anything refers to them: those of a pasted copy's source's file from its snapshot, as the copy is
                 useChosenAssets = AssetPorting.CopyIn(files.SelectMany(f => f.PendingCreations.Concat(f.Actors.Where(a => a.IsDirty)))
-                    .Where(a => skipped?.Contains(a) != true).Distinct().ToList(), sources);
+                    .Where(a => skipped?.Contains(a) != true).Distinct().ToList(), sources, snapshots.OfFile);
                 // What a bake reads that this commit adds, changes or deletes, judged before anything is written (an edit can make one stop contributing)
                 var unbaked = files.SelectMany(f => f.PendingCreations.Concat(f.Actors.Where(a => a.HasChangesBesidesUpgrade)))
                     .Where(a => skipped?.Contains(a) != true).Distinct().Where(a => BakeInputs.MayRead(a, a.Editor?.PackageCache)).ToList();
@@ -56,7 +58,7 @@ public static class ActorCommit
                         draft.BeginCommit();
                         written.Add((file, draft));
                         created.Add(draft);
-                        draft.Materialize(file.LevelExport, level);
+                        draft.Materialize(file.LevelExport, level, snapshots);
                     }
                     file.LevelExport.WriteBinary(level);
                 }

@@ -48,6 +48,16 @@ public sealed record AssetReference
         return InFile(export.FileRef.FilePath, export.InstancedFullPath);
     }
 
+    /// <summary>
+    /// This asset as <paramref name="package"/> refers to it: as its own entry, or another file's (<see cref="Of"/>). An export of the package's own file is
+    /// the package's entry at its path, as the package has it in memory, if it has one
+    /// </summary>
+    public AssetReference In(IMEPackage package, PackageCache cache)
+    {
+        if (Entry is not null) return Entry.FileRef == package ? this : Of(Entry, package, cache);
+        return string.Equals(SourceFile, package.FilePath, StringComparison.OrdinalIgnoreCase) && package.FindEntry(SourcePath) is { } own ? To(own) : this;
+    }
+
     //a file's path and an object's path are each the same whatever their case
     public bool Equals(AssetReference other) => other is not null && EqualityComparer<IEntry>.Default.Equals(Entry, other.Entry)
         && string.Equals(SourceFile, other.SourceFile, StringComparison.OrdinalIgnoreCase) && string.Equals(SourcePath, other.SourcePath, StringComparison.OrdinalIgnoreCase);

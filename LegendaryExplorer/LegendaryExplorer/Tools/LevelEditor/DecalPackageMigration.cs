@@ -127,7 +127,8 @@ internal sealed class DecalPackageMigration : IDisposable
         foreach (var edit in packages.Values) edit.Apply();
     }
 
-    private static IMEPackage Clone(IMEPackage package)
+    /// <summary>A copy of <paramref name="package"/> as it is in memory, outside the shared package cache, at its file's path (which what it imports is found from)</summary>
+    internal static IMEPackage Clone(IMEPackage package)
     {
         using var stream = package.SaveToStream(compress: false);
         stream.Position = 0;

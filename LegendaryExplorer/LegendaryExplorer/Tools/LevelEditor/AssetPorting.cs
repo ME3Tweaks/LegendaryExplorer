@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -16,9 +15,11 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// <para>
 /// An asset in a file the game always has loaded with the package is imported from it. Another is copied with what it uses, as
 /// <see cref="EntryExporter"/> ports an export: imports of packages the game always has loaded stay imports, and the rest is cloned, since a level is
-/// cooked seek-free. Where the package already has an object at a path the copy needs (the asset itself, or
-/// something it uses), that object is used, as the relinker does, but only if it's the same as the source's (<see cref="SameObject"/>): the game loads
-/// one object per path, so a different one would be drawn in its place
+/// cooked seek-free. Where the package already has an object of the same class at a path the copy needs (the asset itself, or something it uses), that
+/// object is used, as the relinker does and as the game would, which loads one object per path: each level has its own cooked copy of the assets it
+/// shares with others, which differ in what cooking makes anew (materials' LightingGuids, for one), so what the package has is used even where its
+/// content differs from the other file's. One of another class there fails the copy, which would otherwise be a second object at that path, except
+/// what the relinker uses in its place: a material of another class where something the copy uses refers to one
 /// </para>
 /// </summary>
 internal static class AssetPorting
@@ -28,8 +29,10 @@ internal static class AssetPorting
     /// The commit's own cache the other files are opened from disk in, as the asset database found them: never the editor's (another tool's copy may
     /// have unsaved edits), and porting can change its source (EntryExporter.PrepareGlobalFileForPorting)
     /// </param>
+    /// <param name="inMemory">The package an asset of a file is copied from instead of that file, if any: a snapshot of a pasted copy's source's level as it
+    /// is in memory (<see cref="ActorCloning.SourceSnapshots.OfFile"/>), which the copy itself is made from</param>
     /// <returns>Points the actors back at the other files' assets, for when the commit is abandoned</returns>
-    public static Action CopyIn(IEnumerable<ActorProxy> actors, PackageCache sources)
+    public static Action CopyIn(IEnumerable<ActorProxy> actors, PackageCache sources, Func<string, IMEPackage> inMemory = null)
     {
         var copies = new Dictionary<(IMEPackage Package, AssetReference Asset), AssetReference>();
         var restores = new List<Action>();
@@ -48,7 +51,7 @@ internal static class AssetPorting
                 foreach (var asset in assets.Where(a => !copies.ContainsKey((package, a))))
                 {
                     copies[(package, asset)] = AssetReference.To(CopyFor(asset, package, sources,
-                        () => committing.Where(a => a.Package == package && a.AssetsToCopy.Contains(asset))));
+                        () => committing.Where(a => a.Package == package && a.AssetsToCopy.Contains(asset)), inMemory));
                 }
                 restores.Add(actor.UseCopiedAssets(a => a is { IsExternal: true } && copies.TryGetValue((package, a), out var copy) ? copy : a));
             }
@@ -65,11 +68,12 @@ internal static class AssetPorting
     /// <see cref="Copy"/>, whose failure names the actors that use <paramref name="asset"/> (<paramref name="users"/>), so they can be given another
     /// asset or deleted
     /// </summary>
-    internal static IEntry CopyFor(AssetReference asset, IMEPackage package, PackageCache sources, Func<IEnumerable<ActorProxy>> users)
+    internal static IEntry CopyFor(AssetReference asset, IMEPackage package, PackageCache sources, Func<IEnumerable<ActorProxy>> users,
+        Func<string, IMEPackage> inMemory = null)
     {
         try
         {
-            return Copy(asset, package, sources);
+            return Copy(asset, package, sources, inMemory);
         }
         catch (Exception error) when (error is not OutOfMemoryException)
         {
@@ -84,10 +88,10 @@ internal static class AssetPorting
     }
 
     /// <summary>The entry of <paramref name="package"/> that is <paramref name="asset"/>: one it has at its path that's the same object, or a new copy</summary>
-    internal static IEntry Copy(AssetReference asset, IMEPackage package, PackageCache sources)
+    internal static IEntry Copy(AssetReference asset, IMEPackage package, PackageCache sources, Func<string, IMEPackage> inMemory = null)
     {
         string file = Path.GetFileName(asset.SourceFile), destination = Path.GetFileName(package.FilePath);
-        var sourcePackage = sources.GetCachedPackage(asset.SourceFile) ?? throw new InvalidOperationException($"{file} couldn't be opened to copy {asset.SourcePath} from.");
+        var sourcePackage = inMemory?.Invoke(asset.SourceFile) ?? sources.GetCachedPackage(asset.SourceFile) ?? throw new InvalidOperationException($"{file} couldn't be opened to copy {asset.SourcePath} from.");
         if (sourcePackage.Game != package.Game)
             throw new InvalidOperationException($"{asset.SourcePath} is in {file}, a {sourcePackage.Game} file, so it can't be used in {destination}, a {package.Game} file.");
         if (sourcePackage.FindExport(asset.SourcePath) is not { } source)
@@ -99,23 +103,40 @@ internal static class AssetPorting
         string path = imported ? source.MemoryFullPath : source.InstancedFullPath;
         if (package.FindEntry(path) is { } existing)
         {
-            if (existing.ClassName != source.ClassName || existing is ExportEntry export && !SameObject(export, source))
-                throw new InvalidOperationException($"{destination} already has a different {existing.ClassName} at {path}. The game loads one object " +
-                    $"per path, so it would use that one instead of {file}'s. Use {destination}'s own, or another asset.");
-            //and so must everything it uses
-            if (existing is ExportEntry same) CheckUsed(same, _ => true, sourcePackage, file, destination);
+            if (existing.ClassName != source.ClassName)
+                throw new InvalidOperationException($"{destination} already has a {existing.ClassName} at {path}, where {file} has a {source.ClassName}. The game loads " +
+                    $"one object per path, so it couldn't load both. Use {destination}'s own, or another asset.");
             return existing;
         }
         if (imported) return ImportOf(source, package);
+        return Port(source, package, sources);
+    }
 
-        int exportsBefore = package.ExportCount;
-        var issues = EntryExporter.ExportExportToPackage(source, package, out var copy, sources);
+    /// <summary>
+    /// A copy of <paramref name="source"/> in <paramref name="package"/>, another package, with what it uses that the package doesn't have, as
+    /// <see cref="EntryExporter"/> ports an export: at its own path, or under <paramref name="parent"/>, one of the package's entries
+    /// </summary>
+    internal static ExportEntry Port(ExportEntry source, IMEPackage package, PackageCache sources, IEntry parent = null)
+    {
+        string file = Path.GetFileName(source.FileRef.FilePath), destination = Path.GetFileName(package.FilePath);
+        int exportsBefore = package.ExportCount, importsBefore = package.ImportCount;
+        var issues = EntryExporter.ExportExportToPackage(source, package, out var copy, sources, targetParent: parent);
         if (issues.Count > 0)
-            throw new InvalidOperationException($"{asset.SourcePath} couldn't be copied from {file}: " +
+            throw new InvalidOperationException($"{source.InstancedFullPath} couldn't be copied from {file}: " +
                 string.Join("; ", issues.Take(5).Select(i => i.Message)) + (issues.Count > 5 ? $"; and {issues.Count - 5} more" : ""));
-        if (copy is not ExportEntry copied) throw new InvalidOperationException($"{asset.SourcePath} couldn't be copied from {file}.");
-        //what the relinker used of the package's own in place of the source's
-        CheckUsed(copied, used => used.UIndex <= exportsBefore, sourcePackage, file, destination);
+        if (copy is not ExportEntry copied)
+            throw new InvalidOperationException($"{source.InstancedFullPath} couldn't be copied from {file}.");
+        // The relinker uses what the package has at a path only if it's of the source's class (or both are materials): one of another class gets a second
+        // object at its path, of which the game would load one. (Only the entries it had with a new export's name can be at its path)
+        var added = package.Exports.Skip(exportsBefore).ToList();
+        var names = added.Select(e => e.ObjectName).ToHashSet();
+        var had = package.Exports.Take(exportsBefore).Cast<IEntry>().Concat(package.Imports.Take(importsBefore)).Where(e => names.Contains(e.ObjectName))
+            .ToLookup(e => e.InstancedFullPath, StringComparer.OrdinalIgnoreCase);
+        if (added.FirstOrDefault(e => had.Contains(e.InstancedFullPath)) is { } clash)
+        {
+            throw new InvalidOperationException($"{source.InstancedFullPath} uses {clash.InstancedFullPath}, a {clash.ClassName}, but {destination} already has a " +
+                $"{had[clash.InstancedFullPath].First().ClassName} there. The game loads one object per path, so it couldn't load both.");
+        }
         return copied;
     }
 
@@ -136,88 +157,22 @@ internal static class AssetPorting
         return import;
     }
 
-    /// <summary>
-    /// Checks that what <paramref name="asset"/> uses, at any depth, is the same as the source's at each path, where it's an object the package already
-    /// had (<paramref name="hadIt"/>), which the relinker used in place of the source's (a copy's own new objects are the source's, copied)
-    /// </summary>
-    private static void CheckUsed(ExportEntry asset, Func<ExportEntry, bool> hadIt, IMEPackage source, string file, string destination)
-    {
-        var package = asset.FileRef;
-        var visited = new HashSet<ExportEntry> { asset };
-        var pending = new Stack<ExportEntry>([asset]);
-        while (pending.TryPop(out var export))
-        {
-            foreach (int uIndex in References(export))
-            {
-                if (package.GetEntry(uIndex) is not ExportEntry used || !visited.Add(used)) continue;
-                if (hadIt(used) && source.FindExport(used.InstancedFullPath) is { } original && !SameObject(used, original))
-                {
-                    throw new InvalidOperationException($"{asset.InstancedFullPath} uses {used.InstancedFullPath}, which {destination} already has, but different from " +
-                        $"{file}'s. The game loads one object per path, so {destination}'s would be used.");
-                }
-                pending.Push(used);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Whether two exports, each of its own package, are the same object: of the same class, with the same properties and binary, where references are
-    /// to objects at the same paths and names are the same names
-    /// </summary>
-    internal static bool SameObject(ExportEntry a, ExportEntry b)
-    {
-        if (a.ClassName != b.ClassName || a.Game != b.Game) return false;
-        // Both are written into one package, with each referenced object's path given the same number, so that equal objects write equal bytes
-        var paths = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        using var common = MEPackageHandler.CreateMemoryEmptyPackage("Comparison.pcc", a.Game);
-        return Canonical(a, paths, common).AsSpan().SequenceEqual(Canonical(b, paths, common));
-    }
-
-    private static byte[] Canonical(ExportEntry export, Dictionary<string, int> paths, IMEPackage common)
-    {
-        int Number(int uIndex)
-        {
-            if (uIndex == 0) return 0;
-            if (export.FileRef.GetEntry(uIndex) is not { } entry) return int.MinValue;
-            string path = entry.InstancedFullPath;
-            if (!paths.TryGetValue(path, out int number)) paths[path] = number = paths.Count + 1;
-            return number;
-        }
-        var properties = export.IsClass ? null : export.GetProperties().DeepClone();
-        if (properties is not null) ForEachReference(properties, Number);
-        var binary = ObjectBinary.From(export);
-        binary?.ForEachUIndex(export.Game, new Renumber(Number));
-        var writer = new EndianWriter { Endian = common.Endian };
-        properties?.WriteTo(writer, common);
-        //a class LEC can't read the binary of: what's after its properties, as it is (so a copy of one that has references in it isn't the same)
-        if (binary is null) writer.Write(export.GetBinaryData());
-        else binary.WriteTo(writer, common);
-        return writer.ToArray();
-    }
-
-    /// <summary>The UIndexes an export's properties and binary refer to</summary>
-    private static List<int> References(ExportEntry export)
-    {
-        var references = new List<int>();
-        if (!export.IsClass) ForEachReference(export.GetProperties(), uIndex => { references.Add(uIndex); return uIndex; });
-        if (ObjectBinary.From(export) is { } binary) references.AddRange(binary.GetUIndexes(export.Game));
-        return references;
-    }
-
-    //every object reference in the properties, as the relinker finds them, replaced with what change gives for it
-    private static void ForEachReference(PropertyCollection properties, Func<int, int> change)
+    //every object reference in the properties, as the relinker finds them, replaced with what change gives for it. An array's entries that removed says
+    //to are taken out of it first
+    internal static void ForEachReference(PropertyCollection properties, Func<int, int> change, Func<int, bool> removed = null)
     {
         foreach (var property in properties)
         {
             switch (property)
             {
                 case StructProperty structProperty:
-                    ForEachReference(structProperty.Properties, change);
+                    ForEachReference(structProperty.Properties, change, removed);
                     break;
                 case ArrayProperty<StructProperty> structs:
-                    foreach (var element in structs) ForEachReference(element.Properties, change);
+                    foreach (var element in structs) ForEachReference(element.Properties, change, removed);
                     break;
                 case ArrayProperty<ObjectProperty> objects:
+                    if (removed is not null) objects.Values.RemoveAll(o => removed(o.Value));
                     foreach (var element in objects) element.Value = change(element.Value);
                     break;
                 case ObjectProperty objectProperty:
@@ -230,7 +185,7 @@ internal static class AssetPorting
         }
     }
 
-    private readonly struct Renumber(Func<int, int> number) : IUIndexAction
+    internal readonly struct Renumber(Func<int, int> number) : IUIndexAction
     {
         public void Invoke(ref int uIndex, string propName) => uIndex = number(uIndex);
     }

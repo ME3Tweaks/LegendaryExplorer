@@ -52,19 +52,24 @@ public sealed class DecalActorProxy : EditorActorProxy
     /// untouched until then. A copy starts with its source's saved component's settings and Filter: its box is its source's saved width, height and planes,
     /// scaled as its source's is from where it was saved (<see cref="ProjectionBaseline"/>), and its frame is worked out from where it's put
     /// </summary>
-    internal DecalActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, AssetReference material, ExportEntry componentTemplate)
+    /// <param name="keepsFilter">Whether it has its template's Filter: not a copy in another level, since the actors its source's lists are its source's level's</param>
+    internal DecalActorProxy(IActorEditorContext context, ActorRecord draft, PropertyCollection properties, AssetReference material, ExportEntry componentTemplate,
+        bool keepsFilter = true)
         : base(context, draft, properties, Info)
     {
         this.componentTemplate = componentTemplate;
         ProjectionBaseline = SnapshotTransform();
+        var values = EffectiveLightingProperties.ReadValues(componentTemplate, context.PackageCache);
+        if (!keepsFilter) values.RemoveNamedProperty("FilterMode");
         // None already exists in every package. Pending properties bypass serialization, so even the package's name table stays untouched
         var preview = new ExportEntry(Pcc, null, "None", new byte[8], binary: LegendaryExplorerCore.Unreal.BinaryConverters.DecalComponent.Create());
-        decal = new DecalComponentProxy(context.RenderContext, preview, this, EffectiveLightingProperties.ReadValues(componentTemplate, context.PackageCache), material)
+        decal = new DecalComponentProxy(context.RenderContext, preview, this, values, material)
         {
             ActorPropertyName = nameof(Decal)
         };
         Components.Add(decal);
-        Decal = new EditableDecal(this, decal.Properties, material, filterFrom: componentTemplate);
+        // (one without a Filter has its stand-in's, which has none)
+        Decal = new EditableDecal(this, decal.Properties, material, filterFrom: keepsFilter ? componentTemplate : null);
     }
 
     public DecalActorProxy(IActorEditorContext context, ExportEntry export)

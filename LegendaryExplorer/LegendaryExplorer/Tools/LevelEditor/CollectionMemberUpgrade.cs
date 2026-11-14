@@ -20,7 +20,7 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 public static class CollectionMemberUpgrade
 {
     /// <summary>The actor a member was cooked from, which its archetype is a subobject of: a class default, or an archetype of that class</summary>
-    private static IEntry Origin(ExportEntry member) => member.Archetype?.Parent;
+    internal static IEntry Origin(ExportEntry member) => member.Archetype?.Parent;
 
     /// <summary>Why <paramref name="member"/>, a collection's member or a copy of one (<see cref="ActorProxy.IsCollectionMember"/>), can't be marked for upgrading now, or null</summary>
     internal static string Refusal(ActorProxy member)
@@ -32,13 +32,18 @@ public static class CollectionMemberUpgrade
     }
 
     /// <summary>Why <paramref name="member"/> can't become an actor at all, or null: unlike <see cref="Refusal"/>, this doesn't depend on what the scene is doing now</summary>
-    internal static string ActorRefusal(ActorProxy member)
+    internal static string ActorRefusal(ActorProxy member) => ActorRefusal(member, member.OwningFile, out _);
+
+    /// <summary>Why <paramref name="member"/> can't become an actor in <paramref name="file"/> (its own, or another a copy of it goes in), or null</summary>
+    /// <param name="actorClass">The class of the actor it would be, if it can be one</param>
+    internal static string ActorRefusal(ActorProxy member, OpenLevelFile file, out IEntry actorClass)
     {
+        actorClass = null;
         // A copy's component is its source's, archetype and all, until its commit clones it
         if (Origin(member.Export ?? member.CloneSource) is not { } origin) return "Its archetype doesn't show what actor it came from.";
         bool remade = member is ILightProxy ? LightActorProxy.StandaloneClasses.Contains(origin.ClassName) : origin.ClassName == "StaticMeshActor";
         if (!remade) return $"It came from a {origin.ClassName}, which can't be made again.";
-        return ActorCreation.Refusal(member.OwningFile, origin.ClassName, member.Editor.RenderContext.PackageCache);
+        return ActorCreation.Refusal(file, origin.ClassName, member.Editor.RenderContext.PackageCache, out actorClass);
     }
 
     /// <summary>Marks <paramref name="member"/> for upgrading, as one undo step for the caller to record. Its package is untouched until Commit Changes</summary>
@@ -90,29 +95,43 @@ public static class CollectionMemberUpgrade
 
     private static void MakeActor(ActorProxy member, OpenLevelFile file, Level level)
     {
-        var (component, package, collection) = (member.Export, file.Package, member.MemberCollection);
+        var (component, collection) = (member.Export, member.MemberCollection);
         if (ActorDeletionPlan.MembershipProblem(component, collection) is { } problem)
             throw new InvalidOperationException($"{member.ActorName} can't be upgraded. {problem}");
+        if (ActorCreation.Refusal(file, Origin(component).ClassName, member.Editor.RenderContext.PackageCache, out var actorClass) is { } refusal)
+            throw new InvalidOperationException(refusal);
+        MakeActor(component, collection, file.LevelExport, level, actorClass, member is ILightProxy, member);
+    }
+
+    /// <summary>
+    /// Makes an actor of <paramref name="actorClass"/> (the class <paramref name="component"/>'s archetype belongs to) around <paramref name="component"/>,
+    /// one of <paramref name="collection"/>'s members, as one of <paramref name="levelExport"/>'s actors, placed where <paramref name="transform"/> is: the
+    /// member's view, or a copy of it in another file (<see cref="ActorCloning"/>), which makes it in a snapshot of the member's package. Its collection
+    /// still lists it: the caller takes it out, or doesn't need to
+    /// </summary>
+    /// <param name="level"><paramref name="levelExport"/>'s, which the actor is added to the Actors of. The caller writes it</param>
+    internal static ExportEntry MakeActor(ExportEntry component, ExportEntry collection, ExportEntry levelExport, Level level, IEntry actorClass, bool isLight,
+        ActorProxy transform)
+    {
+        var package = component.FileRef;
         var origin = Origin(component);
         string className = origin.ClassName;
-        if (ActorCreation.Refusal(file, className, member.Editor.RenderContext.PackageCache, out var actorClass) is { } refusal)
-            throw new InvalidOperationException(refusal);
-        var actor = ActorProxy.NewActorExport(package, file.LevelExport, package.GetNextIndexedName(className), ActorCreation.ImportOf(actorClass, package), level);
+        var actor = ActorProxy.NewActorExport(package, levelExport, package.GetNextIndexedName(className), ActorCreation.ImportOf(actorClass, package), level);
         //an actor whose archetype is its class default has none in its header, as placed actors do
         bool archetyped = origin.ObjectName.Instanced != $"Default__{className}";
         if (archetyped) actor.Archetype = origin;
         // What's left out is inherited. A class default's transform is the identity, but an archetype's needn't be (LE3's BioVFX_Env_Signs.Meshes.Armax_Sign_02
         // has a DrawScale3D), and the cooker already put the actor's whole scale on its component, so an archetyped actor states its own, even the identity
-        PropertyCollection properties = [CommonStructs.Vector3Prop(member.Location, ActorProxy.LocationPropertyName(package.Game))];
-        if (archetyped || !member.Rotation.IsZero) properties.Add(CommonStructs.RotatorProp(member.Rotation, "Rotation"));
-        if (archetyped || member.DrawScale != 1f) properties.Add(new FloatProperty(member.DrawScale, "DrawScale"));
-        if (archetyped || member.DrawScale3D != Vector3.One) properties.Add(CommonStructs.Vector3Prop(member.DrawScale3D, "DrawScale3D"));
-        if (archetyped) properties.Add(CommonStructs.Vector3Prop(member.PrePivot, "PrePivot"));
+        PropertyCollection properties = [CommonStructs.Vector3Prop(transform.Location, ActorProxy.LocationPropertyName(package.Game))];
+        if (archetyped || !transform.Rotation.IsZero) properties.Add(CommonStructs.RotatorProp(transform.Rotation, "Rotation"));
+        if (archetyped || transform.DrawScale != 1f) properties.Add(new FloatProperty(transform.DrawScale, "DrawScale"));
+        if (archetyped || transform.DrawScale3D != Vector3.One) properties.Add(CommonStructs.Vector3Prop(transform.DrawScale3D, "DrawScale3D"));
+        if (archetyped) properties.Add(CommonStructs.Vector3Prop(transform.PrePivot, "PrePivot"));
         // A cooked actor's own Tag is gone: it takes its archetype's, or its class's name, as a new actor does
         else properties.Add(new NameProperty(className, "Tag"));
         // The one thing shipping collections hold of their actors': the cooker keeps meshes that can't be stepped up on together
         if (collection.GetProperty<BoolProperty>("bCanStepUpOn") is { } canStepUpOn) properties.Add(canStepUpOn);
-        if (member is ILightProxy) properties.Add(new ObjectProperty(component, "LightComponent"));
+        if (isLight) properties.Add(new ObjectProperty(component, "LightComponent"));
         else
         {
             properties.Add(new ObjectProperty(component, "StaticMeshComponent"));
@@ -120,6 +139,7 @@ public static class CollectionMemberUpgrade
         }
         actor.WriteProperties(properties);
         component.Parent = actor;
+        return actor;
     }
 
     private sealed class UpgradeAction(ActorProxy member) : IUndoAction

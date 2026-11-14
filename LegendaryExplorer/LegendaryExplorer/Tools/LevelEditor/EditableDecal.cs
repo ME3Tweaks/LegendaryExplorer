@@ -58,11 +58,11 @@ public sealed class EditableDecal : NotifyPropertyChangedBase
         Settings = clean = DecalSettings.Read(props) with { Filter = DecalFilterSettings.Read(filterFrom ?? owner.DecalComponent.Export, cache, props), Material = material };
     }
 
-    /// <summary>The material <paramref name="component"/> has, or inherits</summary>
-    internal static AssetReference MaterialOf(ExportEntry component, PackageCache cache)
+    /// <summary>The material <paramref name="component"/> has, or inherits, as <paramref name="package"/> (by default the component's own) refers to it</summary>
+    internal static AssetReference MaterialOf(ExportEntry component, PackageCache cache, IMEPackage package = null)
     {
-        var (material, package) = EffectiveLightingProperties.Reference(component, "DecalMaterial", cache);
-        return AssetReference.Of(material?.ResolveToEntry(package), component.FileRef, cache);
+        var (material, materialPackage) = EffectiveLightingProperties.Reference(component, "DecalMaterial", cache);
+        return AssetReference.Of(material?.ResolveToEntry(materialPackage), package ?? component.FileRef, cache);
     }
 
     /// <summary>The package the decal's component is in, whose materials it can be given</summary>

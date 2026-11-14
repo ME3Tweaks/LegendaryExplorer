@@ -104,6 +104,8 @@
             <ContextMenu x:Key="ActorContextMenu" x:Shared="False" Opened="ActorContextMenu_Opened">
                 <MenuItem Header="Delete Actor" Command="{Binding Data.DeleteActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" InputGestureText="Delete" ToolTip="{Binding DeleteRefusal}" ToolTipService.ShowOnDisabled="True"/>
                 <MenuItem Header="Duplicate" Command="{Binding Data.DuplicateActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" ToolTip="{Binding DuplicateRefusal}" ToolTipService.ShowOnDisabled="True"/>
+                <MenuItem Header="Copy" Command="{Binding Data.CopyActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" IsEnabled="{Binding CanCopy, Converter={StaticResource BoolEnabledConverter}}" InputGestureText="Ctrl+C" ToolTip="{Binding CopyRefusal}" ToolTipService.ShowOnDisabled="True"/>
+                <MenuItem Header="Paste" Command="{Binding Data.PasteActorCommand, Source={StaticResource bindingProxy}}" IsEnabled="{Binding Data.CanPaste, Source={StaticResource bindingProxy}, Converter={StaticResource BoolEnabledConverter}}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}}" InputGestureText="Ctrl+V" ToolTip="{Binding Data.PasteRefusal, Source={StaticResource bindingProxy}}" ToolTipService.ShowOnDisabled="True"/>
                 <MenuItem Header="Upgrade to Actor" Command="{Binding Data.UpgradeActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" Visibility="{Binding IsCollectionMember, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="{Binding UpgradeRefusal}" ToolTipService.ShowOnDisabled="True"/>
                 <MenuItem Header="Focus Camera" Command="{Binding Data.FocusSelectedCommand, Source={StaticResource bindingProxy}}" InputGestureText="F"/>
                 <MenuItem Header="Open in Package Editor" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}" Command="{Binding Data.OpenInPackageEditorCommand, Source={StaticResource bindingProxy}}" ToolTip="{Binding PackageEditorRefusal}" ToolTipService.ShowOnDisabled="True"/>
@@ -238,7 +240,8 @@
             <Border DockPanel.Dock="Bottom" Padding="8,4" BorderBrush="{StaticResource EditorBorder}" BorderThickness="0,1,0,0" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right" Text="{Binding CurrentModeName}" Foreground="{StaticResource EditorMuted}" Margin="12,0,0,0"/>
-                    <TextBlock DockPanel.Dock="Right" Text="{Binding SelectedActor.ActorName, TargetNullValue=''}" Foreground="#81B3DD" Margin="12,0"/>
+                    <!--the selected actor, and the file it's in-->
+                    <TextBlock DockPanel.Dock="Right" Foreground="#81B3DD" Margin="12,0" ToolTip="{Binding SelectedActor.OwningFile.FilePath}"><Run Text="{Binding SelectedActor.ActorName, Mode=OneWay, TargetNullValue=''}"/><Run Text="{Binding SelectedActor.OwningFileName, Mode=OneWay, StringFormat=' ({0})', TargetNullValue=''}"/></TextBlock>
                     <sharedToolControls:StatusBarGameIDIndicator DockPanel.Dock="Left" GameType="{Binding Game}" Visibility="{Binding HasAnyFileOpen, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0,-3,8,-3"/>
                     <TextBlock x:Name="StatusBar_LeftMostText" Text="Open a level package to begin" TextTrimming="CharacterEllipsis"/>
                 </DockPanel>
@@ -330,7 +333,7 @@
                                 <StackPanel DockPanel.Dock="Top" Margin="8,8,8,0">
                                     <DockPanel>
                                         <TextBlock Text="Level" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource EditorMuted}"/>
-                                        <ComboBox ItemsSource="{Binding OpenFiles}" SelectedItem="{Binding PlacementFile}" DisplayMemberPath="FileName" ToolTip="The level new actors are placed in" AutomationProperties.Name="Level to place actors in"/>
+                                        <ComboBox ItemsSource="{Binding OpenFiles}" SelectedItem="{Binding PlacementFile}" DisplayMemberPath="FileName" ToolTip="The level new actors are placed in, and copies are pasted in (Ctrl+V)" AutomationProperties.Name="Level to place actors in"/>
                                     </DockPanel>
                                     <TextBlock Text="{Binding PlacementRefusal}" Visibility="{Binding PlacementRefusal, Converter={StaticResource NullVisibilityConverter}}" TextWrapping="Wrap" Foreground="{StaticResource EditorDirty}" Margin="0,6,0,0"/>
                                     <xctk:WatermarkTextBox Watermark="Search classes" Text="{Binding PlacementSearch, UpdateSourceTrigger=PropertyChanged}" Margin="0,8,0,0"

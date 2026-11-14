@@ -81,7 +81,10 @@ public partial class LevelEditor
     public bool CanPlace => placementRefusal is null;
 
     private OpenLevelFile placementFile;
-    /// <summary>The level new actors go in. Chosen explicitly: which of several loaded levels the selection is in says nothing about where a new actor belongs</summary>
+    /// <summary>
+    /// The level new actors go in, and pasted copies. Chosen explicitly: which of several loaded levels the selection is in says nothing about where a new
+    /// actor belongs
+    /// </summary>
     public OpenLevelFile PlacementFile
     {
         get => placementFile;

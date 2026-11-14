@@ -603,6 +603,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         Dispatcher.BeginInvoke(DispatcherPriority.Input, () =>
         {
             if (actor != selectedActor) return;
+            //where its Paste puts a copy
+            viewportMenuPoint = Mouse.GetPosition(SceneViewer);
             var menu = (ContextMenu)FindResource("ActorContextMenu");
             menu.DataContext = actor;
             menu.PlacementTarget = SceneViewer;
@@ -949,6 +951,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     {
         if (file is null || !OpenFiles.Contains(file) || IsBusy || PreviewRefreshInProgress) return;
 
+        // Other levels' uncommitted copies pasted from it are made from its package, so they go with it (CloseFileCore), whether or not it has changes
+        if (PastedFrom(file).Select(copy => copy.OwningFile).Distinct().ToList() is { Count: > 0 } pastedInto
+            && MessageBox.Show(this, $"Closing {file.FileName} discards the uncommitted copies pasted from it into {string.Join(", ", pastedInto.Select(f => f.FileName))}. " +
+                "Commit them first to keep them. Close anyway?", "Pasted copies", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes)
+            return;
+
         LinkedEdits.RemoveSavedGroups();
         var group = LinkedEdits.GetLinkedFiles(file).ToList();
         if (group.Count > 1)
@@ -1024,6 +1032,25 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             SelectedActor = null;
         }
+        // Copies pasted from it into other levels, which are made from its package, go with it
+        var pasted = PastedFrom(file).ToList();
+        var pastedInto = pasted.Select(copy => copy.OwningFile).Distinct().ToList();
+        foreach (var copy in pasted)
+        {
+            if (copy == SelectedActor) SelectedActor = null;
+            RenderContext.Registry.Discard(copy.Id);
+            RemoveActor(copy);
+        }
+        foreach (var other in OpenFiles.Where(f => f != file))
+        {
+            //(and undone pastes, which redoing would bring back)
+            foreach (var undone in other.RetainedActors.Where(a => IsPastedFrom(a, file) && !other.Actors.Contains(a)).ToList())
+            {
+                undone.Dispose();
+                RenderContext.Registry.Discard(undone.Id);
+            }
+        }
+        foreach (var other in pastedInto) other.RecalculateDirty();
 
         foreach (var actor in file.Actors)
         {
@@ -1250,6 +1277,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand DeleteActorCommand { get; set; }
     public ICommand UpgradeActorCommand { get; set; }
     public ICommand DuplicateActorCommand { get; set; }
+    public ICommand CopyActorCommand { get; set; }
+    /// <summary>Pastes the copied actor (<see cref="PasteActor"/>). Its parameter is the menu it's chosen from, if any</summary>
+    public ICommand PasteActorCommand { get; set; }
     public ICommand ToggleOrthoViewCommand { get; set; }
     public ICommand FocusFileCommand { get; set; }
     public ICommand SelectChangedActorCommand { get; set; }
@@ -1260,7 +1290,17 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
         // Handle unmodified shortcuts after controls have had a chance to process the key.
         // Window InputBindings consume these keys even when a text editor has focus.
-        if (e.Handled || Keyboard.Modifiers != ModifierKeys.None) return;
+        if (e.Handled) return;
+        // Copy and paste, but not a text editor's
+        if (Keyboard.Modifiers == ModifierKeys.Control && e.Key is Key.C or Key.V)
+        {
+            //(the window's only text editors)
+            if (Keyboard.FocusedElement is TextBoxBase or PasswordBox or ComboBox { IsEditable: true }) return;
+            // One copy per press, however long it's held. Ctrl+C with nothing selected is left to whatever else uses it
+            if (e.IsRepeat || (e.Key is Key.C ? CopyActor(null) : PasteActor(null))) e.Handled = true;
+            return;
+        }
+        if (Keyboard.Modifiers != ModifierKeys.None) return;
         //wherever focus is, if no control used the key
         if (e.Key is Key.Escape && (placing is not null || sculpting is not null))
         {
@@ -1347,6 +1387,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             && (parameter as ActorProxy ?? SelectedActor) is { DeleteRefusal: null });
         DuplicateActorCommand = new RelayCommand(DuplicateActor, parameter => CanMutateScene
             && (parameter as ActorProxy ?? SelectedActor) is { DuplicateRefusal: null });
+        // (enabled by CanCopy and CanPaste, which their refusals notify)
+        CopyActorCommand = new RelayCommand(parameter => CopyActor(parameter));
+        PasteActorCommand = new RelayCommand(parameter => PasteActor(parameter as ContextMenu));
         UpgradeActorCommand = new RelayCommand(UpgradeActor, parameter => CanMutateScene
             && (parameter as ActorProxy ?? SelectedActor) is { UpgradeRefusal: null });
         ToggleOrthoViewCommand = new GenericCommand(() => IsOrthographicView = !IsOrthographicView);
@@ -1660,6 +1703,16 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             var pending = new Queue<OpenLevelFile>(files);
             while (pending.TryDequeue(out var file))
             {
+                // And files holding uncommitted copies pasted from what it deletes, which are made from it before it's deleted: committed later, they
+                // would have gone with it (RemoveActorsGoneFromLevel)
+                var deleted = file.PendingDeletions.SelectMany(d => d.Entries).ToHashSet<IEntry>();
+                if (deleted.Count > 0)
+                {
+                    foreach (var holder in OpenFiles.Where(f => f.Actors.Any(a => a is { Export: null, CloneSource: { } source } && deleted.Contains(source))))
+                    {
+                        if (files.Add(holder)) pending.Enqueue(holder);
+                    }
+                }
                 foreach (var decal in file.Actors.OfType<DecalActorProxy>())
                 {
                     decal.PrepareDecalCommit();
@@ -2098,8 +2151,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
         if (rebuiltViews.Count != 0) file.ReattachTo(rebuiltViews);
         foreach (var collectionActor in collectionActorsToUpdate) RebuildCollection(collectionActor, file);
-        // A collection that lost a member loses its uncommitted copies too
-        if (file.Actors.Concat(file.RetainedActors).Any(a => a.CloneCollection is { } into && collectionActorsToUpdate.Contains(into))
+        // A collection that lost a member loses its uncommitted copies too, here and in other levels
+        if (OpenFiles.SelectMany(f => f.Actors.Concat(f.RetainedActors))
+                .Any(a => a is { CloneSource: not null, IsDisposed: false } && ActorCloning.CollectionOf(a) is { } into && collectionActorsToUpdate.Contains(into))
             && RemoveActorsGoneFromLevel(file, level ?? file.LevelExport.GetBinaryData<Level>()))
             changed = updated = levelActorsChanged = true;
         if (level is not null && AddActorsNewToLevel(file, level))
@@ -2197,20 +2251,20 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     {
         var listed = level.Actors.ToHashSet();
         // An uncommitted copy of an actor the level no longer has, or of a member its collection no longer has (another tool took it out), can't be
-        // made, so it goes with its source's view
-        bool SourceGone(ActorProxy copy) => copy.CloneCollection is { } collection
+        // made, so it goes with its source's view: in this file, or another it was pasted into
+        bool SourceGone(ActorProxy copy) => copy.CloneSource.FileRef == file.Package && (ActorCloning.CollectionOf(copy) is { } collection
             ? !listed.Contains(collection.UIndex) || ActorDeletionPlan.MembershipProblem(copy.CloneSource, collection) is not null
-            : !listed.Contains(copy.CloneSource.UIndex);
+            : !listed.Contains(copy.CloneSource.UIndex));
         var gone = file.Actors.Where(actor => actor switch
         {
             LevelModelProxy bsp => !bsp.IsReadFrom(level),
             { Export: { } export } => !listed.Contains((actor.CollectionOwner ?? export).UIndex),
-            { CloneSource: not null } => SourceGone(actor),
             _ => false
-        }).ToList();
+        }).Concat(OpenFiles.SelectMany(f => f.Actors).Where(actor => actor is { Export: null, CloneSource: not null } && SourceGone(actor))).ToList();
         //as is one that's been undone, which redoing would bring back
-        var goneUndone = file.RetainedActors.Where(actor => actor is { IsDisposed: false, CloneSource: not null } && !file.Actors.Contains(actor) && SourceGone(actor))
-            .ToList();
+        var goneUndone = OpenFiles.SelectMany(f => f.RetainedActors.Where(actor => actor is { IsDisposed: false, CloneSource: not null } && !f.Actors.Contains(actor)
+            && SourceGone(actor))).ToList();
+        var others = gone.Select(actor => actor.OwningFile).Where(owner => owner is not null && owner != file).Distinct().ToList();
         foreach (var actor in gone)
         {
             if (actor == SelectedActor) SelectedActor = null;
@@ -2223,9 +2277,18 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             copy.Dispose();
             RenderContext.Registry.Discard(copy.Id);
         }
+        //(the caller does this file's)
+        foreach (var other in others) other.RecalculateDirty();
+        if (others.Count > 0) UpdateGlobalDirtyState();
         if (gone.OfType<LevelModelProxy>().Any()) RenderContext.SetLevelModel(file.Package, level.Model);
         return gone.Count > 0;
     }
+
+    //other levels' uncommitted copies made from file's package: pasted from it
+    private IEnumerable<ActorProxy> PastedFrom(OpenLevelFile file) => OpenFiles.Where(f => f != file).SelectMany(f => f.Actors).Where(a => IsPastedFrom(a, file));
+
+    private static bool IsPastedFrom(ActorProxy actor, OpenLevelFile file) =>
+        actor is { IsDisposed: false, Export: null } && actor.CloneSource?.FileRef == file.Package && actor.Package != file.Package;
 
     /// <summary>Adds views of the actors <paramref name="level"/> lists that the file doesn't show, and of its BSP if it has none</summary>
     /// <returns>Whether any were added</returns>
@@ -2306,7 +2369,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RefreshCommandStates();
     }
 
-    private void ActorContextMenu_Opened(object sender, RoutedEventArgs e) => ((sender as FrameworkElement)?.DataContext as ActorProxy)?.NotifyRefusals();
+    private void ActorContextMenu_Opened(object sender, RoutedEventArgs e)
+    {
+        ((sender as FrameworkElement)?.DataContext as ActorProxy)?.NotifyRefusals();
+        NotifyPasteRefusal();
+    }
 
     /// <summary>Lists or unlists an actor pending deletion in the change list</summary>
     internal void ShowPendingDeletion(ActorProxy actor, bool pending)
@@ -2394,6 +2461,146 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             OnDuplicateDragComplete(step);
         }
         catch (Exception error) when (error is not OutOfMemoryException) { MessageBox.Show(this, error.Message, "Duplicate"); }
+    }
+
+    //the actor Copy last copied, by the id a rebuilt view of it keeps (a commit rebuilds its view), which Paste makes copies of. Not its view, which would
+    //keep a closed file's package in memory
+    private ActorId? copiedId;
+    //where the viewport's actor menu was opened, which its Paste puts a copy
+    private Point viewportMenuPoint;
+
+    //the copied actor's view, while its file is open and it hasn't been removed
+    private ActorProxy CopiedActor => copiedId is { } id ? Actors.FirstOrDefault(a => a.Id == id && !a.IsDisposed) : null;
+
+    /// <summary>
+    /// Why Paste can't make a copy of the copied actor in the Place Actors tab's level (<see cref="PlacementFile"/>), as of when it was last asked for:
+    /// when the actor menu opened (when it's shown) or an actor was copied. Ctrl+V finds it again when it's pressed (<see cref="PasteActor"/>)
+    /// </summary>
+    public string PasteRefusal { get; private set; }
+
+    /// <summary>Whether Paste could make a copy (<see cref="PasteRefusal"/>), which the actor menu's Paste is enabled by</summary>
+    public bool CanPaste => PasteRefusal is null;
+
+    //why Paste can't make a copy now, or null: what it checks before it's made, and the copy's own refusal
+    private string FindPasteRefusal()
+    {
+        if (PasteRefusalBeforeCopy() is { } refusal) return refusal;
+        var source = CopiedActor;
+        try
+        {
+            return ActorCloning.Refusal(source, PlacementFile);
+        }
+        catch (Exception error) when (error is not OutOfMemoryException) { return $"{source.ActorName} couldn't be read: {error.Message}"; }
+    }
+
+    //why Paste can't make a copy now, or null, by what it checks before the copy is made, which has a refusal of its own (ActorCloning.Refusal)
+    private string PasteRefusalBeforeCopy() =>
+        !CanMutateScene ? "Wait for the current operation (such as saving or refreshing the preview) to finish, then try again."
+        : RenderContext.IsDragging ? "Finish moving first."
+        : CopiedActor is null ? "Copy an actor first (Ctrl+C)."
+        : PlacementFile is null ? "Choose the level to paste it in, on the Place Actors tab."
+        : null;
+
+    /// <summary>Copy (Ctrl+C, or the actor menu's): remembers the actor for Paste, which makes a copy of it as it is then</summary>
+    /// <returns>Whether there was an actor to copy (or to say why it can't be)</returns>
+    private bool CopyActor(object parameter)
+    {
+        if ((parameter as ActorProxy ?? SelectedActor) is not { } actor) return false;
+        if (actor.CopyRefusal is { } refusal)
+        {
+            StatusBar_LeftMostText.Text = $"{actor.ActorName} can't be copied. {refusal}";
+            return true;
+        }
+        copiedId = actor.Id;
+        NotifyPasteRefusal();
+        StatusBar_LeftMostText.Text = $"Copied {actor.ActorName}. Paste (Ctrl+V) puts a copy of it in the level chosen in the Place Actors tab."
+            + (PlacementFile is { } destination ? $" ({destination.FileName})" : "");
+        return true;
+    }
+
+    private void NotifyPasteRefusal()
+    {
+        PasteRefusal = FindPasteRefusal();
+        OnPropertyChanged(nameof(PasteRefusal));
+        OnPropertyChanged(nameof(CanPaste));
+    }
+
+    /// <summary>
+    /// Paste (Ctrl+V, or the actor menu's): a copy of the copied actor, selected, in the Place Actors tab's level (<see cref="PlacementFile"/>), as one
+    /// undo step: in its own level, a duplicate; in another, a copy, made for that level if it's another file (<see cref="ActorCloning"/>). It goes where
+    /// the cursor meets the scene (as a click places an actor), as UE3's Paste Here puts copies at the click (UnrealEdSrv.cpp's EDIT PASTE TO=HERE); with
+    /// the cursor away from the viewport, centred in front of the camera, far enough not to be around it. Why it can't is shown in the status bar, as
+    /// Copy's is
+    /// </summary>
+    /// <param name="menu">The menu Paste was chosen from: over the viewport, it goes where the menu was opened</param>
+    /// <returns>True: it pasted, or said why it couldn't</returns>
+    private bool PasteActor(ContextMenu menu)
+    {
+        // (the copy's own refusal is BeginClone's, which finds it as it makes the copy)
+        if (PasteRefusalBeforeCopy() is { } refusal)
+        {
+            StatusBar_LeftMostText.Text = $"Nothing was pasted. {refusal}";
+            return true;
+        }
+        var (source, destination) = (CopiedActor, PlacementFile);
+        Point? cursor = menu is null ? CursorInViewport() : menu.PlacementTarget == SceneViewer ? viewportMenuPoint : null;
+        IActorDuplication paste;
+        bool anotherFile = ActorCloning.InAnotherFile(source, destination);
+        IReadOnlyList<ExportEntry> dropped;
+        bool baked;
+        try
+        {
+            Vector3 location;
+            if (cursor is { } point) location = RenderContext.PlacementAt((int)point.X, (int)point.Y).Location;
+            else
+            {
+                var camera = RenderContext.Camera;
+                var bounds = source.GetBounds();
+                location = camera.EyePosition + camera.CameraForward * (bounds.SphereRadius + 50) - (bounds.Origin - source.Location);
+            }
+            // What it doesn't copy is found before the copy's made, so that nothing can fail between its making and its undo step
+            dropped = anotherFile ? ActorCloning.DroppedReferences(source) : [];
+            baked = anotherFile && ActorCloning.HasBakedLighting(source);
+            paste = ActorCloning.BeginClone(source, location - source.Location, destination);
+        }
+        catch (Exception error) when (error is not OutOfMemoryException)
+        {
+            StatusBar_LeftMostText.Text = $"Nothing was pasted. {error.Message}";
+            return true;
+        }
+        IUndoAction step;
+        try
+        {
+            // (it cancels the copy if it fails)
+            step = paste.Complete();
+        }
+        catch (Exception error) when (error is not OutOfMemoryException)
+        {
+            MessageBox.Show(this, error.Message, "Paste");
+            return true;
+        }
+        if (step is null)
+        {
+            StatusBar_LeftMostText.Text = $"Nothing was pasted: the copy would be exactly where {source.ActorName} is.";
+            return true;
+        }
+        OnDuplicateDragComplete(step);
+        string into = destination == source.OwningFile ? "" : $" into {destination.FileName}";
+        var notCopied = new List<string>();
+        if (baked) notCopied.Add("its meshes' baked lighting");
+        if (paste.Copy.Components.OfType<MeshComponentProxy>().Any(m => m.ExistingLighting?.DroppedEnvironment == true))
+            notCopied.Add("its meshes' uncommitted light environment, which isn't its own");
+        if (dropped.Count > 0) notCopied.Add($"its references to its level's {string.Join(", ", dropped.Select(e => e.ObjectName.Instanced))}");
+        StatusBar_LeftMostText.Text = $"Pasted a copy of {source.ActorName}{into}." + (notCopied.Count == 0 ? "" : $" Not copied: {string.Join("; ", notCopied)}.");
+        return true;
+    }
+
+    //the cursor's position in the viewport, if it's over it
+    private Point? CursorInViewport()
+    {
+        if (!SceneViewer.IsMouseOver) return null;
+        var point = Mouse.GetPosition(SceneViewer);
+        return point.X >= 0 && point.Y >= 0 && point.X < SceneViewer.ActualWidth && point.Y < SceneViewer.ActualHeight ? point : null;
     }
 
     private void OnDuplicateDragComplete(IUndoAction step)

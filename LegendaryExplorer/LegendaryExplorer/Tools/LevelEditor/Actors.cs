@@ -167,6 +167,10 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     }
     /// <summary>Why it can't be duplicated now (by Duplicate, or an Alt+drag), or null</summary>
     public virtual string DuplicateRefusal => ActorCloning.Refusal(this);
+    /// <summary>Why it can't be copied (for Paste, into its own level or another), or null</summary>
+    public string CopyRefusal => ActorCloning.Refusal(this, null);
+    /// <summary>Whether it can be copied (<see cref="CopyRefusal"/>), which the actor menu's Copy is enabled by</summary>
+    public bool CanCopy => CopyRefusal is null;
     /// <summary>Why it can't be opened in Package Editor, or null</summary>
     public string PackageEditorRefusal => IsDraft ? "It's new: it has no export to open until it's committed." : null;
 
@@ -195,7 +199,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     internal virtual MeshComponentProxy MeshDrawing(ExportEntry component) => Components.OfType<MeshComponentProxy>().FirstOrDefault(m => m.Export == component);
 
     /// <summary>
-    /// Asks for <see cref="DeleteRefusal"/>, <see cref="UpgradeRefusal"/>, <see cref="DuplicateRefusal"/> and <see cref="PackageEditorRefusal"/> again: they
+    /// Asks for <see cref="DeleteRefusal"/>, <see cref="UpgradeRefusal"/>, <see cref="DuplicateRefusal"/>, <see cref="CopyRefusal"/> and <see cref="PackageEditorRefusal"/> again: they
     /// depend on more than the actor (its file, the scene, its commit), which don't notify them
     /// </summary>
     internal void NotifyRefusals()
@@ -203,6 +207,8 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         OnPropertyChanged(nameof(DeleteRefusal));
         OnPropertyChanged(nameof(UpgradeRefusal));
         OnPropertyChanged(nameof(DuplicateRefusal));
+        OnPropertyChanged(nameof(CopyRefusal));
+        OnPropertyChanged(nameof(CanCopy));
         OnPropertyChanged(nameof(PackageEditorRefusal));
     }
 
@@ -316,7 +322,8 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// actor can be written, importing its class if the package has none. Its values are written by <see cref="CommitChanges"/>
     /// </summary>
     /// <param name="levelBinary"><paramref name="level"/>'s, which the new export is added to the Actors of. The caller writes it</param>
-    internal void Materialize(ExportEntry level, Level levelBinary)
+    /// <param name="snapshots">The commit's snapshots of other files, which a copy of another file's actor is made from</param>
+    internal void Materialize(ExportEntry level, Level levelBinary, ActorCloning.SourceSnapshots snapshots)
     {
         if (!IsDraft) throw new InvalidOperationException($"{DisplayText} already has an export.");
         // Not a universal factory: only the classes whose placed actors are known to be made this way, drawn by a view that writes all their values,
@@ -330,6 +337,11 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         if (CloneCollection is not null)
         {
             BindExport(ActorCloning.MaterializeMember(CloneSource, CloneCollection, level, name, LocalToWorld, out var copies));
+            CloneCopies = copies;
+        }
+        else if (CloneSource is not null && CloneSource.FileRef != Pcc)
+        {
+            BindExport(ActorCloning.MaterializeInAnotherFile(this, level, levelBinary, name, snapshots, out var copies));
             CloneCopies = copies;
         }
         else if (CloneSource is not null)
@@ -1368,7 +1380,7 @@ public class BrushProxy : ActorProxy
         ExportEntry component = null;
         if (Materialized && componentTemplate is not null)
         {
-            var brush = EmptyBrush(OwningFile.LevelExport);
+            var brush = EmptyBrush(OwningFile.LevelExport, Export);
             component = NewComponent(componentTemplate, [new ObjectProperty(brush, "Brush"), collision.DeepClone(), new ObjectProperty(0, "ReplacementPrimitive")],
                 LegendaryExplorerCore.Unreal.BinaryConverters.BrushComponent.Create());
             Properties.AddOrReplaceProp(new ObjectProperty(brush, "Brush"));
@@ -1408,31 +1420,35 @@ public class BrushProxy : ActorProxy
     // its own Owner
     private const EObjectFlags BrushFlags = EObjectFlags.Transactional | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit;
 
-    /// <summary>The empty brush model that <paramref name="level"/>'s other volumes share, or a new one made as the cooker makes it if none does</summary>
-    private ExportEntry EmptyBrush(ExportEntry level)
+    /// <summary>
+    /// The empty brush model that <paramref name="level"/>'s volumes other than <paramref name="volume"/> share, or a new one made as the cooker makes it if
+    /// none does
+    /// </summary>
+    internal static ExportEntry EmptyBrush(ExportEntry level, ExportEntry volume)
     {
-        foreach (var volume in Pcc.Exports.Where(e => e.Parent == level && e != Export && !e.IsDefaultObject && e.IsA("Volume")))
+        var package = level.FileRef;
+        foreach (var other in package.Exports.Where(e => e.Parent == level && e != volume && !e.IsDefaultObject && e.IsA("Volume")))
         {
-            if (volume.GetProperty<ObjectProperty>("Brush")?.ResolveToEntry(Pcc) is ExportEntry { ClassName: "Model" } brush && brush.Parent == level
+            if (other.GetProperty<ObjectProperty>("Brush")?.ResolveToEntry(package) is ExportEntry { ClassName: "Model" } brush && brush.Parent == level
                 && brush.GetBinaryData<Model>() is { Nodes.Length: 0 } shared
-                && (shared.Polys == 0 || Pcc.GetEntry(shared.Polys) is ExportEntry { ClassName: "Polys" } sharedPolys && sharedPolys.GetBinaryData<Polys>().Elements.Length == 0))
+                && (shared.Polys == 0 || package.GetEntry(shared.Polys) is ExportEntry { ClassName: "Polys" } sharedPolys && sharedPolys.GetBinaryData<Polys>().Elements.Length == 0))
                 return brush;
         }
         //(no NetIndex, as INDEX_NONE registers nothing)
         byte[] noNetIndex = BitConverter.GetBytes(-1);
-        var polys = new ExportEntry(Pcc, level, Pcc.GetNextIndexedName("Polys"), noNetIndex)
+        var polys = new ExportEntry(package, level, package.GetNextIndexedName("Polys"), noNetIndex)
         {
-            Class = Pcc.GetEntryOrAddImport("Engine.Polys", "Class"), ObjectFlags = BrushFlags
+            Class = package.GetEntryOrAddImport("Engine.Polys", "Class"), ObjectFlags = BrushFlags
         };
-        Pcc.AddExport(polys);
+        package.AddExport(polys);
         var polysBinary = Polys.Create();
         polysBinary.Owner = polys.UIndex;
         polys.WritePropertiesAndBinary([], polysBinary);
-        var model = new ExportEntry(Pcc, level, Pcc.GetNextIndexedName("Model"), noNetIndex)
+        var model = new ExportEntry(package, level, package.GetNextIndexedName("Model"), noNetIndex)
         {
-            Class = Pcc.GetEntryOrAddImport("Engine.Model", "Class"), ObjectFlags = BrushFlags
+            Class = package.GetEntryOrAddImport("Engine.Model", "Class"), ObjectFlags = BrushFlags
         };
-        Pcc.AddExport(model);
+        package.AddExport(model);
         var modelBinary = Model.Create();
         modelBinary.Self = model.UIndex;
         modelBinary.Polys = polys.UIndex;

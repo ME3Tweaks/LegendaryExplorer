@@ -156,13 +156,15 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
             options.Add(new(null, "Inherited (archetype / class lighting)"));
         options.Add(new(0, "None (direct lighting)"));
         var owners = GetEnvironmentOwners();
-        foreach (IEntry entry in Component.FileRef.Exports.Cast<IEntry>().Concat(Component.FileRef.Imports))
+        //(its settings' package: CanAssignEnvironment)
+        var package = SavedComponent.FileRef;
+        foreach (IEntry entry in package.Exports.Cast<IEntry>().Concat(package.Imports))
         {
-            if (IsOwnedEnvironment(entry, owners))
+            if (InAnotherPackage ? IsSourcesOwnEnvironment(entry) : IsOwnedEnvironment(entry, owners))
                 options.Add(new(entry.UIndex, $"#{entry.UIndex} {entry.InstancedFullPath}"));
         }
         if (settings.LightEnvironment is { } current && options.All(option => option.UIndex != current))
-            options.Add(new(current, $"Invalid ownership or unresolved: #{current} {Component.FileRef.GetEntry(current)?.InstancedFullPath}", false));
+            options.Add(new(current, $"Invalid ownership or unresolved: #{current} {package.GetEntry(current)?.InstancedFullPath}", false));
         Environments = options;
         OnPropertyChanged(nameof(Environments));
         OnPropertyChanged(nameof(Environment));
@@ -208,8 +210,24 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
         catch { return false; } // An unresolved import cannot be offered as an assignment.
     }
 
+    //(an index of its saved component's package, which a copy's stand-in in the same package shares)
     private bool CanAssignEnvironment(int? index) => index is null ? cleanSettings.LightEnvironment is null
-        : index == 0 || IsOwnedEnvironment(Component.FileRef.GetEntry(index.Value), GetEnvironmentOwners());
+        : index == 0 || (InAnotherPackage ? IsSourcesOwnEnvironment(SavedComponent.FileRef.GetEntry(index.Value))
+            : IsOwnedEnvironment(Component.FileRef.GetEntry(index.Value), GetEnvironmentOwners()));
+
+    /// <summary>
+    /// Whether it's a copy's stand-in in another package than its saved component (a paste into another level). Its settings are of its saved component,
+    /// whose package's indexes they are, and it can be assigned only its source actor's own environments, which its commit copies with it (its archetype's
+    /// are its source's package's). A collection member's copy is made of its component alone, so it has none
+    /// </summary>
+    private bool InAnotherPackage => SavedComponent.FileRef != Component.FileRef;
+
+    //(what its copy is made of: the source actor, and everything under it, or a member's component alone)
+    private bool IsSourcesOwnEnvironment(IEntry entry) => entry is ExportEntry { IsDefaultObject: false } environment && Mesh.Actor?.CloneSource is { } copied
+        && copied != SavedComponent && environment.Parent == copied && environment.IsA("LightEnvironmentComponent");
+
+    /// <summary>For a copy's mesh: whether its source's pending light environment assignment couldn't be given to it (<see cref="Seed"/>), and so isn't</summary>
+    internal bool DroppedEnvironment { get; private set; }
     public bool AcceptsLights { get => settings.AcceptsLights; set => Apply(settings with { AcceptsLights = value }); }
     public bool AcceptsDynamicLights { get => settings.AcceptsDynamicLights; set => Apply(settings with { AcceptsDynamicLights = value }); }
     public bool CastShadow { get => settings.CastShadow; set => Apply(settings with { CastShadow = value }); }
@@ -292,6 +310,9 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
         if (source.cleanSettings != cleanSettings)
             throw new InvalidOperationException($"{ActorPropertyName}'s lighting can't be copied: its saved values aren't its source's.");
         settings = source.settings;
+        // In another package, an assignment it can't be given (its source's archetype's environment) stays as saved
+        DroppedEnvironment = settings.LightEnvironment != cleanSettings.LightEnvironment && !CanAssignEnvironment(settings.LightEnvironment);
+        if (DroppedEnvironment) settings = settings with { LightEnvironment = cleanSettings.LightEnvironment };
         settings = Read(Effective());
         RefreshEnvironments();
         NotifySettings();
@@ -330,6 +351,9 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
             ActorLightEnvironment.Register((ExportEntry)component.Parent, component.FileRef.GetUExport(copy));
             changed = [.. changed.Select(p => p is ObjectProperty { Name.Name: "LightEnvironment" } ? new ObjectProperty(copy, "LightEnvironment") : p)];
         }
+        // (an index of another package: one its copy didn't take along can't be written)
+        else if (reassigned && InAnotherPackage && settings.LightEnvironment is > 0)
+            throw new InvalidOperationException($"{ComponentName}'s light environment #{settings.LightEnvironment} isn't one its copy has.");
         else if (reassigned && !CanAssignEnvironment(settings.LightEnvironment))
             throw new InvalidOperationException("The light environment must belong to this actor or its archetype.");
         else if (reassigned && settings.LightEnvironment is > 0
