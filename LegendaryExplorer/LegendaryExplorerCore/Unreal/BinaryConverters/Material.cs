@@ -1258,8 +1258,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             outVal.B = Clamp(inVal.B, minVal.B, maxVal.B);
             outVal.A = Clamp(inVal.A, minVal.A, maxVal.A);
 
-            //Unreal's Clamp. Unlike Math.Clamp, it doesn't throw when min > max, which some materials rely on
-            static float Clamp(float x, float min, float max) => x < min ? min : x < max ? x : max;
+            //Matches LE3's native FMaterialUniformExpressionClamp::GetNumberValue (COMISS x,min / JC => min; else MINSS x,max).
+            //Unlike Math.Clamp, it doesn't throw when min > max, which some materials rely on.
+            //NaN input selects min (COMISS unordered sets CF), and equal/unordered vs max selects max (MINSS returns second operand).
+            static float Clamp(float x, float min, float max) => !(x >= min) ? min : x < max ? x : max;
         }
         public override bool IsNotFrameDependent => Input.IsNotFrameDependent && Min.IsNotFrameDependent && Max.IsNotFrameDependent;
     }
