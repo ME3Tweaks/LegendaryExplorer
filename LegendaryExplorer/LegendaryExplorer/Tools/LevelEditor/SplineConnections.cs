@@ -356,7 +356,7 @@ public sealed partial class SplineActorProxy
                     preview ??= new ExportEntry(Pcc, Export, "None", new byte[8], binary: StaticMeshComponent.Create());
                     pending = connection.MeshExport?.GetProperties() ?? NewMeshProperties();
                 }
-                connection.Mesh = new SplineMeshComponentProxy(Editor.RenderContext, preview, this, pending, connection.MeshExport is not null, connection.Lighting,
+                connection.Mesh = new SplineMeshComponentProxy(Editor.RenderContext, preview, this, pending, connection.MeshExport, connection.Lighting,
                     original ? null : new PreviewAssets(deformMesh, [.. deformMaterials]));
                 Components.Add(connection.Mesh); SplineMeshComps.Add(connection.Mesh);
                 connection.PreviewConfiguration = configuration;

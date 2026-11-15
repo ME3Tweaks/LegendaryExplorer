@@ -199,6 +199,9 @@ public sealed class MeshStaticLighting : IDisposable
     /// </summary>
     internal Func<bool> IsShown = () => true;
 
+    //when its context last registered it, in the order it stamps registrations and shader loads in (MeshRenderContext.MarkShaderLoads)
+    internal long RegisteredAt;
+
     /// <summary>
     /// Whether the mesh can block light environments' visibility traces, whichever light they're to. Those traces are TRACE_ShadowCast line checks,
     /// which only consider primitives that CastShadow and have static shadowing, and that the light affects (see <see cref="BlocksVisibilityTraceTo"/>).
@@ -382,16 +385,20 @@ public sealed class MeshStaticLighting : IDisposable
     /// <summary>
     /// Reads a static mesh component's precomputed lighting for one LOD. Returns null if that isn't possible
     /// </summary>
-    public static MeshStaticLighting Create(MeshRenderContext context, ExportEntry componentExport, StaticMesh mesh, int lod, PropertyCollection condensedProps = null, bool unbakedPreview = false)
+    /// <param name="bakedFrom">For a copy in its source's level, drawn from a stand-in: the saved component whose baked lighting it has (its light and shadow
+    /// maps, IrrelevantLights and assignment history), as its commit copies them</param>
+    public static MeshStaticLighting Create(MeshRenderContext context, ExportEntry componentExport, StaticMesh mesh, int lod, PropertyCollection condensedProps = null,
+        bool unbakedPreview = false, ExportEntry bakedFrom = null)
     {
         if (!componentExport.Game.IsLEGame() || lod >= mesh.LODModels.Length)
         {
             return null;
         }
+        var baked = bakedFrom ?? componentExport;
         StaticMeshComponent component;
         try
         {
-            component = unbakedPreview ? StaticMeshComponent.Create() : componentExport.GetBinaryData<StaticMeshComponent>();
+            component = unbakedPreview ? StaticMeshComponent.Create() : baked.GetBinaryData<StaticMeshComponent>();
         }
         catch
         {
@@ -400,15 +407,16 @@ public sealed class MeshStaticLighting : IDisposable
         var staticLighting = new MeshStaticLighting(context)
         {
             OwnerActor = componentExport.Parent as ExportEntry,
-            IsBakedClass = componentExport.ClassName == "StaticMeshComponent"
+            // (a stand-in has no class of its own)
+            IsBakedClass = baked.ClassName == "StaticMeshComponent"
         };
         if (!unbakedPreview)
         {
-            context.CaptureAssignments(componentExport.FileRef);
-            staticLighting.SourceAssignments = context.AssignmentHistory.Get(componentExport, $"LOD{lod}");
+            context.CaptureAssignments(baked.FileRef);
+            staticLighting.SourceAssignments = context.AssignmentHistory.Get(baked, $"LOD{lod}");
         }
         staticLighting.PreviewLod = lod;
-        PropertyCollection props = unbakedPreview ? condensedProps : componentExport.GetProperties();
+        PropertyCollection props = unbakedPreview ? condensedProps : baked.GetProperties();
         if (props.GetProp<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLights)
         {
             foreach (StructProperty guidProp in irrelevantLights)
@@ -428,7 +436,7 @@ public sealed class MeshStaticLighting : IDisposable
         //FPrimitiveSceneInfo's bStaticShadowing (bUsePrecomputedShadows) and bCastDynamicShadow (CastShadow && bCastDynamicShadow, which MeshComponent defaults to true).
         //StaticMeshActor's component template sets bUsePrecomputedShadows. If it isn't found (in case the archetype chain couldn't be resolved),
         //a mesh with any precomputed lighting, or in a StaticMeshCollectionActor, is taken to have it
-        bool usesPrecomputedShadows = LightAssignment.HasStaticShadowing(componentExport, condensedProps, component);
+        bool usesPrecomputedShadows = LightAssignment.HasStaticShadowing(baked, condensedProps, component);
         staticLighting.HasStaticShadowing = usesPrecomputedShadows;
         //(the buffers hold LegendaryExplorerCore's Color, not SharpDX's)
         staticLighting.HasNonWhiteVertexColors = mesh.LODModels[lod].ColorVertexBuffer?.VertexData?.Any(c => c != OpaqueWhite) == true
@@ -438,9 +446,9 @@ public sealed class MeshStaticLighting : IDisposable
         staticLighting.castsOwnDynamicShadow = staticLighting.CastsDynamicShadow && !staticLighting.UsesLightEnvironment;
         if (lod < component.LODData.Length)
         {
-            staticLighting.Load(component.LODData[lod], componentExport.FileRef, mesh, lod);
+            staticLighting.Load(component.LODData[lod], baked.FileRef, mesh, lod);
         }
-        staticLighting.HasCompatibleBakeMapping = staticLighting.ReceivesStaticLighting && HasCompatibleMapping(componentExport, component, mesh);
+        staticLighting.HasCompatibleBakeMapping = staticLighting.ReceivesStaticLighting && HasCompatibleMapping(baked, component, mesh);
         context.RegisterStaticLighting(staticLighting);
         return staticLighting;
     }

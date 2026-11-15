@@ -1033,29 +1033,50 @@ public class MeshRenderContext : RenderContext
     /// </summary>
     public void ForgetLevel(IMEPackage level)
     {
-        StaticMeshes.Forget(level);
-        //the level's imports key the class defaults
+        ForgetPackage(level);
+        //(what's read through its imports is forgotten too, in case it's reopened changed)
         EffectiveLightingProperties.InvalidateDefaults(PackageCache);
+        lock (LightsLock)
+        {
+            LightsVersion++;
+        }
+        //its lights' light function materials and failures, and the meshes that cast shadows from them, which would keep the level loaded
+        LightAttenuations.ClearMaterials();
+        ModulatedShadowsFailed = false;
+        lock (LevelGeometryLock)
+        {
+            //it may hold the level's meshes and BSP. Rebuilt the next time it's needed
+            LevelGeometry = null;
+        }
+    }
+
+    /// <summary>
+    /// Forgets what's cached of a package, but not what the scene's lights and geometry hold of it, which <see cref="ForgetLevel"/> resets too: enough
+    /// for one that was never in the scene, a copied actor's level (<see cref="ActorCapture"/>), whose views stayed out of it
+    /// </summary>
+    internal void ForgetPackage(IMEPackage level)
+    {
+        StaticMeshes.Forget(level);
+        //the level's classes and imports key class defaults, and its materials' shaders its shader cache (or none), which would keep it loaded
+        EffectiveLightingProperties.ForgetDefaults(PackageCache, level);
+        lock (SeekFreeShaderCaches)
+        {
+            SeekFreeShaderCaches.Remove(level);
+        }
         lock (LightsLock)
         {
             Volatile.Write(ref assignmentHistory, assignmentHistory.Without(level));
             var state = LevelCaptures.GetValue(level, static _ => new LevelCaptureState());
             state.Forgotten = true;
             state.Generation++;
-            LightsVersion++;
         }
         lock (LightEnvironments)
         {
             CachedWorldLightEnvironmentSettings.Remove(level);
         }
-        //its lights' light function materials and failures, and the meshes that cast shadows from them, which would keep the level loaded
-        LightAttenuations.ClearMaterials();
-        ModulatedShadowsFailed = false;
         string keyPrefix = $"{level.FilePath}|";
         lock (LevelGeometryLock)
         {
-            //it may hold the level's meshes and BSP. Rebuilt the next time it's needed
-            LevelGeometry = null;
             LevelModels.Remove(level);
             MeshesWithoutLevelGeometry.RemoveWhere(key => key.StartsWith(keyPrefix, StringComparison.OrdinalIgnoreCase));
             foreach (string key in LevelGeometryMeshes.Keys.Where(key => key.StartsWith(keyPrefix, StringComparison.OrdinalIgnoreCase)).ToList())
@@ -1074,6 +1095,7 @@ public class MeshRenderContext : RenderContext
         lock (StaticLightings)
         {
             StaticLightings.Add(staticLighting);
+            staticLighting.RegisteredAt = Interlocked.Increment(ref shaderLoadSequence);
         }
     }
 
@@ -1103,8 +1125,12 @@ public class MeshRenderContext : RenderContext
         lock (PendingGameShaderLoads)
         {
             PendingGameShaderLoads.Add(material);
+            material.QueuedAt = Interlocked.Increment(ref shaderLoadSequence);
         }
     }
+
+    //stamps the materials queued and the meshes registered in order, for LoadGameShadersNow to tell what came after a MarkShaderLoads
+    private long shaderLoadSequence;
 
     internal void RemovePendingGameShaderLoad(MaterialRenderProxy material)
     {
@@ -1159,17 +1185,41 @@ public class MeshRenderContext : RenderContext
             materials = [.. PendingGameShaderLoads];
             PendingGameShaderLoads.Clear();
         }
+        LoadGameShaders(materials, GetStaticLightings(), lightingModeToPrepare ?? LightingMode, reportProgress);
+    }
+
+    /// <summary>A moment, for <see cref="LoadGameShadersNow"/> to load what was queued for <see cref="LoadPendingGameShaders"/> after it</summary>
+    public long MarkShaderLoads() => Interlocked.Read(ref shaderLoadSequence);
+
+    /// <summary>
+    /// Loads now, on the calling thread, what's been queued for <see cref="LoadPendingGameShaders"/> since <paramref name="mark"/>: the game shaders of the
+    /// materials made since, and the light shaders of the meshes registered since, for the current lighting mode. For meshes made while a drag holds the
+    /// window's preparation batch back, which would be drawn with LEX's shader until it ends: an Alt+drag's copy, whose shaders are its source's, so are
+    /// mostly found in the caches
+    /// </summary>
+    /// <exception cref="AggregateException">As <see cref="LoadPendingGameShaders"/> throws it</exception>
+    public void LoadGameShadersNow(long mark)
+    {
+        MaterialRenderProxy[] materials;
+        lock (PendingGameShaderLoads)
+        {
+            materials = [.. PendingGameShaderLoads.Where(material => material.QueuedAt > mark)];
+            PendingGameShaderLoads.RemoveAll(material => material.QueuedAt > mark);
+        }
+        MeshStaticLighting[] registered;
+        lock (StaticLightings)
+        {
+            registered = [.. StaticLightings.Where(lighting => lighting.RegisteredAt > mark)];
+        }
+        LoadGameShaders(materials, registered, LightingMode, null);
+    }
+
+    //the materials, off the queue, and the meshes' light shaders for the mode
+    private void LoadGameShaders(MaterialRenderProxy[] materials, MeshStaticLighting[] staticLightings, ViewportLightingMode mode, Action<int, int> reportProgress)
+    {
         try
         {
-            MeshStaticLighting[] staticLightings = [];
-            ViewportLightingMode mode = lightingModeToPrepare ?? LightingMode;
-            if (mode is ViewportLightingMode.Level or ViewportLightingMode.Preview)
-            {
-                lock (StaticLightings)
-                {
-                    staticLightings = [.. StaticLightings];
-                }
-            }
+            if (mode is not (ViewportLightingMode.Level or ViewportLightingMode.Preview)) staticLightings = [];
             int total = materials.Length + staticLightings.Length;
             //one material failing doesn't stop the others, which were taken off the queue: its failure is reported after them
             List<Exception> failures = null;

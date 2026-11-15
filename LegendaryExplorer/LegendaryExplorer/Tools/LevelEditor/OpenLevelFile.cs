@@ -22,6 +22,12 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
     public string FileName => Path.GetFileName(Package.FilePath);
     public string FilePath => Package.FilePath;
 
+    /// <summary>
+    /// Whether it's a copied actor's temporary level (<see cref="ActorCapture"/>), which the editor doesn't show: a decal is committed into it without
+    /// being projected, and its actor's view is pasted from without being in the scene
+    /// </summary>
+    internal bool IsCapture { get; init; }
+
     public ObservableCollectionExtended<ActorProxy> Actors { get; } = [];
     private readonly List<PendingActorDeletion> pendingDeletions = [];
     /// <summary>The new actors a commit creates: the drafts in the scene (not those that undo took out of it, which history keeps)</summary>

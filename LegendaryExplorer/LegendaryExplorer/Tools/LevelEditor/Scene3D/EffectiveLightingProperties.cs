@@ -45,6 +45,22 @@ internal static class EffectiveLightingProperties
         }
     }
 
+    /// <summary>
+    /// Forgets the class defaults read through the cache that <paramref name="package"/> keys or holds, once it's let go of without changing (a copied
+    /// actor's level): what other packages' objects read is as it was
+    /// </summary>
+    public static void ForgetDefaults(PackageCache cache, IMEPackage package)
+    {
+        if (cache is null || !DefaultsByCache.TryGetValue(cache, out var defaults)) return;
+        lock (defaults)
+        {
+            foreach (var type in defaults.Objects.Where(p => p.Key.FileRef == package || p.Value?.FileRef == package).Select(p => p.Key).ToList())
+                defaults.Objects.Remove(type);
+            foreach (var cdo in defaults.Properties.Keys.Where(cdo => cdo.FileRef == package).ToList()) defaults.Properties.Remove(cdo);
+            defaults.Generation++;
+        }
+    }
+
     internal static ExportEntry ClassDefault(ExportEntry export, PackageCache cache) => ClassDefaultOf(export.Class, cache);
 
     /// <summary>The class default object of <paramref name="type"/>, which may be another package's class (a draft's)</summary>

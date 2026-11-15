@@ -90,7 +90,7 @@ internal static class AssetPorting
     /// <summary>The entry of <paramref name="package"/> that is <paramref name="asset"/>: one it has at its path that's the same object, or a new copy</summary>
     internal static IEntry Copy(AssetReference asset, IMEPackage package, PackageCache sources, Func<string, IMEPackage> inMemory = null)
     {
-        string file = Path.GetFileName(asset.SourceFile), destination = Path.GetFileName(package.FilePath);
+        string file = ActorCapture.FileName(asset.SourceFile), destination = ActorCapture.FileName(package.FilePath);
         var sourcePackage = inMemory?.Invoke(asset.SourceFile) ?? sources.GetCachedPackage(asset.SourceFile) ?? throw new InvalidOperationException($"{file} couldn't be opened to copy {asset.SourcePath} from.");
         if (sourcePackage.Game != package.Game)
             throw new InvalidOperationException($"{asset.SourcePath} is in {file}, a {sourcePackage.Game} file, so it can't be used in {destination}, a {package.Game} file.");
@@ -118,7 +118,7 @@ internal static class AssetPorting
     /// </summary>
     internal static ExportEntry Port(ExportEntry source, IMEPackage package, PackageCache sources, IEntry parent = null)
     {
-        string file = Path.GetFileName(source.FileRef.FilePath), destination = Path.GetFileName(package.FilePath);
+        string file = ActorCapture.FileName(source.FileRef.FilePath), destination = ActorCapture.FileName(package.FilePath);
         int exportsBefore = package.ExportCount, importsBefore = package.ImportCount;
         var issues = EntryExporter.ExportExportToPackage(source, package, out var copy, sources, targetParent: parent);
         if (issues.Count > 0)
@@ -127,17 +127,56 @@ internal static class AssetPorting
         if (copy is not ExportEntry copied)
             throw new InvalidOperationException($"{source.InstancedFullPath} couldn't be copied from {file}.");
         // The relinker uses what the package has at a path only if it's of the source's class (or both are materials): one of another class gets a second
-        // object at its path, of which the game would load one. (Only the entries it had with a new export's name can be at its path)
+        // object at its path, of which the game would load one. That's its path in the package, or in memory, where an export that isn't a forced export
+        // is under its file's name (a root Scorch of D.pcc and a forced D.Scorch are both D.Scorch). (Only the entries it had with a new export's name
+        // can be at its path)
         var added = package.Exports.Skip(exportsBefore).ToList();
         var names = added.Select(e => e.ObjectName).ToHashSet();
         var had = package.Exports.Take(exportsBefore).Cast<IEntry>().Concat(package.Imports.Take(importsBefore)).Where(e => names.Contains(e.ObjectName))
-            .ToLookup(e => e.InstancedFullPath, StringComparer.OrdinalIgnoreCase);
-        if (added.FirstOrDefault(e => had.Contains(e.InstancedFullPath)) is { } clash)
+            .SelectMany(e => new[] { (Path: e.InstancedFullPath, Entry: e), (Path: e.MemoryFullPath, Entry: e) })
+            .ToLookup(p => p.Path, p => p.Entry, StringComparer.OrdinalIgnoreCase);
+        foreach (var made in added)
         {
-            throw new InvalidOperationException($"{source.InstancedFullPath} uses {clash.InstancedFullPath}, a {clash.ClassName}, but {destination} already has a " +
-                $"{had[clash.InstancedFullPath].First().ClassName} there. The game loads one object per path, so it couldn't load both.");
+            if ((had[made.InstancedFullPath].FirstOrDefault() ?? had[made.MemoryFullPath].FirstOrDefault()) is not { } existing) continue;
+            throw new InvalidOperationException($"{source.InstancedFullPath} uses {made.InstancedFullPath}, a {made.ClassName}, but {destination} already has a " +
+                $"{existing.ClassName} at {existing.InstancedFullPath}. The game loads one object per path, so it couldn't load both.");
         }
         return copied;
+    }
+
+    /// <summary>
+    /// Before <paramref name="tree"/>, a copy's objects, is ported into <paramref name="package"/>: ports in what they import from a file the package can't
+    /// import from, judged by the file each is found in (<see cref="EntryImporter.IsSafeToImportFrom(string, IMEPackage, bool)"/>), as EntryExporter and
+    /// <see cref="Copy"/> judge it, not by its root package's name (an asset's root is a package in another file: BioVFX_Z_MATERIALS is Startup's): a class,
+    /// an archetype or an asset of a file loaded with some levels and not others (LE3's BIO_COMMON). A class is an asset like any other, which a level has
+    /// a copy of if it can't import it (a Pawn subclass is often a level's own).
+    /// <see cref="EntryExporter"/> copies in only what's imported from a level or a global (BIOG, GUI) file. Each is copied at its own path, under its
+    /// file's name (as another file's asset is: <see cref="Port"/>), which is the import's, so the copy's port uses it
+    /// </summary>
+    internal static void PortUnimportable(IEnumerable<ExportEntry> tree, IMEPackage package, PackageCache sources)
+    {
+        var imports = new HashSet<ImportEntry>();
+        foreach (var export in tree)
+        {
+            var source = export.FileRef;
+            int Found(int uIndex)
+            {
+                if (uIndex < 0 && source.GetEntry(uIndex) is ImportEntry import) imports.Add(import);
+                return uIndex;
+            }
+            Found(export.Class?.UIndex ?? 0);
+            Found(export.Archetype?.UIndex ?? 0);
+            ForEachReference(export.GetProperties(), Found);
+            ObjectBinary.From(export)?.ForEachUIndex(export.Game, new Renumber(Found));
+        }
+        foreach (var import in imports)
+        {
+            if (import.ClassName == "Package" || package.FindEntry(import.InstancedFullPath) is not null) continue;
+            // One that can't be found stays the import its source has, which the game looks for as it does for its source (EntryExporter leaves LE2's
+            // missing BioVFX_Z_TEXTURES.Generic.Glass_Shards_Norm so)
+            if (EntryImporter.ResolveImport(import, sources) is not { } resolved || EntryImporter.IsSafeToImportFrom(resolved.FileRef.FilePath, package)) continue;
+            Port(resolved, package, sources);
+        }
     }
 
     /// <summary>

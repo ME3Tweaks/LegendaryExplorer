@@ -44,19 +44,12 @@ public sealed record AssetReference
         if (entry.FileRef == package) return To(entry);
         var export = EffectiveLightingProperties.Resolve(entry, cache) ?? entry;
         if (export.FileRef.FilePath is null)
-            throw new InvalidOperationException($"{export.InstancedFullPath} is in a package that wasn't opened from a file, so it can't be referred to from {Path.GetFileName(package.FilePath)}.");
+            throw new InvalidOperationException($"{export.InstancedFullPath} is in a package that wasn't opened from a file, so it can't be referred to from {ActorCapture.FileName(package.FilePath)}.");
         return InFile(export.FileRef.FilePath, export.InstancedFullPath);
     }
 
-    /// <summary>
-    /// This asset as <paramref name="package"/> refers to it: as its own entry, or another file's (<see cref="Of"/>). An export of the package's own file is
-    /// the package's entry at its path, as the package has it in memory, if it has one
-    /// </summary>
-    public AssetReference In(IMEPackage package, PackageCache cache)
-    {
-        if (Entry is not null) return Entry.FileRef == package ? this : Of(Entry, package, cache);
-        return string.Equals(SourceFile, package.FilePath, StringComparison.OrdinalIgnoreCase) && package.FindEntry(SourcePath) is { } own ? To(own) : this;
-    }
+    /// <summary>This asset as <paramref name="package"/> refers to it: as its own entry, or another file's (<see cref="Of"/>)</summary>
+    public AssetReference In(IMEPackage package, PackageCache cache) => Entry is null || Entry.FileRef == package ? this : Of(Entry, package, cache);
 
     //a file's path and an object's path are each the same whatever their case
     public bool Equals(AssetReference other) => other is not null && EqualityComparer<IEntry>.Default.Equals(Entry, other.Entry)
@@ -74,7 +67,7 @@ public sealed record AssetReference
     public string Name => Entry?.ObjectName.Instanced ?? SourcePath[(SourcePath.LastIndexOf('.') + 1)..];
 
     /// <summary>The path, and for another file's, which file</summary>
-    public string Description => Entry is not null ? InstancedFullPath : $"{SourcePath} (from {Path.GetFileName(SourceFile)})";
+    public string Description => Entry is not null ? InstancedFullPath : $"{SourcePath} (from {ActorCapture.FileName(SourceFile)})";
 
     /// <summary>
     /// What it refers to: the destination's entry, or the export of the other file, opened through <paramref name="cache"/>. Null if the file can't be
@@ -89,8 +82,8 @@ public sealed record AssetReference
     public IEntry EntryIn(IMEPackage package)
     {
         if (Entry is null)
-            throw new InvalidOperationException($"{SourcePath}, from {Path.GetFileName(SourceFile)}, wasn't copied into {Path.GetFileName(package.FilePath)}.");
-        if (Entry.FileRef != package) throw new InvalidOperationException($"{Entry.InstancedFullPath} is an entry of another package than {Path.GetFileName(package.FilePath)}.");
+            throw new InvalidOperationException($"{SourcePath}, from {ActorCapture.FileName(SourceFile)}, wasn't copied into {ActorCapture.FileName(package.FilePath)}.");
+        if (Entry.FileRef != package) throw new InvalidOperationException($"{Entry.InstancedFullPath} is an entry of another package than {ActorCapture.FileName(package.FilePath)}.");
         return Entry;
     }
 

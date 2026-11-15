@@ -516,15 +516,17 @@ public class StaticMeshComponentProxy : MeshComponentProxy
 {
     private Mesh<WorldVertex> CollisionMesh;
     private PreviewMeshDependencies Dependencies;
-    private readonly bool preservePreviewLighting;
+    private readonly ExportEntry bakedLighting;
 
     /// <param name="previewProperties">For a preview (a draft's, or a pending edit's): its values, which its export doesn't have. Its mesh and materials
     /// are <paramref name="previewAssets"/></param>
+    /// <param name="bakedLighting">For a preview: the saved component whose baked lighting it's drawn with (its own export, or for a copy in its source's
+    /// level, its source's component). Without one, a preview has none</param>
     public StaticMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null,
-        bool preservePreviewLighting = false, EditableActorLighting lighting = null, PreviewAssets previewAssets = null)
+        ExportEntry bakedLighting = null, EditableActorLighting lighting = null, PreviewAssets previewAssets = null)
         : base(context, componentExport, parent, previewProperties, previewAssets)
     {
-        this.preservePreviewLighting = preservePreviewLighting;
+        this.bakedLighting = bakedLighting;
         if (lighting is not null) RestoreLighting(lighting);
         LoadMesh();
     }
@@ -552,7 +554,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
                     SplineActorProxy.UseGameSplineMeshMaterials(stm.LODModels[LOD].Elements, meshExport.FileRef, MaterialOverrides, context.PackageCache,
                         MaterialUsage.EngineMaterial(Export.Game, "DefaultMaterial", context.PackageCache));
                 }
-                MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD, Properties, PreviewProperties is not null && !preservePreviewLighting);
+                MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD, Properties, PreviewProperties is not null && bakedLighting is null, bakedLighting);
                 Mesh = new ModelPreview<VertexType>(context, stm, LOD, staticLighting, MaterialOverrides, deformation);
                 MaterialOverrides.Clear();
                 MeshIFP = meshExport.InstancedFullPath;
@@ -685,8 +687,8 @@ public class StaticMeshComponentProxy : MeshComponentProxy
 /// A SplineMeshComponent: its static mesh's LOD 0 deformed along its stored SplineParams, or along the ones its loft actor rebuilt after an edit
 /// </summary>
 public sealed class SplineMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null,
-    bool preservePreviewLighting = false, EditableActorLighting lighting = null, PreviewAssets previewAssets = null)
-    : StaticMeshComponentProxy(context, componentExport, parent, previewProperties, preservePreviewLighting, lighting, previewAssets)
+    ExportEntry bakedLighting = null, EditableActorLighting lighting = null, PreviewAssets previewAssets = null)
+    : StaticMeshComponentProxy(context, componentExport, parent, previewProperties, bakedLighting, lighting, previewAssets)
 {
     /// <summary>The deformation the mesh is drawn with</summary>
     public SplineMeshDeformation Deformation { get; private set; }

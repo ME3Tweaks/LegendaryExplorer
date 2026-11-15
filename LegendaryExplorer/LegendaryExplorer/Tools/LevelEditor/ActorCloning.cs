@@ -43,7 +43,8 @@ public interface IActorDuplication
 /// uncommitted edits (its transform, its meshes' lighting, its light's settings), which are pending on the copy as they were on its source: the commit
 /// clones its source as it's saved, then writes the copy's edits onto the copy.
 /// <para>
-/// A copy in another file (a paste) is made from a snapshot of its source's package as it is in memory when it's committed (<see cref="SourceSnapshots"/>):
+/// A copy in another file is made from a snapshot of its source's package as it is in memory when it's committed (<see cref="SourceSnapshots"/>): Copy
+/// commits one into a level of its own (<see cref="ActorCapture"/>), and Paste makes copies of that copy in other levels. Either is
 /// cloned there, made ready for its new level, and ported in with what it uses, as <see cref="AssetPorting"/> copies assets in. Its baked lighting is
 /// dropped (its new level's lights aren't its old one's), and so are its references to other objects of its old level, which one level can't refer to in
 /// another: other actors, Kismet (<see cref="DroppedReferences"/>). A volume's brush is its new level's shared empty one. A collection's member is made an
@@ -56,28 +57,30 @@ public static class ActorCloning
     public static string Refusal(ActorProxy actor) => Refusal(actor, actor?.OwningFile);
 
     /// <summary>
-    /// Why a copy of <paramref name="actor"/> can't be made in <paramref name="destination"/> now, or null: its own file, or another open level, which
-    /// it can be copied into from a read-only file. With no destination, why it can't be copied at all
+    /// Why a copy of <paramref name="actor"/> can't be made in <paramref name="destination"/> now, or null: its own file, or another level, which it can be
+    /// copied into from a read-only file. With no destination, why it can't be copied (Copy, which makes a copy in a level of its own: <see cref="ActorCapture"/>)
     /// </summary>
     public static string Refusal(ActorProxy actor, OpenLevelFile destination)
     {
         if (actor is null || actor.IsDisposed) return "Select an actor first.";
         // (out of the scene until its deletion is committed or undone)
         if (actor.PendingDeletion is not null) return "It's being deleted: undo the deletion to copy it, or copy it before deleting it.";
-        if (actor.Editor?.RenderContext.DrawList_3D.Contains(actor) != true) return "It isn't in the scene.";
-        if (actor.OwningFile is not { } file) return "Its file is closed.";
-        bool anotherFile = InAnotherFile(actor, destination);
-        if (anotherFile)
+        // (a copied actor's view, which is pasted from, isn't shown)
+        if (actor.OwningFile is not { IsCapture: true } && actor.Editor?.RenderContext.DrawList_3D.Contains(actor) != true) return "It isn't in the scene.";
+        if (actor.OwningFile is null) return "Its file is closed.";
+        bool anotherFile = destination is null || InAnotherFile(actor, destination);
+        if (destination is not null)
         {
-            if (ActorCreation.FileRefusal(destination) is { } refusal) return refusal;
+            if (anotherFile && ActorCreation.FileRefusal(destination) is { } refusal) return refusal;
             if (destination.Package.Game != actor.Package.Game) return $"It's a {actor.Package.Game} actor, and {destination.FileName} is a {destination.Package.Game} level.";
+            // (another file's is FileRefusal's)
+            if (!anotherFile && destination.IsReadOnly) return "Its file is read-only.";
         }
-        else if (destination is { IsReadOnly: true }) return destination == file ? "Its file is read-only." : $"{destination.FileName} is read-only.";
         if (!actor.Package.Game.IsLEGame()) return "Only the Legendary Edition's actors can be cloned.";
         // A placed draft is copied by its recipe, as it was made: in another level, as one placed there would be
         if (actor is { IsDraft: true, CloneSource: null })
         {
-            return anotherFile ? ActorCreation.Refusal(destination, actor.ClassName, actor.Editor.RenderContext.PackageCache)
+            return destination is not null && anotherFile ? ActorCreation.Refusal(destination, actor.ClassName, actor.Editor.RenderContext.PackageCache)
                 : ActorCreation.HasRecipe(actor.ClassName) ? null : $"There's no recipe for a new {actor.ClassName}.";
         }
         // A copy's copy is another copy of the same saved actor, or member
@@ -85,7 +88,7 @@ public static class ActorCloning
         // However it's shown: as an actor, or as a light collection's member
         if (saved.IsA("DominantDirectionalLight") || saved.IsA("DominantDirectionalLightComponent")) return "A level has only one dominant directional light.";
         // A member's copy is added to its collection, as Package Editor's Clone adds one
-        if (CollectionOf(actor) is { } collection)
+        if (actor.MemberCollection is { } collection)
         {
             // Drawn from its component as it's saved, which a copy is made of, and in its collection, which it's added to
             if (ActorDeletionPlan.MembershipProblem(saved, collection) is { } problem) return problem;
@@ -93,7 +96,7 @@ public static class ActorCloning
             if (!anotherFile) return null;
             // Another level's copy can't be one of its collection's: it's an actor, as Upgrade to Actor would make it. (Its references to other
             // components are links, which are dropped: SharedComponentRefusal)
-            return CollectionMemberUpgrade.ActorRefusal(actor, destination, out _);
+            return destination is null ? CollectionMemberUpgrade.OriginRefusal(actor) : CollectionMemberUpgrade.ActorRefusal(actor, destination, out _);
         }
         // A member that couldn't be drawn is shown by a marker, which a copy of its component wouldn't be
         if (actor.CollectionOwner is not null) return "It's a collection's member that couldn't be drawn.";
@@ -127,18 +130,11 @@ public static class ActorCloning
 
     /// <summary>
     /// Whether a copy of <paramref name="actor"/> in <paramref name="destination"/> is made in another package than the one it's made from (its saved
-    /// actor's or member's, or a placed draft's own): a paste from another level, which is made for its new level. A copy of a pasted copy is made from
-    /// the same saved actor, so pasting it back into that actor's level makes a copy there as a duplicate does
+    /// actor's or member's, or a placed draft's own), so it's made for its new level: a copy into a copied actor's level (<see cref="ActorCapture"/>), a
+    /// paste from one, and a duplicate of a paste, which is another copy of the copied actor
     /// </summary>
     internal static bool InAnotherFile(ActorProxy actor, OpenLevelFile destination) =>
         destination is not null && destination.Package != ((actor.Export ?? actor.CloneSource)?.FileRef ?? actor.Package);
-
-    /// <summary>
-    /// The collection <paramref name="actor"/> is a member of, or the one its saved member is in, for a copy of a member (one in another level isn't one of
-    /// its members, but its source is). Null for anything else
-    /// </summary>
-    internal static ExportEntry CollectionOf(ActorProxy actor) =>
-        actor.MemberCollection ?? (actor.CloneSource?.Parent is ExportEntry { ClassName: not "Level" } collection ? collection : null);
 
     /// <summary>
     /// Why <paramref name="saved"/>, an actor, can't be copied out of <paramref name="level"/>, or null: its own properties refer to another actor's
@@ -281,6 +277,43 @@ public static class ActorCloning
     public static IActorDuplication BeginClone(ActorProxy source, Vector3 offset = default, OpenLevelFile destination = null) =>
         new Duplication(source, offset, destination ?? source?.OwningFile);
 
+    /// <summary>
+    /// A draft copy of <paramref name="source"/> in <paramref name="destination"/>, <paramref name="offset"/> from it, named <paramref name="name"/> (or the
+    /// next of its class's names there): made as <see cref="MakeDraft"/> makes it, and not put in the scene, which is the caller's to do (or not, for a
+    /// copied actor's level: <see cref="ActorCapture"/>). If it can't be made, nothing is left of it
+    /// </summary>
+    internal static ActorProxy MakeCopy(ActorProxy source, OpenLevelFile destination, Vector3 offset = default, string name = null)
+    {
+        if (Refusal(source, destination) is { } refusal) throw new InvalidOperationException($"{source?.ActorName} can't be cloned. {refusal}");
+        bool anotherFile = InAnotherFile(source, destination);
+        var editor = source.Editor;
+        var registry = editor.RenderContext.Registry;
+        // A saved actor's class is its export's (a marker's view has no record of it); a draft's is its record's. In another level, a member's copy
+        // is an actor of the class it was cooked from, and a placed draft's is of the class one placed there would be
+        IEntry actorClass = null;
+        bool becomesActor = anotherFile && source.MemberCollection is not null;
+        if (becomesActor) CollectionMemberUpgrade.ActorRefusal(source, destination, out actorClass);
+        else if (anotherFile && source is { IsDraft: true, CloneSource: null })
+            ActorCreation.Refusal(destination, source.ClassName, editor.RenderContext.PackageCache, out actorClass);
+        actorClass ??= (source.Export ?? source.CloneSource)?.Class ?? registry[source.Id].Class;
+        var package = destination.Package;
+        string className = becomesActor ? actorClass.ObjectName.Name : source.ClassName;
+        var record = registry.CreateDraft(package, actorClass, name ?? registry.ProposeName(package, className), isSpline: false, isLoft: false);
+        ActorProxy copy = null;
+        try
+        {
+            copy = MakeDraft(editor, record, source, destination);
+            copy.Location += offset;
+            return copy;
+        }
+        catch
+        {
+            copy?.Dispose();
+            registry.Discard(record.Id);
+            throw;
+        }
+    }
+
     private sealed class Duplication : IActorDuplication
     {
         private readonly ActorProxy source;
@@ -293,28 +326,13 @@ public static class ActorCloning
 
         public Duplication(ActorProxy source, Vector3 offset, OpenLevelFile destination)
         {
-            if (Refusal(source, destination) is { } refusal) throw new InvalidOperationException($"{source?.ActorName} can't be cloned. {refusal}");
+            Copy = MakeCopy(source, destination, offset);
             this.source = source;
             anotherLevel = destination != source.OwningFile;
-            bool anotherFile = InAnotherFile(source, destination);
             var editor = source.Editor;
             selection = editor.RenderContext.SelectedActor;
-            var registry = editor.RenderContext.Registry;
-            // A saved actor's class is its export's (a marker's view has no record of it); a draft's is its record's. In another level, a member's copy
-            // is an actor of the class it was cooked from, and a placed draft's is of the class one placed there would be
-            IEntry actorClass = null;
-            bool becomesActor = anotherFile && CollectionOf(source) is not null;
-            if (becomesActor) CollectionMemberUpgrade.ActorRefusal(source, destination, out actorClass);
-            else if (anotherFile && source is { IsDraft: true, CloneSource: null })
-                ActorCreation.Refusal(destination, source.ClassName, editor.RenderContext.PackageCache, out actorClass);
-            actorClass ??= (source.Export ?? source.CloneSource)?.Class ?? registry[source.Id].Class;
-            var package = destination.Package;
-            string className = becomesActor ? actorClass.ObjectName.Name : source.ClassName;
-            var record = registry.CreateDraft(package, actorClass, registry.ProposeName(package, className), isSpline: false, isLoft: false);
             try
             {
-                Copy = MakeDraft(editor, record, source, destination);
-                Copy.Location += offset;
                 using var edit = new SceneEdit(editor);
                 edit.Attach(Copy);
                 edit.Select(Copy);
@@ -322,8 +340,8 @@ public static class ActorCloning
             }
             catch
             {
-                Copy?.Dispose();
-                registry.Discard(record.Id);
+                Copy.Dispose();
+                editor.RenderContext.Registry.Discard(Copy.Id);
                 throw;
             }
         }
@@ -394,7 +412,7 @@ public static class ActorCloning
         else
         {
             var saved = source.Export ?? source.CloneSource;
-            var memberOf = CollectionOf(source);
+            var memberOf = source.MemberCollection;
             // In another level, a member is an actor of its own
             var collection = anotherFile ? null : memberOf;
             // A member is its component, with no actor's values
@@ -580,13 +598,16 @@ public static class ActorCloning
 
         /// <param name="copies">The commit's drafts: the packages of those that are copies of another file's actors are taken</param>
         /// <param name="sources">The commit's cache of other files, which what a copy uses is ported from (<see cref="AssetPorting"/>)</param>
-        internal SourceSnapshots(IEnumerable<ActorProxy> copies, PackageCache sources)
+        /// <param name="alsoSnapshot">Other packages an asset may be copied from (<see cref="OfFile"/>): a copied placed draft's own, whose asset may be
+        /// one of its package's, which only its package in memory may have</param>
+        internal SourceSnapshots(IEnumerable<ActorProxy> copies, PackageCache sources, IEnumerable<IMEPackage> alsoSnapshot = null)
         {
             Sources = sources;
             try
             {
                 //(as a decal migration copies a package it changes)
-                foreach (var package in copies.Where(c => c.CloneSource is { } source && source.FileRef != c.Package).Select(c => c.CloneSource.FileRef).Distinct())
+                foreach (var package in copies.Where(c => c.CloneSource is { } source && source.FileRef != c.Package).Select(c => c.CloneSource.FileRef)
+                             .Concat(alsoSnapshot ?? []).Distinct())
                     snapshots[package] = DecalPackageMigration.Clone(package);
             }
             catch
@@ -600,7 +621,7 @@ public static class ActorCloning
         internal PackageCache Sources { get; }
 
         internal IMEPackage Of(IMEPackage package) => snapshots.GetValueOrDefault(package)
-            ?? throw new InvalidOperationException($"{Path.GetFileName(package.FilePath)} wasn't snapshotted for the commit.");
+            ?? throw new InvalidOperationException($"{ActorCapture.FileName(package.FilePath)} wasn't snapshotted for the commit.");
 
         /// <summary>
         /// The snapshot of the file at <paramref name="filePath"/>, or null: what an asset of a copy's source's file is copied from (a decal's changed
@@ -629,7 +650,7 @@ public static class ActorCloning
         out Dictionary<ExportEntry, ExportEntry> copies)
     {
         var source = copy.CloneSource;
-        string file = Path.GetFileName(source.FileRef.FilePath);
+        string file = ActorCapture.FileName(source.FileRef.FilePath);
         if (source.FileRef.GetEntry(source.UIndex) != source) throw new InvalidOperationException($"{source.ObjectName.Instanced} is no longer in {file}, so it can't be copied.");
         var snapshot = snapshots.Of(source.FileRef);
         // A member's level is its collection's
@@ -658,12 +679,16 @@ public static class ActorCloning
         ExportEntry ported;
         try
         {
+            AssetPorting.PortUnimportable(Tree(root), level.FileRef, snapshots.Sources);
             ported = AssetPorting.Port(root, level.FileRef, snapshots.Sources, level);
         }
         catch (Exception error) when (error is not OutOfMemoryException)
         {
-            // (which can only be seen once it's made, at its commit: until it's deleted, nothing can be committed with it)
-            throw new InvalidOperationException($"{copy.DisplayText}, pasted from {file}, can't be made: {error.Message}\n\nDelete it to commit the rest.", error);
+            // Made at Copy (ActorCapture), or by a paste's commit, which is the first time it can be seen: until the paste is deleted, nothing can be
+            // committed with it
+            throw new InvalidOperationException(copy.OwningFile is { IsCapture: true }
+                ? $"{source.ObjectName.Instanced} can't be copied: {error.Message}"
+                : $"{copy.DisplayText}, pasted from a copy of {source.ObjectName.Instanced}, can't be made: {error.Message}\n\nDelete it to commit the rest.", error);
         }
         // A new actor of the level's, not one it had at that path (its name is made unique: Materialize)
         if (ported.Parent != level || ported.UIndex <= exportsBefore)
@@ -732,7 +757,8 @@ public static class ActorCloning
 /// A copy of an actor, until it's committed: drawn by stand-ins of its source's static mesh, skeletal mesh and brush components (exports that aren't in the
 /// package, as a new actor's are), each with its source's values and placed as it is on its source. Its meshes' lighting is edited on its stand-ins, and
 /// written by its commit onto its copies of its source's components; once committed, it's drawn as its class is, from its own export. Its light
-/// environment isn't drawn (its stand-ins are lit as other meshes are), nor its baked lighting, which its commit copies
+/// environment isn't drawn (its stand-ins are lit as other meshes are). In its source's level it's drawn with its source's baked lighting, which its
+/// commit copies; in another, with none, as its commit drops it
 /// </summary>
 internal sealed class ActorCloneProxy : ActorProxy
 {
@@ -820,7 +846,9 @@ internal sealed class ActorCloneProxy : ActorProxy
             PrimitiveComponentProxy proxy;
             if (isStaticMesh)
             {
-                proxy = new StaticMeshComponentProxy(context.RenderContext, StandIn(StaticMeshComponent.Create()), this, values, previewAssets: Assets("StaticMesh"));
+                // In its source's level it keeps its source's baked lighting, as its commit does; another level's lights didn't make it (ForAnotherLevel)
+                proxy = new StaticMeshComponentProxy(context.RenderContext, StandIn(StaticMeshComponent.Create()), this, values,
+                    bakedLighting: component.FileRef == Pcc ? component : null, previewAssets: Assets("StaticMesh"));
             }
             else if (isSkeletalMesh)
             {

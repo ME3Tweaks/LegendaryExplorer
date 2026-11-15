@@ -39,11 +39,18 @@ public static class CollectionMemberUpgrade
     internal static string ActorRefusal(ActorProxy member, OpenLevelFile file, out IEntry actorClass)
     {
         actorClass = null;
+        return OriginRefusal(member, out var origin) ?? ActorCreation.Refusal(file, origin.ClassName, member.Editor.RenderContext.PackageCache, out actorClass);
+    }
+
+    /// <summary>Why <paramref name="member"/> can't become an actor in any file, or null: the actor it was cooked from can't be made again</summary>
+    internal static string OriginRefusal(ActorProxy member) => OriginRefusal(member, out _);
+
+    private static string OriginRefusal(ActorProxy member, out IEntry origin)
+    {
         // A copy's component is its source's, archetype and all, until its commit clones it
-        if (Origin(member.Export ?? member.CloneSource) is not { } origin) return "Its archetype doesn't show what actor it came from.";
+        if ((origin = Origin(member.Export ?? member.CloneSource)) is null) return "Its archetype doesn't show what actor it came from.";
         bool remade = member is ILightProxy ? LightActorProxy.StandaloneClasses.Contains(origin.ClassName) : origin.ClassName == "StaticMeshActor";
-        if (!remade) return $"It came from a {origin.ClassName}, which can't be made again.";
-        return ActorCreation.Refusal(file, origin.ClassName, member.Editor.RenderContext.PackageCache, out actorClass);
+        return remade ? null : $"It came from a {origin.ClassName}, which can't be made again.";
     }
 
     /// <summary>Marks <paramref name="member"/> for upgrading, as one undo step for the caller to record. Its package is untouched until Commit Changes</summary>

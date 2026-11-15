@@ -19,12 +19,14 @@ public static class ActorCommit
     /// <param name="beforeActors">Package writes made in the same scope before the actors' (a decal migration), rolled back with them on failure</param>
     /// <param name="skipped">Actors neither written nor accepted (decals the migration moved to another package)</param>
     /// <param name="sources">The cache other files' assets are copied from (<see cref="AssetPorting.CopyIn"/>), shared with the migration; by default the commit's own</param>
-    public static void Commit(IReadOnlyList<OpenLevelFile> files, Action beforeActors = null, IReadOnlySet<ActorProxy> skipped = null, PackageCache sources = null)
+    /// <param name="alsoSnapshot">Packages other than the copies' sources whose assets are copied from them as they are in memory (<see cref="ActorCloning.SourceSnapshots"/>)</param>
+    public static void Commit(IReadOnlyList<OpenLevelFile> files, Action beforeActors = null, IReadOnlySet<ActorProxy> skipped = null, PackageCache sources = null,
+        IEnumerable<IMEPackage> alsoSnapshot = null)
     {
         using var ownSources = sources is null ? new PackageCache() : null;
         sources ??= ownSources;
         //(released once the commit is done)
-        using var snapshots = new ActorCloning.SourceSnapshots(files.SelectMany(f => f.PendingCreations).Where(a => skipped?.Contains(a) != true), sources);
+        using var snapshots = new ActorCloning.SourceSnapshots(files.SelectMany(f => f.PendingCreations).Where(a => skipped?.Contains(a) != true), sources, alsoSnapshot);
         var deletions = files.SelectMany(f => f.PendingDeletions).ToArray();
         var deleted = deletions.SelectMany(d => d.Entries).ToHashSet<IEntry>();
         // Each file's own: a UIndex means nothing in another package. Taken now, since trashing can change them

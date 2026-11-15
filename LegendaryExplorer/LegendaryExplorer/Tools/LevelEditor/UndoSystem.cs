@@ -82,6 +82,9 @@ public class UndoHistory : NotifyPropertyChangedBase
 
     public const int MaxHistorySize = 1000;
 
+    /// <summary>Raised once steps are dropped (by a new step, trimming, <see cref="Clear"/> or <see cref="RemoveOrphaned"/>) and what they held is released</summary>
+    public event Action Dropped;
+
     public bool CanUndo => _undoStack.Count > 0;
     public bool CanRedo => _redoStack.Count > 0;
 
@@ -100,13 +103,18 @@ public class UndoHistory : NotifyPropertyChangedBase
     public void Push(IUndoAction action)
     {
         if (_executing) throw new InvalidOperationException("A step can't be recorded while another is being undone or redone.");
+        // (dropped once the history is as it will be: see Drop)
+        List<IUndoAction> dropped;
         if (_undoStack.TryPeek(out IUndoAction previous) && previous is IMergeableUndoAction mergeable && mergeable.TryMerge(action))
         {
-            Drop(_redoStack);
+            dropped = [.. _redoStack];
             _redoStack.Clear();
             NotifyCanUndoRedoChanged();
+            Drop(dropped);
             return;
         }
+        dropped = [.. _redoStack];
+        _redoStack.Clear();
         if (_undoStack.Count >= MaxHistorySize)
         {
             // Convert to array, keep most recent entries
@@ -117,12 +125,11 @@ public class UndoHistory : NotifyPropertyChangedBase
             {
                 _undoStack.Push(items[i]);
             }
-            Drop(items[(MaxHistorySize / 2)..]);
+            dropped.AddRange(items[(MaxHistorySize / 2)..]);
         }
         _undoStack.Push(action);
-        Drop(_redoStack);
-        _redoStack.Clear();
         NotifyCanUndoRedoChanged();
+        Drop(dropped);
     }
 
     public void Undo() => UndoMultiple(1);
@@ -160,17 +167,22 @@ public class UndoHistory : NotifyPropertyChangedBase
 
     public void Clear()
     {
-        Drop(_undoStack);
-        Drop(_redoStack);
+        List<IUndoAction> dropped = [.. _undoStack, .. _redoStack];
         _undoStack.Clear();
         _redoStack.Clear();
         NotifyCanUndoRedoChanged();
+        Drop(dropped);
     }
 
-    /// <summary>Releases what dropped actions hold (see <see cref="IUndoAction"/>); they're never undone or redone again</summary>
-    private static void Drop(IEnumerable<IUndoAction> actions)
+    /// <summary>
+    /// Releases what dropped actions hold (see <see cref="IUndoAction"/>); they're never undone or redone again. Called once they're off the stacks, so
+    /// that neither a failure here nor <see cref="Dropped"/>'s handlers find them there
+    /// </summary>
+    private void Drop(IReadOnlyCollection<IUndoAction> actions)
     {
+        if (actions.Count == 0) return;
         foreach (IUndoAction action in actions) (action as IDisposable)?.Dispose();
+        Dropped?.Invoke();
     }
 
     /// <summary>
@@ -182,7 +194,8 @@ public class UndoHistory : NotifyPropertyChangedBase
     /// </summary>
     public void RemoveOrphaned()
     {
-        static bool Prune(Stack<IUndoAction> stack)
+        var dropped = new List<IUndoAction>();
+        bool Prune(Stack<IUndoAction> stack)
         {
             //nearest first: an undo stack enumerates newest first, a redo stack next to redo first
             var kept = new List<IUndoAction>();
@@ -203,11 +216,12 @@ public class UndoHistory : NotifyPropertyChangedBase
                 else removedSubjects.UnionWith(subjects);
             }
             if (removed.Count == 0) return false;
-            Drop(removed);
+            dropped.AddRange(removed);
             stack.Clear();
             for (int i = kept.Count - 1; i >= 0; i--) stack.Push(kept[i]);
             return true;
         }
         if (Prune(_undoStack) | Prune(_redoStack)) NotifyCanUndoRedoChanged();
+        Drop(dropped);
     }
 }

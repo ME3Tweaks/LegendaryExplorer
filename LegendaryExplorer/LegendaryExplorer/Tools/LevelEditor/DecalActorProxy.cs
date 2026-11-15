@@ -132,10 +132,13 @@ public sealed class DecalActorProxy : EditorActorProxy
         // projection and receivers (CommitProjection). The actor refers to it as its Decal, with no Components array
         if (Materialized && componentTemplate is not null)
         {
-            PrepareDecalCommit();
+            // (in a copied actor's level, it lands on nothing)
+            bool captured = OwningFile is { IsCapture: true };
+            if (!captured) PrepareDecalCommit();
             var component = NewComponent(componentTemplate, [new ObjectProperty(Decal.Settings.Material.EntryIn(Pcc), "DecalMaterial")],
                 LegendaryExplorerCore.Unreal.BinaryConverters.DecalComponent.Create());
-            decal.CommitProjection(component);
+            if (captured) decal.CommitUnprojected(component);
+            else decal.CommitProjection(component);
             Properties.AddOrReplaceProp(new ObjectProperty(component, nameof(Decal)));
             base.CommitChanges(packageCache);
             return;
@@ -155,6 +158,11 @@ public sealed class DecalActorProxy : EditorActorProxy
     {
         var component = copies.GetValueOrDefault(componentTemplate)
             ?? throw new InvalidOperationException($"{ActorName} has no copy of {componentTemplate.ObjectName.Instanced}.");
+        if (OwningFile is { IsCapture: true })
+        {
+            decal.CommitUnprojected(component);
+            return;
+        }
         PrepareDecalCommit();
         decal.CommitProjection(component);
     }
@@ -618,6 +626,30 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
             destination.WritePropertiesAndBinary(props, binary);
         }
         else { settings.Write(props); destination.WriteProperties(props); }
+    }
+
+    /// <summary>
+    /// For a copied actor's level (<see cref="ActorCapture"/>), which has nothing for it to land on: writes onto <paramref name="destination"/>, its new
+    /// component, its settings, its material if it was changed, its Filter as the copy has it (empty: a copy for another level is made without its
+    /// source's, which lists its old level's actors) and no receivers, with the
+    /// frame it's projected along from where it is (<see cref="DecalProjection.FromActor"/>), its size scaled with it: a paste's is scaled from there, as
+    /// its baseline (<see cref="DecalActorProxy.ProjectionBaseline"/>). Not projected, which would land on its source's level's meshes
+    /// </summary>
+    internal void CommitUnprojected(ExportEntry destination)
+    {
+        if (EditUnsupportedReason is not null) throw new InvalidOperationException($"Cannot copy {owner.ActorName}: {EditUnsupportedReason}");
+        var props = destination.GetProperties();
+        var settings = owner.Decal.Settings;
+        settings.Filter.Write(props, destination.FileRef, destination.FileRef);
+        if (owner.Decal.MaterialChanged) props.AddOrReplaceProp(new ObjectProperty(settings.Material?.EntryIn(destination.FileRef).UIndex ?? 0, "DecalMaterial"));
+        var frame = DecalProjection.FromActor(Properties, settings, owner.SnapshotTransform(), owner.ProjectionBaseline);
+        settings = settings with { Width = frame.Width, Height = frame.Height, NearPlane = frame.NearPlane, FarPlane = frame.FarPlane };
+        frame.WriteFrame(props);
+        props.AddOrReplaceProp(CommonStructs.Vector3Prop(owner.Location, ActorProxy.LocationPropertyName(destination.Game)));
+        props.AddOrReplaceProp(CommonStructs.RotatorProp(owner.Rotation, "Orientation"));
+        props.AddOrReplaceProp(new ArrayProperty<StructProperty>("DecalReceivers"));
+        settings.Write(props);
+        destination.WritePropertiesAndBinary(props, DecalComponent.Create());
     }
     /// <summary>
     /// <paramref name="r"/> as its package has it once the actors written before decals are (<see cref="ActorCommit"/>): one on a new mesh actor or a
