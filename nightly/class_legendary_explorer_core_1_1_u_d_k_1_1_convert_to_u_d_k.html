@@ -118,14 +118,49 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_legendar
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ae37d0a1bde214a2e8448ba6c4075f36e" id="r_ae37d0a1bde214a2e8448ba6c4075f36e"><td class="memItemLeft">static string&#160;</td><td class="memItemRight"><a class="el" href="#ae37d0a1bde214a2e8448ba6c4075f36e">GenerateUDKFileForLevel</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string mapOutputPath=null, string assetsOutputPath=null, string decookedMaterialsFolder=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> delegatesROP=null)</td></tr>
+<tr class="memitem:a786f973d6255df9650454553aaf7bb56" id="r_a786f973d6255df9650454553aaf7bb56"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a786f973d6255df9650454553aaf7bb56">IsStaticLightingMeshComponent</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> component, ICollection&lt; int &gt; actorsInLevel)</td></tr>
+<tr class="memdesc:a786f973d6255df9650454553aaf7bb56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects placed mesh components for the lighting bake, including movers explicitly authored for precomputed lighting. The exporter and resolution/budget scans must use the same selection.  <br /></td></tr>
+<tr class="memitem:a2e5628103f3e47775925e2a9cc7bd501" id="r_a2e5628103f3e47775925e2a9cc7bd501"><td class="memItemLeft">static string&#160;</td><td class="memItemRight"><a class="el" href="#a2e5628103f3e47775925e2a9cc7bd501">GenerateUDKFileForLevel</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string mapOutputPath=null, string assetsOutputPath=null, string decookedMaterialsFolder=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> delegatesROP=null, ISet&lt; <a class="el" href="_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3">Guid</a> &gt; shadowMappedLightGuids=null)</td></tr>
+<tr class="memitem:aaab4c117bb0b812a6679828a4071e6e7" id="r_aaab4c117bb0b812a6679828a4071e6e7"><td class="memItemLeft">static HashSet&lt; <a class="el" href="_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3">Guid</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#aaab4c117bb0b812a6679828a4071e6e7">GetUsedShadowMapLightGuids</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
+<tr class="memdesc:aaab4c117bb0b812a6679828a4071e6e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the light GUIDs used by shadow maps which are actually referenced by level components. Scan every package in a streamed level set and union the results before converting any package, because a light in the persistent map can cast shadows onto components in a sublevel.  <br /></td></tr>
 <tr class="memitem:a6786d21e48de7f2c96aadda401da5ae6" id="r_a6786d21e48de7f2c96aadda401da5ae6"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a6786d21e48de7f2c96aadda401da5ae6">PortNonLinkerReferencesAsImports</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> exp)</td></tr>
 <tr class="memitem:af6215733d2c2c30c2e339de2340cad64" id="r_af6215733d2c2c30c2e339de2340cad64"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#af6215733d2c2c30c2e339de2340cad64">ConvertImportsToExportsUnderLinker</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> localCache)</td></tr>
 <tr class="memdesc:af6215733d2c2c30c2e339de2340cad64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts imports under the linker to exports; these will be imports nested under packages that are not ForcedExport (as <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a> doesn't support this).  <br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
-<a id="ae37d0a1bde214a2e8448ba6c4075f36e" name="ae37d0a1bde214a2e8448ba6c4075f36e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae37d0a1bde214a2e8448ba6c4075f36e">&#9670;&#160;</a></span>GenerateUDKFileForLevel()</h2>
+<a id="a786f973d6255df9650454553aaf7bb56" name="a786f973d6255df9650454553aaf7bb56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a786f973d6255df9650454553aaf7bb56">&#9670;&#160;</a></span>IsStaticLightingMeshComponent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.UDK.ConvertToUDK.IsStaticLightingMeshComponent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a></td>          <td class="paramname"><span class="paramname"><em>component</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ICollection&lt; int &gt;</td>          <td class="paramname"><span class="paramname"><em>actorsInLevel</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Selects placed mesh components for the lighting bake, including movers explicitly authored for precomputed lighting. The exporter and resolution/budget scans must use the same selection. </p>
+
+</div>
+</div>
+<a id="a2e5628103f3e47775925e2a9cc7bd501" name="a2e5628103f3e47775925e2a9cc7bd501"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e5628103f3e47775925e2a9cc7bd501">&#9670;&#160;</a></span>GenerateUDKFileForLevel()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -156,7 +191,12 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a></td>          <td class="paramname"><span class="paramname"><em>delegatesROP</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a></td>          <td class="paramname"><span class="paramname"><em>delegatesROP</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ISet&lt; <a class="el" href="_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3">Guid</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>shadowMappedLightGuids</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -176,6 +216,33 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="aaab4c117bb0b812a6679828a4071e6e7" name="aaab4c117bb0b812a6679828a4071e6e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaab4c117bb0b812a6679828a4071e6e7">&#9670;&#160;</a></span>GetUsedShadowMapLightGuids()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">HashSet&lt; <a class="el" href="_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3">Guid</a> &gt; LegendaryExplorerCore.UDK.ConvertToUDK.GetUsedShadowMapLightGuids </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a></td>          <td class="paramname"><span class="paramname"><em>package</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the light GUIDs used by shadow maps which are actually referenced by level components. Scan every package in a streamed level set and union the results before converting any package, because a light in the persistent map can cast shadows onto components in a sublevel. </p>
 
 </div>
 </div>

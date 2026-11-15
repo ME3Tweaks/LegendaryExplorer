@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities =
 [
+    [ "OpenAndSelectFileInExplorer", "class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities.html#a29c527dbb3fac40fb312dc91bf256ba3", null ],
     [ "LoadStringFromCompressedResource", "class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities.html#a680102425f3c5e4affc5a24b0b8f9fcc", null ],
     [ "LoadFileFromCompressedResource", "class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities.html#a54aeb3c119b292f6f025fca52b577f34", null ],
     [ "LoadEmbeddedFile", "class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities.html#a774d43da838800aa45607242be119f06", null ],

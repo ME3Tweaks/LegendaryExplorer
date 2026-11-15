@@ -123,6 +123,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ac99ac1f7407a35d955031de36e32becb" id="r_ac99ac1f7407a35d955031de36e32becb"><td class="memItemLeft">static IEnumerable&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ac99ac1f7407a35d955031de36e32becb">ResolveToEntries</a> (this ArrayProperty&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_property.html">ObjectProperty</a> &gt; objArray, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc)</td></tr>
 <tr class="memdesc:ac99ac1f7407a35d955031de36e32becb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolves the propertys in this array to IEntries. Any null values or invalid uIndexes will be filtered out of the returned collection.  <br /></td></tr>
 <tr class="memitem:a47fbaee1dad6fc6a3976cab419ebcccd" id="r_a47fbaee1dad6fc6a3976cab419ebcccd"><td class="memItemLeft">static T&#160;</td><td class="memItemRight"><a class="el" href="#a47fbaee1dad6fc6a3976cab419ebcccd">GetEnumValOrDefault&lt; T &gt;</a> (this <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_enum_property.html">EnumProperty</a> enumProp, T defaultVal)</td></tr>
+<tr class="memitem:a3102f6c36395ece02aaca7f477395071" id="r_a3102f6c36395ece02aaca7f477395071"><td class="memItemLeft">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a>&#160;</td><td class="memItemRight"><a class="el" href="#a3102f6c36395ece02aaca7f477395071">GetPropertiesIncludingInherited</a> (this <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null, bool includeNoneProperties=false)</td></tr>
+<tr class="memdesc:a3102f6c36395ece02aaca7f477395071"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets this export's properties merged with any properties it does not explicitly set, inherited from its archetype chain. This mirrors how the engine resolves an object's effective property values at runtime: a property explicitly serialized on the export always wins; anything left unset falls through to the nearest archetype in the chain (ExportEntry.Archetype, then that archetype's own archetype, and so on) that does set it. A property left unset all the way up the chain is simply absent from the result - same as an unset property on a single export, the caller should still fall back to the type's native default (e.g. via <code>GetPropVal</code>/<code>?? default</code>). Every returned property's Property.InheritedFrom says where it actually came from: null for a property <em>export</em>  sets itself, or a PropertySource identifying the archetype/class-default it was inherited from otherwise.  <br /></td></tr>
 <tr class="memitem:a14eb92ea619a2ab6ebd39a0976e65c2f" id="r_a14eb92ea619a2ab6ebd39a0976e65c2f"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a14eb92ea619a2ab6ebd39a0976e65c2f">TryResolveObjectProp&lt; T &gt;</a> (this <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string propName, out T export)</td></tr>
 <tr class="memitem:a30666c119bc0b388f81d37d3900118df" id="r_a30666c119bc0b388f81d37d3900118df"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a30666c119bc0b388f81d37d3900118df">TryGetProp&lt; T &gt;</a> (this <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props, <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> name, out T prop, int staticArrayIndex=0)</td></tr>
 <tr class="memitem:a4c633167f897ddc5cea32b08d74a1220" id="r_a4c633167f897ddc5cea32b08d74a1220"><td class="memItemLeft">static int&#160;</td><td class="memItemRight"><a class="el" href="#a4c633167f897ddc5cea32b08d74a1220">GetPropVal</a> (this <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props, <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> name, int defaultValue, int staticArrayIndex=0)</td></tr>
@@ -274,6 +276,51 @@ Static Public Member Functions</h2></td></tr>
 </dd>
 </dl>
 </div>
+
+</div>
+</div>
+<a id="a3102f6c36395ece02aaca7f477395071" name="a3102f6c36395ece02aaca7f477395071"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3102f6c36395ece02aaca7f477395071">&#9670;&#160;</a></span>GetPropertiesIncludingInherited()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> LegendaryExplorerCore.Unreal.PropertyCollectionExtensions.GetPropertiesIncludingInherited </td>
+          <td>(</td>
+          <td class="paramtype">this <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a></td>          <td class="paramname"><span class="paramname"><em>export</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a></td>          <td class="paramname"><span class="paramname"><em>cache</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>includeNoneProperties</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets this export's properties merged with any properties it does not explicitly set, inherited from its archetype chain. This mirrors how the engine resolves an object's effective property values at runtime: a property explicitly serialized on the export always wins; anything left unset falls through to the nearest archetype in the chain (ExportEntry.Archetype, then that archetype's own archetype, and so on) that does set it. A property left unset all the way up the chain is simply absent from the result - same as an unset property on a single export, the caller should still fall back to the type's native default (e.g. via <code>GetPropVal</code>/<code>?? default</code>). Every returned property's Property.InheritedFrom says where it actually came from: null for a property <em>export</em>  sets itself, or a PropertySource identifying the archetype/class-default it was inherited from otherwise. </p>
+<p>The returned collection is for reading only. Properties inherited from an archetype are the exact same Property instances read from that archetype's export, not copies - do not write this collection back to <em>export</em>  (via ExportEntry.WriteProperties), as that would incorrectly bake inherited values in as if they had been explicitly set on it. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>Export to get the effective properties of.</td></tr>
+    <tr><td class="paramname">cache</td><td>Cache used to resolve archetypes that are imports (e.g. defined in a higher-tier package).</td></tr>
+    <tr><td class="paramname">includeNoneProperties</td><td>Passed through to each underlying ExportEntry.GetProperties call along the chain.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

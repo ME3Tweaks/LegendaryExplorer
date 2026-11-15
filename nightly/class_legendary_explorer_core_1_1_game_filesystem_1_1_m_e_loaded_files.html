@@ -125,6 +125,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:af4b6cb5a75eacc744f0ad9c722bd88f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invalidates the cache of loaded files for all games.  <br /></td></tr>
 <tr class="memitem:a131479e35c0c9d7268fe6634aff8f801" id="r_a131479e35c0c9d7268fe6634aff8f801"><td class="memItemLeft">static CaseInsensitiveDictionary&lt; string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a131479e35c0c9d7268fe6634aff8f801">GetFilesLoadedInGame</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool forceReload=false, bool includeTFCs=false, bool includeAFCs=false, string gameRootOverride=null, bool forceUseCached=false, string[] additionalExtensions=null, bool includeModDLC=true)</td></tr>
 <tr class="memdesc:a131479e35c0c9d7268fe6634aff8f801"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a dictionary of all loaded files in the given game. Key is the filename, value is file path. This data may be cached; to reload it, set the forceReload flag to true.  <br /></td></tr>
+<tr class="memitem:a8db5ecbf61fa38c0f6ea928e399961ad" id="r_a8db5ecbf61fa38c0f6ea928e399961ad"><td class="memItemLeft">static CaseInsensitiveDictionary&lt; string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a8db5ecbf61fa38c0f6ea928e399961ad">GetAllFilesLoadedInGame</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool forceReload=false, string gameRootOverride=null, bool includeModDLC=true)</td></tr>
+<tr class="memdesc:a8db5ecbf61fa38c0f6ea928e399961ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a dictionary of all files in the given game. Loaded-file override rules are applied first, then any remaining files outside of cooked folders are added by filename.  <br /></td></tr>
 <tr class="memitem:a1dcefccfb34423e71734218589eaac07" id="r_a1dcefccfb34423e71734218589eaac07"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a1dcefccfb34423e71734218589eaac07">TryGetHighestMountedFile</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, out string filePath)</td></tr>
 <tr class="memitem:a5eeaa0c2c325f89e931052ec414a7d56" id="r_a5eeaa0c2c325f89e931052ec414a7d56"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a5eeaa0c2c325f89e931052ec414a7d56">TryGetHighestMountedFile</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string fileName, out string filePath)</td></tr>
 <tr class="memitem:a08f5cbe2dcddce173f8d23b44271519e" id="r_a08f5cbe2dcddce173f8d23b44271519e"><td class="memItemLeft">static List&lt; string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a08f5cbe2dcddce173f8d23b44271519e">GetAllGameFiles</a> (string gamePath, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool forceReload=false, bool includeTFC=false)</td></tr>
@@ -136,7 +138,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a51d02cd6e4b68dcd24908e8abc26a43d" id="r_a51d02cd6e4b68dcd24908e8abc26a43d"><td class="memItemLeft">static IEnumerable&lt; string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a51d02cd6e4b68dcd24908e8abc26a43d">GetOfficialFiles</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool includeTFCs=false, bool includeAFCs=false, string[] additionalExtensions=null)</td></tr>
 <tr class="memdesc:a51d02cd6e4b68dcd24908e8abc26a43d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets all official files from a specified game, from basegame and official DLC folders. Package files will always be included, other extensions can be specified.  <br /></td></tr>
 <tr class="memitem:a088347b6f48bb15b33220dd110bf4216" id="r_a088347b6f48bb15b33220dd110bf4216"><td class="memItemLeft">static IEnumerable&lt; string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a088347b6f48bb15b33220dd110bf4216">GetCookedFiles</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string directory, bool includeTFCs=false, bool includeAFCs=false, string[] additionalExtensions=null)</td></tr>
-<tr class="memdesc:a088347b6f48bb15b33220dd110bf4216"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets all game files from a specified BioGame or DLC folder. Package files will always be included, other extensions can be specified. Only returns files that are in the CookedPC subfolder of the input folder.  <br /></td></tr>
+<tr class="memdesc:a088347b6f48bb15b33220dd110bf4216"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets all game files from a specified BioGame or DLC folder. Package files will always be included, other extensions or file patterns can be specified. Only returns files that are in the cooked subfolder of the input folder.  <br /></td></tr>
 <tr class="memitem:ae30ba66c35bfa7d031cdb75840676a6c" id="r_ae30ba66c35bfa7d031cdb75840676a6c"><td class="memItemLeft">static IEnumerable&lt; string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ae30ba66c35bfa7d031cdb75840676a6c">GetEnabledDLCFolders</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string gameRootOverride=null)</td></tr>
 <tr class="memdesc:ae30ba66c35bfa7d031cdb75840676a6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the base DLC directory of each unpacked DLC that will load in game.  <br /></td></tr>
 <tr class="memitem:a5d5b4eea8c574c6ff162346bfa262b1a" id="r_a5d5b4eea8c574c6ff162346bfa262b1a"><td class="memItemLeft">static IEnumerable&lt; string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a5d5b4eea8c574c6ff162346bfa262b1a">GetOfficialDLCFolders</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
@@ -250,7 +252,58 @@ Static Public Member Functions</h2></td></tr>
     <tr><td class="paramname">includeAFCs</td><td>If true, files with the .afc extension will be included</td></tr>
     <tr><td class="paramname">gameRootOverride</td><td>Optional: override game path root</td></tr>
     <tr><td class="paramname">forceUseCached</td><td>Optional: Set to true to forcibly use the cached version if available; ignoring the tfc/afc check for rebuilding. Only use if you know what you're doing; this is to improve performance in certain scenarios</td></tr>
-    <tr><td class="paramname">additionalExtensions</td><td>Optional: Additional file extensions to include, besides .tfc and .afc. Null or empty array will not include any additional extensions</td></tr>
+    <tr><td class="paramname">additionalExtensions</td><td>Optional: Additional file extensions or file patterns to include, besides .tfc and .afc. Null or empty array will not include any additional entries</td></tr>
+    <tr><td class="paramname">includeModDLC</td><td>Optional: If false, DLC folders that are not from the vanilla game will be skipped.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Case insensitive dictionary where key is filename and value is file path</dd></dl>
+
+</div>
+</div>
+<a id="a8db5ecbf61fa38c0f6ea928e399961ad" name="a8db5ecbf61fa38c0f6ea928e399961ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8db5ecbf61fa38c0f6ea928e399961ad">&#9670;&#160;</a></span>GetAllFilesLoadedInGame()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CaseInsensitiveDictionary&lt; string &gt; LegendaryExplorerCore.GameFilesystem.MELoadedFiles.GetAllFilesLoadedInGame </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a></td>          <td class="paramname"><span class="paramname"><em>game</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>forceReload</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>gameRootOverride</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>includeModDLC</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets a dictionary of all files in the given game. Loaded-file override rules are applied first, then any remaining files outside of cooked folders are added by filename. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td>Game to get files for</td></tr>
+    <tr><td class="paramname">forceReload</td><td>If false, loaded file data may be taken from cache. If true, loaded file data will be regenerated.</td></tr>
+    <tr><td class="paramname">gameRootOverride</td><td>Optional: override game path root</td></tr>
     <tr><td class="paramname">includeModDLC</td><td>Optional: If false, DLC folders that are not from the vanilla game will be skipped.</td></tr>
   </table>
   </dd>
@@ -559,18 +612,18 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets all game files from a specified BioGame or DLC folder. Package files will always be included, other extensions can be specified. Only returns files that are in the CookedPC subfolder of the input folder. </p>
+<p>Gets all game files from a specified BioGame or DLC folder. Package files will always be included, other extensions or file patterns can be specified. Only returns files that are in the cooked subfolder of the input folder. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">game</td><td>Game you are searching files for. This determines extensions that are used.</td></tr>
-    <tr><td class="paramname">directory</td><td>Path to DLC or Basegame directory to search in. Files will be enumerated from the CookedPC subfolder of this path.</td></tr>
+    <tr><td class="paramname">directory</td><td>Path to DLC or Basegame directory to search in. Files will be enumerated from the cooked subfolder of this path.</td></tr>
     <tr><td class="paramname">includeTFCs</td><td>If true, files with the .tfc extension will be included</td></tr>
     <tr><td class="paramname">includeAFCs</td><td>If true, files with the .afc extension will be included</td></tr>
-    <tr><td class="paramname">additionalExtensions</td><td>Array of additional extensions to be included. Only the extension should be passed in, EG: ".isb"</td></tr>
+    <tr><td class="paramname">additionalExtensions</td><td>Array of additional extensions or search patterns to be included. Examples: ".isb", "*.bin", "*"</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Full paths to all matching files in the input Cooked directory</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Full paths to all matching files in the input cooked directory</dd></dl>
 
 </div>
 </div>

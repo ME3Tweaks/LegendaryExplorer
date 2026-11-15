@@ -7234,6 +7234,10 @@ Enumerations</h2></td></tr>
 , <a class="el" href="#ac2e3df70894f2a8f30cdfcfa4fd3222aa0eeca20ee27fa6ec971a4c30c7e9c605">ConeCheck_Right</a>
 , <a class="el" href="#ac2e3df70894f2a8f30cdfcfa4fd3222aa27be759d39c4a84d3c29dcf90f022c5c">ConeCheck_Left</a>
  }</td></tr>
+<tr class="memitem:a7f0be1d7ff66753d888c33bc52918eb8" id="r_a7f0be1d7ff66753d888c33bc52918eb8"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="#a7f0be1d7ff66753d888c33bc52918eb8">PropertySourceKind</a> { <a class="el" href="#a7f0be1d7ff66753d888c33bc52918eb8a15f752f90268a1a39fe449871b75267c">Archetype</a>
+, <a class="el" href="#a7f0be1d7ff66753d888c33bc52918eb8a3f18fdfd91efbd8012758f3cf52dedae">ClassDefault</a>
+ }</td></tr>
+<tr class="memdesc:a7f0be1d7ff66753d888c33bc52918eb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The kind of object a Property was inherited from. See PropertySource.  <a href="#a7f0be1d7ff66753d888c33bc52918eb8">More...</a><br /></td></tr>
 <tr class="memitem:a8e1bae5c205d780760add5aecc656a40" id="r_a8e1bae5c205d780760add5aecc656a40"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="#a8e1bae5c205d780760add5aecc656a40">PropertyType</a> { <br />
 &#160;&#160;<a class="el" href="#a8e1bae5c205d780760add5aecc656a40a88183b946cc5f0e8c96b2e66e1c74a7e">Unknown</a> = -1
 , <a class="el" href="#a8e1bae5c205d780760add5aecc656a40a6adf97f83acf6453d4a6a4b1070f3754">None</a> = 0
@@ -7284,6 +7288,11 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="memdesc:a935c337350885551f2a7e6d262b57a6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Storage type flags for Texture2D.  <a href="#a935c337350885551f2a7e6d262b57a6b">More...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ad7941418f2eff374cbd43472fd685448" id="r_ad7941418f2eff374cbd43472fd685448"><td class="memItemLeft">record&#160;</td><td class="memItemRight"><a class="el" href="#ad7941418f2eff374cbd43472fd685448">PropertySource</a> (<a class="el" href="#a7f0be1d7ff66753d888c33bc52918eb8">PropertySourceKind</a> Kind, string InstancedFullPath, string PackageFileName)</td></tr>
+<tr class="memdesc:ad7941418f2eff374cbd43472fd685448"><td class="mdescLeft">&#160;</td><td class="mdescRight">Identifies the object a Property was actually read from when it was inherited via PropertyCollectionExtensions.GetPropertiesIncludingInherited rather than being set explicitly on the export that was asked for. Deliberately does not hold a reference to the source ExportEntry (or its package) itself - that source object may live in a different package than the one the property is being used from, and holding onto it would keep that other package's IMEPackage alive for as long as the property is.  <br /></td></tr>
 </table>
 <a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">Enumeration Type Documentation</h2>
 <a id="af67b49a2ebc3697b0aad7111a23cf2dd" name="af67b49a2ebc3697b0aad7111a23cf2dd"></a>
@@ -24064,6 +24073,28 @@ Enumerations</h2></td></tr>
 
 </div>
 </div>
+<a id="a7f0be1d7ff66753d888c33bc52918eb8" name="a7f0be1d7ff66753d888c33bc52918eb8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f0be1d7ff66753d888c33bc52918eb8">&#9670;&#160;</a></span>PropertySourceKind</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#a7f0be1d7ff66753d888c33bc52918eb8">LegendaryExplorerCore.Unreal.PropertySourceKind</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The kind of object a Property was inherited from. See PropertySource. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7f0be1d7ff66753d888c33bc52918eb8a15f752f90268a1a39fe449871b75267c" name="a7f0be1d7ff66753d888c33bc52918eb8a15f752f90268a1a39fe449871b75267c"></a>Archetype&#160;</td><td class="fielddoc"><p>Inherited from a specific archetype instance (a subobject template). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7f0be1d7ff66753d888c33bc52918eb8a3f18fdfd91efbd8012758f3cf52dedae" name="a7f0be1d7ff66753d888c33bc52918eb8a3f18fdfd91efbd8012758f3cf52dedae"></a>ClassDefault&#160;</td><td class="fielddoc"><p>Inherited from a class's default object (a "Default__ClassName" export) - the end of the archetype chain. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
 <a id="a8e1bae5c205d780760add5aecc656a40" name="a8e1bae5c205d780760add5aecc656a40"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8e1bae5c205d780760add5aecc656a40">&#9670;&#160;</a></span>PropertyType</h2>
 
@@ -24146,6 +24177,51 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a935c337350885551f2a7e6d262b57a6bab4ab1a547f4906881e9a3bdfb153dd2d" name="a935c337350885551f2a7e6d262b57a6bab4ab1a547f4906881e9a3bdfb153dd2d"></a>compressedOodle&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a935c337350885551f2a7e6d262b57a6bafd94c6a26d6b6571e8d9398446227ae8" name="a935c337350885551f2a7e6d262b57a6bafd94c6a26d6b6571e8d9398446227ae8"></a>unused&#160;</td><td class="fielddoc"></td></tr>
 </table>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a id="ad7941418f2eff374cbd43472fd685448" name="ad7941418f2eff374cbd43472fd685448"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7941418f2eff374cbd43472fd685448">&#9670;&#160;</a></span>PropertySource()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">record LegendaryExplorerCore.Unreal.PropertySource </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#a7f0be1d7ff66753d888c33bc52918eb8">PropertySourceKind</a></td>          <td class="paramname"><span class="paramname"><em>Kind</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>InstancedFullPath</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>PackageFileName</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel sealed">sealed</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Identifies the object a Property was actually read from when it was inherited via PropertyCollectionExtensions.GetPropertiesIncludingInherited rather than being set explicitly on the export that was asked for. Deliberately does not hold a reference to the source ExportEntry (or its package) itself - that source object may live in a different package than the one the property is being used from, and holding onto it would keep that other package's IMEPackage alive for as long as the property is. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">Kind</td><td>Whether the source is a specific archetype instance, or a class's default object.</td></tr>
+    <tr><td class="paramname">InstancedFullPath</td><td>Instanced full path of the archetype/class-default object the value came from.</td></tr>
+    <tr><td class="paramname">PackageFileName</td><td>File name (no extension, no directory) of the package the source object lives in.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

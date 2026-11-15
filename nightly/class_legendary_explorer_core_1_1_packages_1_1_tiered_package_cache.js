@@ -1,8 +1,8 @@
 var class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache =
 [
-    [ "TieredPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html#a312af806c5af460e3e136286398c8ce1", null ],
-    [ "ChainNewCache", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html#a229f949954e46e5ff512a132df185467", null ],
-    [ "GetGlobalPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html#abe1d10adf772428dbfa5cb2ec92b1e2e", null ],
+    [ "TieredPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html#a1c86f547dd5ee34216dfab13c2a42cad", null ],
+    [ "ChainNewCache", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html#a5cd40da508c1f7ea5382c8b39924e6f1", null ],
+    [ "GetGlobalPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html#a0c1127c791a744bce431d56bf9010431", null ],
     [ "PromotePackage", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html#aa5a3e3293891d30306c927c1b3845f05", null ],
     [ "GetCachedPackage", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html#a962a26d4f7d7bb53f5796afe9a5955a9", null ],
     [ "InsertIntoCache", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html#ab09e71cb4db91048ff68e67b4aa6b6f7", null ],

@@ -136,6 +136,11 @@ Properties</h2></td></tr>
 <tr class="memdesc:a27f5900ba9fe81c521d92ab56a674448"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of newly created static mesh actors (<a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a>).  <br /></td></tr>
 <tr class="memitem:a310c9782c32dcc1e296cea1c42866409" id="r_a310c9782c32dcc1e296cea1c42866409"><td class="memItemLeft">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a310c9782c32dcc1e296cea1c42866409">LightActors</a> = new()<code> [get]</code></td></tr>
 <tr class="memdesc:a310c9782c32dcc1e296cea1c42866409"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of newly created light actors (<a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a>).  <br /></td></tr>
+<tr class="memitem:abd22d562df91e6efe8a9f051d717492b" id="r_abd22d562df91e6efe8a9f051d717492b"><td class="memItemLeft">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#abd22d562df91e6efe8a9f051d717492b">DecalActors</a> = new()<code> [get]</code></td></tr>
+<tr class="memitem:a32b133a53d7489cf406ca21813d9af47" id="r_a32b133a53d7489cf406ca21813d9af47"><td class="memItemLeft">Dictionary&lt; int, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a32b133a53d7489cf406ca21813d9af47">PortedMeshComponents</a> = new()<code> [get]</code></td></tr>
+<tr class="memdesc:a32b133a53d7489cf406ca21813d9af47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Source component <a class="el" href="_bio_inert_8cs.html#a31ccc8e63558d15b93826f6ed881ead5">UIndex</a> to its generated <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a> component, before package reform.  <br /></td></tr>
+<tr class="memitem:a322e9267f6bf8dc06b83195caaf9c2ee" id="r_a322e9267f6bf8dc06b83195caaf9c2ee"><td class="memItemLeft">ISet&lt; <a class="el" href="_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3">Guid</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a322e9267f6bf8dc06b83195caaf9c2ee">ShadowMappedLightGuids</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a322e9267f6bf8dc06b83195caaf9c2ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Light GUIDs which had a referenced shadow map in the source level set. <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a>'s regular static-light defaults use direct lightmaps, so these lights must explicitly opt out to make Lightmass rebuild their shadow maps.  <br /></td></tr>
 <tr class="memitem:ae94c35a57a697532432655cb15c8ceeb" id="r_ae94c35a57a697532432655cb15c8ceeb"><td class="memItemLeft">List&lt; <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ae94c35a57a697532432655cb15c8ceeb">TopLevelMeshPackages</a> = new()<code> [get]</code></td></tr>
 <tr class="memdesc:ae94c35a57a697532432655cb15c8ceeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Root package exports containing meshes that are exports.  <br /></td></tr>
 </table>
@@ -353,6 +358,76 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>List of newly created light actors (<a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a>). </p>
+
+</div>
+</div>
+<a id="abd22d562df91e6efe8a9f051d717492b" name="abd22d562df91e6efe8a9f051d717492b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd22d562df91e6efe8a9f051d717492b">&#9670;&#160;</a></span>DecalActors</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">List&lt;<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&gt; LegendaryExplorerCore.UDK.UDKAssetInfo.DecalActors = new()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a32b133a53d7489cf406ca21813d9af47" name="a32b133a53d7489cf406ca21813d9af47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32b133a53d7489cf406ca21813d9af47">&#9670;&#160;</a></span>PortedMeshComponents</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Dictionary&lt;int, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&gt; LegendaryExplorerCore.UDK.UDKAssetInfo.PortedMeshComponents = new()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Source component <a class="el" href="_bio_inert_8cs.html#a31ccc8e63558d15b93826f6ed881ead5">UIndex</a> to its generated <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a> component, before package reform. </p>
+
+</div>
+</div>
+<a id="a322e9267f6bf8dc06b83195caaf9c2ee" name="a322e9267f6bf8dc06b83195caaf9c2ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a322e9267f6bf8dc06b83195caaf9c2ee">&#9670;&#160;</a></span>ShadowMappedLightGuids</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ISet&lt;<a class="el" href="_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3">Guid</a>&gt; LegendaryExplorerCore.UDK.UDKAssetInfo.ShadowMappedLightGuids</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span><span class="mlabel set">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Light GUIDs which had a referenced shadow map in the source level set. <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a>'s regular static-light defaults use direct lightmaps, so these lights must explicitly opt out to make Lightmass rebuild their shadow maps. </p>
 
 </div>
 </div>

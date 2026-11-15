@@ -51,6 +51,8 @@ var menudata={children:[
 {text:"u",url:"namespacemembers_u.html#index_u"},
 {text:"v",url:"namespacemembers_v.html#index_v"},
 {text:"w",url:"namespacemembers_w.html#index_w"}]},
+{text:"Functions",url:"namespacemembers_func.html"},
+{text:"Variables",url:"namespacemembers_vars.html"},
 {text:"Enumerations",url:"namespacemembers_enum.html",children:[
 {text:"a",url:"namespacemembers_enum.html#index_a"},
 {text:"b",url:"namespacemembers_enum_b.html#index_b"},
@@ -171,7 +173,8 @@ var menudata={children:[
 {text:"m",url:"functions_enum.html#index_m"},
 {text:"o",url:"functions_enum.html#index_o"},
 {text:"p",url:"functions_enum.html#index_p"},
-{text:"s",url:"functions_enum.html#index_s"}]},
+{text:"s",url:"functions_enum.html#index_s"},
+{text:"t",url:"functions_enum.html#index_t"}]},
 {text:"Properties",url:"functions_prop.html",children:[
 {text:"a",url:"functions_prop.html#index_a"},
 {text:"b",url:"functions_prop_b.html#index_b"},
@@ -182,6 +185,7 @@ var menudata={children:[
 {text:"g",url:"functions_prop_g.html#index_g"},
 {text:"h",url:"functions_prop_h.html#index_h"},
 {text:"i",url:"functions_prop_i.html#index_i"},
+{text:"j",url:"functions_prop_j.html#index_j"},
 {text:"k",url:"functions_prop_k.html#index_k"},
 {text:"l",url:"functions_prop_l.html#index_l"},
 {text:"m",url:"functions_prop_m.html#index_m"},

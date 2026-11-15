@@ -132,6 +132,8 @@ Classes</h2></td></tr>
 <tr class="memitem:SoundSFXVoice" id="r_SoundSFXVoice"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed_1_1_sound_s_f_x_voice.html">SoundSFXVoice</a></td></tr>
 <tr class="memitem:Event" id="r_Event"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed_1_1_event.html">Event</a></td></tr>
 <tr class="memitem:EventAction" id="r_EventAction"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed_1_1_event_action.html">EventAction</a></td></tr>
+<tr class="memitem:Bus" id="r_Bus"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed_1_1_bus.html">Bus</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed_1_1_bus.html" title="Bus hierarchy object (AudioBus, MotionBus, AuxiliaryBus). Only the parent bus ID is parsed; everythin...">Bus</a> hierarchy object (AudioBus, MotionBus, AuxiliaryBus). Only the parent bus ID is parsed; everything else (positioning, HDR/ducking, effects, RTPCs, state groups) is kept as unparsed bytes.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed_1_1_bus.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -148,23 +150,62 @@ Public Types</h2></td></tr>
 , <a class="el" href="#a727260488aa6c9c2d0863e3672bbcadba04fe04ad9491ad82654be3f1b2fb736a">GameObject_LE</a> = 0x03
  }</td></tr>
 <tr class="memitem:ae0a6a6d43b68cb124d99ab8347d24150" id="r_ae0a6a6d43b68cb124d99ab8347d24150"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150">EventActionType</a> : byte { <br />
-&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ade3c731be5633838089a07179d301d7b">Play</a> = 0x40
-, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a11a755d598c0c417f9a36758c3da7481">Stop</a> = 0x10
-, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a1c94caddd44c4bd9de5ece8fcf7c347e">SetVolume</a> = 0xA0
-, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150add0660cd755e80a803ff3569a4711829">ResetVolume</a> = 0xB0
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a6adf97f83acf6453d4a6a4b1070f3754">None</a> = 0x00
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a11a755d598c0c417f9a36758c3da7481">Stop</a> = 0x01
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a105b296a83f9c105355403f3332af50f">Pause</a> = 0x02
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150af1cefec9e2196c672a622347f1fbc325">Resume</a> = 0x03
 , <br />
-&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ac1ef9b275d906dd613673619b5b2c588">SetLPF</a> = 0xE0
-, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a166cf2c10e1619c3fe515c7cf735afc0">ResetLPF</a> = 0xF0
-, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a24ecf10115086a8f6930f67a07b199b4">Stop_LE</a> = 0x01
-, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ab4cfc836dea98f356b8336935600fe5f">Pause_LE</a> = 0x02
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ade3c731be5633838089a07179d301d7b">Play</a> = 0x04
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a2805b30265d355e8572283713506cd3a">PlayAndContinue</a> = 0x05
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a00cd7be4cb21c59179316d7844a8cfc4">Mute</a> = 0x06
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a454761c561b8a59823e80dff51fc49d1">Unmute</a> = 0x07
 , <br />
-&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ae89666ab7182c5dfe461644e0e5b9e2f">Play_LE</a> = 0x04
-, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a9f640b888ea64b9bdacdbd4575098b17">SetVolume_LE</a> = 0x0A
-, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150abd476bc110c200856aad77c01e0a1dd8">ResetVolume_LE</a> = 0x0B
-, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ae1fbd42baf873693c1bb0756552c07d2">SetLPF_LE</a> = 0x0E
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a13464368aa065c3bb7017945812146a8">SetPitch</a> = 0x08
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a7827c4be466ea1fbc47d3153a2e79cd1">ResetPitch</a> = 0x09
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a1c94caddd44c4bd9de5ece8fcf7c347e">SetVolume</a> = 0x0A
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150add0660cd755e80a803ff3569a4711829">ResetVolume</a> = 0x0B
 , <br />
-&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a42d9af2aa4d95d837579f1f87064e7cc">ResetLPF_LE</a> = 0x0F
-, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ad41769f5ab667ce028f419d1322ec81b">Break_LE</a> = 0x1C
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150aa22f759479eb4d6430bf919358e09db4">SetBusVolume</a> = 0x0C
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a60e2e923e586ac4f0f5d473026924ad0">ResetBusVolume</a> = 0x0D
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ac1ef9b275d906dd613673619b5b2c588">SetLPF</a> = 0x0E
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a166cf2c10e1619c3fe515c7cf735afc0">ResetLPF</a> = 0x0F
+, <br />
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a24ecf10115086a8f6930f67a07b199b4">Stop_LE</a> = 0x10
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150af1fe98d68365e895b0c3a25f4c9b3e7e">UseState</a> = 0x10
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ae4277c9283e7348ddc341b6f9ab1efc6">UnuseState</a> = 0x11
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150aa4e6009ebf3731cb980080aa8608fb47">SetState</a> = 0x12
+, <br />
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a7925706ef970cdfca8cdc5d1d6ea0a27">SetGameParameter</a> = 0x13
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150af65418a2f9d88bb2a2d5fcc0db3dd790">ResetGameParameter</a> = 0x14
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a62a8f5af8c678a4b9f9974c5dfc0f00f">StopEvent</a> = 0x15
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a0b5370d3005dfb27fd209c29d1fb3371">PauseEvent</a> = 0x16
+, <br />
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150adff198d213bdafa7d16c4b1c25c0cf4c">ResumeEvent</a> = 0x17
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150af97ca8decb3a5f04d11d0e3c6ff3f0cd">Duck</a> = 0x18
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a435b0d9caf7c7de079d05bea8443a6d0">SetSwitch</a> = 0x19
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ad4de853307c0e5023966979193a2f902">BypassFX</a> = 0x1A
+, <br />
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a472f32b4e73078e6917770490154b925">ResetBypassFX</a> = 0x1B
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ae4c38d6d45baf080943d323dd51a2ce8">Break</a> = 0x1C
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150af698f67f5666aff10729d8a1cb1c14d2">Trigger</a> = 0x1D
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150aed7ecb1dbb9be8c65f909819dac7aa54">Seek</a> = 0x1E
+, <br />
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ab8e7b465df7c5979dc731d06e84ce2cf">Release</a> = 0x1F
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a8470426aa0da53c0adaf9a8d89bda55d">SetHPF</a> = 0x20
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a9d69a9f16aa085ab6570759a51762a1c">PlayEvent</a> = 0x21
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a1fb49abd78dd88ca3829fdf4c18b1ed9">ResetPlaylist</a> = 0x22
+, <br />
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a123077b68cfe0aa94debbfadd08b2213">ResetHPF</a> = 0x30
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150acabb43fd4aed579412920948deaffea2">SetFX</a> = 0x31
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150af1de0ae06bbf8d376b76d5faa3b256c0">ResetSetFX</a> = 0x32
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a60832e2e4bbebccf26555b9ba658bad5">NoOp</a> = 0x40
+, <br />
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a9d3395daadfdde40dbba6610467ceab2">Play_Legacy</a> = 0x40
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a9f640b888ea64b9bdacdbd4575098b17">SetVolume_LE</a> = 0xA0
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150abd476bc110c200856aad77c01e0a1dd8">ResetVolume_LE</a> = 0xB0
+, <a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150ae1fbd42baf873693c1bb0756552c07d2">SetLPF_LE</a> = 0xE0
+, <br />
+&#160;&#160;<a class="el" href="#ae0a6a6d43b68cb124d99ab8347d24150a42d9af2aa4d95d837579f1f87064e7cc">ResetLPF_LE</a> = 0xF0
 <br />
  }</td></tr>
 <tr class="memitem:a2045e487e3e2232751b85c246892886b" id="r_a2045e487e3e2232751b85c246892886b"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="#a2045e487e3e2232751b85c246892886b">EventActionFadeCurve</a> : byte { <br />
@@ -300,20 +341,51 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150ade3c731be5633838089a07179d301d7b" name="ae0a6a6d43b68cb124d99ab8347d24150ade3c731be5633838089a07179d301d7b"></a>Play&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a6adf97f83acf6453d4a6a4b1070f3754" name="ae0a6a6d43b68cb124d99ab8347d24150a6adf97f83acf6453d4a6a4b1070f3754"></a>None&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a11a755d598c0c417f9a36758c3da7481" name="ae0a6a6d43b68cb124d99ab8347d24150a11a755d598c0c417f9a36758c3da7481"></a>Stop&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a105b296a83f9c105355403f3332af50f" name="ae0a6a6d43b68cb124d99ab8347d24150a105b296a83f9c105355403f3332af50f"></a>Pause&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150af1cefec9e2196c672a622347f1fbc325" name="ae0a6a6d43b68cb124d99ab8347d24150af1cefec9e2196c672a622347f1fbc325"></a>Resume&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150ade3c731be5633838089a07179d301d7b" name="ae0a6a6d43b68cb124d99ab8347d24150ade3c731be5633838089a07179d301d7b"></a>Play&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a2805b30265d355e8572283713506cd3a" name="ae0a6a6d43b68cb124d99ab8347d24150a2805b30265d355e8572283713506cd3a"></a>PlayAndContinue&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a00cd7be4cb21c59179316d7844a8cfc4" name="ae0a6a6d43b68cb124d99ab8347d24150a00cd7be4cb21c59179316d7844a8cfc4"></a>Mute&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a454761c561b8a59823e80dff51fc49d1" name="ae0a6a6d43b68cb124d99ab8347d24150a454761c561b8a59823e80dff51fc49d1"></a>Unmute&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a13464368aa065c3bb7017945812146a8" name="ae0a6a6d43b68cb124d99ab8347d24150a13464368aa065c3bb7017945812146a8"></a>SetPitch&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a7827c4be466ea1fbc47d3153a2e79cd1" name="ae0a6a6d43b68cb124d99ab8347d24150a7827c4be466ea1fbc47d3153a2e79cd1"></a>ResetPitch&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a1c94caddd44c4bd9de5ece8fcf7c347e" name="ae0a6a6d43b68cb124d99ab8347d24150a1c94caddd44c4bd9de5ece8fcf7c347e"></a>SetVolume&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150add0660cd755e80a803ff3569a4711829" name="ae0a6a6d43b68cb124d99ab8347d24150add0660cd755e80a803ff3569a4711829"></a>ResetVolume&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150aa22f759479eb4d6430bf919358e09db4" name="ae0a6a6d43b68cb124d99ab8347d24150aa22f759479eb4d6430bf919358e09db4"></a>SetBusVolume&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a60e2e923e586ac4f0f5d473026924ad0" name="ae0a6a6d43b68cb124d99ab8347d24150a60e2e923e586ac4f0f5d473026924ad0"></a>ResetBusVolume&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150ac1ef9b275d906dd613673619b5b2c588" name="ae0a6a6d43b68cb124d99ab8347d24150ac1ef9b275d906dd613673619b5b2c588"></a>SetLPF&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a166cf2c10e1619c3fe515c7cf735afc0" name="ae0a6a6d43b68cb124d99ab8347d24150a166cf2c10e1619c3fe515c7cf735afc0"></a>ResetLPF&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a24ecf10115086a8f6930f67a07b199b4" name="ae0a6a6d43b68cb124d99ab8347d24150a24ecf10115086a8f6930f67a07b199b4"></a>Stop_LE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150ab4cfc836dea98f356b8336935600fe5f" name="ae0a6a6d43b68cb124d99ab8347d24150ab4cfc836dea98f356b8336935600fe5f"></a>Pause_LE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150ae89666ab7182c5dfe461644e0e5b9e2f" name="ae0a6a6d43b68cb124d99ab8347d24150ae89666ab7182c5dfe461644e0e5b9e2f"></a>Play_LE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150af1fe98d68365e895b0c3a25f4c9b3e7e" name="ae0a6a6d43b68cb124d99ab8347d24150af1fe98d68365e895b0c3a25f4c9b3e7e"></a>UseState&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150ae4277c9283e7348ddc341b6f9ab1efc6" name="ae0a6a6d43b68cb124d99ab8347d24150ae4277c9283e7348ddc341b6f9ab1efc6"></a>UnuseState&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150aa4e6009ebf3731cb980080aa8608fb47" name="ae0a6a6d43b68cb124d99ab8347d24150aa4e6009ebf3731cb980080aa8608fb47"></a>SetState&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a7925706ef970cdfca8cdc5d1d6ea0a27" name="ae0a6a6d43b68cb124d99ab8347d24150a7925706ef970cdfca8cdc5d1d6ea0a27"></a>SetGameParameter&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150af65418a2f9d88bb2a2d5fcc0db3dd790" name="ae0a6a6d43b68cb124d99ab8347d24150af65418a2f9d88bb2a2d5fcc0db3dd790"></a>ResetGameParameter&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a62a8f5af8c678a4b9f9974c5dfc0f00f" name="ae0a6a6d43b68cb124d99ab8347d24150a62a8f5af8c678a4b9f9974c5dfc0f00f"></a>StopEvent&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a0b5370d3005dfb27fd209c29d1fb3371" name="ae0a6a6d43b68cb124d99ab8347d24150a0b5370d3005dfb27fd209c29d1fb3371"></a>PauseEvent&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150adff198d213bdafa7d16c4b1c25c0cf4c" name="ae0a6a6d43b68cb124d99ab8347d24150adff198d213bdafa7d16c4b1c25c0cf4c"></a>ResumeEvent&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150af97ca8decb3a5f04d11d0e3c6ff3f0cd" name="ae0a6a6d43b68cb124d99ab8347d24150af97ca8decb3a5f04d11d0e3c6ff3f0cd"></a>Duck&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a435b0d9caf7c7de079d05bea8443a6d0" name="ae0a6a6d43b68cb124d99ab8347d24150a435b0d9caf7c7de079d05bea8443a6d0"></a>SetSwitch&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150ad4de853307c0e5023966979193a2f902" name="ae0a6a6d43b68cb124d99ab8347d24150ad4de853307c0e5023966979193a2f902"></a>BypassFX&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a472f32b4e73078e6917770490154b925" name="ae0a6a6d43b68cb124d99ab8347d24150a472f32b4e73078e6917770490154b925"></a>ResetBypassFX&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150ae4c38d6d45baf080943d323dd51a2ce8" name="ae0a6a6d43b68cb124d99ab8347d24150ae4c38d6d45baf080943d323dd51a2ce8"></a>Break&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150af698f67f5666aff10729d8a1cb1c14d2" name="ae0a6a6d43b68cb124d99ab8347d24150af698f67f5666aff10729d8a1cb1c14d2"></a>Trigger&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150aed7ecb1dbb9be8c65f909819dac7aa54" name="ae0a6a6d43b68cb124d99ab8347d24150aed7ecb1dbb9be8c65f909819dac7aa54"></a>Seek&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150ab8e7b465df7c5979dc731d06e84ce2cf" name="ae0a6a6d43b68cb124d99ab8347d24150ab8e7b465df7c5979dc731d06e84ce2cf"></a>Release&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a8470426aa0da53c0adaf9a8d89bda55d" name="ae0a6a6d43b68cb124d99ab8347d24150a8470426aa0da53c0adaf9a8d89bda55d"></a>SetHPF&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a9d69a9f16aa085ab6570759a51762a1c" name="ae0a6a6d43b68cb124d99ab8347d24150a9d69a9f16aa085ab6570759a51762a1c"></a>PlayEvent&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a1fb49abd78dd88ca3829fdf4c18b1ed9" name="ae0a6a6d43b68cb124d99ab8347d24150a1fb49abd78dd88ca3829fdf4c18b1ed9"></a>ResetPlaylist&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a123077b68cfe0aa94debbfadd08b2213" name="ae0a6a6d43b68cb124d99ab8347d24150a123077b68cfe0aa94debbfadd08b2213"></a>ResetHPF&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150acabb43fd4aed579412920948deaffea2" name="ae0a6a6d43b68cb124d99ab8347d24150acabb43fd4aed579412920948deaffea2"></a>SetFX&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150af1de0ae06bbf8d376b76d5faa3b256c0" name="ae0a6a6d43b68cb124d99ab8347d24150af1de0ae06bbf8d376b76d5faa3b256c0"></a>ResetSetFX&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a60832e2e4bbebccf26555b9ba658bad5" name="ae0a6a6d43b68cb124d99ab8347d24150a60832e2e4bbebccf26555b9ba658bad5"></a>NoOp&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a9d3395daadfdde40dbba6610467ceab2" name="ae0a6a6d43b68cb124d99ab8347d24150a9d3395daadfdde40dbba6610467ceab2"></a>Play_Legacy&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a9f640b888ea64b9bdacdbd4575098b17" name="ae0a6a6d43b68cb124d99ab8347d24150a9f640b888ea64b9bdacdbd4575098b17"></a>SetVolume_LE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150abd476bc110c200856aad77c01e0a1dd8" name="ae0a6a6d43b68cb124d99ab8347d24150abd476bc110c200856aad77c01e0a1dd8"></a>ResetVolume_LE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150ae1fbd42baf873693c1bb0756552c07d2" name="ae0a6a6d43b68cb124d99ab8347d24150ae1fbd42baf873693c1bb0756552c07d2"></a>SetLPF_LE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150a42d9af2aa4d95d837579f1f87064e7cc" name="ae0a6a6d43b68cb124d99ab8347d24150a42d9af2aa4d95d837579f1f87064e7cc"></a>ResetLPF_LE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae0a6a6d43b68cb124d99ab8347d24150ad41769f5ab667ce028f419d1322ec81b" name="ae0a6a6d43b68cb124d99ab8347d24150ad41769f5ab667ce028f419d1322ec81b"></a>Break_LE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

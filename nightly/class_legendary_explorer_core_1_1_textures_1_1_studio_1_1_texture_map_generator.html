@@ -118,7 +118,14 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_legendar
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a43a97294287b3cb240758a7993dcfad4" id="r_a43a97294287b3cb240758a7993dcfad4"><td class="memItemLeft">static <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map.html">TextureMap</a>&#160;</td><td class="memItemRight"><a class="el" href="#a43a97294287b3cb240758a7993dcfad4">GenerateMapForFolder</a> (string rootDirectory, Func&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html">TextureMapMemoryEntry</a> &gt; nodeGeneratorDelegate, Action&lt; <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html">TextureMapMemoryEntry</a> &gt; addRootElementDelegate, Action&lt; string, int, int &gt; progressDelegate=null, CancellationToken cts=default)</td></tr>
+<tr class="memitem:ad598ff7059a74d5c17f35391012ab7a9" id="r_ad598ff7059a74d5c17f35391012ab7a9"><td class="memItemLeft">static <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map.html">TextureMap</a>&#160;</td><td class="memItemRight"><a class="el" href="#ad598ff7059a74d5c17f35391012ab7a9">GenerateMapForFolder</a> (string rootDirectory, Func&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html">TextureMapMemoryEntry</a> &gt; nodeGeneratorDelegate, Action&lt; <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html">TextureMapMemoryEntry</a> &gt; addRootElementDelegate, Action&lt; string, int, int &gt; progressDelegate=null, CancellationToken cts=default, IEnumerable&lt; string &gt; additionalTFCs=null)</td></tr>
+<tr class="memdesc:ad598ff7059a74d5c17f35391012ab7a9"><td class="mdescLeft">&#160;</td><td class="mdescRight"><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">additionalTFCs</td><td>Full paths of TFCs outside <em>rootDirectory</em>  that textures in it may keep their data in. They are matched by file name, after the TFCs in <em>rootDirectory</em> .</td></tr>
+  </table>
+  </dd>
+</dl>
+ <br /></td></tr>
 <tr class="memitem:a1db081bf3dd6b167d784419906bc01de" id="r_a1db081bf3dd6b167d784419906bc01de"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a1db081bf3dd6b167d784419906bc01de">RegenerateEntries</a> (string selectedFolder, List&lt; <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html">TextureMapMemoryEntry</a> &gt; entriesToRefresh, Dictionary&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html">TextureMapMemoryEntry</a> &gt; textureMapMemoryEntries, Dictionary&lt; string, uint &gt; crcCache, List&lt; string &gt; additionalTFCs, Func&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html">TextureMapMemoryEntry</a> &gt; generatorDelegate, Action&lt; <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html">TextureMapMemoryEntry</a> &gt; addRootNodeDelegate, CancellationToken cancelToken)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-attribs" class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
@@ -127,8 +134,8 @@ Static Public Attributes</h2></td></tr>
 <tr class="memdesc:a663a7aea8750ce0df67957bd8ed26d6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">DO NOT CHANGE THIS This is the prefix for <a class="el" href="namespace_legendary_explorer_core_1_1_m_e1.html">ME1</a> mod master texture packages. This naming scheme will let us identify texture masters.  <br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
-<a id="a43a97294287b3cb240758a7993dcfad4" name="a43a97294287b3cb240758a7993dcfad4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a43a97294287b3cb240758a7993dcfad4">&#9670;&#160;</a></span>GenerateMapForFolder()</h2>
+<a id="ad598ff7059a74d5c17f35391012ab7a9" name="ad598ff7059a74d5c17f35391012ab7a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad598ff7059a74d5c17f35391012ab7a9">&#9670;&#160;</a></span>GenerateMapForFolder()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -159,7 +166,12 @@ Static Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">CancellationToken</td>          <td class="paramname"><span class="paramname"><em>cts</em></span><span class="paramdefsep"> = </span><span class="paramdefval">default</span>&#160;)</td>
+          <td class="paramtype">CancellationToken</td>          <td class="paramname"><span class="paramname"><em>cts</em></span><span class="paramdefsep"> = </span><span class="paramdefval">default</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">IEnumerable&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>additionalTFCs</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -168,6 +180,14 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">additionalTFCs</td><td>Full paths of TFCs outside <em>rootDirectory</em>  that textures in it may keep their data in. They are matched by file name, after the TFCs in <em>rootDirectory</em> .</td></tr>
+  </table>
+  </dd>
+</dl>
+</p>
 
 </div>
 </div>

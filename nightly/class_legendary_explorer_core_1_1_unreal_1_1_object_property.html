@@ -132,8 +132,8 @@ Inheritance diagram for LegendaryExplorerCore.Unreal.ObjectProperty:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4902918c5e428b8d1d10f3164271e6ac" id="r_a4902918c5e428b8d1d10f3164271e6ac"><td class="memItemLeft"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight"><a class="el" href="#a4902918c5e428b8d1d10f3164271e6ac">ResolveToEntry</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
 <tr class="memdesc:a4902918c5e428b8d1d10f3164271e6ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolves this object property to its corresponding IEntry from <em>package</em> .  <br /></td></tr>
-<tr class="memitem:adf173604791389006b47a74531ff0992" id="r_adf173604791389006b47a74531ff0992"><td class="memItemLeft"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight"><a class="el" href="#adf173604791389006b47a74531ff0992">ResolveToExport</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache)</td></tr>
-<tr class="memdesc:adf173604791389006b47a74531ff0992"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolves this property to an export. If the object is an import, it will attempt to resolve it from another package.  <br /></td></tr>
+<tr class="memitem:a715a0a00dc19cb31a0809a3ecacafae9" id="r_a715a0a00dc19cb31a0809a3ecacafae9"><td class="memItemLeft"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight"><a class="el" href="#a715a0a00dc19cb31a0809a3ecacafae9">ResolveToExport</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache, Func&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> &gt; fileResolver=null)</td></tr>
+<tr class="memdesc:a715a0a00dc19cb31a0809a3ecacafae9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolves this property to an export. If the object is an import, it will attempt to resolve it from another package.  <br /></td></tr>
 <tr class="memitem:ae8250195a8c51ed33537b6bfce71fe64" id="r_ae8250195a8c51ed33537b6bfce71fe64"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ae8250195a8c51ed33537b6bfce71fe64">TryResolveExport</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache, out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> exp)</td></tr>
 <tr class="memdesc:ae8250195a8c51ed33537b6bfce71fe64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to resolve this object property to an export, returning true if success, false otherwise. This resolves imports to exports.  <br /></td></tr>
 <tr class="memitem:a9508001ea288fb6662c3e85368a7dd67" id="r_a9508001ea288fb6662c3e85368a7dd67"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a9508001ea288fb6662c3e85368a7dd67">ObjectProperty</a> (int val, <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>? name=null)</td></tr>
@@ -192,6 +192,8 @@ Properties</h2></td></tr>
 <tr class="memdesc:a799de04a1d37293e49d9dc79d7af4d23 properties_class_legendary_explorer_core_1_1_unreal_1_1_property"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset to the start of this property as it was read by <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a73a0812e09a6786a54a24f95ee421c94" title="Deserializes properties from rawStream .">PropertyCollection.ReadProps()</a>.  <br /></td></tr>
 <tr class="memitem:af71e59036b9ff90609309d1fc4bfa0d0 properties_class_legendary_explorer_core_1_1_unreal_1_1_property" id="r_af71e59036b9ff90609309d1fc4bfa0d0"><td class="memItemLeft"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>&#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#af71e59036b9ff90609309d1fc4bfa0d0">Name</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:af71e59036b9ff90609309d1fc4bfa0d0 properties_class_legendary_explorer_core_1_1_unreal_1_1_property"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of this property.  <br /></td></tr>
+<tr class="memitem:a8d6222e96139a16bb38ca0e448615083 properties_class_legendary_explorer_core_1_1_unreal_1_1_property" id="r_a8d6222e96139a16bb38ca0e448615083"><td class="memItemLeft"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ad7941418f2eff374cbd43472fd685448">PropertySource</a>&#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#a8d6222e96139a16bb38ca0e448615083">InheritedFrom</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a8d6222e96139a16bb38ca0e448615083 properties_class_legendary_explorer_core_1_1_unreal_1_1_property"><td class="mdescLeft">&#160;</td><td class="mdescRight">Where this property's value actually came from, when read via PropertyCollectionExtensions.GetPropertiesIncludingInherited. Null (the default) means the property was read directly from the export it was requested from - the case for every other property-reading codepath, and for any property an export sets explicitly itself even when read through PropertyCollectionExtensions.GetPropertiesIncludingInherited. This is a purely in-memory annotation: it is not serialized, has no effect on WriteTo, and should never be relied on to write this property back to a different export than it was read from.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-events" class="groupheader"><a id="events" name="events"></a>
 Events</h2></td></tr>
@@ -311,8 +313,8 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<a id="adf173604791389006b47a74531ff0992" name="adf173604791389006b47a74531ff0992"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adf173604791389006b47a74531ff0992">&#9670;&#160;</a></span>ResolveToExport()</h2>
+<a id="a715a0a00dc19cb31a0809a3ecacafae9" name="a715a0a00dc19cb31a0809a3ecacafae9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a715a0a00dc19cb31a0809a3ecacafae9">&#9670;&#160;</a></span>ResolveToExport()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -328,7 +330,12 @@ Events</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a></td>          <td class="paramname"><span class="paramname"><em>cache</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a></td>          <td class="paramname"><span class="paramname"><em>cache</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Func&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>fileResolver</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -343,6 +350,7 @@ Events</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">package</td><td>Package this property resides in</td></tr>
     <tr><td class="paramname">cache</td><td>Cache to use if resolving an import</td></tr>
+    <tr><td class="paramname">fileResolver</td><td>Optional: A function to resolve a file path to a package, used if resolving an import. If not provided, the cache's default resolver will be used.</td></tr>
   </table>
   </dd>
 </dl>

@@ -8,6 +8,8 @@ var namespace_legendary_explorer_core_1_1_unreal_1_1_object_info =
     [ "LE2UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e2_unreal_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e2_unreal_object_info" ],
     [ "LE3ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_object_info" ],
     [ "LE3UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info" ],
+    [ "LMPObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_m_p_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_m_p_object_info" ],
+    [ "LMPUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_m_p_unreal_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_m_p_unreal_object_info" ],
     [ "ME1ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_object_info" ],
     [ "ME1UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_unreal_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_unreal_object_info" ],
     [ "ME2ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_object_info" ],

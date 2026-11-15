@@ -120,6 +120,8 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_legendar
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a3c40cf2f46354f9f3b1ca09d6bd5ef54" id="r_a3c40cf2f46354f9f3b1ca09d6bd5ef54"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a3c40cf2f46354f9f3b1ca09d6bd5ef54">RelinkAll</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop)</td></tr>
 <tr class="memdesc:a3c40cf2f46354f9f3b1ca09d6bd5ef54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to relink unreal property data and object pointers in binary when cross porting an export. Access the results from the <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html" title="Specifies options used for relinking, as well as containing objects that can be passed through the en...">RelinkerOptionsPackage</a>'s RelinkReport property.  <br /></td></tr>
+<tr class="memitem:a37c05598c836d6a7e08aad6b0c6bd909" id="r_a37c05598c836d6a7e08aad6b0c6bd909"><td class="memItemLeft">static int&#160;</td><td class="memItemRight"><a class="el" href="#a37c05598c836d6a7e08aad6b0c6bd909">RegisterCrossGameClassFunctions</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop)</td></tr>
+<tr class="memdesc:a37c05598c836d6a7e08aad6b0c6bd909"><td class="mdescLeft">&#160;</td><td class="mdescRight">Repairs a broken probe chain when porting across games; donors in target game may not reference things from the original, so you can end up with orphaned functions that when the class GC's will crash on invocation.  <br /></td></tr>
 <tr class="memitem:aef815b6f7029a0b68aa048a127df5a98" id="r_aef815b6f7029a0b68aa048a127df5a98"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#aef815b6f7029a0b68aa048a127df5a98">Relink</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sourceExport, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> relinkingExport, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop)</td></tr>
 <tr class="memdesc:aef815b6f7029a0b68aa048a127df5a98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Relinks an export to a new export, likely in another package.  <br /></td></tr>
 <tr class="memitem:a16170d117664cd14b0383c25f9b970aa" id="r_a16170d117664cd14b0383c25f9b970aa"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a16170d117664cd14b0383c25f9b970aa">RelinkPropertyCollection</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> sourcePcc, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> destinationPcc, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop, out bool hasObjectProperties)</td></tr>
@@ -154,6 +156,34 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Attempts to relink unreal property data and object pointers in binary when cross porting an export. Access the results from the <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html" title="Specifies options used for relinking, as well as containing objects that can be passed through the en...">RelinkerOptionsPackage</a>'s RelinkReport property. </p>
+
+</div>
+</div>
+<a id="a37c05598c836d6a7e08aad6b0c6bd909" name="a37c05598c836d6a7e08aad6b0c6bd909"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37c05598c836d6a7e08aad6b0c6bd909">&#9670;&#160;</a></span>RegisterCrossGameClassFunctions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int LegendaryExplorerCore.Packages.CloningImportingAndRelinking.Relinker.RegisterCrossGameClassFunctions </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a></td>          <td class="paramname"><span class="paramname"><em>rop</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Repairs a broken probe chain when porting across games; donors in target game may not reference things from the original, so you can end up with orphaned functions that when the class GC's will crash on invocation. </p>
+<dl class="section return"><dt>Returns</dt><dd>The number of destination functions whose ownership or existing virtual slots changed</dd></dl>
 
 </div>
 </div>

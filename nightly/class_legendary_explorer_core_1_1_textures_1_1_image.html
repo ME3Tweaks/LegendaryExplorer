@@ -137,7 +137,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ada8de0aa07fdfb9ed3b6c3c7849662cc" id="r_ada8de0aa07fdfb9ed3b6c3c7849662cc"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ada8de0aa07fdfb9ed3b6c3c7849662cc">Image</a> (byte[] image, <a class="el" href="#a56b9f4440142d36f639dca6a3f0229c9">ImageFormat</a> format)</td></tr>
 <tr class="memitem:ad01947137497a3c0cc057d79a803030d" id="r_ad01947137497a3c0cc057d79a803030d"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ad01947137497a3c0cc057d79a803030d">Image</a> (byte[] image, string extension)</td></tr>
 <tr class="memitem:acd2fe1f7e0c911459a88fedb9a634103" id="r_acd2fe1f7e0c911459a88fedb9a634103"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#acd2fe1f7e0c911459a88fedb9a634103">Image</a> (List&lt; <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_mip_map.html">MipMap</a> &gt; mipmaps, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> pixelFmt)</td></tr>
-<tr class="memitem:a26ec3fe1cd6f81960a4ef997f83c7299" id="r_a26ec3fe1cd6f81960a4ef997f83c7299"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a26ec3fe1cd6f81960a4ef997f83c7299">correctMips</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> dstFormat, bool dxt1HasAlpha=false, byte dxt1Threshold=128)</td></tr>
+<tr class="memitem:af0726f7a6058962c3e5a952cef7d925c" id="r_af0726f7a6058962c3e5a952cef7d925c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#af0726f7a6058962c3e5a952cef7d925c">correctMips</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> dstFormat, bool dxt1HasAlpha=false, byte dxt1Threshold=128, <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_mip_generation_options.html">MipGenerationOptions</a> options=null)</td></tr>
+<tr class="memdesc:af0726f7a6058962c3e5a952cef7d925c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces every mip below the top one with a freshly generated chain (down to 1x1), converted to <em>dstFormat</em> . Any lower mips already on the image are discarded.  <br /></td></tr>
+<tr class="memitem:a11bf7b76316fabea0f2254c7ec7e78fc" id="r_a11bf7b76316fabea0f2254c7ec7e78fc"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a11bf7b76316fabea0f2254c7ec7e78fc">HasCompleteMipChain</a> ()</td></tr>
+<tr class="memdesc:a11bf7b76316fabea0f2254c7ec7e78fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">True when this image has a complete mip chain: more than one level, each half the size of the one above (never below 1), ending at 1x1. This is the shape correctMips produces, and the shape Unreal.Classes.Texture2D.Replace accepts when asked to use a supplied chain. The pixel format of the levels does not matter.  <br /></td></tr>
+<tr class="memitem:a8e0aa789b527e84be7223de7cef3ad19" id="r_a8e0aa789b527e84be7223de7cef3ad19"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a8e0aa789b527e84be7223de7cef3ad19">ConvertMipsTo</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> dstFormat, bool dxt1HasAlpha=false, byte dxt1Threshold=128)</td></tr>
+<tr class="memdesc:a8e0aa789b527e84be7223de7cef3ad19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts every mip of this image to <em>dstFormat</em>  without regenerating any of them: each level keeps its own pixels, so a chain that was authored level by level (rather than derived from the top mip) survives. Levels already in the target format are left untouched.  <br /></td></tr>
 <tr class="memitem:a521b02662420434114903b5779651e8d" id="r_a521b02662420434114903b5779651e8d"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a521b02662420434114903b5779651e8d">checkDDSHaveAllMipmaps</a> ()</td></tr>
 <tr class="memitem:a3a85bde7c406c6fd433f3e0523426064" id="r_a3a85bde7c406c6fd433f3e0523426064"><td class="memItemLeft"><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html">LegendaryExplorerCore.Textures.Image</a>&#160;</td><td class="memItemRight"><a class="el" href="#a3a85bde7c406c6fd433f3e0523426064">convertToARGB</a> ()</td></tr>
 <tr class="memitem:a29a7548010c760aacbc4deb547d396b8" id="r_a29a7548010c760aacbc4deb547d396b8"><td class="memItemLeft"><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html">LegendaryExplorerCore.Textures.Image</a>&#160;</td><td class="memItemRight"><a class="el" href="#a29a7548010c760aacbc4deb547d396b8">convertToRGB</a> ()</td></tr>
@@ -159,6 +164,10 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:a7d87c3c00b32afca819c4a818d84c36b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from disk and converts it internally to the specified pixel format.  <br /></td></tr>
 <tr class="memitem:a149519a4439ce28637a070e9aa3fadd2" id="r_a149519a4439ce28637a070e9aa3fadd2"><td class="memItemLeft">static <a class="el" href="#a6f96dcf24b4f938516b3a4b86b9b8876">Image</a>&#160;</td><td class="memItemRight"><a class="el" href="#a149519a4439ce28637a070e9aa3fadd2">LoadFromFileMemory</a> (byte[] buffer, int imageType, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> targetFormat)</td></tr>
 <tr class="memdesc:a149519a4439ce28637a070e9aa3fadd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from an array and converts it internally to the specified pixel format.  <br /></td></tr>
+<tr class="memitem:a61bef653418f28c03b33d8217e23dd2e" id="r_a61bef653418f28c03b33d8217e23dd2e"><td class="memItemLeft">static <a class="el" href="#a6f96dcf24b4f938516b3a4b86b9b8876">Image</a>&#160;</td><td class="memItemRight"><a class="el" href="#a61bef653418f28c03b33d8217e23dd2e">LoadFromFileWithOverrides</a> (string filename, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> targetFormat, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a4c580cf3117f791736a04fe66d019dd5">TextureLoadOverrides</a> overrides)</td></tr>
+<tr class="memdesc:a61bef653418f28c03b33d8217e23dd2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opt-in loading for packed texture data; the original LoadFromFile path is unchanged.  <br /></td></tr>
+<tr class="memitem:a885aafab3dc7080d5639d6be004bb068" id="r_a885aafab3dc7080d5639d6be004bb068"><td class="memItemLeft">static <a class="el" href="#a6f96dcf24b4f938516b3a4b86b9b8876">Image</a>&#160;</td><td class="memItemRight"><a class="el" href="#a885aafab3dc7080d5639d6be004bb068">LoadFromFileMemoryWithOverrides</a> (byte[] buffer, int imageType, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> targetFormat, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a4c580cf3117f791736a04fe66d019dd5">TextureLoadOverrides</a> overrides)</td></tr>
+<tr class="memdesc:a885aafab3dc7080d5639d6be004bb068"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opt-in memory loading. <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html">Image</a> types: 1 DDS, 2 WIC, 3 TGA.  <br /></td></tr>
 <tr class="memitem:ad1dc6edd08d2aa9620c74c0d010db641" id="r_ad1dc6edd08d2aa9620c74c0d010db641"><td class="memItemLeft">static byte[]&#160;</td><td class="memItemRight"><a class="el" href="#ad1dc6edd08d2aa9620c74c0d010db641">StoreMipToDDS</a> (byte[] src, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> format, int w, int h)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-attribs" class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
@@ -571,8 +580,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a26ec3fe1cd6f81960a4ef997f83c7299" name="a26ec3fe1cd6f81960a4ef997f83c7299"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a26ec3fe1cd6f81960a4ef997f83c7299">&#9670;&#160;</a></span>correctMips()</h2>
+<a id="af0726f7a6058962c3e5a952cef7d925c" name="af0726f7a6058962c3e5a952cef7d925c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0726f7a6058962c3e5a952cef7d925c">&#9670;&#160;</a></span>correctMips()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -593,6 +602,83 @@ Properties</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">byte</td>          <td class="paramname"><span class="paramname"><em>dxt1Threshold</em></span><span class="paramdefsep"> = </span><span class="paramdefval">128</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_mip_generation_options.html">MipGenerationOptions</a></td>          <td class="paramname"><span class="paramname"><em>options</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Replaces every mip below the top one with a freshly generated chain (down to 1x1), converted to <em>dstFormat</em> . Any lower mips already on the image are discarded. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dstFormat</td><td>The format of the finished chain.</td></tr>
+    <tr><td class="paramname">dxt1HasAlpha</td><td>Whether a DXT1 target should keep 1-bit alpha.</td></tr>
+    <tr><td class="paramname">dxt1Threshold</td><td>Alpha cut-off for DXT1 1-bit alpha.</td></tr>
+    <tr><td class="paramname">options</td><td>How to filter the lower mips. Null (or MipGenerationOptions.Default) is the historical box filter. With any other options the top mip is left as it is whenever no format conversion is needed, so it is never recompressed.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a11bf7b76316fabea0f2254c7ec7e78fc" name="a11bf7b76316fabea0f2254c7ec7e78fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11bf7b76316fabea0f2254c7ec7e78fc">&#9670;&#160;</a></span>HasCompleteMipChain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Textures.Image.HasCompleteMipChain </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>True when this image has a complete mip chain: more than one level, each half the size of the one above (never below 1), ending at 1x1. This is the shape correctMips produces, and the shape Unreal.Classes.Texture2D.Replace accepts when asked to use a supplied chain. The pixel format of the levels does not matter. </p>
+
+</div>
+</div>
+<a id="a8e0aa789b527e84be7223de7cef3ad19" name="a8e0aa789b527e84be7223de7cef3ad19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e0aa789b527e84be7223de7cef3ad19">&#9670;&#160;</a></span>ConvertMipsTo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LegendaryExplorerCore.Textures.Image.ConvertMipsTo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a></td>          <td class="paramname"><span class="paramname"><em>dstFormat</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>dxt1HasAlpha</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">byte</td>          <td class="paramname"><span class="paramname"><em>dxt1Threshold</em></span><span class="paramdefsep"> = </span><span class="paramdefval">128</span>&#160;)</td>
         </tr>
       </table>
@@ -602,6 +688,16 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Converts every mip of this image to <em>dstFormat</em>  without regenerating any of them: each level keeps its own pixels, so a chain that was authored level by level (rather than derived from the top mip) survives. Levels already in the target format are left untouched. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dstFormat</td><td>The format to convert every level to.</td></tr>
+    <tr><td class="paramname">dxt1HasAlpha</td><td>Whether a DXT1 target should keep 1-bit alpha.</td></tr>
+    <tr><td class="paramname">dxt1Threshold</td><td>Alpha cut-off for DXT1 1-bit alpha.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -751,6 +847,83 @@ Properties</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html">Image</a> with the specified pixel format</dd></dl>
+
+</div>
+</div>
+<a id="a61bef653418f28c03b33d8217e23dd2e" name="a61bef653418f28c03b33d8217e23dd2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61bef653418f28c03b33d8217e23dd2e">&#9670;&#160;</a></span>LoadFromFileWithOverrides()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a6f96dcf24b4f938516b3a4b86b9b8876">Image</a> LegendaryExplorerCore.Textures.Image.LoadFromFileWithOverrides </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>filename</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a></td>          <td class="paramname"><span class="paramname"><em>targetFormat</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a4c580cf3117f791736a04fe66d019dd5">TextureLoadOverrides</a></td>          <td class="paramname"><span class="paramname"><em>overrides</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Opt-in loading for packed texture data; the original LoadFromFile path is unchanged. </p>
+
+</div>
+</div>
+<a id="a885aafab3dc7080d5639d6be004bb068" name="a885aafab3dc7080d5639d6be004bb068"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a885aafab3dc7080d5639d6be004bb068">&#9670;&#160;</a></span>LoadFromFileMemoryWithOverrides()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a6f96dcf24b4f938516b3a4b86b9b8876">Image</a> LegendaryExplorerCore.Textures.Image.LoadFromFileMemoryWithOverrides </td>
+          <td>(</td>
+          <td class="paramtype">byte[]</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>imageType</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a></td>          <td class="paramname"><span class="paramname"><em>targetFormat</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a4c580cf3117f791736a04fe66d019dd5">TextureLoadOverrides</a></td>          <td class="paramname"><span class="paramname"><em>overrides</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Opt-in memory loading. <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html">Image</a> types: 1 DDS, 2 WIC, 3 TGA. </p>
 
 </div>
 </div>
@@ -994,6 +1167,7 @@ Properties</h2></td></tr>
 <li>LegendaryExplorer/LegendaryExplorerCore/Textures/<a class="el" href="_image_8cs.html">Image.cs</a></li>
 <li>LegendaryExplorer/LegendaryExplorerCore/Textures/<a class="el" href="_image_b_m_p_8cs.html">ImageBMP.cs</a></li>
 <li>LegendaryExplorer/LegendaryExplorerCore/Textures/<a class="el" href="_image_d_d_s_8cs.html">ImageDDS.cs</a></li>
+<li>LegendaryExplorer/LegendaryExplorerCore/Textures/<a class="el" href="_image_8_load_overrides_8cs.html">Image.LoadOverrides.cs</a></li>
 <li>LegendaryExplorer/LegendaryExplorerCore/Textures/<a class="el" href="_image_t_g_a_8cs.html">ImageTGA.cs</a></li>
 </ul>
 </div><!-- contents -->

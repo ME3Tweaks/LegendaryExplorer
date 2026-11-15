@@ -352,6 +352,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.ObjectInfo.LE1ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e1_object_info.html", null ],
       [ "LegendaryExplorerCore.Unreal.ObjectInfo.LE2ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e2_object_info.html", null ],
       [ "LegendaryExplorerCore.Unreal.ObjectInfo.LE3ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_object_info.html", null ],
+      [ "LegendaryExplorerCore.Unreal.ObjectInfo.LMPObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_m_p_object_info.html", null ],
       [ "LegendaryExplorerCore.Unreal.ObjectInfo.ME1ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_object_info.html", null ],
       [ "LegendaryExplorerCore.Unreal.ObjectInfo.ME2ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_object_info.html", null ],
       [ "LegendaryExplorerCore.Unreal.ObjectInfo.ME3ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_object_info.html", null ],
@@ -361,17 +362,21 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.GlobalUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.GLTF", "class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.GPUSkinVertex", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.GraphAnalysis", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_graph_analysis.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.GuidIndexPair", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair.html", null ],
+    [ "LegendaryExplorerCore.Textures.GX2Tiling", "class_legendary_explorer_core_1_1_textures_1_1_g_x2_tiling.html", null ],
     [ "LegendaryExplorerCore.Unreal.DLCPackage.HeaderStruct", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_header_struct.html", null ],
     [ "LegendaryExplorerCore.Save.HeadMorph", "class_legendary_explorer_core_1_1_save_1_1_head_morph.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.Heap&lt; T &gt;", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_heap-1-g.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.HeapHelper", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_heap_helper.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.HeapSort&lt; T &gt;", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_heap_sort-1-g.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseBankParsed.HIRCObject", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed_1_1_h_i_r_c_object.html", [
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseBankParsed.Bus", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed_1_1_bus.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseBankParsed.Event", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed_1_1_event.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseBankParsed.EventAction", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed_1_1_event_action.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseBankParsed.SoundSFXVoice", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed_1_1_sound_s_f_x_voice.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.Shaders.HLSLDecompiler", "class_legendary_explorer_core_1_1_shaders_1_1_h_l_s_l_decompiler.html", null ],
     [ "LegendaryExplorerCore.TLK.ME1.HuffmanCompression", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_huffman_compression.html", null ],
     [ "LegendaryExplorerCore.TLK.ME2ME3.HuffmanCompression", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_huffman_compression.html", null ],
     [ "LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase.HuffmanNode", "struct_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base_1_1_huffman_node.html", null ],
@@ -524,6 +529,7 @@ var hierarchy =
     [ "IDisposable", null, [
       [ "LegendaryExplorerCore.DebugTools.DebugStopWatch", "class_legendary_explorer_core_1_1_debug_tools_1_1_debug_stop_watch.html", null ],
       [ "LegendaryExplorerCore.Gammtek.IO.IBuffer", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_buffer.html", null ],
+      [ "LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html", null ],
       [ "LegendaryExplorerCore.Packages.IMEPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html", [
         [ "LegendaryExplorerCore.Packages.ILazyLoadPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_lazy_load_package.html", [
           [ "LegendaryExplorerCore.Packages.MEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html", null ]
@@ -533,8 +539,10 @@ var hierarchy =
       ] ],
       [ "LegendaryExplorerCore.Packages.MEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html", null ],
       [ "LegendaryExplorerCore.Packages.PackageCache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html", [
+        [ "LegendaryExplorerCore.Packages.SFARPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_s_f_a_r_package_cache.html", null ],
         [ "LegendaryExplorerCore.Packages.TieredPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html", null ]
       ] ],
+      [ "LegendaryExplorerCore.Shaders.LE3TextureMetadataReader", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_texture_metadata_reader.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Compiling.BytecodeWriter.SkipPlaceholder", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer_1_1_skip_placeholder.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.FileLib", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html", null ]
     ] ],
@@ -733,6 +741,9 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.IPriorityQueueNode", "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue_node.html", [
       [ "LegendaryExplorerCore.Gammtek.Collections.Generic.PriorityQueueNode", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_priority_queue_node.html", null ]
     ] ],
+    [ "IReadOnlyList", null, [
+      [ "LegendaryExplorerCore.Packages.NetIndexing.ObjectObservations", "struct_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_object_observations.html", null ]
+    ] ],
     [ "LegendaryExplorerCore.Sound.ISACT.ISACTBank", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank.html", null ],
     [ "LegendaryExplorerCore.Sound.ISACT.ISACTBankPair", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html", null ],
     [ "LegendaryExplorerCore.Sound.ISACT.ISACTHelper", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html", null ],
@@ -743,6 +754,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.PackagelessSerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_packageless_serializing_container.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.PackagelessWithObjectsSerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_packageless_with_objects_serializing_container.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.Packages.NetIndexing.Issues", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_issues.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.IStringMatcher", "interface_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_i_string_matcher.html", [
       [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.CombinedStringMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_combined_string_matcher.html", null ],
       [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.DefaultStringMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_default_string_matcher.html", null ],
@@ -802,6 +814,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.Collections.ObjectModel.ObservableDictionary&lt; TKey, TValue &gt;.KeyedDictionaryEntryCollection&lt; TKey1 &gt;", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_object_model_1_1_observable_dictiob61d3187c9b7ecf11b45feb38d70aec2.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Utilities.Keywords", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_keywords.html", null ],
     [ "LegendaryExplorerCore.Kismet.KismetHelper", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.KnownPermutationEnvironment", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_known_permutation_environment.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.LabelTableEntry", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_label_table_entry.html", null ],
     [ "LegendaryExplorerCore.GameFilesystem.LE1Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e1_directory.html", null ],
     [ "LegendaryExplorerCore.TLK.LE1TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html", null ],
@@ -810,6 +823,13 @@ var hierarchy =
     [ "LegendaryExplorerCore.TLK.LE2TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e2_talk_files.html", null ],
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.LE2UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e2_unreal_object_info.html", null ],
     [ "LegendaryExplorerCore.GameFilesystem.LE3Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e3_directory.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialResourceBuilder", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_resource_builder.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialUsageAdvisor", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_usage_advisor.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialUsageScanner", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_usage_scanner.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3ShaderParameterBinder", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_shader_parameter_binder.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3ShaderSourceCrc", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_shader_source_crc.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3ShaderSourceSnapshot", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_shader_source_snapshot.html", null ],
     [ "LegendaryExplorerCore.TLK.LE3TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e3_talk_files.html", null ],
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.LE3UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html", null ],
     [ "LegendaryExplorerCore.Packages.LECLData", "class_legendary_explorer_core_1_1_packages_1_1_l_e_c_l_data.html", null ],
@@ -837,6 +857,8 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.LightmassPrimitiveSettings", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_lightmass_primitive_settings.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.LinearColor", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_linear_color.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Parsing.LineLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup.html", null ],
+    [ "LegendaryExplorerCore.Packages.NetIndexing.LinkerInventory", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_linker_inventory.html", null ],
+    [ "LegendaryExplorerCore.Packages.NetIndexing.LinkerView", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_linker_view.html", null ],
     [ "List", null, [
       [ "LegendaryExplorerCore.Helpers.ListInitHelper.InitCollection< T >", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper_1_1_init_collection-1-g.html", null ],
       [ "LegendaryExplorerCore.Unreal.PropertyCollection", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html", null ]
@@ -846,6 +868,9 @@ var hierarchy =
     ] ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic.ListExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_list_extensions.html", null ],
     [ "LegendaryExplorerCore.Helpers.ListInitHelper", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper.html", null ],
+    [ "LegendaryExplorerCore.GameFilesystem.LMPDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_m_p_directory.html", null ],
+    [ "LegendaryExplorerCore.TLK.LMPTalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_m_p_talk_files.html", null ],
+    [ "LegendaryExplorerCore.Unreal.ObjectInfo.LMPUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_m_p_unreal_object_info.html", null ],
     [ "LegendaryExplorerCore.Save.LocalProfile", "class_legendary_explorer_core_1_1_save_1_1_local_profile.html", null ],
     [ "LegendaryExplorerCore.Save.LocalProfileLE1", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.LogMessage", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_log_message.html", [
@@ -903,9 +928,11 @@ var hierarchy =
     ] ],
     [ "LegendaryExplorerCore.SharpDX.MathUtil", "class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util.html", null ],
     [ "LegendaryExplorerCore.Matinee.MatineeHelper", "class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html", null ],
+    [ "LegendaryExplorerCore.GameFilesystem.ME1Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e1_directory.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ME1MaterialUniformExpressionsElement", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_m_e1_material_uniform_expressions_element.html", null ],
     [ "LegendaryExplorerCore.TLK.ME1TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_talk_files.html", null ],
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.ME1UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_unreal_object_info.html", null ],
+    [ "LegendaryExplorerCore.GameFilesystem.ME2Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e2_directory.html", null ],
     [ "LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html", [
       [ "LegendaryExplorerCore.TLK.ME2ME3.ME2ME3LazyTLK", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html", null ],
       [ "LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_talk_file.html", null ]
@@ -913,6 +940,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.TLK.ME2TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_talk_files.html", null ],
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.ME2UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_unreal_object_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.ME3ConditionalsCompiler", "class_legendary_explorer_core_1_1_unreal_1_1_m_e3_conditionals_compiler.html", null ],
+    [ "LegendaryExplorerCore.GameFilesystem.ME3Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e3_directory.html", null ],
     [ "LegendaryExplorerCore.TLK.ME3TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html", null ],
     [ "LegendaryExplorerCore.Misc.ME3Tweaks.ME3TweaksBackups", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_m_e3_tweaks_backups.html", null ],
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.ME3UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html", null ],
@@ -934,6 +962,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Helpers.MeshHelper", "class_legendary_explorer_core_1_1_helpers_1_1_mesh_helper.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MeshShaderMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_mesh_shader_map.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.MessageLog", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html", null ],
+    [ "LegendaryExplorerCore.Textures.MipGenerationOptions", "class_legendary_explorer_core_1_1_textures_1_1_mip_generation_options.html", null ],
     [ "LegendaryExplorerCore.Textures.MipMap", "class_legendary_explorer_core_1_1_textures_1_1_mip_map.html", null ],
     [ "LegendaryExplorerCore.Helpers.MiscExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_misc_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ModelElement", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model_element.html", null ],
@@ -947,8 +976,10 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MorphTarget.MorphVertex", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_morph_target_1_1_morph_vertex.html", null ],
     [ "LegendaryExplorerCore.GameFilesystem.MountFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.NameEntryGuidPair", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_name_entry_guid_pair.html", null ],
+    [ "LegendaryExplorerCore.Packages.NetIndexing.NetIndexKeys", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_net_index_keys.html", null ],
     [ "LegendaryExplorerCore.Coalesced.Huffman.Node", "class_legendary_explorer_core_1_1_coalesced_1_1_huffman_1_1_node.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Language.Util.NodeUtils", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_util_1_1_node_utils.html", null ],
+    [ "LegendaryExplorerCore.Helpers.NormalCompressionHelper", "class_legendary_explorer_core_1_1_helpers_1_1_normal_compression_helper.html", null ],
     [ "Object", null, [
       [ "LegendaryExplorerCore.Gammtek.IO.MutableByte", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html", null ]
     ] ],
@@ -1091,6 +1122,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.PackagelessWithObjectsSerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_packageless_with_objects_serializing_container.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Packages.MEPackage.PackageLoadParameters", "struct_legendary_explorer_core_1_1_packages_1_1_m_e_package_1_1_package_load_parameters.html", null ],
+    [ "LegendaryExplorerCore.Packages.NetIndexing.PackageNetScan", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_package_net_scan.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageResynthesizer", "class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageSaver", "class_legendary_explorer_core_1_1_packages_1_1_package_saver.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageUpdate", "struct_legendary_explorer_core_1_1_packages_1_1_package_update.html", null ],
@@ -1165,7 +1197,8 @@ var hierarchy =
       [ "System.Text.RegularExpressions.Generated.WhitespaceRegex_0", "class_system_1_1_text_1_1_regular_expressions_1_1_generated_1_1_whitespace_regex__0.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Packages.CloningImportingAndRelinking.Relinker", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html", null ],
-    [ "LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.ResolvedMaterialCompilationInput", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_resolved_material_compilation_input.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3ShaderSourceCrc.Result", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_shader_source_crc_1_1_result.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.RigidSkinVertex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_rigid_skin_vertex.html", null ],
     [ "LegendaryExplorerCore.Save.SaveRecordSerializable", "class_legendary_explorer_core_1_1_save_1_1_save_record_serializable.html", [
       [ "LegendaryExplorerCore.Save.BonusTalentSaveRecord", "class_legendary_explorer_core_1_1_save_1_1_bonus_talent_save_record.html", null ],
@@ -1323,8 +1356,15 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.UnparsedShader", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_unparsed_shader.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.VisualizeTexturePixelShader", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_visualize_texture_pixel_shader.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.ShaderCacheFragmentResult", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_shader_cache_fragment_result.html", null ],
     [ "LegendaryExplorerCore.Shaders.ShaderCacheManipulator", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.ShaderCompilationResult", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_shader_compilation_result.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.ShaderCompileJob", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_shader_compile_job.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.ShaderCompilePlan", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_shader_compile_plan.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.ShaderConstructionResult", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_shader_construction_result.html", null ],
     [ "LegendaryExplorerCore.Shaders.ShaderInfo", "class_legendary_explorer_core_1_1_shaders_1_1_shader_info.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.ShaderMapFragmentResult", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_shader_map_fragment_result.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.ShaderPermutationComparison", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_shader_permutation_comparison.html", null ],
     [ "LegendaryExplorerCore.Shaders.ShaderReader", "class_legendary_explorer_core_1_1_shaders_1_1_shader_reader.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ShaderReference", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_reference.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.SingleExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html", null ],
@@ -1346,6 +1386,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.StatementList", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_statement_list.html", null ],
     [ "LegendaryExplorerCore.UDK.StaticLightingImporter", "class_legendary_explorer_core_1_1_u_d_k_1_1_static_lighting_importer.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticLODModel", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_l_o_d_model.html", null ],
+    [ "LegendaryExplorerCore.UDK.StaticMeshComponentLightingData", "class_legendary_explorer_core_1_1_u_d_k_1_1_static_mesh_component_lighting_data.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticMeshComponentLODInfo", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_component_l_o_d_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticMeshElement", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_element.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticMeshVertexBuffer.StaticMeshFullVertex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_vertex_buffer_1_1_static_mesh_full_vertex.html", null ],
@@ -1383,14 +1424,18 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.Classes.Texture2D", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html", null ],
     [ "LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.UTexture2D.Texture2DMipMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_texture2_d_1_1_texture2_d_mip_map.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.TextureCompilationMetadata", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_texture_compilation_metadata.html", null ],
     [ "LegendaryExplorerCore.Unreal.TextureCompression", "class_legendary_explorer_core_1_1_unreal_1_1_texture_compression.html", null ],
+    [ "LegendaryExplorerCore.Textures.TextureCopyWorkItem", "class_legendary_explorer_core_1_1_textures_1_1_texture_copy_work_item.html", null ],
     [ "LegendaryExplorerCore.Textures.TextureCRC", "class_legendary_explorer_core_1_1_textures_1_1_texture_c_r_c.html", null ],
+    [ "LegendaryExplorerCore.Textures.TextureEncodeRequest", "class_legendary_explorer_core_1_1_textures_1_1_texture_encode_request.html", null ],
     [ "LegendaryExplorerCore.Textures.TextureLODInfo", "class_legendary_explorer_core_1_1_textures_1_1_texture_l_o_d_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialResource.TextureLookup", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource_1_1_texture_lookup.html", null ],
     [ "LegendaryExplorerCore.Textures.Studio.TextureMap", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map.html", null ],
     [ "LegendaryExplorerCore.Textures.Studio.MEMTextureMap.TextureMapEntry", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_m_e_m_texture_map_1_1_texture_map_entry.html", null ],
     [ "LegendaryExplorerCore.Textures.Studio.TextureMapGenerator", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_generator.html", null ],
     [ "LegendaryExplorerCore.Textures.Studio.TextureMapPackageEntry", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html", null ],
+    [ "LegendaryExplorerCore.Textures.TextureReplaceCallbacks", "class_legendary_explorer_core_1_1_textures_1_1_texture_replace_callbacks.html", null ],
     [ "LegendaryExplorerCore.Textures.TFCCompactor", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor.html", null ],
     [ "LegendaryExplorerCore.Textures.TFCCompactorInfoPackage", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html", null ],
     [ "LegendaryExplorerCore.Textures.TFCInfo", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_info.html", null ],
@@ -1404,12 +1449,16 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.TOCBinFile.TOCHashTableEntry", "class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file_1_1_t_o_c_hash_table_entry.html", null ],
     [ "LegendaryExplorerCore.Unreal.ME3ConditionalsCompiler.Compiler.Token", "struct_legendary_explorer_core_1_1_unreal_1_1_m_e3_conditionals_compiler_1_1_compiler_1_1_token.html", null ],
     [ "LegendaryExplorerCore.Unreal.Token", "class_legendary_explorer_core_1_1_unreal_1_1_token.html", null ],
+    [ "LegendaryExplorerCore.Packages.PackageCache.TrackedCacheInfo", "class_legendary_explorer_core_1_1_packages_1_1_package_cache_1_1_tracked_cache_info.html", null ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.TranslationResult", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.TUniformParameter&lt; TParam &gt;", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_uniform_parameter-1-g.html", null ],
     [ "LegendaryExplorerCore.Helpers.TypeExtension", "class_legendary_explorer_core_1_1_helpers_1_1_type_extension.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.Reflection.TypeExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.TypeSwitch", "class_legendary_explorer_core_1_1_gammtek_1_1_type_switch.html", null ],
     [ "LegendaryExplorerCore.UDK.UDKAssetInfo", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info.html", null ],
+    [ "LegendaryExplorerCore.GameFilesystem.UDKDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html", null ],
     [ "LegendaryExplorerCore.UDK.UDKMaterialPort", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_material_port.html", null ],
+    [ "LegendaryExplorerCore.Helpers.UdkTextureEncodingPolicy", "class_legendary_explorer_core_1_1_helpers_1_1_udk_texture_encoding_policy.html", null ],
     [ "LegendaryExplorerCore.Unreal.UDKUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_u_d_k_unreal_object_info.html", null ],
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.UE3FunctionReader", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_u_e3_function_reader.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.UInt16Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int16_extensions.html", null ],
@@ -1417,7 +1466,9 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.Extensions.UInt64Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.UIntPtrExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int_ptr_extensions.html", null ],
     [ "UMapBase", null, [
-      [ "LegendaryExplorerCore.Unreal.Collections.UMap< TKey, TValue >", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_map-2-g.html", null ],
+      [ "LegendaryExplorerCore.Unreal.Collections.UMap< TKey, TValue >", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_map-2-g.html", [
+        [ "LegendaryExplorerCore.Unreal.Collections.UReverseMap< TKey, TValue >", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_reverse_map-2-g.html", null ]
+      ] ],
       [ "LegendaryExplorerCore.Unreal.Collections.UMultiMap< TKey, TValue >", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_multi_map-2-g.html", null ]
     ] ],
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.UnBytecodeOwner", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_un_bytecode_owner.html", [
@@ -1426,6 +1477,7 @@ var hierarchy =
       ] ],
       [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.UnFunction", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_un_function.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.Shaders.LE3MaterialShaderCompiler.UniformExpressionComparison", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_uniform_expression_comparison.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.UniformExpressionRenderContext", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_uniform_expression_render_context.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.kDOPNode.Union", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1k_d_o_p_node_1_1_union.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.UnrealExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_unreal_extensions.html", null ],
@@ -1450,6 +1502,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Sound.Wwise.WwiseHelper", "class_legendary_explorer_core_1_1_sound_1_1_wwise_1_1_wwise_helper.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStateManagement", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html", null ],
     [ "LegendaryExplorerCore.Audio.WwiseVersions", "class_legendary_explorer_core_1_1_audio_1_1_wwise_versions.html", null ],
+    [ "LegendaryExplorerCore.Textures.Xbox360Tiling", "class_legendary_explorer_core_1_1_textures_1_1_xbox360_tiling.html", null ],
     [ "LegendaryExplorerCore.Gammtek.IO.Converters.ZigZagConverter", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_converters_1_1_zig_zag_converter.html", null ],
     [ "LegendaryExplorerCore.Compression.Zlib", "class_legendary_explorer_core_1_1_compression_1_1_zlib.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ZoneProperties", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_zone_properties.html", null ]

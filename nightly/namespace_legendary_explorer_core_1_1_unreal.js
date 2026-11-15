@@ -6477,6 +6477,10 @@ var namespace_legendary_explorer_core_1_1_unreal =
       [ "ConeCheck_Right", "namespace_legendary_explorer_core_1_1_unreal.html#ac2e3df70894f2a8f30cdfcfa4fd3222aa0eeca20ee27fa6ec971a4c30c7e9c605", null ],
       [ "ConeCheck_Left", "namespace_legendary_explorer_core_1_1_unreal.html#ac2e3df70894f2a8f30cdfcfa4fd3222aa27be759d39c4a84d3c29dcf90f022c5c", null ]
     ] ],
+    [ "PropertySourceKind", "namespace_legendary_explorer_core_1_1_unreal.html#a7f0be1d7ff66753d888c33bc52918eb8", [
+      [ "Archetype", "namespace_legendary_explorer_core_1_1_unreal.html#a7f0be1d7ff66753d888c33bc52918eb8a15f752f90268a1a39fe449871b75267c", null ],
+      [ "ClassDefault", "namespace_legendary_explorer_core_1_1_unreal.html#a7f0be1d7ff66753d888c33bc52918eb8a3f18fdfd91efbd8012758f3cf52dedae", null ]
+    ] ],
     [ "PropertyType", "namespace_legendary_explorer_core_1_1_unreal.html#a8e1bae5c205d780760add5aecc656a40", [
       [ "Unknown", "namespace_legendary_explorer_core_1_1_unreal.html#a8e1bae5c205d780760add5aecc656a40a88183b946cc5f0e8c96b2e66e1c74a7e", null ],
       [ "None", "namespace_legendary_explorer_core_1_1_unreal.html#a8e1bae5c205d780760add5aecc656a40a6adf97f83acf6453d4a6a4b1070f3754", null ],
@@ -6515,5 +6519,6 @@ var namespace_legendary_explorer_core_1_1_unreal =
       [ "compressedLZMA", "namespace_legendary_explorer_core_1_1_unreal.html#a935c337350885551f2a7e6d262b57a6bac2252377ba5818a8b654097d06c362af", null ],
       [ "compressedOodle", "namespace_legendary_explorer_core_1_1_unreal.html#a935c337350885551f2a7e6d262b57a6bab4ab1a547f4906881e9a3bdfb153dd2d", null ],
       [ "unused", "namespace_legendary_explorer_core_1_1_unreal.html#a935c337350885551f2a7e6d262b57a6bafd94c6a26d6b6571e8d9398446227ae8", null ]
-    ] ]
+    ] ],
+    [ "PropertySource", "namespace_legendary_explorer_core_1_1_unreal.html#ad7941418f2eff374cbd43472fd685448", null ]
 ];

@@ -133,12 +133,18 @@ Properties</h2></td></tr>
 <tr class="memdesc:a5ccb12f6a8cfe3f4d1ff2968e2a0cb90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Where data is staged during compaction.  <br /></td></tr>
 <tr class="memitem:ac9b1df34137bbd378860ac31fd001825" id="r_ac9b1df34137bbd378860ac31fd001825"><td class="memItemLeft">string&#160;</td><td class="memItemRight"><a class="el" href="#ac9b1df34137bbd378860ac31fd001825">TFCType</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:ac9b1df34137bbd378860ac31fd001825"><td class="mdescLeft">&#160;</td><td class="mdescRight">TFC type, such as '<a class="el" href="namespace_legendary_explorer_core_1_1_textures.html">Textures</a>', 'Lighting', etc. Should probably always just use <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html">Textures</a>.  <br /></td></tr>
+<tr class="memitem:ae215fae1582e1c7c03f9f1b4f0eec908" id="r_ae215fae1582e1c7c03f9f1b4f0eec908"><td class="memItemLeft">bool?&#160;</td><td class="memItemRight"><a class="el" href="#ae215fae1582e1c7c03f9f1b4f0eec908">RootTexturesOnly</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:ae215fae1582e1c7c03f9f1b4f0eec908"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opt-in filter to split candidate textures by root position: null (default) compacts everything matching TFCsToCompact with no further filtering (the historical behavior). Set true to only compact root textures (idxLink == 0 - lightmaps are always root), or false to only compact non-root textures. Used by callers that build separate Lighting/Textures TFCs from the same source pool.  <br /></td></tr>
 <tr class="memitem:a49a2df9d777b423c435dc1db557eeba3" id="r_a49a2df9d777b423c435dc1db557eeba3"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a49a2df9d777b423c435dc1db557eeba3">UseIndexing</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:a49a2df9d777b423c435dc1db557eeba3"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the TFC should use indexing. This is true for LE, false for OT.  <br /></td></tr>
+<tr class="memitem:ad510723ff69f0902bead2f0dcda18146" id="r_ad510723ff69f0902bead2f0dcda18146"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ad510723ff69f0902bead2f0dcda18146">IncludeNumberedSourceTFCs</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:ad510723ff69f0902bead2f0dcda18146"><td class="mdescLeft">&#160;</td><td class="mdescRight">Include numbered siblings of the selected source TFCs (both historical naming styles).  <br /></td></tr>
 <tr class="memitem:a94d3592d3f4ef036ac3a9842f52f2d54" id="r_a94d3592d3f4ef036ac3a9842f52f2d54"><td class="memItemLeft"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td><td class="memItemRight"><a class="el" href="#a94d3592d3f4ef036ac3a9842f52f2d54">Game</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:a94d3592d3f4ef036ac3a9842f52f2d54"><td class="mdescLeft">&#160;</td><td class="mdescRight">What game this compaction is building a TFC for.  <br /></td></tr>
 <tr class="memitem:ae38e3a284a6b12306a7d17a992ab0b1b" id="r_ae38e3a284a6b12306a7d17a992ab0b1b"><td class="memItemLeft">List&lt; string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ae38e3a284a6b12306a7d17a992ab0b1b">TFCsToCompact</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:ae38e3a284a6b12306a7d17a992ab0b1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of TFC names to pull from. Should not include extension and should not include basegame or dependent-dlc textures.  <br /></td></tr>
+<tr class="memdesc:ae38e3a284a6b12306a7d17a992ab0b1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of TFC names to pull from. Should not include extension and should not include basegame or dependent-dlc textures. Numbered siblings are included when IncludeNumberedSourceTFCs is enabled.  <br /></td></tr>
+<tr class="memitem:a8175eaff4f3090c4b4a849b5f052a828" id="r_a8175eaff4f3090c4b4a849b5f052a828"><td class="memItemLeft">List&lt; string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a8175eaff4f3090c4b4a849b5f052a828">AdditionalTFCs</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a8175eaff4f3090c4b4a849b5f052a828"><td class="mdescLeft">&#160;</td><td class="mdescRight">Full paths of TFCs that are not in BaseCompactionPath or the game at GamePath, but that textures being compacted keep their data in. This lets TFCs be read where they are, such as in another game's installation, rather than copied into the folder being compacted first. Matched by file name; TFCs in BaseCompactionPath take precedence.  <br /></td></tr>
 </table>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
 <a id="ae5b888a297fca5ab904a317dd1932ed0" name="ae5b888a297fca5ab904a317dd1932ed0"></a>
@@ -278,6 +284,30 @@ Properties</h2></td></tr>
 
 </div>
 </div>
+<a id="ae215fae1582e1c7c03f9f1b4f0eec908" name="ae215fae1582e1c7c03f9f1b4f0eec908"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae215fae1582e1c7c03f9f1b4f0eec908">&#9670;&#160;</a></span>RootTexturesOnly</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool? LegendaryExplorerCore.Textures.TFCCompactorInfoPackage.RootTexturesOnly</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span><span class="mlabel set">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Opt-in filter to split candidate textures by root position: null (default) compacts everything matching TFCsToCompact with no further filtering (the historical behavior). Set true to only compact root textures (idxLink == 0 - lightmaps are always root), or false to only compact non-root textures. Used by callers that build separate Lighting/Textures TFCs from the same source pool. </p>
+
+</div>
+</div>
 <a id="a49a2df9d777b423c435dc1db557eeba3" name="a49a2df9d777b423c435dc1db557eeba3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a49a2df9d777b423c435dc1db557eeba3">&#9670;&#160;</a></span>UseIndexing</h2>
 
@@ -299,6 +329,30 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>If the TFC should use indexing. This is true for LE, false for OT. </p>
+
+</div>
+</div>
+<a id="ad510723ff69f0902bead2f0dcda18146" name="ad510723ff69f0902bead2f0dcda18146"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad510723ff69f0902bead2f0dcda18146">&#9670;&#160;</a></span>IncludeNumberedSourceTFCs</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Textures.TFCCompactorInfoPackage.IncludeNumberedSourceTFCs</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span><span class="mlabel set">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Include numbered siblings of the selected source TFCs (both historical naming styles). </p>
 
 </div>
 </div>
@@ -346,7 +400,31 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>List of TFC names to pull from. Should not include extension and should not include basegame or dependent-dlc textures. </p>
+<p>List of TFC names to pull from. Should not include extension and should not include basegame or dependent-dlc textures. Numbered siblings are included when IncludeNumberedSourceTFCs is enabled. </p>
+
+</div>
+</div>
+<a id="a8175eaff4f3090c4b4a849b5f052a828" name="a8175eaff4f3090c4b4a849b5f052a828"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8175eaff4f3090c4b4a849b5f052a828">&#9670;&#160;</a></span>AdditionalTFCs</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">List&lt;string&gt; LegendaryExplorerCore.Textures.TFCCompactorInfoPackage.AdditionalTFCs</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span><span class="mlabel set">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Full paths of TFCs that are not in BaseCompactionPath or the game at GamePath, but that textures being compacted keep their data in. This lets TFCs be read where they are, such as in another game's installation, rather than copied into the folder being compacted first. Matched by file name; TFCs in BaseCompactionPath take precedence. </p>
 
 </div>
 </div>

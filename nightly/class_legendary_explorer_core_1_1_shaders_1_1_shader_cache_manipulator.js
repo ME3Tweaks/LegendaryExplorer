@@ -1,12 +1,12 @@
 var class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator =
 [
-    [ "CompactSeekFreeShaderCaches", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a19a7171e5532528470960da47e7601d9", null ],
+    [ "CompactSeekFreeShaderCaches", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a0bc261898400b59e673f8397f4d4cc1b", null ],
     [ "GetAllShadersForMaterials", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#ad5696fb2b077399587a952a2567c684a", null ],
     [ "GetLocalShadersForMaterials", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aab10b82d914396069ecf9102ece4fb0f", null ],
     [ "GetRefShaders", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aa61bd8efd23268a4fd18910ad3c44eb3", null ],
     [ "GetLocalShaders", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aec366d0e43d02fd9844885d89a8ddf4a", null ],
-    [ "AddShadersToFile", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aa26b2c04b84ea1aecef479c10980a561", null ],
-    [ "GetBrokenMaterials", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a5a17a09610595137749ce899b1ca6fd7", null ],
+    [ "AddShadersToFile", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a5d67838ffb990a4988aad0e8ee582b6f", null ],
+    [ "GetBrokenMaterials", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#ae2f5017a5c85cebbbb048a27dc8bb19a", null ],
     [ "IsMaterialBroken", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a7fa300eb50e77a36ae1b99518181f12b", null ],
     [ "CreateShaderCache", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#ae7bf39375cebc6d96a5bfac0b8a826ee", null ],
     [ "CopyRefShadersToLocal", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#adc78f414092cf49b940f3336a43abce6", null ],

@@ -129,6 +129,8 @@ Inheritance diagram for LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStrea
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af94937cc0809e10e8ef6e6cdd16c1d4a" id="r_af94937cc0809e10e8ef6e6cdd16c1d4a"><td class="memItemLeft">string&#160;</td><td class="memItemRight"><a class="el" href="#af94937cc0809e10e8ef6e6cdd16c1d4a">GetPathToAFC</a> (string forcedFilename=null)</td></tr>
 <tr class="memitem:a6fb93980412bd004ed602d8eeca82dab" id="r_a6fb93980412bd004ed602d8eeca82dab"><td class="memItemLeft"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_audio_info.html">AudioInfo</a>&#160;</td><td class="memItemRight"><a class="el" href="#a6fb93980412bd004ed602d8eeca82dab">GetAudioInfo</a> ()</td></tr>
+<tr class="memitem:a405bfbc8cdd3bceacb7f2bcb54de8959" id="r_a405bfbc8cdd3bceacb7f2bcb54de8959"><td class="memItemLeft"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_audio_info.html">AudioInfo</a>&#160;</td><td class="memItemRight"><a class="el" href="#a405bfbc8cdd3bceacb7f2bcb54de8959">GetAudioInfo</a> (Stream dataStream)</td></tr>
+<tr class="memdesc:a405bfbc8cdd3bceacb7f2bcb54de8959"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses audio info from an already-open stream of this <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html">WwiseStream</a>'s raw WEM/RIFF data, bypassing the normal AFC auto-discovery in GetPathToAFC - useful when the caller already resolved/read the data itself (e.g. via an explicit AFC path override).  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary"><td colspan="2">Public Member Functions inherited from <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">LegendaryExplorerCore.Unreal.BinaryConverters.ObjectBinary</a></td></tr>
 <tr class="memitem:a45ec2f5055533833b0732be2eb564c47 pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary" id="r_a45ec2f5055533833b0732be2eb564c47"><td class="memItemLeft">List&lt; int &gt;&#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a45ec2f5055533833b0732be2eb564c47">GetUIndexes</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="memdesc:a45ec2f5055533833b0732be2eb564c47 pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a list of entry references made in this <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a>.  <br /></td></tr>
@@ -204,7 +206,7 @@ Properties</h2></td></tr>
 </div>
 </div>
 <a id="a6fb93980412bd004ed602d8eeca82dab" name="a6fb93980412bd004ed602d8eeca82dab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6fb93980412bd004ed602d8eeca82dab">&#9670;&#160;</a></span>GetAudioInfo()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fb93980412bd004ed602d8eeca82dab">&#9670;&#160;</a></span>GetAudioInfo() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -225,6 +227,33 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a405bfbc8cdd3bceacb7f2bcb54de8959" name="a405bfbc8cdd3bceacb7f2bcb54de8959"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a405bfbc8cdd3bceacb7f2bcb54de8959">&#9670;&#160;</a></span>GetAudioInfo() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_audio_info.html">AudioInfo</a> LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream.GetAudioInfo </td>
+          <td>(</td>
+          <td class="paramtype">Stream</td>          <td class="paramname"><span class="paramname"><em>dataStream</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Parses audio info from an already-open stream of this <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html">WwiseStream</a>'s raw WEM/RIFF data, bypassing the normal AFC auto-discovery in GetPathToAFC - useful when the caller already resolved/read the data itself (e.g. via an explicit AFC path override). </p>
 
 </div>
 </div>

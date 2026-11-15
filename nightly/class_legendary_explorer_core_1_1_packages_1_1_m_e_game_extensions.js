@@ -1,6 +1,7 @@
 var class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions =
 [
     [ "IsLEGame", "class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html#aa6ef1f2b21c8a22d62607a276e3eb68c", null ],
+    [ "IsLEGame3", "class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html#a329a1fd6bed143425b7535156bd82548", null ],
     [ "IsOTGame", "class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html#aacda14424a09b3af8d353d06e49bc4f5", null ],
     [ "IsMEGame", "class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html#a6d297d321116a06223c5f233efae44eb", null ],
     [ "IsGame1", "class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html#a9ac79abd19c41f2a75c6f6c26c9e9dc1", null ],

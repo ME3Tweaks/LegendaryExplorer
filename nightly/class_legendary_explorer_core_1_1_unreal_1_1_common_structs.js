@@ -13,6 +13,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_common_structs =
     [ "RotatorProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a97e0bca16e34b3edc6ea4e315add8ccf", null ],
     [ "RotatorProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a7af8c334c26bcb32b127b8cffb33ba6e", null ],
     [ "GetRotator", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a27363604a3974cf93183ccaa271ec045", null ],
+    [ "GetRotator", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a02a36057618a6b2f5fed7794185cda33", null ],
     [ "MatrixProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a77d576e940cb9138a4e4d835401cc803", null ],
     [ "GetMatrix", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a172e46d194abaef6b5aa765b1af8a6a2", null ],
     [ "GuidProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a7784366180126376175ecaa50a8e2d19", null ],
@@ -22,5 +23,6 @@ var class_legendary_explorer_core_1_1_unreal_1_1_common_structs =
     [ "ColorProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#af9f7c8bd4b948e89449f792ef4d5dd06", null ],
     [ "GetColor", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a6d6f4037cb2d64ee111e7faeaf3c8159", null ],
     [ "LinearColorProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#ac0381d74d8a686f57867451287e0eb83", null ],
-    [ "GetLinearColor", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a4b47a19f5742c6c75afb5c9d32d3eaf0", null ]
+    [ "GetLinearColor", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a4b47a19f5742c6c75afb5c9d32d3eaf0", null ],
+    [ "CylinderProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a3003d3e74cb01b4f1bc9285688ab58ed", null ]
 ];

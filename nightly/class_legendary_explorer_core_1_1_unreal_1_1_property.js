@@ -8,5 +8,6 @@ var class_legendary_explorer_core_1_1_unreal_1_1_property =
     [ "PropType", "class_legendary_explorer_core_1_1_unreal_1_1_property.html#ad716f1d6d5742d99bb9e19fb59d537dd", null ],
     [ "StaticArrayIndex", "class_legendary_explorer_core_1_1_unreal_1_1_property.html#a19dcb2cfcdb9c6230d492edcfcde8201", null ],
     [ "StartOffset", "class_legendary_explorer_core_1_1_unreal_1_1_property.html#a799de04a1d37293e49d9dc79d7af4d23", null ],
-    [ "Name", "class_legendary_explorer_core_1_1_unreal_1_1_property.html#af71e59036b9ff90609309d1fc4bfa0d0", null ]
+    [ "Name", "class_legendary_explorer_core_1_1_unreal_1_1_property.html#af71e59036b9ff90609309d1fc4bfa0d0", null ],
+    [ "InheritedFrom", "class_legendary_explorer_core_1_1_unreal_1_1_property.html#a8d6222e96139a16bb38ca0e448615083", null ]
 ];

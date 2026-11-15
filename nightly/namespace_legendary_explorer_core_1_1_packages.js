@@ -1,6 +1,7 @@
 var namespace_legendary_explorer_core_1_1_packages =
 [
     [ "CloningImportingAndRelinking", "namespace_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking.html", "namespace_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking" ],
+    [ "NetIndexing", "namespace_legendary_explorer_core_1_1_packages_1_1_net_indexing.html", "namespace_legendary_explorer_core_1_1_packages_1_1_net_indexing" ],
     [ "ClassInfo", "class_legendary_explorer_core_1_1_packages_1_1_class_info.html", "class_legendary_explorer_core_1_1_packages_1_1_class_info" ],
     [ "CompressionHelper", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper" ],
     [ "EntryTree", "class_legendary_explorer_core_1_1_packages_1_1_entry_tree.html", "class_legendary_explorer_core_1_1_packages_1_1_entry_tree" ],
@@ -26,6 +27,7 @@ var namespace_legendary_explorer_core_1_1_packages =
     [ "PackageUpdate", "struct_legendary_explorer_core_1_1_packages_1_1_package_update.html", "struct_legendary_explorer_core_1_1_packages_1_1_package_update" ],
     [ "PropertyInfo", "class_legendary_explorer_core_1_1_packages_1_1_property_info.html", "class_legendary_explorer_core_1_1_packages_1_1_property_info" ],
     [ "ReferenceTreeBase&lt; TSelf &gt;", "class_legendary_explorer_core_1_1_packages_1_1_reference_tree_base-1-g.html", "class_legendary_explorer_core_1_1_packages_1_1_reference_tree_base-1-g" ],
+    [ "SFARPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_s_f_a_r_package_cache.html", "class_legendary_explorer_core_1_1_packages_1_1_s_f_a_r_package_cache" ],
     [ "TieredPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache" ],
     [ "UDKPackage", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package" ],
     [ "UnrealPackageFile", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file" ],
@@ -50,6 +52,7 @@ var namespace_legendary_explorer_core_1_1_packages =
       [ "LE2", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8ab2efc341f3064c077d8f2ddc091c5cee", null ],
       [ "LE3", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8a7819f422d5041fc4103c4e2363b3333a", null ],
       [ "UDK", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8ae70762218e2335ddc72eeb988a30d91a", null ],
+      [ "LMP", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8a822c97f79ff60e25fa38d3a0a39afea6", null ],
       [ "LELauncher", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8ab0e71a0fe9b5baf1a994e276dce804bd", null ]
     ] ],
     [ "MELocalization", "namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90", [

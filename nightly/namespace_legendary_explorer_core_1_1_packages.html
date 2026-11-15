@@ -119,6 +119,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('namespace_lege
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:CloningImportingAndRelinking" id="r_CloningImportingAndRelinking"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespace_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking.html">CloningImportingAndRelinking</a></td></tr>
+<tr class="memitem:NetIndexing" id="r_NetIndexing"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespace_legendary_explorer_core_1_1_packages_1_1_net_indexing.html">NetIndexing</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -155,6 +156,8 @@ Classes</h2></td></tr>
 <tr class="memitem:PackageUpdate" id="r_PackageUpdate"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_legendary_explorer_core_1_1_packages_1_1_package_update.html">PackageUpdate</a></td></tr>
 <tr class="memitem:PropertyInfo" id="r_PropertyInfo"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_property_info.html">PropertyInfo</a></td></tr>
 <tr class="memitem:ReferenceTreeBase_3C_20TSelf_20_3E" id="r_ReferenceTreeBase_3C_20TSelf_20_3E"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_reference_tree_base-1-g.html">ReferenceTreeBase&lt; TSelf &gt;</a></td></tr>
+<tr class="memitem:SFARPackageCache" id="r_SFARPackageCache"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_s_f_a_r_package_cache.html">SFARPackageCache</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Package cache that can load packages from SFAR archives when the physical file doesn't exist on disk.  <a href="class_legendary_explorer_core_1_1_packages_1_1_s_f_a_r_package_cache.html#details">More...</a><br /></td></tr>
 <tr class="memitem:TieredPackageCache" id="r_TieredPackageCache"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html">TieredPackageCache</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html" title="Class that allows you to cache packages in memory for fast accessing, without having to use a global ...">PackageCache</a> implementation that allows looking for packages in parent caches. Parent caches will not open packages on cache miss.  <a href="class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html#details">More...</a><br /></td></tr>
 <tr class="memitem:UDKPackage" id="r_UDKPackage"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html">UDKPackage</a></td></tr>
@@ -188,7 +191,8 @@ Enumerations</h2></td></tr>
 , <a class="el" href="#a386a95aceb8dcc8725a8cb074fd0e6a8a7819f422d5041fc4103c4e2363b3333a">LE3</a> = 6
 , <a class="el" href="#a386a95aceb8dcc8725a8cb074fd0e6a8ae70762218e2335ddc72eeb988a30d91a">UDK</a> = 7
 , <br />
-&#160;&#160;<a class="el" href="#a386a95aceb8dcc8725a8cb074fd0e6a8ab0e71a0fe9b5baf1a994e276dce804bd">LELauncher</a> = 100
+&#160;&#160;<a class="el" href="#a386a95aceb8dcc8725a8cb074fd0e6a8a822c97f79ff60e25fa38d3a0a39afea6">LMP</a> = 8
+, <a class="el" href="#a386a95aceb8dcc8725a8cb074fd0e6a8ab0e71a0fe9b5baf1a994e276dce804bd">LELauncher</a> = 100
 <br />
  }</td></tr>
 <tr class="memdesc:a386a95aceb8dcc8725a8cb074fd0e6a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates a game in the Mass Effect series.  <a href="#a386a95aceb8dcc8725a8cb074fd0e6a8">More...</a><br /></td></tr>
@@ -295,6 +299,8 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a386a95aceb8dcc8725a8cb074fd0e6a8a7819f422d5041fc4103c4e2363b3333a" name="a386a95aceb8dcc8725a8cb074fd0e6a8a7819f422d5041fc4103c4e2363b3333a"></a>LE3&#160;</td><td class="fielddoc"><p>Mass Effect 3: Legendary Edition. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a386a95aceb8dcc8725a8cb074fd0e6a8ae70762218e2335ddc72eeb988a30d91a" name="a386a95aceb8dcc8725a8cb074fd0e6a8ae70762218e2335ddc72eeb988a30d91a"></a>UDK&#160;</td><td class="fielddoc"><p><a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html">Unreal</a> Development Kit. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a386a95aceb8dcc8725a8cb074fd0e6a8a822c97f79ff60e25fa38d3a0a39afea6" name="a386a95aceb8dcc8725a8cb074fd0e6a8a822c97f79ff60e25fa38d3a0a39afea6"></a>LMP&#160;</td><td class="fielddoc"><p>Mass Effect Legendary Edition Multiplayer. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a386a95aceb8dcc8725a8cb074fd0e6a8ab0e71a0fe9b5baf1a994e276dce804bd" name="a386a95aceb8dcc8725a8cb074fd0e6a8ab0e71a0fe9b5baf1a994e276dce804bd"></a>LELauncher&#160;</td><td class="fielddoc"><p>Mass Effect Legendary Edition Launcher. </p>
 <p>Not an actual game, but used for identifying Legendary Edition game directories. Do not change this number. It's so we can add entries before it without messing up any existing items. </p>

@@ -1,6 +1,8 @@
 var class_legendary_explorer_core_1_1_packages_1_1_package_cache =
 [
-    [ "PackageCache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a75ef1d28ed357973ce1f6a582261330a", null ],
+    [ "TrackedCacheInfo", "class_legendary_explorer_core_1_1_packages_1_1_package_cache_1_1_tracked_cache_info.html", "class_legendary_explorer_core_1_1_packages_1_1_package_cache_1_1_tracked_cache_info" ],
+    [ "PackageCache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a5d830eb38a137ecb9864ef3268427815", null ],
+    [ "GetTrackedCacheReport", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#adb5730daa9344f992b9a44bd052fcecf", null ],
     [ "GetCachedPackage", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a617c1d1af05bbc53574994380d9cb6ae", null ],
     [ "InsertIntoCache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a432bd598b11b1e4c3331935e880ea55f", null ],
     [ "AddResidentPackage", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#ab996486be0787fb8dca18529c6f82cb1", null ],
@@ -24,7 +26,12 @@ var class_legendary_explorer_core_1_1_packages_1_1_package_cache =
     [ "syncObj", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2f2bbc4b6efc009b135860776b45bec8", null ],
     [ "LastAccessMap", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a93e4e7bdf6a95a7edeceee998bff38ea", null ],
     [ "ResidentPackages", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af26df9e7295ef9ab0253012bdcdb53c3", null ],
+    [ "DebugName", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a47323d325a69fa771c6668566127c51f", null ],
+    [ "DisplayName", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#ae528a18521d355f11de752253c86abb5", null ],
+    [ "IsDisposed", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a1c6e3004d623b7e41d6f02478e7805ff", null ],
     [ "Cache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#ae8fe5ee541dc77fbf6f9af5fceaa8f73", null ],
+    [ "DefaultDiskIOSyncLock", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a67233523b852251d63cd8ea536a35f6b", null ],
     [ "CacheMaxSize", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af19e95963c4072b675dd32a244fa4e1b", null ],
-    [ "AlwaysOpenFromDisk", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#accede661db51e02040eaaa098b787005", null ]
+    [ "AlwaysOpenFromDisk", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#accede661db51e02040eaaa098b787005", null ],
+    [ "DiskIOSyncLock", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a8e3058fd9a2dd2e7819123d5dcec9b4f", null ]
 ];

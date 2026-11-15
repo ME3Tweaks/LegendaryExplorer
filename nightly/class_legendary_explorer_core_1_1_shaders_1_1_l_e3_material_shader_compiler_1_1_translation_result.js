@@ -1,0 +1,28 @@
+var class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result =
+[
+    [ "IncludesMaterialResourceInputs", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#a9b56a6441e5bebef1e2bee9123c2b4ae", null ],
+    [ "ForcesFloatTexCoords", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#a774937cf3dd3840f7f496c14411d6423", null ],
+    [ "SourceSnapshot", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#aca5aa5477fd356392e5f98f990b55831", null ],
+    [ "UsesHalfTypes", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#aba155229fd19c179604e5ef61eb8989d", null ],
+    [ "CompilationInput", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#a44e7ec9d877b0712fd21babcb51b095b", null ],
+    [ "Graph", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#a36b20aef0a88172c82695f2feae0f8db", null ],
+    [ "PropertyCode", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#a56d5d3b81b43b73b774b2bc54fec3383", null ],
+    [ "Errors", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#ae8ae30f1c0bf1dfdc6be8c3931c90b68", null ],
+    [ "UniformPixelVectorExpressions", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#ab0bbdc029895ff2a6effeda4330c0433", null ],
+    [ "UniformPixelScalarExpressions", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#acba6b2615d5ddb4a2dd9baf7c3cd9650", null ],
+    [ "Uniform2DTextureExpressions", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#ab47a5478b1d9d2d135f8d7ecf492a0cf", null ],
+    [ "UniformCubeTextureExpressions", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#abde0244bf0eb02af8b9780379a0192ae", null ],
+    [ "UniformExpressionTextures", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#a0b942d630b6315d92e21ee1b35c4327c", null ],
+    [ "UniformVertexVectorExpressions", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#ae5e61952cb8e024c4344029ae92f3100", null ],
+    [ "UniformVertexScalarExpressions", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#ac3c3b720e0add3b914ef0592ca7d9ff3", null ],
+    [ "NumUserTexCoords", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#a6c57b1f4c8c536fe43e78405e89312be", null ],
+    [ "UsingTransforms", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#a30ac454dd80bb97cb4570a0d014c5b09", null ],
+    [ "UsesVertexColor", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#a8ab9a05cd1b49a0d7202c609ab59b0da", null ],
+    [ "UsesLightmapUVs", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#ad02ebb1cb8cb9148ead00aa3e036e2e2", null ],
+    [ "UsesDynamicParameter", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#ac95eaa9534750b91a73ae9172cdcd6a8", null ],
+    [ "UsesTime", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#ad2cfb526d24368620d299aa9082238bd", null ],
+    [ "UsesSceneDepth", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#ac699fbf6a9b623a061e26a433c5a2b0a", null ],
+    [ "UsesSceneColor", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#ac4a68074ddf1069f3cbec752b0be97a5", null ],
+    [ "MaterialHlsl", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#aeb958b0a6f7ae0f4ae73bee06490beec", null ],
+    [ "Success", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_translation_result.html#acfee44773d97aa81660d4a51552b5e8c", null ]
+];

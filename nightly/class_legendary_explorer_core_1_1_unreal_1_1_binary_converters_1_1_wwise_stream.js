@@ -2,6 +2,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_str
 [
     [ "GetPathToAFC", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#af94937cc0809e10e8ef6e6cdd16c1d4a", null ],
     [ "GetAudioInfo", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a6fb93980412bd004ed602d8eeca82dab", null ],
+    [ "GetAudioInfo", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a405bfbc8cdd3bceacb7f2bcb54de8959", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#aefb47459957218a146034b6350019c32", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a3d22f223aceaf265b2d491ad961e458c", null ],
     [ "Unk1", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a134d6575f35c138002d4c29f7231c590", null ],

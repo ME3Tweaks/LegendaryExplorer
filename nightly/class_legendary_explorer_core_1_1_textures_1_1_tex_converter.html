@@ -279,6 +279,10 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a94e34120f2b776ea824631a9a944bd01" id="r_a94e34120f2b776ea824631a9a944bd01"><td class="memItemLeft">static unsafe byte[]&#160;</td><td class="memItemRight"><a class="el" href="#a94e34120f2b776ea824631a9a944bd01">LoadTexture</a> (string filename, out uint width, out uint height, ref <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> pixelFormat)</td></tr>
 <tr class="memitem:a7c64e0e09200be6415baa4f53cfbc2cc" id="r_a7c64e0e09200be6415baa4f53cfbc2cc"><td class="memItemLeft">static unsafe byte[]&#160;</td><td class="memItemRight"><a class="el" href="#a7c64e0e09200be6415baa4f53cfbc2cc">LoadTextureFromMemory</a> (ReadOnlySpan&lt; byte &gt; buffer, int imageType, out uint width, out uint height, ref <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> pixelFormat)</td></tr>
 <tr class="memdesc:a7c64e0e09200be6415baa4f53cfbc2cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads texture data from the given file buffer in memory (e.g. file streamed from exe will not be disk based).  <br /></td></tr>
+<tr class="memitem:a87de114d599d247dc73004a09e37236d" id="r_a87de114d599d247dc73004a09e37236d"><td class="memItemLeft">static unsafe byte[]&#160;</td><td class="memItemRight"><a class="el" href="#a87de114d599d247dc73004a09e37236d">LoadTextureWithOverrides</a> (string filename, out uint width, out uint height, ref <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> pixelFormat, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a4c580cf3117f791736a04fe66d019dd5">TextureLoadOverrides</a> overrides)</td></tr>
+<tr class="memdesc:a87de114d599d247dc73004a09e37236d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads with explicit overrides. None uses the original API, including with older native DLLs.  <br /></td></tr>
+<tr class="memitem:aa1b6eb371e32564955d044897de19c28" id="r_aa1b6eb371e32564955d044897de19c28"><td class="memItemLeft">static unsafe byte[]&#160;</td><td class="memItemRight"><a class="el" href="#aa1b6eb371e32564955d044897de19c28">LoadTextureFromMemoryWithOverrides</a> (ReadOnlySpan&lt; byte &gt; buffer, int imageType, out uint width, out uint height, ref <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> pixelFormat, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a4c580cf3117f791736a04fe66d019dd5">TextureLoadOverrides</a> overrides)</td></tr>
+<tr class="memdesc:aa1b6eb371e32564955d044897de19c28"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespace_legendary_explorer_core_1_1_memory.html">Memory</a> equivalent of LoadTextureWithOverrides. <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html">Image</a> types: 1 DDS, 2 WIC, 3 TGA.  <br /></td></tr>
 </table>
 <a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">Member Enumeration Documentation</h2>
 <a id="a57c89ca96294dcd014e918f87d10ab80" name="a57c89ca96294dcd014e918f87d10ab80"></a>
@@ -651,8 +655,106 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<a id="a87de114d599d247dc73004a09e37236d" name="a87de114d599d247dc73004a09e37236d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87de114d599d247dc73004a09e37236d">&#9670;&#160;</a></span>LoadTextureWithOverrides()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsafe byte[] LegendaryExplorerCore.Textures.TexConverter.LoadTextureWithOverrides </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>filename</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out uint</td>          <td class="paramname"><span class="paramname"><em>width</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out uint</td>          <td class="paramname"><span class="paramname"><em>height</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ref <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a></td>          <td class="paramname"><span class="paramname"><em>pixelFormat</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a4c580cf3117f791736a04fe66d019dd5">TextureLoadOverrides</a></td>          <td class="paramname"><span class="paramname"><em>overrides</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Loads with explicit overrides. None uses the original API, including with older native DLLs. </p>
+
+</div>
+</div>
+<a id="aa1b6eb371e32564955d044897de19c28" name="aa1b6eb371e32564955d044897de19c28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1b6eb371e32564955d044897de19c28">&#9670;&#160;</a></span>LoadTextureFromMemoryWithOverrides()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsafe byte[] LegendaryExplorerCore.Textures.TexConverter.LoadTextureFromMemoryWithOverrides </td>
+          <td>(</td>
+          <td class="paramtype">ReadOnlySpan&lt; byte &gt;</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>imageType</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out uint</td>          <td class="paramname"><span class="paramname"><em>width</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out uint</td>          <td class="paramname"><span class="paramname"><em>height</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ref <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a></td>          <td class="paramname"><span class="paramname"><em>pixelFormat</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a4c580cf3117f791736a04fe66d019dd5">TextureLoadOverrides</a></td>          <td class="paramname"><span class="paramname"><em>overrides</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="namespace_legendary_explorer_core_1_1_memory.html">Memory</a> equivalent of LoadTextureWithOverrides. <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html">Image</a> types: 1 DDS, 2 WIC, 3 TGA. </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>LegendaryExplorer/LegendaryExplorerCore/Textures/<a class="el" href="_tex_converter_8cs.html">TexConverter.cs</a></li>
+<li>LegendaryExplorer/LegendaryExplorerCore/Textures/<a class="el" href="_tex_converter_8_load_overrides_8cs.html">TexConverter.LoadOverrides.cs</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

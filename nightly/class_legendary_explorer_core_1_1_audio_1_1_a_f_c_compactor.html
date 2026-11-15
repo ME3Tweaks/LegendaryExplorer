@@ -127,7 +127,8 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ae4c9273a4a58ed9c4e6913b47d26af4e" id="r_ae4c9273a4a58ed9c4e6913b47d26af4e"><td class="memItemLeft">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html">ReferencedAudio</a> &gt; List&lt; <a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html">ReferencedAudio</a> &gt; availableAFCReferences&#160;</td><td class="memItemRight"><a class="el" href="#ae4c9273a4a58ed9c4e6913b47d26af4e">GetReferencedAudio</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string inputPath, Action&lt; long, long &gt; notifyProgress=null, Action&lt; string &gt; currentScanningFileCallback=null, Action&lt; string &gt; debugOut=null)</td></tr>
-<tr class="memitem:acf398c76aba2402ccb5bbad6466e2272" id="r_acf398c76aba2402ccb5bbad6466e2272"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#acf398c76aba2402ccb5bbad6466e2272">CompactAFC</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string inputPath, string newAFCBaseName, List&lt; <a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html">ReferencedAudio</a> &gt; referencesToCompact, Func&lt; List&lt;(<a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html">ReferencedAudio</a>, string)&gt;, bool &gt; notifyBrokenAudio, Action&lt; long, long &gt; notifyProgress, Action&lt; string &gt; notifyStatusUpdate=null, Action&lt; string &gt; notifyFinalAfcPath=null, Action&lt; string &gt; debugOut=null)</td></tr>
+<tr class="memitem:a49f4d2425811e36c2116834127dd4a86" id="r_a49f4d2425811e36c2116834127dd4a86"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a49f4d2425811e36c2116834127dd4a86">CompactAFC</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string inputPath, string newAFCBaseName, List&lt; <a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html">ReferencedAudio</a> &gt; referencesToCompact, Func&lt; List&lt;(<a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html">ReferencedAudio</a>, string)&gt;, bool &gt; notifyBrokenAudio, Action&lt; long, long &gt; notifyProgress, Action&lt; string &gt; notifyStatusUpdate=null, Action&lt; string &gt; notifyFinalAfcPath=null, Action&lt; string &gt; debugOut=null, bool searchGameForAFCs=true)</td></tr>
+<tr class="memdesc:a49f4d2425811e36c2116834127dd4a86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds a new AFC out of the given audio references, and updates every <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html">WwiseStream</a> in the packages under <em>inputPath</em>  that references them to point to the new AFC. <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html">Packages</a> with nothing to update are not saved.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-attribs" class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -181,8 +182,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="acf398c76aba2402ccb5bbad6466e2272" name="acf398c76aba2402ccb5bbad6466e2272"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acf398c76aba2402ccb5bbad6466e2272">&#9670;&#160;</a></span>CompactAFC()</h2>
+<a id="a49f4d2425811e36c2116834127dd4a86" name="a49f4d2425811e36c2116834127dd4a86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49f4d2425811e36c2116834127dd4a86">&#9670;&#160;</a></span>CompactAFC()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -233,7 +234,12 @@ Static Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Action&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>debugOut</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
+          <td class="paramtype">Action&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>debugOut</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>searchGameForAFCs</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -242,6 +248,24 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Builds a new AFC out of the given audio references, and updates every <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html">WwiseStream</a> in the packages under <em>inputPath</em>  that references them to point to the new AFC. <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html">Packages</a> with nothing to update are not saved. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td>Game the packages are for</td></tr>
+    <tr><td class="paramname">inputPath</td><td>Folder containing the packages to update. The new AFC is placed in its CookedPC folder</td></tr>
+    <tr><td class="paramname">newAFCBaseName</td><td>Name of the new AFC, without extension</td></tr>
+    <tr><td class="paramname">referencesToCompact</td><td><a class="el" href="namespace_legendary_explorer_core_1_1_audio.html" title="Tools for working with the proprietary audio systems used in Mass Effect games.">Audio</a> to put into the new AFC. <a class="el" href="namespace_legendary_explorer_core_1_1_audio.html" title="Tools for working with the proprietary audio systems used in Mass Effect games.">Audio</a> referenced more than once is only copied once</td></tr>
+    <tr><td class="paramname">notifyBrokenAudio</td><td>Invoked with references that could not be compacted. Return true to continue without them (they are not updated)</td></tr>
+    <tr><td class="paramname">notifyProgress</td><td>Progress callback</td></tr>
+    <tr><td class="paramname">notifyStatusUpdate</td><td>Status callback</td></tr>
+    <tr><td class="paramname">notifyFinalAfcPath</td><td>Invoked with the path of the new AFC</td></tr>
+    <tr><td class="paramname">debugOut</td><td>Debug information callback</td></tr>
+    <tr><td class="paramname">searchGameForAFCs</td><td>If false, AFCs are only looked for in <em>inputPath</em> , and the game's installation is not used</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>False if compaction was aborted due to broken audio</dd></dl>
 
 </div>
 </div>

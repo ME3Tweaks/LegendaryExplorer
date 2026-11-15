@@ -161,6 +161,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae6a6b0e24b8e474a1b503b55c9f6a150" id="r_ae6a6b0e24b8e474a1b503b55c9f6a150"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#ae6a6b0e24b8e474a1b503b55c9f6a150">findName</a> (string nameToFind)</td></tr>
 <tr class="memdesc:ae6a6b0e24b8e474a1b503b55c9f6a150"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether a name exists in the PCC and returns its index If it doesn't exist returns -1.  <br /></td></tr>
 <tr class="memitem:a646bf7fb57e4fd31438a783ee96e0d28" id="r_a646bf7fb57e4fd31438a783ee96e0d28"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a646bf7fb57e4fd31438a783ee96e0d28">restoreNames</a> (List&lt; string &gt; list)</td></tr>
+<tr class="memitem:a6ee2a7e44bd7f37c2de624713ccb53d4" id="r_a6ee2a7e44bd7f37c2de624713ccb53d4"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a6ee2a7e44bd7f37c2de624713ccb53d4">restoreImports</a> (List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> &gt; list)</td></tr>
+<tr class="memdesc:a6ee2a7e44bd7f37c2de624713ccb53d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restores the import list to a previous snapshot, e.g. after a speculative port that ended up being discarded. Unhooks change notifications from any import that isn't part of the restored list.  <br /></td></tr>
 <tr class="memitem:a40be84383a8da5800b244b0e6e898484" id="r_a40be84383a8da5800b244b0e6e898484"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a40be84383a8da5800b244b0e6e898484">GetNextIndexForInstancedName</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> entry)</td></tr>
 <tr class="memdesc:a40be84383a8da5800b244b0e6e898484"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the next available index for a name, checking for other objects incrementally with a same instanced full name until a free one is found that is higher than the original one.  <br /></td></tr>
 <tr class="memitem:a4fa82c7746bb88f48e8391eed4e037cc" id="r_a4fa82c7746bb88f48e8391eed4e037cc"><td class="memItemLeft"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>&#160;</td><td class="memItemRight"><a class="el" href="#a4fa82c7746bb88f48e8391eed4e037cc">GetNextIndexedName</a> (string name)</td></tr>
@@ -191,7 +193,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abccf27f4c3e07eb0a7380b7d54140017" id="r_abccf27f4c3e07eb0a7380b7d54140017"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#abccf27f4c3e07eb0a7380b7d54140017">RemoveTrailingTrash</a> ()</td></tr>
 <tr class="memitem:aa46bcb6b3f942ef9e4afb585e671fa5c" id="r_aa46bcb6b3f942ef9e4afb585e671fa5c"><td class="memItemLeft">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html">ME1TalkFile</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#aa46bcb6b3f942ef9e4afb585e671fa5c">ReadLocalTLKs</a> (string language=null, bool getAllGenders=false)</td></tr>
 <tr class="memdesc:aa46bcb6b3f942ef9e4afb585e671fa5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads local <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> exports. Only use in Game 1 packages.  <br /></td></tr>
-<tr class="memitem:a25fddb0a03d4a7f2a67deb1509c39f28" id="r_a25fddb0a03d4a7f2a67deb1509c39f28"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a25fddb0a03d4a7f2a67deb1509c39f28">HasDuplicateObjects</a> ()</td></tr>
+<tr class="memitem:af02da25973cc95bb88ce9f167dc3206c" id="r_af02da25973cc95bb88ce9f167dc3206c"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#af02da25973cc95bb88ce9f167dc3206c">HasDuplicateObjects</a> (bool excludeTrash=false)</td></tr>
+<tr class="memdesc:af02da25973cc95bb88ce9f167dc3206c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns if the lookup table is the same size as the count of imports and exports put together. If you exclude trash, this lookup is a bit slower.  <br /></td></tr>
 <tr class="memitem:ad91d90c67f0c2158a2be5de3407eeebe" id="r_ad91d90c67f0c2158a2be5de3407eeebe"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ad91d90c67f0c2158a2be5de3407eeebe">SetInternalFilepath</a> (string filePath)</td></tr>
 <tr class="memdesc:ad91d90c67f0c2158a2be5de3407eeebe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the filepath for this package. This will set the FileNameNoExtension property as well. Only use this if you know what you are doing; this can break a lot of things.  <br /></td></tr>
 <tr class="memitem:ac224108f4ad754ad10ee7d83e3c676e5" id="r_ac224108f4ad754ad10ee7d83e3c676e5"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ac224108f4ad754ad10ee7d83e3c676e5">RegisterTool</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a> user)</td></tr>
@@ -811,6 +814,33 @@ Events</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6ee2a7e44bd7f37c2de624713ccb53d4" name="a6ee2a7e44bd7f37c2de624713ccb53d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ee2a7e44bd7f37c2de624713ccb53d4">&#9670;&#160;</a></span>restoreImports()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LegendaryExplorerCore.Packages.UnrealPackageFile.restoreImports </td>
+          <td>(</td>
+          <td class="paramtype">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>list</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Restores the import list to a previous snapshot, e.g. after a speculative port that ended up being discarded. Unhooks change notifications from any import that isn't part of the restored list. </p>
 
 </div>
 </div>
@@ -1495,8 +1525,8 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<a id="a25fddb0a03d4a7f2a67deb1509c39f28" name="a25fddb0a03d4a7f2a67deb1509c39f28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25fddb0a03d4a7f2a67deb1509c39f28">&#9670;&#160;</a></span>HasDuplicateObjects()</h2>
+<a id="af02da25973cc95bb88ce9f167dc3206c" name="af02da25973cc95bb88ce9f167dc3206c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af02da25973cc95bb88ce9f167dc3206c">&#9670;&#160;</a></span>HasDuplicateObjects()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1507,7 +1537,7 @@ Events</h2></td></tr>
         <tr>
           <td class="memname">bool LegendaryExplorerCore.Packages.UnrealPackageFile.HasDuplicateObjects </td>
           <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>excludeTrash</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1517,6 +1547,9 @@ Events</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Returns if the lookup table is the same size as the count of imports and exports put together. If you exclude trash, this lookup is a bit slower. </p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>

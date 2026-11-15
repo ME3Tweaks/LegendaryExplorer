@@ -8,5 +8,6 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_
     [ "SM3StaticPermutationResource", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_instance.html#a822ac4b444cb171174075e1fa0270f28", null ],
     [ "SM3StaticParameterSet", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_instance.html#a6053838aca1eed328fd4d13501e99ea1", null ],
     [ "SM2StaticPermutationResource", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_instance.html#afdb5bbe4354176e012d2580d06432330", null ],
-    [ "SM2StaticParameterSet", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_instance.html#ad800393122ac2be465076c3329c247fc", null ]
+    [ "SM2StaticParameterSet", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_instance.html#ad800393122ac2be465076c3329c247fc", null ],
+    [ "UDKHasLowQualityPermutation", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_instance.html#afa465ce1b72f133986717a772119e9db", null ]
 ];

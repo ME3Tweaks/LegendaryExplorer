@@ -10,6 +10,7 @@ var _m_e_game_8cs =
       [ "LegendaryExplorerCore.Packages.MEGame.LE2", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8ab2efc341f3064c077d8f2ddc091c5cee", null ],
       [ "LegendaryExplorerCore.Packages.MEGame.LE3", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8a7819f422d5041fc4103c4e2363b3333a", null ],
       [ "LegendaryExplorerCore.Packages.MEGame.UDK", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8ae70762218e2335ddc72eeb988a30d91a", null ],
+      [ "LegendaryExplorerCore.Packages.MEGame.LMP", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8a822c97f79ff60e25fa38d3a0a39afea6", null ],
       [ "LegendaryExplorerCore.Packages.MEGame.LELauncher", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8ab0e71a0fe9b5baf1a994e276dce804bd", null ]
     ] ]
 ];

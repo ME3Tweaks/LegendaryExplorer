@@ -3,6 +3,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1
     [ "ShaderFrequency", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_shader.html#a7e5e3d763b2c6e29bebaaccd9ca65fc0", [
       [ "Vertex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_shader.html#a7e5e3d763b2c6e29bebaaccd9ca65fc0ab22b929ba52471a02d18bb3a4e4472e6", null ],
       [ "Pixel", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_shader.html#a7e5e3d763b2c6e29bebaaccd9ca65fc0a08822b3ae4e2aede0afe08abe600e9c0", null ],
+      [ "PixelSM5", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_shader.html#a7e5e3d763b2c6e29bebaaccd9ca65fc0ade22ac52b414399f8fa519e7d5d14a44", null ],
       [ "PixelUDK", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_shader.html#a7e5e3d763b2c6e29bebaaccd9ca65fc0a143ba3cb7fe30d03b2390512eacc8e4d", null ]
     ] ],
     [ "Clone", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_shader.html#af314aeaab0d1894d7dfb7dc20e976213", null ],

@@ -1,5 +1,6 @@
 var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters =
 [
+    [ "RecomputeLE3UniformParameterValidity", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a0241a9ee685365b342b4da772fbe354b", null ],
     [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a2c9997c4b78ce2b96879066fcadb5830", null ],
     [ "CameraWorldPosition", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a68a7190811ae940090d79d86c75fa6de", null ],
     [ "ObjectWorldPositionAndRadius", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a48d206a8f18e0da2f229b13f3f8b5020", null ],
@@ -28,5 +29,7 @@ var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_
     [ "ScreenDoorFadeSettings", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a9d3ffb98c67be8ae9143c7d7f6b02b8c", null ],
     [ "ScreenDoorFadeSettings2", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a49c544bff5931520b3dc385aa2fb0c2a", null ],
     [ "ScreenDoorNoiseTexture", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#aa1977a3eaca76f064de17175a2e7af78", null ],
-    [ "WrapLightingParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#aa5a60da8e1b564c3039298bcecec1779", null ]
+    [ "WrapLightingParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#aa5a60da8e1b564c3039298bcecec1779", null ],
+    [ "HasContiguousPixelScalarParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#aae353479b4ad10682a510005a12e2688", null ],
+    [ "HasContiguousPixelVectorParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a545bc8b31afe7a6752428299ba8901ca", null ]
 ];

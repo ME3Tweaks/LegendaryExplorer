@@ -6,7 +6,10 @@ var class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package 
     [ "GamePath", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html#aad5e2d67daf311d024de86ce125f9756", null ],
     [ "StagingPath", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html#a5ccb12f6a8cfe3f4d1ff2968e2a0cb90", null ],
     [ "TFCType", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html#ac9b1df34137bbd378860ac31fd001825", null ],
+    [ "RootTexturesOnly", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html#ae215fae1582e1c7c03f9f1b4f0eec908", null ],
     [ "UseIndexing", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html#a49a2df9d777b423c435dc1db557eeba3", null ],
+    [ "IncludeNumberedSourceTFCs", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html#ad510723ff69f0902bead2f0dcda18146", null ],
     [ "Game", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html#a94d3592d3f4ef036ac3a9842f52f2d54", null ],
-    [ "TFCsToCompact", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html#ae38e3a284a6b12306a7d17a992ab0b1b", null ]
+    [ "TFCsToCompact", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html#ae38e3a284a6b12306a7d17a992ab0b1b", null ],
+    [ "AdditionalTFCs", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html#a8175eaff4f3090c4b4a849b5f052a828", null ]
 ];

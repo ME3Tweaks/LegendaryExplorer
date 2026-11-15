@@ -39,6 +39,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package =
     [ "LE2LicenseeVersion", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#ac42c352581b050911a598e4fb82a9b26", null ],
     [ "LE3UnrealVersion", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#ad39cb6530133bc817db4ff6ca67860d9", null ],
     [ "LE3LicenseeVersion", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a7cbd89bbae0c7e72d57a1eb348a466c6", null ],
+    [ "LMPLicenseeVersion", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a5872ef035f2c2cc48e0d07ba41781e41", null ],
     [ "AdditionalPackagesToCook", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#ae0d8dd57d9b702485719d1e1e301c13c", null ],
     [ "Gen0ExportCount", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a76445adf906835f0e7e0a3960cae7948", null ],
     [ "Gen0NameCount", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#adfe9da88f298034ac338ae61601528af", null ],

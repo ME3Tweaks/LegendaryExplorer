@@ -168,6 +168,8 @@ Properties</h2></td></tr>
 <tr class="memdesc:a799de04a1d37293e49d9dc79d7af4d23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset to the start of this property as it was read by <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a73a0812e09a6786a54a24f95ee421c94" title="Deserializes properties from rawStream .">PropertyCollection.ReadProps()</a>.  <br /></td></tr>
 <tr class="memitem:af71e59036b9ff90609309d1fc4bfa0d0" id="r_af71e59036b9ff90609309d1fc4bfa0d0"><td class="memItemLeft"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>&#160;</td><td class="memItemRight"><a class="el" href="#af71e59036b9ff90609309d1fc4bfa0d0">Name</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:af71e59036b9ff90609309d1fc4bfa0d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of this property.  <br /></td></tr>
+<tr class="memitem:a8d6222e96139a16bb38ca0e448615083" id="r_a8d6222e96139a16bb38ca0e448615083"><td class="memItemLeft"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ad7941418f2eff374cbd43472fd685448">PropertySource</a>&#160;</td><td class="memItemRight"><a class="el" href="#a8d6222e96139a16bb38ca0e448615083">InheritedFrom</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a8d6222e96139a16bb38ca0e448615083"><td class="mdescLeft">&#160;</td><td class="mdescRight">Where this property's value actually came from, when read via PropertyCollectionExtensions.GetPropertiesIncludingInherited. Null (the default) means the property was read directly from the export it was requested from - the case for every other property-reading codepath, and for any property an export sets explicitly itself even when read through PropertyCollectionExtensions.GetPropertiesIncludingInherited. This is a purely in-memory annotation: it is not serialized, has no effect on WriteTo, and should never be relied on to write this property back to a different export than it was read from.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base class for all the <a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html">Unreal</a> property types that go in PropertyCollection. </p>
@@ -436,6 +438,30 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The name of this property. </p>
+
+</div>
+</div>
+<a id="a8d6222e96139a16bb38ca0e448615083" name="a8d6222e96139a16bb38ca0e448615083"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d6222e96139a16bb38ca0e448615083">&#9670;&#160;</a></span>InheritedFrom</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ad7941418f2eff374cbd43472fd685448">PropertySource</a> LegendaryExplorerCore.Unreal.Property.InheritedFrom</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span><span class="mlabel set">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Where this property's value actually came from, when read via PropertyCollectionExtensions.GetPropertiesIncludingInherited. Null (the default) means the property was read directly from the export it was requested from - the case for every other property-reading codepath, and for any property an export sets explicitly itself even when read through PropertyCollectionExtensions.GetPropertiesIncludingInherited. This is a purely in-memory annotation: it is not serialized, has no effect on WriteTo, and should never be relied on to write this property back to a different export than it was read from. </p>
 
 </div>
 </div>

@@ -19,5 +19,10 @@ var _property_collection_8cs =
     [ "LegendaryExplorerCore.Unreal.StringRefProperty", "class_legendary_explorer_core_1_1_unreal_1_1_string_ref_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_string_ref_property" ],
     [ "LegendaryExplorerCore.Unreal.DelegateProperty", "class_legendary_explorer_core_1_1_unreal_1_1_delegate_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_delegate_property" ],
     [ "LegendaryExplorerCore.Unreal.UnknownProperty", "class_legendary_explorer_core_1_1_unreal_1_1_unknown_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_unknown_property" ],
-    [ "LegendaryExplorerCore.Unreal.PropertyCollectionExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions" ]
+    [ "LegendaryExplorerCore.Unreal.PropertyCollectionExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions" ],
+    [ "LegendaryExplorerCore.Unreal.PropertySourceKind", "namespace_legendary_explorer_core_1_1_unreal.html#a7f0be1d7ff66753d888c33bc52918eb8", [
+      [ "LegendaryExplorerCore.Unreal.PropertySourceKind.Archetype", "namespace_legendary_explorer_core_1_1_unreal.html#a7f0be1d7ff66753d888c33bc52918eb8a15f752f90268a1a39fe449871b75267c", null ],
+      [ "LegendaryExplorerCore.Unreal.PropertySourceKind.ClassDefault", "namespace_legendary_explorer_core_1_1_unreal.html#a7f0be1d7ff66753d888c33bc52918eb8a3f18fdfd91efbd8012758f3cf52dedae", null ]
+    ] ],
+    [ "LegendaryExplorerCore.Unreal.PropertySource", "namespace_legendary_explorer_core_1_1_unreal.html#ad7941418f2eff374cbd43472fd685448", null ]
 ];

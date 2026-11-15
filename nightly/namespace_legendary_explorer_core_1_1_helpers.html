@@ -118,6 +118,8 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('namespace_lege
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:BoundedReadOnlyStream" id="r_BoundedReadOnlyStream"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><b>BoundedReadOnlyStream</b></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A read-only, relative-position view of a seekable stream. Reads and seeks cannot leave the specified range. Disposing the view leaves its source open. Not safe for concurrent source use. <br /></td></tr>
 <tr class="memitem:ByteArrayExtensions" id="r_ByteArrayExtensions"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_byte_array_extensions.html">ByteArrayExtensions</a></td></tr>
 <tr class="memitem:Deconstructors" id="r_Deconstructors"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_deconstructors.html">Deconstructors</a></td></tr>
 <tr class="memitem:DictionaryExtensions" id="r_DictionaryExtensions"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_dictionary_extensions.html">DictionaryExtensions</a></td></tr>
@@ -138,12 +140,99 @@ Classes</h2></td></tr>
 <tr class="memitem:MaterialHelper" id="r_MaterialHelper"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_material_helper.html">MaterialHelper</a></td></tr>
 <tr class="memitem:MeshHelper" id="r_MeshHelper"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_mesh_helper.html">MeshHelper</a></td></tr>
 <tr class="memitem:MiscExtensions" id="r_MiscExtensions"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_misc_extensions.html">MiscExtensions</a></td></tr>
+<tr class="memitem:NormalCompressionHelper" id="r_NormalCompressionHelper"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_normal_compression_helper.html">NormalCompressionHelper</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks serialized normal-decoding parameters against effective textures in an assembled package. Intended primarily for editable/decooked assets before shader compilation. Cooked callers must supply a verified default binding when the expression graph is absent. The caller owns import resolution and its cache. These methods never save packages or change dependencies.  <a href="class_legendary_explorer_core_1_1_helpers_1_1_normal_compression_helper.html#details">More...</a><br /></td></tr>
 <tr class="memitem:StreamHelpers" id="r_StreamHelpers"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html">StreamHelpers</a></td></tr>
 <tr class="memitem:StringExtensions" id="r_StringExtensions"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html">StringExtensions</a></td></tr>
 <tr class="memitem:TaskExtensions" id="r_TaskExtensions"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_task_extensions.html">TaskExtensions</a></td></tr>
 <tr class="memitem:TypeExtension" id="r_TypeExtension"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_type_extension.html">TypeExtension</a></td></tr>
+<tr class="memitem:UdkTextureEncodingPolicy" id="r_UdkTextureEncodingPolicy"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_udk_texture_encoding_policy.html">UdkTextureEncodingPolicy</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">UDK-compatible texture intermediates without another lossy block conversion.  <a href="class_legendary_explorer_core_1_1_helpers_1_1_udk_texture_encoding_policy.html#details">More...</a><br /></td></tr>
 <tr class="memitem:UnrealExtensions" id="r_UnrealExtensions"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html">UnrealExtensions</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a130331a7d30f1d78175bf438bc113f97" id="r_a130331a7d30f1d78175bf438bc113f97"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="#a130331a7d30f1d78175bf438bc113f97">NormalCompressionStatus</a> { <br />
+&#160;&#160;<a class="el" href="#a130331a7d30f1d78175bf438bc113f97a6da89265a9a8b0b28eb4946bb2ec0c6d">Match</a>
+, <a class="el" href="#a130331a7d30f1d78175bf438bc113f97a5b0a8637935072d1ec30e60bb2cae1e6">Mismatch</a>
+, <a class="el" href="#a130331a7d30f1d78175bf438bc113f97a3cab03c00dbd11bc3569afa0748013f0">Inactive</a>
+, <a class="el" href="#a130331a7d30f1d78175bf438bc113f97a4a3b76ab214699973b85cc072788ff7d">Unresolved</a>
+, <br />
+&#160;&#160;<a class="el" href="#a130331a7d30f1d78175bf438bc113f97ab4080bdf74febf04d578ff105cce9d3f">Unsupported</a>
+<br />
+ }</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a38b01196fef2f99ad8aa4dc97cc802e1" id="r_a38b01196fef2f99ad8aa4dc97cc802e1"><td class="memItemLeft">record&#160;</td><td class="memItemRight"><a class="el" href="#a38b01196fef2f99ad8aa4dc97cc802e1">UdkTextureEncodingDecision</a> (string SourceFormat, string TargetFormat, string TargetCompression, bool IsNormal, bool ReconstructZ)</td></tr>
 </table>
+<a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">Enumeration Type Documentation</h2>
+<a id="a130331a7d30f1d78175bf438bc113f97" name="a130331a7d30f1d78175bf438bc113f97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a130331a7d30f1d78175bf438bc113f97">&#9670;&#160;</a></span>NormalCompressionStatus</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#a130331a7d30f1d78175bf438bc113f97">LegendaryExplorerCore.Helpers.NormalCompressionStatus</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a130331a7d30f1d78175bf438bc113f97a6da89265a9a8b0b28eb4946bb2ec0c6d" name="a130331a7d30f1d78175bf438bc113f97a6da89265a9a8b0b28eb4946bb2ec0c6d"></a>Match&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a130331a7d30f1d78175bf438bc113f97a5b0a8637935072d1ec30e60bb2cae1e6" name="a130331a7d30f1d78175bf438bc113f97a5b0a8637935072d1ec30e60bb2cae1e6"></a>Mismatch&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a130331a7d30f1d78175bf438bc113f97a3cab03c00dbd11bc3569afa0748013f0" name="a130331a7d30f1d78175bf438bc113f97a3cab03c00dbd11bc3569afa0748013f0"></a>Inactive&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a130331a7d30f1d78175bf438bc113f97a4a3b76ab214699973b85cc072788ff7d" name="a130331a7d30f1d78175bf438bc113f97a4a3b76ab214699973b85cc072788ff7d"></a>Unresolved&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a130331a7d30f1d78175bf438bc113f97ab4080bdf74febf04d578ff105cce9d3f" name="a130331a7d30f1d78175bf438bc113f97ab4080bdf74febf04d578ff105cce9d3f"></a>Unsupported&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a id="a38b01196fef2f99ad8aa4dc97cc802e1" name="a38b01196fef2f99ad8aa4dc97cc802e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38b01196fef2f99ad8aa4dc97cc802e1">&#9670;&#160;</a></span>UdkTextureEncodingDecision()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">record LegendaryExplorerCore.Helpers.UdkTextureEncodingDecision </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>SourceFormat</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>TargetFormat</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>TargetCompression</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>IsNormal</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>ReconstructZ</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel sealed">sealed</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div id="page-nav" class="page-nav-panel">

@@ -3,6 +3,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions 
     [ "ResolveToExports", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html#aee5353412fa7b50f15c7ac924d3a4b84", null ],
     [ "ResolveToEntries", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html#ac99ac1f7407a35d955031de36e32becb", null ],
     [ "GetEnumValOrDefault< T >", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html#a47fbaee1dad6fc6a3976cab419ebcccd", null ],
+    [ "GetPropertiesIncludingInherited", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html#a3102f6c36395ece02aaca7f477395071", null ],
     [ "TryResolveObjectProp< T >", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html#a14eb92ea619a2ab6ebd39a0976e65c2f", null ],
     [ "TryGetProp< T >", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html#a30666c119bc0b388f81d37d3900118df", null ],
     [ "GetPropVal", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html#a4c633167f897ddc5cea32b08d74a1220", null ],

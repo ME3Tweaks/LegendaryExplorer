@@ -123,15 +123,25 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_legendar
 Public Attributes</h2></td></tr>
 <tr class="memitem:ae7dd3dd83c33d8cdb0a9d857e2bc5157" id="r_ae7dd3dd83c33d8cdb0a9d857e2bc5157"><td class="memItemLeft">Func&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>, bool &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ae7dd3dd83c33d8cdb0a9d857e2bc5157">ShouldKeepLightMap</a></td></tr>
 <tr class="memdesc:ae7dd3dd83c33d8cdb0a9d857e2bc5157"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delegate that can be invoked in order to not clear a lightmap, preserving the original.  <br /></td></tr>
+<tr class="memitem:a79c6f362e78cd25537137a4e92fa916f" id="r_a79c6f362e78cd25537137a4e92fa916f"><td class="memItemLeft">Func&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>, bool &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a79c6f362e78cd25537137a4e92fa916f">TryUsePrecomputedLightmapMips</a></td></tr>
+<tr class="memdesc:a79c6f362e78cd25537137a4e92fa916f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called for each ported lightmap texture that still has a single mip, right before its mips would be generated. The texture's export holds the <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a> pixels at this point. Return true if the callback installed a complete mip chain itself (for example from a cache, with Texture2D.ReplaceWithEncodedMips); the mips are then not generated.  <br /></td></tr>
+<tr class="memitem:a884bb22bbbe3ed3068a7981d8e12daf8" id="r_a884bb22bbbe3ed3068a7981d8e12daf8"><td class="memItemLeft">Action&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a884bb22bbbe3ed3068a7981d8e12daf8">LightmapMipsGenerated</a></td></tr>
+<tr class="memdesc:a884bb22bbbe3ed3068a7981d8e12daf8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called for each ported lightmap texture right after its mips were generated (not when TryUsePrecomputedLightmapMips handled it), so a caller can store the result.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
-<tr class="memitem:a916b397d5e2a278edb8a38e9211894a7" id="r_a916b397d5e2a278edb8a38e9211894a7"><td class="memItemLeft">string&#160;</td><td class="memItemRight"><a class="el" href="#a916b397d5e2a278edb8a38e9211894a7">UDKMapsBasePath</a> = UDKDirectory.MapsPath<code> [get, set]</code></td></tr>
+<tr class="memitem:a916b397d5e2a278edb8a38e9211894a7" id="r_a916b397d5e2a278edb8a38e9211894a7"><td class="memItemLeft">string&#160;</td><td class="memItemRight"><a class="el" href="#a916b397d5e2a278edb8a38e9211894a7">UDKMapsBasePath</a> = <a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html#a2cb1520e049627bb52f2cb5a3d0f4e54">UDKDirectory.MapsPath</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:a916b397d5e2a278edb8a38e9211894a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Path where <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a> map files that contain static lighting are held.  <br /></td></tr>
 <tr class="memitem:aa73f229eaa65462a21ae51efa4fe8fd1" id="r_aa73f229eaa65462a21ae51efa4fe8fd1"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#aa73f229eaa65462a21ae51efa4fe8fd1">IncludeSubLevels</a> = true<code> [get, set]</code></td></tr>
 <tr class="memdesc:aa73f229eaa65462a21ae51efa4fe8fd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">If items in AdditionalPackagesToCook should be also modified.  <br /></td></tr>
 <tr class="memitem:a2ce319de68df2f87f7a340351f4079c4" id="r_a2ce319de68df2f87f7a340351f4079c4"><td class="memItemLeft">string&#160;</td><td class="memItemRight"><a class="el" href="#a2ce319de68df2f87f7a340351f4079c4">KeptLightmapPrefix</a> = &quot;Kept&quot;<code> [get, set]</code></td></tr>
 <tr class="memdesc:a2ce319de68df2f87f7a340351f4079c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">The prefix to use when keeping a lightmap, changing the name.  <br /></td></tr>
+<tr class="memitem:a5ca28b8ae585de5f79ad4084287fb621" id="r_a5ca28b8ae585de5f79ad4084287fb621"><td class="memItemLeft">HashSet&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a5ca28b8ae585de5f79ad4084287fb621">RelitComponents</a> = new()<code> [get]</code></td></tr>
+<tr class="memdesc:a5ca28b8ae585de5f79ad4084287fb621"><td class="mdescLeft">&#160;</td><td class="mdescRight">Output: StaticMeshComponents that received <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a> lighting, across every package this setup was used for. Anything lit but not in here still carries the lighting it had before the import.  <br /></td></tr>
+<tr class="memitem:ab8a6147e3ac53744b80f4715bcda2eaf" id="r_ab8a6147e3ac53744b80f4715bcda2eaf"><td class="memItemLeft">string[]&#160;</td><td class="memItemRight"><a class="el" href="#ab8a6147e3ac53744b80f4715bcda2eaf">IgnoredSublevelNames</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:ab8a6147e3ac53744b80f4715bcda2eaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of sublevel names to ignore when importing static lighting. This is useful for levels that have sublevels that are not relevant to the lighting bake or should not be modified.  <br /></td></tr>
+<tr class="memitem:a0d85a242878c765efe1e8576903d1a6a" id="r_a0d85a242878c765efe1e8576903d1a6a"><td class="memItemLeft"><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_mip_generation_options.html">MipGenerationOptions</a>&#160;</td><td class="memItemRight"><a class="el" href="#a0d85a242878c765efe1e8576903d1a6a">LightmapMipOptions</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a0d85a242878c765efe1e8576903d1a6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">How the lower mips of a ported lightmap are filtered. Null keeps the historical box filter. Anything that caches the generated mips should include these options in its key.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Contains variables for configuring lightmap importing. </p>
@@ -152,6 +162,38 @@ Properties</h2></td></tr>
 
 </div>
 </div>
+<a id="a79c6f362e78cd25537137a4e92fa916f" name="a79c6f362e78cd25537137a4e92fa916f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79c6f362e78cd25537137a4e92fa916f">&#9670;&#160;</a></span>TryUsePrecomputedLightmapMips</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Func&lt;<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>, bool&gt; LegendaryExplorerCore.UDK.LightingImportSetup.TryUsePrecomputedLightmapMips</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Called for each ported lightmap texture that still has a single mip, right before its mips would be generated. The texture's export holds the <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a> pixels at this point. Return true if the callback installed a complete mip chain itself (for example from a cache, with Texture2D.ReplaceWithEncodedMips); the mips are then not generated. </p>
+
+</div>
+</div>
+<a id="a884bb22bbbe3ed3068a7981d8e12daf8" name="a884bb22bbbe3ed3068a7981d8e12daf8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a884bb22bbbe3ed3068a7981d8e12daf8">&#9670;&#160;</a></span>LightmapMipsGenerated</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Action&lt;<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&gt; LegendaryExplorerCore.UDK.LightingImportSetup.LightmapMipsGenerated</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Called for each ported lightmap texture right after its mips were generated (not when TryUsePrecomputedLightmapMips handled it), so a caller can store the result. </p>
+
+</div>
+</div>
 <a name="doc-property-members" id="doc-property-members"></a><h2 id="header-doc-property-members" class="groupheader">Property Documentation</h2>
 <a id="a916b397d5e2a278edb8a38e9211894a7" name="a916b397d5e2a278edb8a38e9211894a7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a916b397d5e2a278edb8a38e9211894a7">&#9670;&#160;</a></span>UDKMapsBasePath</h2>
@@ -163,7 +205,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">string LegendaryExplorerCore.UDK.LightingImportSetup.UDKMapsBasePath = UDKDirectory.MapsPath</td>
+          <td class="memname">string LegendaryExplorerCore.UDK.LightingImportSetup.UDKMapsBasePath = <a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html#a2cb1520e049627bb52f2cb5a3d0f4e54">UDKDirectory.MapsPath</a></td>
         </tr>
       </table>
   </td>
@@ -222,6 +264,78 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The prefix to use when keeping a lightmap, changing the name. </p>
+
+</div>
+</div>
+<a id="a5ca28b8ae585de5f79ad4084287fb621" name="a5ca28b8ae585de5f79ad4084287fb621"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ca28b8ae585de5f79ad4084287fb621">&#9670;&#160;</a></span>RelitComponents</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">HashSet&lt;<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&gt; LegendaryExplorerCore.UDK.LightingImportSetup.RelitComponents = new()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Output: StaticMeshComponents that received <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a> lighting, across every package this setup was used for. Anything lit but not in here still carries the lighting it had before the import. </p>
+
+</div>
+</div>
+<a id="ab8a6147e3ac53744b80f4715bcda2eaf" name="ab8a6147e3ac53744b80f4715bcda2eaf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8a6147e3ac53744b80f4715bcda2eaf">&#9670;&#160;</a></span>IgnoredSublevelNames</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string [] LegendaryExplorerCore.UDK.LightingImportSetup.IgnoredSublevelNames</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span><span class="mlabel set">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>List of sublevel names to ignore when importing static lighting. This is useful for levels that have sublevels that are not relevant to the lighting bake or should not be modified. </p>
+
+</div>
+</div>
+<a id="a0d85a242878c765efe1e8576903d1a6a" name="a0d85a242878c765efe1e8576903d1a6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d85a242878c765efe1e8576903d1a6a">&#9670;&#160;</a></span>LightmapMipOptions</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_mip_generation_options.html">MipGenerationOptions</a> LegendaryExplorerCore.UDK.LightingImportSetup.LightmapMipOptions</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span><span class="mlabel set">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>How the lower mips of a ported lightmap are filtered. Null keeps the historical box filter. Anything that caches the generated mips should include these options in its key. </p>
 
 </div>
 </div>

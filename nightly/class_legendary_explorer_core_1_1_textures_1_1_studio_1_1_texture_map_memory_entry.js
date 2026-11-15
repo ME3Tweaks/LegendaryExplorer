@@ -10,7 +10,7 @@ var class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory
     [ "IsTexture", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#ae1de3f41933eeec5bcfeedc7d792d58b", null ],
     [ "Parent", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#a5e360c07aebca580b9880b371768aa30", null ],
     [ "ObjectName", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#a452584bfe833ba13234fe3de9cf5faf1", null ],
-    [ "InstancedFullPath", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#acbca2d333624654fba64042b5ff7fd9d", null ],
+    [ "MemoryFullPath", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#af4419d0f8b31e0b93bf4c7d87b90f22f", null ],
     [ "Instances", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#a7442458edd8b1ef826bdb6cd7318626e", null ],
     [ "Children", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#aa21fc2925c7a675f9583f70c67a42d3e", null ],
     [ "TFCGuid", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#acf7f5c2fa8b5114e2b9a46e5814f8abd", null ],

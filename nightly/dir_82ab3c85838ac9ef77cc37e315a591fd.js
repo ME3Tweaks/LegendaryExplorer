@@ -1,6 +1,7 @@
 var dir_82ab3c85838ac9ef77cc37e315a591fd =
 [
     [ "CloningImportingAndRelinking", "dir_40be7555a0aef8833ea095c9f880e887.html", "dir_40be7555a0aef8833ea095c9f880e887" ],
+    [ "NetIndexing", "dir_404a3ee9a645764f5fd5c50547f6e30c.html", "dir_404a3ee9a645764f5fd5c50547f6e30c" ],
     [ "CompressionHelper.cs", "_compression_helper_8cs.html", "_compression_helper_8cs" ],
     [ "EntryTree.cs", "_entry_tree_8cs.html", "_entry_tree_8cs" ],
     [ "ExportCreator.cs", "_export_creator_8cs.html", "_export_creator_8cs" ],
@@ -21,6 +22,7 @@ var dir_82ab3c85838ac9ef77cc37e315a591fd =
     [ "PackageResynthesizer.cs", "_package_resynthesizer_8cs.html", "_package_resynthesizer_8cs" ],
     [ "PackageSaver.cs", "_package_saver_8cs.html", "_package_saver_8cs" ],
     [ "ReferenceTree.cs", "_reference_tree_8cs.html", "_reference_tree_8cs" ],
+    [ "SFARPackageCache.cs", "_s_f_a_r_package_cache_8cs.html", "_s_f_a_r_package_cache_8cs" ],
     [ "TieredPackageCache.cs", "_tiered_package_cache_8cs.html", "_tiered_package_cache_8cs" ],
     [ "UDKPackage.cs", "_u_d_k_package_8cs.html", "_u_d_k_package_8cs" ],
     [ "UnrealPackageFile.cs", "_unreal_package_file_8cs.html", "_unreal_package_file_8cs" ]

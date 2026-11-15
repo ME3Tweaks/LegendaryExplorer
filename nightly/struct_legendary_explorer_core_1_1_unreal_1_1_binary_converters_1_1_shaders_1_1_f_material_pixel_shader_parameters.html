@@ -118,6 +118,8 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_legenda
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a0241a9ee685365b342b4da772fbe354b" id="r_a0241a9ee685365b342b4da772fbe354b"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a0241a9ee685365b342b4da772fbe354b">RecomputeLE3UniformParameterValidity</a> ()</td></tr>
+<tr class="memdesc:a0241a9ee685365b342b4da772fbe354b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rebuilds the two LE3 validity flags for newly bound parameters. Native 0x7ff74ab37e30 accepts empty arrays, otherwise requires consecutive expression indices and 16-byte registers in one buffer. This must not run implicitly while loading existing shaders.  <br /></td></tr>
 <tr class="memitem:a2c9997c4b78ce2b96879066fcadb5830" id="r_a2c9997c4b78ce2b96879066fcadb5830"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a2c9997c4b78ce2b96879066fcadb5830">Serialize</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html">SerializingContainer</a> sc)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -150,8 +152,41 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a49c544bff5931520b3dc385aa2fb0c2a" id="r_a49c544bff5931520b3dc385aa2fb0c2a"><td class="memItemLeft"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_shader_parameter.html">FShaderParameter</a>&#160;</td><td class="memItemRight"><a class="el" href="#a49c544bff5931520b3dc385aa2fb0c2a">ScreenDoorFadeSettings2</a></td></tr>
 <tr class="memitem:aa1977a3eaca76f064de17175a2e7af78" id="r_aa1977a3eaca76f064de17175a2e7af78"><td class="memItemLeft"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_shader_resource_parameter.html">FShaderResourceParameter</a>&#160;</td><td class="memItemRight"><a class="el" href="#aa1977a3eaca76f064de17175a2e7af78">ScreenDoorNoiseTexture</a></td></tr>
 <tr class="memitem:aa5a60da8e1b564c3039298bcecec1779" id="r_aa5a60da8e1b564c3039298bcecec1779"><td class="memItemLeft"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_shader_parameter.html">FShaderParameter</a>&#160;</td><td class="memItemRight"><a class="el" href="#aa5a60da8e1b564c3039298bcecec1779">WrapLightingParameters</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
+Properties</h2></td></tr>
+<tr class="memitem:aae353479b4ad10682a510005a12e2688" id="r_aae353479b4ad10682a510005a12e2688"><td class="memItemLeft">readonly bool&#160;</td><td class="memItemRight"><a class="el" href="#aae353479b4ad10682a510005a12e2688">HasContiguousPixelScalarParameters</a><code> [get]</code></td></tr>
+<tr class="memdesc:aae353479b4ad10682a510005a12e2688"><td class="mdescLeft">&#160;</td><td class="mdescRight">LE3's cached contiguous-register checks. Loading preserves the serialized values.  <br /></td></tr>
+<tr class="memitem:a545bc8b31afe7a6752428299ba8901ca" id="r_a545bc8b31afe7a6752428299ba8901ca"><td class="memItemLeft">readonly bool&#160;</td><td class="memItemRight"><a class="el" href="#a545bc8b31afe7a6752428299ba8901ca">HasContiguousPixelVectorParameters</a><code> [get]</code></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="a0241a9ee685365b342b4da772fbe354b" name="a0241a9ee685365b342b4da772fbe354b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0241a9ee685365b342b4da772fbe354b">&#9670;&#160;</a></span>RecomputeLE3UniformParameterValidity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialPixelShaderParameters.RecomputeLE3UniformParameterValidity </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Rebuilds the two LE3 validity flags for newly bound parameters. Native 0x7ff74ab37e30 accepts empty arrays, otherwise requires consecutive expression indices and 16-byte registers in one buffer. This must not run implicitly while loading existing shaders. </p>
+
+</div>
+</div>
 <a id="a2c9997c4b78ce2b96879066fcadb5830" name="a2c9997c4b78ce2b96879066fcadb5830"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2c9997c4b78ce2b96879066fcadb5830">&#9670;&#160;</a></span>Serialize()</h2>
 
@@ -566,6 +601,53 @@ Public Attributes</h2></td></tr>
           <td class="memname"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_shader_parameter.html">FShaderParameter</a> LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialPixelShaderParameters.WrapLightingParameters</td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-property-members" id="doc-property-members"></a><h2 id="header-doc-property-members" class="groupheader">Property Documentation</h2>
+<a id="aae353479b4ad10682a510005a12e2688" name="aae353479b4ad10682a510005a12e2688"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae353479b4ad10682a510005a12e2688">&#9670;&#160;</a></span>HasContiguousPixelScalarParameters</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly bool LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialPixelShaderParameters.HasContiguousPixelScalarParameters</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>LE3's cached contiguous-register checks. Loading preserves the serialized values. </p>
+
+</div>
+</div>
+<a id="a545bc8b31afe7a6752428299ba8901ca" name="a545bc8b31afe7a6752428299ba8901ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a545bc8b31afe7a6752428299ba8901ca">&#9670;&#160;</a></span>HasContiguousPixelVectorParameters</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly bool LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialPixelShaderParameters.HasContiguousPixelVectorParameters</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

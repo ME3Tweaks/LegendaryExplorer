@@ -1,7 +1,7 @@
 var class_legendary_explorer_core_1_1_memory_1_1_memory_manager =
 [
     [ "SetUsePooledMemory", "class_legendary_explorer_core_1_1_memory_1_1_memory_manager.html#a8aa087b4c8a7cf8a6aa55c094421ef53", null ],
-    [ "GetMemoryStream", "class_legendary_explorer_core_1_1_memory_1_1_memory_manager.html#aad6e3979fd35060d6c76948a4567ce64", null ],
+    [ "GetMemoryStream", "class_legendary_explorer_core_1_1_memory_1_1_memory_manager.html#af9388ba55802a81a0d28771f5cc3d392", null ],
     [ "GetByteArray", "class_legendary_explorer_core_1_1_memory_1_1_memory_manager.html#affd357f48c13b97a0378867a0b498274", null ],
     [ "ReturnByteArray", "class_legendary_explorer_core_1_1_memory_1_1_memory_manager.html#ad35bc82f8e7185e3b6570c93e1c6359d", null ],
     [ "ResetMemoryManager", "class_legendary_explorer_core_1_1_memory_1_1_memory_manager.html#a930847104fd71c13793eaa66df7d9813", null ],

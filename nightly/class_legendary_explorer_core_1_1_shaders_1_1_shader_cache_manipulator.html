@@ -118,14 +118,31 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_legendar
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a19a7171e5532528470960da47e7601d9" id="r_a19a7171e5532528470960da47e7601d9"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a19a7171e5532528470960da47e7601d9">CompactSeekFreeShaderCaches</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string gamePathOverride=null)</td></tr>
+<tr class="memitem:a0bc261898400b59e673f8397f4d4cc1b" id="r_a0bc261898400b59e673f8397f4d4cc1b"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a0bc261898400b59e673f8397f4d4cc1b">CompactSeekFreeShaderCaches</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string gamePathOverride=null, bool localOnly=false)</td></tr>
+<tr class="memdesc:a0bc261898400b59e673f8397f4d4cc1b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">localOnly</td><td>Keep the local shader maps the global (Ref) shader cache also has, for packages that must not depend on it</td></tr>
+  </table>
+  </dd>
+</dl>
+ <br /></td></tr>
 <tr class="memitem:ad5696fb2b077399587a952a2567c684a" id="r_ad5696fb2b077399587a952a2567c684a"><td class="memItemLeft">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a>&#160;</td><td class="memItemRight"><a class="el" href="#ad5696fb2b077399587a952a2567c684a">GetAllShadersForMaterials</a> (List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; materials, string gamePathOverride=null)</td></tr>
+<tr class="memdesc:ad5696fb2b077399587a952a2567c684a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets ALL shaders for a material, including from the ref shader cache.  <br /></td></tr>
 <tr class="memitem:aab10b82d914396069ecf9102ece4fb0f" id="r_aab10b82d914396069ecf9102ece4fb0f"><td class="memItemLeft">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a>&#160;</td><td class="memItemRight"><a class="el" href="#aab10b82d914396069ecf9102ece4fb0f">GetLocalShadersForMaterials</a> (List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; materials, string gamePathOverride=null)</td></tr>
+<tr class="memdesc:aab10b82d914396069ecf9102ece4fb0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns shaders in the local shader cache for the given materials.  <br /></td></tr>
 <tr class="memitem:aa61bd8efd23268a4fd18910ad3c44eb3" id="r_aa61bd8efd23268a4fd18910ad3c44eb3"><td class="memItemLeft">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a>&#160;</td><td class="memItemRight"><a class="el" href="#aa61bd8efd23268a4fd18910ad3c44eb3">GetRefShaders</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, HashSet&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_parameter_set.html">StaticParameterSet</a> &gt; staticParamSets, string gamePathOverride=null)</td></tr>
 <tr class="memdesc:aa61bd8efd23268a4fd18910ad3c44eb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fetches a shader cache containing only the parameter sets, from the ref shader cache.  <br /></td></tr>
 <tr class="memitem:aec366d0e43d02fd9844885d89a8ddf4a" id="r_aec366d0e43d02fd9844885d89a8ddf4a"><td class="memItemLeft">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a>&#160;</td><td class="memItemRight"><a class="el" href="#aec366d0e43d02fd9844885d89a8ddf4a">GetLocalShaders</a> (HashSet&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_parameter_set.html">StaticParameterSet</a> &gt; staticParamSets, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> seekFreeShaderCacheExport)</td></tr>
-<tr class="memitem:aa26b2c04b84ea1aecef479c10980a561" id="r_aa26b2c04b84ea1aecef479c10980a561"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#aa26b2c04b84ea1aecef479c10980a561">AddShadersToFile</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> destFile, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a> shadersToAdd)</td></tr>
-<tr class="memitem:a5a17a09610595137749ce899b1ca6fd7" id="r_a5a17a09610595137749ce899b1ca6fd7"><td class="memItemLeft">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a5a17a09610595137749ce899b1ca6fd7">GetBrokenMaterials</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string gamePathOverride=null)</td></tr>
+<tr class="memitem:a5d67838ffb990a4988aad0e8ee582b6f" id="r_a5d67838ffb990a4988aad0e8ee582b6f"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a5d67838ffb990a4988aad0e8ee582b6f">AddShadersToFile</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> destFile, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a> shadersToAdd, bool overwrite=false)</td></tr>
+<tr class="memdesc:a5d67838ffb990a4988aad0e8ee582b6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds shaders from the given cache into the target package, creating cache if necessary.  <br /></td></tr>
+<tr class="memitem:ae2f5017a5c85cebbbb048a27dc8bb19a" id="r_ae2f5017a5c85cebbbb048a27dc8bb19a"><td class="memItemLeft">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ae2f5017a5c85cebbbb048a27dc8bb19a">GetBrokenMaterials</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string gamePathOverride=null, bool localOnly=false)</td></tr>
+<tr class="memdesc:ae2f5017a5c85cebbbb048a27dc8bb19a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">localOnly</td><td>Treat a material as broken unless the local shader cache has its shader map, ignoring the global (Ref) shader cache</td></tr>
+  </table>
+  </dd>
+</dl>
+ <br /></td></tr>
 <tr class="memitem:a7fa300eb50e77a36ae1b99518181f12b" id="r_a7fa300eb50e77a36ae1b99518181f12b"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a7fa300eb50e77a36ae1b99518181f12b">IsMaterialBroken</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, string gamePathOverride=null)</td></tr>
 <tr class="memitem:ae7bf39375cebc6d96a5bfac0b8a826ee" id="r_ae7bf39375cebc6d96a5bfac0b8a826ee"><td class="memItemLeft">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight"><a class="el" href="#ae7bf39375cebc6d96a5bfac0b8a826ee">CreateShaderCache</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
 <tr class="memdesc:ae7bf39375cebc6d96a5bfac0b8a826ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an empty SeekFreeShaderCache export in the package if it does not exist.  <br /></td></tr>
@@ -141,8 +158,8 @@ Static Public Attributes</h2></td></tr>
 <tr class="memdesc:a0a82c7c55d3fd92e20d8dbdec4ee3e1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets shaders that aren't specific to a vertex factory, such as <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_function_pixel_shader.html">FLightFunctionPixelShader</a>. They're in the material shader map itself, rather than one of its mesh shader maps.  <br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
-<a id="a19a7171e5532528470960da47e7601d9" name="a19a7171e5532528470960da47e7601d9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19a7171e5532528470960da47e7601d9">&#9670;&#160;</a></span>CompactSeekFreeShaderCaches()</h2>
+<a id="a0bc261898400b59e673f8397f4d4cc1b" name="a0bc261898400b59e673f8397f4d4cc1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bc261898400b59e673f8397f4d4cc1b">&#9670;&#160;</a></span>CompactSeekFreeShaderCaches()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -158,7 +175,12 @@ Static Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>gamePathOverride</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>gamePathOverride</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>localOnly</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -167,6 +189,14 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">localOnly</td><td>Keep the local shader maps the global (Ref) shader cache also has, for packages that must not depend on it</td></tr>
+  </table>
+  </dd>
+</dl>
+</p>
 
 </div>
 </div>
@@ -197,6 +227,16 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Gets ALL shaders for a material, including from the ref shader cache. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">materials</td><td></td></tr>
+    <tr><td class="paramname">gamePathOverride</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A shader cache object that contains the material shader maps and the shaders.</dd></dl>
+
 </div>
 </div>
 <a id="aab10b82d914396069ecf9102ece4fb0f" name="aab10b82d914396069ecf9102ece4fb0f"></a>
@@ -225,6 +265,16 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Returns shaders in the local shader cache for the given materials. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">materials</td><td></td></tr>
+    <tr><td class="paramname">gamePathOverride</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
@@ -300,8 +350,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa26b2c04b84ea1aecef479c10980a561" name="aa26b2c04b84ea1aecef479c10980a561"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa26b2c04b84ea1aecef479c10980a561">&#9670;&#160;</a></span>AddShadersToFile()</h2>
+<a id="a5d67838ffb990a4988aad0e8ee582b6f" name="a5d67838ffb990a4988aad0e8ee582b6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d67838ffb990a4988aad0e8ee582b6f">&#9670;&#160;</a></span>AddShadersToFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -317,7 +367,12 @@ Static Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a></td>          <td class="paramname"><span class="paramname"><em>shadersToAdd</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a></td>          <td class="paramname"><span class="paramname"><em>shadersToAdd</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>overwrite</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -327,10 +382,20 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Adds shaders from the given cache into the target package, creating cache if necessary. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">destFile</td><td></td></tr>
+    <tr><td class="paramname">shadersToAdd</td><td></td></tr>
+    <tr><td class="paramname">overwrite</td><td>If true, entries already present in the destination cache are replaced with the incoming version instead of being left alone. Needed to force-refresh a material whose shader map already exists locally (e.g. from a prior install) but is stale.</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
-<a id="a5a17a09610595137749ce899b1ca6fd7" name="a5a17a09610595137749ce899b1ca6fd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a17a09610595137749ce899b1ca6fd7">&#9670;&#160;</a></span>GetBrokenMaterials()</h2>
+<a id="ae2f5017a5c85cebbbb048a27dc8bb19a" name="ae2f5017a5c85cebbbb048a27dc8bb19a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2f5017a5c85cebbbb048a27dc8bb19a">&#9670;&#160;</a></span>GetBrokenMaterials()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -346,7 +411,12 @@ Static Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>gamePathOverride</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>gamePathOverride</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>localOnly</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -355,6 +425,14 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">localOnly</td><td>Treat a material as broken unless the local shader cache has its shader map, ignoring the global (Ref) shader cache</td></tr>
+  </table>
+  </dd>
+</dl>
+</p>
 
 </div>
 </div>

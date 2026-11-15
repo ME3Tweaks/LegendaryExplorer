@@ -78,12 +78,17 @@ var annotated_dup =
         [ "LE2Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory" ],
         [ "LE3Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e3_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e3_directory" ],
         [ "LEDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory" ],
+        [ "LMPDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_m_p_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_m_p_directory" ],
+        [ "ME1Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e1_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e1_directory" ],
+        [ "ME2Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e2_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e2_directory" ],
+        [ "ME3Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e3_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e3_directory" ],
         [ "MEDirectories", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories" ],
         [ "MELoadedDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c" ],
         [ "MELoadedFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files" ],
         [ "MountFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file" ],
         [ "MountFlag", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag" ],
-        [ "TLKSystem", "class_legendary_explorer_core_1_1_game_filesystem_1_1_t_l_k_system.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_t_l_k_system" ]
+        [ "TLKSystem", "class_legendary_explorer_core_1_1_game_filesystem_1_1_t_l_k_system.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_t_l_k_system" ],
+        [ "UDKDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory" ]
       ] ],
       [ "Gammtek", "namespace_legendary_explorer_core_1_1_gammtek.html", [
         [ "Collections", "namespace_legendary_explorer_core_1_1_gammtek_1_1_collections.html", [
@@ -273,10 +278,12 @@ var annotated_dup =
         [ "MaterialHelper", "class_legendary_explorer_core_1_1_helpers_1_1_material_helper.html", "class_legendary_explorer_core_1_1_helpers_1_1_material_helper" ],
         [ "MeshHelper", "class_legendary_explorer_core_1_1_helpers_1_1_mesh_helper.html", "class_legendary_explorer_core_1_1_helpers_1_1_mesh_helper" ],
         [ "MiscExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_misc_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_misc_extensions" ],
+        [ "NormalCompressionHelper", "class_legendary_explorer_core_1_1_helpers_1_1_normal_compression_helper.html", "class_legendary_explorer_core_1_1_helpers_1_1_normal_compression_helper" ],
         [ "StreamHelpers", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers" ],
         [ "StringExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions" ],
         [ "TaskExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_task_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_task_extensions" ],
         [ "TypeExtension", "class_legendary_explorer_core_1_1_helpers_1_1_type_extension.html", "class_legendary_explorer_core_1_1_helpers_1_1_type_extension" ],
+        [ "UdkTextureEncodingPolicy", "class_legendary_explorer_core_1_1_helpers_1_1_udk_texture_encoding_policy.html", "class_legendary_explorer_core_1_1_helpers_1_1_udk_texture_encoding_policy" ],
         [ "UnrealExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions" ]
       ] ],
       [ "Kismet", "namespace_legendary_explorer_core_1_1_kismet.html", [
@@ -368,6 +375,14 @@ var annotated_dup =
           [ "Relinker", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker" ],
           [ "RelinkerOptionsPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package" ]
         ] ],
+        [ "NetIndexing", "namespace_legendary_explorer_core_1_1_packages_1_1_net_indexing.html", [
+          [ "Issues", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_issues.html", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_issues" ],
+          [ "LinkerInventory", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_linker_inventory.html", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_linker_inventory" ],
+          [ "LinkerView", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_linker_view.html", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_linker_view" ],
+          [ "NetIndexKeys", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_net_index_keys.html", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_net_index_keys" ],
+          [ "ObjectObservations", "struct_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_object_observations.html", "struct_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_object_observations" ],
+          [ "PackageNetScan", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_package_net_scan.html", "class_legendary_explorer_core_1_1_packages_1_1_net_indexing_1_1_package_net_scan" ]
+        ] ],
         [ "ClassInfo", "class_legendary_explorer_core_1_1_packages_1_1_class_info.html", "class_legendary_explorer_core_1_1_packages_1_1_class_info" ],
         [ "CompressionHelper", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper" ],
         [ "EntryTree", "class_legendary_explorer_core_1_1_packages_1_1_entry_tree.html", "class_legendary_explorer_core_1_1_packages_1_1_entry_tree" ],
@@ -393,6 +408,7 @@ var annotated_dup =
         [ "PackageUpdate", "struct_legendary_explorer_core_1_1_packages_1_1_package_update.html", "struct_legendary_explorer_core_1_1_packages_1_1_package_update" ],
         [ "PropertyInfo", "class_legendary_explorer_core_1_1_packages_1_1_property_info.html", "class_legendary_explorer_core_1_1_packages_1_1_property_info" ],
         [ "ReferenceTreeBase&lt; TSelf &gt;", "class_legendary_explorer_core_1_1_packages_1_1_reference_tree_base-1-g.html", "class_legendary_explorer_core_1_1_packages_1_1_reference_tree_base-1-g" ],
+        [ "SFARPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_s_f_a_r_package_cache.html", "class_legendary_explorer_core_1_1_packages_1_1_s_f_a_r_package_cache" ],
         [ "TieredPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache" ],
         [ "UDKPackage", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package" ],
         [ "UnrealPackageFile", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file" ]
@@ -444,6 +460,15 @@ var annotated_dup =
       [ "Shaders", "namespace_legendary_explorer_core_1_1_shaders.html", [
         [ "ConstantInfo", "class_legendary_explorer_core_1_1_shaders_1_1_constant_info.html", "class_legendary_explorer_core_1_1_shaders_1_1_constant_info" ],
         [ "DecookedExporter", "class_legendary_explorer_core_1_1_shaders_1_1_decooked_exporter.html", "class_legendary_explorer_core_1_1_shaders_1_1_decooked_exporter" ],
+        [ "HLSLDecompiler", "class_legendary_explorer_core_1_1_shaders_1_1_h_l_s_l_decompiler.html", "class_legendary_explorer_core_1_1_shaders_1_1_h_l_s_l_decompiler" ],
+        [ "LE3MaterialResourceBuilder", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_resource_builder.html", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_resource_builder" ],
+        [ "LE3MaterialShaderCompiler", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler.html", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler" ],
+        [ "LE3MaterialUsageAdvisor", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_usage_advisor.html", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_usage_advisor" ],
+        [ "LE3MaterialUsageScanner", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_usage_scanner.html", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_usage_scanner" ],
+        [ "LE3ShaderParameterBinder", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_shader_parameter_binder.html", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_shader_parameter_binder" ],
+        [ "LE3ShaderSourceCrc", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_shader_source_crc.html", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_shader_source_crc" ],
+        [ "LE3ShaderSourceSnapshot", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_shader_source_snapshot.html", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_shader_source_snapshot" ],
+        [ "LE3TextureMetadataReader", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_texture_metadata_reader.html", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_texture_metadata_reader" ],
         [ "ParameterDeclaration", "class_legendary_explorer_core_1_1_shaders_1_1_parameter_declaration.html", "class_legendary_explorer_core_1_1_shaders_1_1_parameter_declaration" ],
         [ "RefShaderCacheReader", "class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader.html", "class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader" ],
         [ "ShaderCacheManipulator", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator" ],
@@ -480,16 +505,22 @@ var annotated_dup =
           [ "TextureMapMemoryEntry", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry" ],
           [ "TextureMapPackageEntry", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry" ]
         ] ],
+        [ "GX2Tiling", "class_legendary_explorer_core_1_1_textures_1_1_g_x2_tiling.html", "class_legendary_explorer_core_1_1_textures_1_1_g_x2_tiling" ],
         [ "Image", "class_legendary_explorer_core_1_1_textures_1_1_image.html", "class_legendary_explorer_core_1_1_textures_1_1_image" ],
+        [ "MipGenerationOptions", "class_legendary_explorer_core_1_1_textures_1_1_mip_generation_options.html", "class_legendary_explorer_core_1_1_textures_1_1_mip_generation_options" ],
         [ "MipMap", "class_legendary_explorer_core_1_1_textures_1_1_mip_map.html", "class_legendary_explorer_core_1_1_textures_1_1_mip_map" ],
         [ "TexConverter", "class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html", "class_legendary_explorer_core_1_1_textures_1_1_tex_converter" ],
+        [ "TextureCopyWorkItem", "class_legendary_explorer_core_1_1_textures_1_1_texture_copy_work_item.html", "class_legendary_explorer_core_1_1_textures_1_1_texture_copy_work_item" ],
         [ "TextureCRC", "class_legendary_explorer_core_1_1_textures_1_1_texture_c_r_c.html", "class_legendary_explorer_core_1_1_textures_1_1_texture_c_r_c" ],
+        [ "TextureEncodeRequest", "class_legendary_explorer_core_1_1_textures_1_1_texture_encode_request.html", "class_legendary_explorer_core_1_1_textures_1_1_texture_encode_request" ],
         [ "TextureLODInfo", "class_legendary_explorer_core_1_1_textures_1_1_texture_l_o_d_info.html", "class_legendary_explorer_core_1_1_textures_1_1_texture_l_o_d_info" ],
+        [ "TextureReplaceCallbacks", "class_legendary_explorer_core_1_1_textures_1_1_texture_replace_callbacks.html", "class_legendary_explorer_core_1_1_textures_1_1_texture_replace_callbacks" ],
         [ "TextureSizeNotPowerOf2Exception", "class_legendary_explorer_core_1_1_textures_1_1_texture_size_not_power_of2_exception.html", null ],
         [ "TFCCompactor", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor" ],
         [ "TFCCompactorInfoPackage", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package" ],
         [ "TFCInfo", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_info.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_info" ],
-        [ "TFCTools", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_tools.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_tools" ]
+        [ "TFCTools", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_tools.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_tools" ],
+        [ "Xbox360Tiling", "class_legendary_explorer_core_1_1_textures_1_1_xbox360_tiling.html", "class_legendary_explorer_core_1_1_textures_1_1_xbox360_tiling" ]
       ] ],
       [ "TLK", "namespace_legendary_explorer_core_1_1_t_l_k.html", [
         [ "ME1", "namespace_legendary_explorer_core_1_1_t_l_k_1_1_m_e1.html", [
@@ -506,6 +537,7 @@ var annotated_dup =
         [ "LE1TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files" ],
         [ "LE2TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e2_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e2_talk_files" ],
         [ "LE3TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e3_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e3_talk_files" ],
+        [ "LMPTalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_m_p_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_m_p_talk_files" ],
         [ "ME1TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_talk_files" ],
         [ "ME2TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_talk_files" ],
         [ "ME3TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files" ],
@@ -516,6 +548,7 @@ var annotated_dup =
         [ "ConvertToUDK", "class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k.html", "class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k" ],
         [ "LightingImportSetup", "class_legendary_explorer_core_1_1_u_d_k_1_1_lighting_import_setup.html", "class_legendary_explorer_core_1_1_u_d_k_1_1_lighting_import_setup" ],
         [ "StaticLightingImporter", "class_legendary_explorer_core_1_1_u_d_k_1_1_static_lighting_importer.html", "class_legendary_explorer_core_1_1_u_d_k_1_1_static_lighting_importer" ],
+        [ "StaticMeshComponentLightingData", "class_legendary_explorer_core_1_1_u_d_k_1_1_static_mesh_component_lighting_data.html", "class_legendary_explorer_core_1_1_u_d_k_1_1_static_mesh_component_lighting_data" ],
         [ "UDKAssetInfo", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info.html", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info" ],
         [ "UDKMaterialPort", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_material_port.html", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_material_port" ]
       ] ],
@@ -944,6 +977,7 @@ var annotated_dup =
           [ "UMap&lt; TKey, TValue &gt;", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_map-2-g.html", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_map-2-g" ],
           [ "UMapBase&lt; TKey, TValue, TKeyFuncs &gt;", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_map_base-3-g.html", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_map_base-3-g" ],
           [ "UMultiMap&lt; TKey, TValue &gt;", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_multi_map-2-g.html", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_multi_map-2-g" ],
+          [ "UReverseMap&lt; TKey, TValue &gt;", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_reverse_map-2-g.html", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_reverse_map-2-g" ],
           [ "USet&lt; T &gt;", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_set-1-g.html", null ],
           [ "USet&lt; T, TKey, TKeyFuncs &gt;", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_set-3-g.html", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_set-3-g" ],
           [ "USparseArray&lt; T &gt;", "struct_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_sparse_array-1-g.html", "struct_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_sparse_array-1-g" ]
@@ -957,6 +991,8 @@ var annotated_dup =
           [ "LE2UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e2_unreal_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e2_unreal_object_info" ],
           [ "LE3ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_object_info" ],
           [ "LE3UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info" ],
+          [ "LMPObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_m_p_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_m_p_object_info" ],
+          [ "LMPUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_m_p_unreal_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_m_p_unreal_object_info" ],
           [ "ME1ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_object_info" ],
           [ "ME1UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_unreal_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_unreal_object_info" ],
           [ "ME2ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_object_info" ],

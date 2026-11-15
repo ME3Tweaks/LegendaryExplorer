@@ -9,5 +9,8 @@ var class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info =
     [ "StaticMeshes", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info.html#a784e77d79d1b86720afb2508d3d3183c", null ],
     [ "StaticMeshActors", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info.html#a27f5900ba9fe81c521d92ab56a674448", null ],
     [ "LightActors", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info.html#a310c9782c32dcc1e296cea1c42866409", null ],
+    [ "DecalActors", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info.html#abd22d562df91e6efe8a9f051d717492b", null ],
+    [ "PortedMeshComponents", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info.html#a32b133a53d7489cf406ca21813d9af47", null ],
+    [ "ShadowMappedLightGuids", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info.html#a322e9267f6bf8dc06b83195caaf9c2ee", null ],
     [ "TopLevelMeshPackages", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info.html#ae94c35a57a697532432655cb15c8ceeb", null ]
 ];

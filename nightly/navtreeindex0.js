@@ -57,6 +57,7 @@ var NAVTREEINDEX0 =
 "_bit_stream_writer_8cs.html":[3,0,0,0,7,6,6],
 "_boolean_extensions_8cs.html":[3,0,0,0,7,4,4],
 "_boolean_literal_8cs.html":[3,0,0,0,27,4,1,4],
+"_bounded_read_only_stream_8cs.html":[3,0,0,0,8,0],
 "_break_statement_8cs.html":[3,0,0,0,27,4,1,5],
 "_brush_component_8cs.html":[3,0,0,0,26,1,20],
 "_buffer_8cs.html":[3,0,0,0,7,0,0,1],
@@ -163,7 +164,7 @@ var NAVTREEINDEX0 =
 "_compact_matrix_format_info_8cs.html":[3,0,0,0,7,8,0,3],
 "_compiler_utils_8cs.html":[3,0,0,0,27,1,3],
 "_composite_symbol_ref_8cs.html":[3,0,0,0,27,4,1,12],
-"_compression_helper_8cs.html":[3,0,0,0,16,1],
+"_compression_helper_8cs.html":[3,0,0,0,16,2],
 "_compressonator_codecs_8cs.html":[3,0,0,0,23,0,3],
 "_compressonator_x_codec_8cpp.html":[3,0,0,0,23,0,4],
 "_compressonator_x_codec_8cpp.html#a021ded666683ec2ef7fa4a9379dea616":[3,0,0,0,23,0,4,41],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "_data_reader_8cs.html":[3,0,0,0,7,6,12],
 "_data_writer_8cs.html":[3,0,0,0,7,6,13],
 "_debug_stop_watch_8cs.html":[3,0,0,0,3,0],
-"_debug_utilities_8cs.html":[3,0,0,0,3,1],
-"_decal_component_8cs.html":[3,0,0,0,26,1,22]
+"_debug_utilities_8cs.html":[3,0,0,0,3,1]
 };

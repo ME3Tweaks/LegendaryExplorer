@@ -135,6 +135,8 @@ Properties</h2></td></tr>
 <tr class="memdesc:a6f94b4c3d36b2937b5d8f2e65977c02c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delegate that can be used to look up missing objects when compiling classes and a referenced object is not found in the local file. [Source package, IFP to import/export, Class name].  <br /></td></tr>
 <tr class="memitem:aeda45bcf844ce86e8a40bf0ce239331b" id="r_aeda45bcf844ce86e8a40bf0ce239331b"><td class="memItemLeft">Func&lt; string, List&lt; string &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#aeda45bcf844ce86e8a40bf0ce239331b">GetVTableFromDonor</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:aeda45bcf844ce86e8a40bf0ce239331b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invoked to fetch a VTable for a class from a donor object. Used to align VTables typically across games. [IFP to VTable list].  <br /></td></tr>
+<tr class="memitem:ab2d009cd52a5d4f4ab6523a1328f3d78" id="r_ab2d009cd52a5d4f4ab6523a1328f3d78"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ab2d009cd52a5d4f4ab6523a1328f3d78">AllowNativeStructEdits</a> = false<code> [get, set]</code></td></tr>
+<tr class="memdesc:ab2d009cd52a5d4f4ab6523a1328f3d78"><td class="mdescLeft">&#160;</td><td class="mdescRight">EXTREMELY DANGEROUS: If editing native structs is allowed. Seriously, don't turn this on unless you really know what you're doing.  <br /></td></tr>
 <tr class="memitem:a2cbcb51031f838033ad405df13f23126" id="r_a2cbcb51031f838033ad405df13f23126"><td class="memItemLeft"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a>&#160;</td><td class="memItemRight"><a class="el" href="#a2cbcb51031f838033ad405df13f23126">BaseFilesFileLib</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:a2cbcb51031f838033ad405df13f23126"><td class="mdescLeft">&#160;</td><td class="mdescRight">When doing bulk-compiles of non-base files, providing this can significantly improve performance. It must be an initialized <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> for the last file in the game's base file list, as defined in FileLib.BaseFileNames.  <br /></td></tr>
 </table>
@@ -285,6 +287,30 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Invoked to fetch a VTable for a class from a donor object. Used to align VTables typically across games. [IFP to VTable list]. </p>
+
+</div>
+</div>
+<a id="ab2d009cd52a5d4f4ab6523a1328f3d78" name="ab2d009cd52a5d4f4ab6523a1328f3d78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2d009cd52a5d4f4ab6523a1328f3d78">&#9670;&#160;</a></span>AllowNativeStructEdits</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.UnrealScript.UnrealScriptOptionsPackage.AllowNativeStructEdits = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span><span class="mlabel set">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>EXTREMELY DANGEROUS: If editing native structs is allowed. Seriously, don't turn this on unless you really know what you're doing. </p>
 
 </div>
 </div>

@@ -162,6 +162,18 @@ Classes</h2></td></tr>
 Namespaces</h2></td></tr>
 <tr class="memitem:LegendaryExplorerCore" id="r_LegendaryExplorerCore"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a></td></tr>
 <tr class="memitem:LegendaryExplorerCore_2EUnreal" id="r_LegendaryExplorerCore_2EUnreal"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html">LegendaryExplorerCore.Unreal</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a7f0be1d7ff66753d888c33bc52918eb8" id="r_a7f0be1d7ff66753d888c33bc52918eb8"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#a7f0be1d7ff66753d888c33bc52918eb8">LegendaryExplorerCore.Unreal.PropertySourceKind</a> { <a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#a7f0be1d7ff66753d888c33bc52918eb8a15f752f90268a1a39fe449871b75267c">LegendaryExplorerCore.Unreal.Archetype</a>
+, <a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#a7f0be1d7ff66753d888c33bc52918eb8a3f18fdfd91efbd8012758f3cf52dedae">LegendaryExplorerCore.Unreal.ClassDefault</a>
+ }</td></tr>
+<tr class="memdesc:a7f0be1d7ff66753d888c33bc52918eb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The kind of object a Property was inherited from. See PropertySource.  <a href="namespace_legendary_explorer_core_1_1_unreal.html#a7f0be1d7ff66753d888c33bc52918eb8">More...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ad7941418f2eff374cbd43472fd685448" id="r_ad7941418f2eff374cbd43472fd685448"><td class="memItemLeft">record&#160;</td><td class="memItemRight"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ad7941418f2eff374cbd43472fd685448">LegendaryExplorerCore.Unreal.PropertySource</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#a7f0be1d7ff66753d888c33bc52918eb8">PropertySourceKind</a> Kind, string InstancedFullPath, string PackageFileName)</td></tr>
+<tr class="memdesc:ad7941418f2eff374cbd43472fd685448"><td class="mdescLeft">&#160;</td><td class="mdescRight">Identifies the object a Property was actually read from when it was inherited via PropertyCollectionExtensions.GetPropertiesIncludingInherited rather than being set explicitly on the export that was asked for. Deliberately does not hold a reference to the source ExportEntry (or its package) itself - that source object may live in a different package than the one the property is being used from, and holding onto it would keep that other package's IMEPackage alive for as long as the property is.  <br /></td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

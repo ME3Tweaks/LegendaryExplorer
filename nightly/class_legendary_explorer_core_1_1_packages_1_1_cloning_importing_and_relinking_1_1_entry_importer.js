@@ -29,7 +29,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinki
     [ "CanImport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a8954c3623a770bab9b9194b01eea7f56", null ],
     [ "CanImport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a5ba8ccfd5938591fccd45c82cd796346", null ],
     [ "CreateStack", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ad95708d94697e430e8f46628f12b687a", null ],
-    [ "CanResolveImport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ab34af836f642ef3f0b041deda8e749f2", null ],
+    [ "CanResolveImport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a0b1828abb8927fa1faef7d8a2a74220f", null ],
     [ "ResolveImport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a0a7843a3c82891ef274de593e25888a5", null ],
     [ "GetPossibleImportFiles", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#acacb4fa48592f4f5436919c2898e37dd", null ],
     [ "GetPossibleImportFiles", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a54c83e49c1905d2901cc21105ec9e998", null ],
@@ -38,5 +38,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinki
     [ "EnsureClassIsInFile", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aed5747fe34549c3e75da3dd7ce8d50a9", null ],
     [ "GetAllReferencesOfExport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aefec59169d0ae2b1b2a08af444a8177b", null ],
     [ "TryResolveImport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a4a0db6ecd96e962acd14755e1a0a4e37", null ],
-    [ "ConvertExportToImport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a54ddafd63c9a266a691a0fc38e8c2f41", null ]
+    [ "ConvertExportToImport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a54ddafd63c9a266a691a0fc38e8c2f41", null ],
+    [ "ConvertExportsToImports", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ace1f6c0e83f03579a2558715d0a87a64", null ]
 ];

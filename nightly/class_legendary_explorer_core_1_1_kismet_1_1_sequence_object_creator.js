@@ -22,6 +22,7 @@ var class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator =
     [ "CreateSeqEventRemoteActivated", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a034c98bbff2a9a8e9a0d07874a545340", null ],
     [ "CreateSeqEventDeath", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a3cd2647cd6e25bfc794ff63ed83c00b4", null ],
     [ "CreateFindObject", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a509464b97ef193ae922f4283938d071d", null ],
+    [ "CreateFindObjectNameTag", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a89c01ba9aa5ad488ff252cb7b26dd6f9", null ],
     [ "CreateAddFloat", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a26214c4858b273d135482cbb54fee5e5", null ],
     [ "CreateAddInt", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a06d46ab4a5aab4846270add3f189d947", null ],
     [ "CreateSetInt", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a1775de2585f5efdf63f8ed330f275721", null ],

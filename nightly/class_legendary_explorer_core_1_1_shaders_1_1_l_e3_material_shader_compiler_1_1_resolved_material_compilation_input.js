@@ -1,0 +1,10 @@
+var class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_resolved_material_compilation_input =
+[
+    [ "ResolvedMaterialCompilationInput", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_resolved_material_compilation_input.html#a1cd04eb2609ee0bbb5e5d0545d8b62cd", null ],
+    [ "GetStaticParametersSnapshot", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_resolved_material_compilation_input.html#ae47eff465d055db21f600d797fc49ae8", null ],
+    [ "BaseMaterial", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_resolved_material_compilation_input.html#ac9958a086b367e29a00241e8309d957a", null ],
+    [ "RequestedMaterialInstance", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_resolved_material_compilation_input.html#ab6a9387d03cad3963b18cd58266281bb", null ],
+    [ "RequestedMaterial", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_resolved_material_compilation_input.html#a9551d6339a92aea6d5d40d406641ed17", null ],
+    [ "EngineDefaultTexture", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_resolved_material_compilation_input.html#aec1c461b5fa157e0b385aaeced9e00e0", null ],
+    [ "WorldDefaultTexture", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_material_shader_compiler_1_1_resolved_material_compilation_input.html#acb266806d9eba65aa7178ef6730acac2", null ]
+];

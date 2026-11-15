@@ -5,6 +5,7 @@ var class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_packag
     [ "CompressedMipInfos", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#a03344f8f5ecc98a6d42db739a3fcf378", null ],
     [ "TFCName", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#a97e3ec227ad66f4fa2baef7b6c42b750", null ],
     [ "TFCGuid", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#a692c123e5c7613aa3a35a4461909eb07", null ],
+    [ "IsRootTexture", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#a755b3d9dc2c94ecd1dfa0e04695ddddd", null ],
     [ "PackageName", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#aa33c4c67a55cd65eb7c7a2cde990c2e7", null ],
     [ "RelativePackagePath", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#a7d433210d5ded3d4c3888975e70546db", null ],
     [ "UIndex", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#a12f1eaadab0fcbd61ce197b274c520cf", null ],

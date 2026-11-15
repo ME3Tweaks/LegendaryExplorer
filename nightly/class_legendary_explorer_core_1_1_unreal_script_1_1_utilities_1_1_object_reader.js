@@ -15,5 +15,6 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_rea
     [ "ReadNullTerminatedString", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html#af34ede84fc5837141d9d4ca0e98ad35d", null ],
     [ "_data", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html#a8a7dc4db4b50036de5ecf3e47c67a31a", null ],
     [ "Size", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html#af6dee870badac80ae2fd42a1ef01bd5a", null ],
-    [ "Position", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html#af8bb5c2a21128ddd7e6519afaf0bd672", null ]
+    [ "Position", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html#af8bb5c2a21128ddd7e6519afaf0bd672", null ],
+    [ "BigEndian", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html#a18ae3daf606df650d3dc02cb5fe6fcb6", null ]
 ];

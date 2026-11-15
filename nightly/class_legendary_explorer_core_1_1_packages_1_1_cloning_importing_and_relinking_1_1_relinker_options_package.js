@@ -2,8 +2,11 @@ var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinki
 [
     [ "RelinkerOptionsPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ade90299047e237f886c80c97852a5dbb", null ],
     [ "RelinkerOptionsPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a489e134d5fb3424712352a1ae36a836e", null ],
+    [ "PortParentAsPackageDelegate", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a7a5276df0af29b1acc1080e95b1000e7", null ],
     [ "CustomRelinkUIndexDelegate", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8d0b7c65e6617e07a18af0d9ac6979c7", null ],
     [ "CustomImportDependencyDelegate", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a27fe942e4e1c257ddfcaa3d519b8bd65", null ],
+    [ "SetCrossGameFunctionSourceCache", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a1795640692279b1554c1cf4fad40f142", null ],
+    [ "Dispose", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a1e19b9327aeb95db7582ebc1003e397c", null ],
     [ "CrossPackageMap", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#aa5e47b5e0a90e2220853f38af374174b", null ],
     [ "ErrorOccurredCallback", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a21e33d04fdc15d4c2e1626c8f6ea5414", null ],
     [ "ImportExportDependencies", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a9bcf4417e6b4a042e152665047f0b94d", null ],
@@ -22,8 +25,12 @@ var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinki
     [ "PortLocalizationImportsMemorySafe", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a3f8c3bd0d11b6b88747bf5fdfac780db", null ],
     [ "CustomDonorImporter", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a2f47c5d66bb4b8f96b4326b5fc698a77", null ],
     [ "CheckImportsWhenExportingToPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8e77b33bc07d335d0d54c75c6c51d91a", null ],
+    [ "PortParentAsPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ad5dac652f71eec03cacb4cb876391799", null ],
     [ "ForceSamePackageImportRelink", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ac70d15e39a474e67cd935dbb3ecabdf1", null ],
     [ "CustomRelinkUIndex", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ae0a37be114ab5c88f83a5da5d1be1cc0", null ],
     [ "CustomImportDependency", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a5b58d4f67a9cd2a9518938ad3b7d3f4b", null ],
-    [ "ForceAllowMaterialPorting", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a09dfdd7f0802b87ac704373988d22c1f", null ]
+    [ "ForceAllowMaterialPorting", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a09dfdd7f0802b87ac704373988d22c1f", null ],
+    [ "CrossGameFunctionSourceCache", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a88898d280e32f8c14df95cbd534b1923", null ],
+    [ "CrossGameFunctionSourceOverride", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a4d16a81739518e720bb20ae4145a789c", null ],
+    [ "AllowMemoryPathLookups", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a5ded00de73f981d3c6b174e7e1dbcdf5", null ]
 ];

@@ -152,6 +152,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8798b3c2f9b46c50431ad9ba16cedf95" id="r_a8798b3c2f9b46c50431ad9ba16cedf95"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a8798b3c2f9b46c50431ad9ba16cedf95">ObservableCollectionExtended</a> (IEnumerable&lt; T &gt; collection)</td></tr>
 <tr class="memdesc:a8798b3c2f9b46c50431ad9ba16cedf95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class that contains elements copied from the specified collection.  <br /></td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a8124fa42d6802fbb240a350350c01d3b" id="r_a8124fa42d6802fbb240a350350c01d3b"><td class="memItemLeft">override void&#160;</td><td class="memItemRight"><a class="el" href="#a8124fa42d6802fbb240a350350c01d3b">InsertItem</a> (int index, T item)</td></tr>
+<tr class="memitem:a69be3b6032d24ab67debbd56e8992723" id="r_a69be3b6032d24ab67debbd56e8992723"><td class="memItemLeft">override void&#160;</td><td class="memItemRight"><a class="el" href="#a69be3b6032d24ab67debbd56e8992723">RemoveItem</a> (int index)</td></tr>
+<tr class="memitem:aaecb8bdfc9fd090300ca09eb26d8c8ad" id="r_aaecb8bdfc9fd090300ca09eb26d8c8ad"><td class="memItemLeft">override void&#160;</td><td class="memItemRight"><a class="el" href="#aaecb8bdfc9fd090300ca09eb26d8c8ad">SetItem</a> (int index, T item)</td></tr>
+<tr class="memitem:acfd239386c20b12b5f6526cf346b3dcf" id="r_acfd239386c20b12b5f6526cf346b3dcf"><td class="memItemLeft">override void&#160;</td><td class="memItemRight"><a class="el" href="#acfd239386c20b12b5f6526cf346b3dcf">MoveItem</a> (int oldIndex, int newIndex)</td></tr>
+<tr class="memitem:a717d01c1cd273e382e56e04bc91119a8" id="r_a717d01c1cd273e382e56e04bc91119a8"><td class="memItemLeft">override void&#160;</td><td class="memItemRight"><a class="el" href="#a717d01c1cd273e382e56e04bc91119a8">ClearItems</a> ()</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
 <tr class="memitem:a4868e5ffce558120824fb83ae251b497" id="r_a4868e5ffce558120824fb83ae251b497"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a4868e5ffce558120824fb83ae251b497">Any</a><code> [get]</code></td></tr>
@@ -526,6 +534,143 @@ Events</h2></td></tr>
 
 <p>Gets the synchronization lock object. </p>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a8124fa42d6802fbb240a350350c01d3b" name="a8124fa42d6802fbb240a350350c01d3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8124fa42d6802fbb240a350350c01d3b">&#9670;&#160;</a></span>InsertItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void LegendaryExplorerCore.Misc.ObservableCollectionExtended&lt; T &gt;.InsertItem </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>index</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>item</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a69be3b6032d24ab67debbd56e8992723" name="a69be3b6032d24ab67debbd56e8992723"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69be3b6032d24ab67debbd56e8992723">&#9670;&#160;</a></span>RemoveItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void LegendaryExplorerCore.Misc.ObservableCollectionExtended&lt; T &gt;.RemoveItem </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>index</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaecb8bdfc9fd090300ca09eb26d8c8ad" name="aaecb8bdfc9fd090300ca09eb26d8c8ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaecb8bdfc9fd090300ca09eb26d8c8ad">&#9670;&#160;</a></span>SetItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void LegendaryExplorerCore.Misc.ObservableCollectionExtended&lt; T &gt;.SetItem </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>index</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>item</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acfd239386c20b12b5f6526cf346b3dcf" name="acfd239386c20b12b5f6526cf346b3dcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfd239386c20b12b5f6526cf346b3dcf">&#9670;&#160;</a></span>MoveItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void LegendaryExplorerCore.Misc.ObservableCollectionExtended&lt; T &gt;.MoveItem </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>oldIndex</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>newIndex</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a717d01c1cd273e382e56e04bc91119a8" name="a717d01c1cd273e382e56e04bc91119a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a717d01c1cd273e382e56e04bc91119a8">&#9670;&#160;</a></span>ClearItems()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void LegendaryExplorerCore.Misc.ObservableCollectionExtended&lt; T &gt;.ClearItems </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

@@ -20,7 +20,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_
     [ "bUsesDynamicParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#ab3a6d0a4ed58dde250f1d6da4db5d5dc", null ],
     [ "bUsesLightmapUVs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a9b037b83f530bcd5f08e2ceed0bec1db", null ],
     [ "bUsesMaterialVertexPositionOffset", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#af7b91445f56d44ff51f98053720bc965", null ],
-    [ "unkBool1", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a9fb609c459aae078889acffd4191dd34", null ],
+    [ "bUsesVertexColor", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a7c39708b1fe497ee5ccba71864160c77", null ],
     [ "UsingTransforms", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#adb07722e4e997eac733c6a8f4935ec7f", null ],
     [ "TextureLookups", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a1f1ae8b7292bfe4e5102ab8b08775aa7", null ],
     [ "DummyDroppedFallbackComponents", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a914184e27a428d29ff2afd9ecf872818", null ],

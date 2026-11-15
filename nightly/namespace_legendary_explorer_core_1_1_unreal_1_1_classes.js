@@ -15,5 +15,6 @@ var namespace_legendary_explorer_core_1_1_unreal_1_1_classes =
       [ "ERROR_MergeIntoSelf", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes.html#ad1b37b41ba6701d64aa513bbae770b6eacba3ceaa41d7e107b9930ca2d084bdbe", null ],
       [ "ERROR_DifferingColumnCount", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes.html#ad1b37b41ba6701d64aa513bbae770b6ea4616fbca5bbdce4ee7fd112261042c29", null ],
       [ "OK", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes.html#ad1b37b41ba6701d64aa513bbae770b6eae0aa021e21dddbd6d8cecec71e9cf564", null ]
-    ] ]
+    ] ],
+    [ "EncodedMip", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes.html#ab35a6fd923cd5578a93829fbb0a3323a", null ]
 ];

@@ -125,7 +125,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a8b20786ef8df0cc92f67f7acdb8d03f0" id="r_a8b20786ef8df0cc92f67f7acdb8d03f0"><td class="memItemLeft">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight"><a class="el" href="#a8b20786ef8df0cc92f67f7acdb8d03f0">PortParents</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> source, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> target, bool importAsImport=false, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> customROP=null)</td></tr>
 <tr class="memdesc:a8b20786ef8df0cc92f67f7acdb8d03f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ports in the parents of the source entry into the target package. Items that are found in the target already are not ported. The direct parent of the source <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> is returned, in the target package.  <br /></td></tr>
 <tr class="memitem:a801cd9e14dbc3f314a46fe0fcd599bc0" id="r_a801cd9e14dbc3f314a46fe0fcd599bc0"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a801cd9e14dbc3f314a46fe0fcd599bc0">PrepareGlobalFileForPorting</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> sourcePackage, string packagename)</td></tr>
-<tr class="memdesc:a801cd9e14dbc3f314a46fe0fcd599bc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepares a global package for porting by moving all objects referenced by it's objectreferencer into the subpackage of the same name.  <br /></td></tr>
+<tr class="memdesc:a801cd9e14dbc3f314a46fe0fcd599bc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves all top-level non-forced export objects underneath a package of the same name, mimicing a forced-export style package layout.  <br /></td></tr>
 <tr class="memitem:a5970e1044baa6d5bb11df9c9543c3761" id="r_a5970e1044baa6d5bb11df9c9543c3761"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a5970e1044baa6d5bb11df9c9543c3761">IsLevelFile</a> (string packageNameWithoutExtension)</td></tr>
 <tr class="memdesc:a5970e1044baa6d5bb11df9c9543c3761"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does this packagename start with BioA/D/P/S/Snd?  <br /></td></tr>
 </table>
@@ -297,6 +297,8 @@ Static Public Member Functions</h2></td></tr>
     <tr><td class="paramname">source</td><td></td></tr>
     <tr><td class="paramname">target</td><td></td></tr>
     <tr><td class="paramname">importAsImport</td><td>If the parents should be imported as an import instead of an export if they don't exist. This should only be used if you're porting in an import and creating its parents.</td></tr>
+    <tr><td class="paramname">cache</td><td>Cache assigned to the internal RelinkerOptionPackages if you don't pass in a custom one.</td></tr>
+    <tr><td class="paramname">customROP</td><td>Custom <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html" title="Specifies options used for relinking, as well as containing objects that can be passed through the en...">RelinkerOptionsPackage</a> to use for the operation. If set, the cache parameter goes unused.</td></tr>
   </table>
   </dd>
 </dl>
@@ -331,7 +333,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Prepares a global package for porting by moving all objects referenced by it's objectreferencer into the subpackage of the same name. </p>
+<p>Moves all top-level non-forced export objects underneath a package of the same name, mimicing a forced-export style package layout. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sourcePackage</td><td></td></tr>

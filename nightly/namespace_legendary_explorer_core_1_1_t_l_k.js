@@ -6,6 +6,7 @@ var namespace_legendary_explorer_core_1_1_t_l_k =
     [ "LE1TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files" ],
     [ "LE2TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e2_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e2_talk_files" ],
     [ "LE3TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e3_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e3_talk_files" ],
+    [ "LMPTalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_m_p_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_m_p_talk_files" ],
     [ "ME1TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_talk_files" ],
     [ "ME2TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_talk_files" ],
     [ "ME3TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files" ],

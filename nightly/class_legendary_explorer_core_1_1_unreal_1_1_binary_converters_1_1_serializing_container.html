@@ -224,6 +224,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9b33d1fd8f32ab23d230d5a06c202ed0" id="r_a9b33d1fd8f32ab23d230d5a06c202ed0"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a9b33d1fd8f32ab23d230d5a06c202ed0">Serialize</a> (ref <a class="el" href="_static_mesh_8cs.html#a922227c9abfa5db280320c37d74a647d">Vector3</a>[] arr)</td></tr>
 <tr class="memitem:a2895334bebec775cb07b0f8912812b62" id="r_a2895334bebec775cb07b0f8912812b62"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a2895334bebec775cb07b0f8912812b62">Serialize&lt; T &gt;</a> (ref T[] arr, SerializeDelegate&lt; T &gt; serialize)</td></tr>
 <tr class="memitem:a2d56449c454c18e9e81cef81fe34f213" id="r_a2d56449c454c18e9e81cef81fe34f213"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a2d56449c454c18e9e81cef81fe34f213">Serialize&lt; TKey, TValue &gt;</a> (ref UMap&lt; TKey, TValue &gt; dict, SerializeDelegate&lt; TKey &gt; serializeKey, SerializeDelegate&lt; TValue &gt; serializeValue)</td></tr>
+<tr class="memitem:a72a47e3640245b4677c91cbd94456023" id="r_a72a47e3640245b4677c91cbd94456023"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a72a47e3640245b4677c91cbd94456023">Serialize&lt; TKey, TValue &gt;</a> (ref UReverseMap&lt; TKey, TValue &gt; dict, SerializeDelegate&lt; TKey &gt; serializeKey, SerializeDelegate&lt; TValue &gt; serializeValue)</td></tr>
 <tr class="memitem:a25f97e4af7a52fe3347ff37d69c8131d" id="r_a25f97e4af7a52fe3347ff37d69c8131d"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a25f97e4af7a52fe3347ff37d69c8131d">Serialize&lt; TKey, TValue &gt;</a> (ref UMultiMap&lt; TKey, TValue &gt; dict, SerializeDelegate&lt; TKey &gt; serializeKey, SerializeDelegate&lt; TValue &gt; serializeValue)</td></tr>
 <tr class="memitem:a539d5c9e2dd12e153c5787000193ca6a" id="r_a539d5c9e2dd12e153c5787000193ca6a"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a539d5c9e2dd12e153c5787000193ca6a">BulkSerialize</a> (ref byte[] arr, SerializeDelegate&lt; byte &gt; serialize, int elementSize)</td></tr>
 <tr class="memitem:a935e0743ba34340599c6d1a5e63b88e7" id="r_a935e0743ba34340599c6d1a5e63b88e7"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a935e0743ba34340599c6d1a5e63b88e7">BulkSerialize&lt; T &gt;</a> (ref T[] arr, SerializeDelegate&lt; T &gt; serialize, int elementSize)</td></tr>
@@ -2943,7 +2944,7 @@ Properties</h2></td></tr>
 </div>
 </div>
 <a id="a2d56449c454c18e9e81cef81fe34f213" name="a2d56449c454c18e9e81cef81fe34f213"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d56449c454c18e9e81cef81fe34f213">&#9670;&#160;</a></span>Serialize&lt; TKey, TValue &gt;() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d56449c454c18e9e81cef81fe34f213">&#9670;&#160;</a></span>Serialize&lt; TKey, TValue &gt;() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2976,8 +2977,42 @@ Properties</h2></td></tr>
 
 </div>
 </div>
+<a id="a72a47e3640245b4677c91cbd94456023" name="a72a47e3640245b4677c91cbd94456023"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72a47e3640245b4677c91cbd94456023">&#9670;&#160;</a></span>Serialize&lt; TKey, TValue &gt;() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="#a93848c450702cdb82058c23080d7daef">LegendaryExplorerCore.Unreal.BinaryConverters.SerializingContainer.Serialize</a>&lt; TKey, TValue &gt; </td>
+          <td>(</td>
+          <td class="paramtype">ref UReverseMap&lt; TKey, TValue &gt;</td>          <td class="paramname"><span class="paramname"><em>dict</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SerializeDelegate&lt; TKey &gt;</td>          <td class="paramname"><span class="paramname"><em>serializeKey</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SerializeDelegate&lt; TValue &gt;</td>          <td class="paramname"><span class="paramname"><em>serializeValue</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a25f97e4af7a52fe3347ff37d69c8131d" name="a25f97e4af7a52fe3347ff37d69c8131d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25f97e4af7a52fe3347ff37d69c8131d">&#9670;&#160;</a></span>Serialize&lt; TKey, TValue &gt;() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a25f97e4af7a52fe3347ff37d69c8131d">&#9670;&#160;</a></span>Serialize&lt; TKey, TValue &gt;() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
