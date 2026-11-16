@@ -472,10 +472,6 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
     private Microsoft.Wpf.Interop.DirectX.D3D11Image D3DImage;
     private Image Image;
     private readonly Stopwatch Stopwatch = new();
-    private Thread framePacer;
-    private volatile bool pacing;
-    //1 from when a frame is asked for until it has been drawn
-    private int framePending;
     private bool _shouldRender;
     private RenderContext _context;
     private Action _onImageRendered;
@@ -568,9 +564,7 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
                 return;
             }
 
-            pacing = true;
-            framePacer = new Thread(PaceFrames) { IsBackground = true, Name = "Viewport frame pacing" };
-            framePacer.Start();
+            FramePacer.Add(this);
             InitiallyLoaded = true;
             D3DImage.SetPixelSize(RenderWidth, RenderHeight);
         }
@@ -611,8 +605,8 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
     /// </summary>
     public void Dispose()
     {
-        //(the pacing thread stops within a frame, and a frame it has already asked for draws nothing)
-        pacing = false;
+        //(a round of frames already asked for draws nothing for it)
+        FramePacer.Remove(this);
         Unloaded -= SceneRenderControlWPF_Unloaded;
 
         if (Context.Backbuffer != null)
@@ -651,38 +645,84 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
     }
 
     /// <summary>
-    /// Asks for a frame each time the desktop is composed (once a refresh), if the last one has been drawn. Frames aren't drawn from
-    /// CompositionTarget.Rendering: WPF paces those itself, and once frames at Render priority have kept its Input-priority check from running
-    /// for half a second, it drops the next one to Input priority. Input-priority work only runs while no input is waiting, so a mouse
-    /// that keeps moving then holds frames back until it stops. Frames asked for here stay at Render priority (updating the image has WPF
-    /// draw it at Render priority too), and the next isn't asked for until the refresh after one finishes, so input is processed in between
+    /// Asks for every viewport's frame, as one round, each time the desktop is composed (once a refresh), if the last round has been drawn. Frames
+    /// aren't drawn from CompositionTarget.Rendering: WPF paces those itself, and once frames at Render priority have kept its Input-priority check
+    /// from running for half a second, it drops the next one to Input priority. Input-priority work only runs while no input is waiting, so a mouse
+    /// that keeps moving then holds frames back until it stops. Rounds asked for here stay at Render priority (updating the image has WPF draw it
+    /// at Render priority too), and the next isn't asked for until the refresh after one finishes, so input is processed in between.
+    /// The viewports share one round: paced apart, one's frame was asked for while another's was drawing, so with two open there was nearly always
+    /// a frame waiting at Render priority, and the windows stopped responding until one closed or frames got cheaper
     /// </summary>
-    private void PaceFrames()
+    private static class FramePacer
     {
-        while (pacing)
+        //the viewports drawn each round, in the order they were loaded. Locked, and waited on while there are none
+        private static readonly List<SceneRenderControl> viewports = [];
+        private static Thread thread;
+        //1 from when a round is asked for until it has been drawn
+        private static int roundPending;
+
+        public static void Add(SceneRenderControl viewport)
         {
-            long start = Stopwatch.GetTimestamp();
-            //returns at the next composition, or at once if composition is off
-            if (WindowsAPI.DwmFlush() < 0 || Stopwatch.GetElapsedTime(start).TotalMilliseconds < 1) Thread.Sleep(15);
-            if (Interlocked.CompareExchange(ref framePending, 1, 0) == 0)
+            lock (viewports)
             {
-                Dispatcher.InvokeAsync(DrawFrame, DispatcherPriority.Render);
+                if (viewports.Count > 0 && viewports[0].Dispatcher != viewport.Dispatcher)
+                    throw new InvalidOperationException("Viewports are drawn on one UI thread.");
+                viewports.Add(viewport);
+                if (thread is null)
+                {
+                    thread = new Thread(Pace) { IsBackground = true, Name = "Viewport frame pacing" };
+                    thread.Start();
+                }
+                Monitor.PulseAll(viewports);
+            }
+        }
+
+        public static void Remove(SceneRenderControl viewport)
+        {
+            lock (viewports) viewports.Remove(viewport);
+        }
+
+        private static void Pace()
+        {
+            while (true)
+            {
+                Dispatcher dispatcher;
+                lock (viewports)
+                {
+                    while (viewports.Count == 0) Monitor.Wait(viewports);
+                    dispatcher = viewports[0].Dispatcher;
+                }
+                long start = Stopwatch.GetTimestamp();
+                //returns at the next composition, or at once if composition is off
+                if (WindowsAPI.DwmFlush() < 0 || Stopwatch.GetElapsedTime(start).TotalMilliseconds < 1) Thread.Sleep(15);
+                if (Interlocked.CompareExchange(ref roundPending, 1, 0) == 0)
+                {
+                    dispatcher.InvokeAsync(DrawRound, DispatcherPriority.Render);
+                }
+            }
+        }
+
+        private static void DrawRound()
+        {
+            try
+            {
+                SceneRenderControl[] round;
+                lock (viewports) round = [.. viewports];
+                foreach (var viewport in round) viewport.DrawFrame();
+            }
+            finally
+            {
+                Volatile.Write(ref roundPending, 0);
             }
         }
     }
 
     private void DrawFrame()
     {
-        try
+        //(not once disposed, which removes it from rounds, though one drawing before it may have disposed it)
+        if (D3DImage is not null && _shouldRender && Context is { IsReady: true })
         {
-            if (pacing && _shouldRender && Context is { IsReady: true })
-            {
-                D3DImage?.RequestRender();
-            }
-        }
-        finally
-        {
-            Volatile.Write(ref framePending, 0);
+            D3DImage.RequestRender();
         }
     }
 
