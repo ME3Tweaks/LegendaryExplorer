@@ -88,6 +88,9 @@ public class Widget : UIElement
     private float _accumulatedRotation;         // radians
     private float _accumulatedScaleUniform;
     private Vector3 _accumulatedScale3D;
+    //where a dual-axis drag grabbed its plane, found on its first move
+    private Vector3? _planeGrab;
+    private Vector3 _planeOrigin;
 
     private enum EAxisType
     {
@@ -130,12 +133,96 @@ public class Widget : UIElement
             XAxisEnd = DrawAxis(context, scale, XMatrix, xColor, AxisHitIds[(int)EWidgetAxis.X], axistype);
             YAxisEnd = DrawAxis(context, scale, YMatrix, yColor, AxisHitIds[(int)EWidgetAxis.Y], axistype);
             ZAxisEnd = DrawAxis(context, scale, ZMatrix, zColor, AxisHitIds[(int)EWidgetAxis.Z], axistype);
+
+            if (axistype is EAxisType.Cone)
+            {
+                DrawPlaneHandle(context, scale, origin, EWidgetAxis.XY, Vector3.UnitX, Vector3.UnitY, xColor, yColor);
+                DrawPlaneHandle(context, scale, origin, EWidgetAxis.XZ, Vector3.UnitX, Vector3.UnitZ, xColor, zColor);
+                DrawPlaneHandle(context, scale, origin, EWidgetAxis.YZ, Vector3.UnitY, Vector3.UnitZ, yColor, zColor);
+            }
         }
     }
 
+    //how far along each of its axes a dual-axis handle's corner is, as in UE3
+    private const float PlaneHandleSize = 16f;
+
+    //a plane seen closer to edge-on than this (the sine of the angle) can't be dragged in usefully, so its handle isn't drawn
+    private const float MinPlaneFacing = 0.1f;
+
+    /// <summary>
+    /// Draws the right-angled lines joining two axes near where they meet, which drag in the plane of both (UE3's FWidget::Render_Translate).
+    /// Each line is drawn in the color of the axis it starts from
+    /// </summary>
+    private void DrawPlaneHandle(LevelEditorRenderContext context, float scale, Vector3 origin, EWidgetAxis plane, Vector3 axis1, Vector3 axis2,
+        Vector4 color1, Vector4 color2)
+    {
+        //the one being dragged stays, though the drag may turn it edge-on
+        if (!(IsDragging && CurrentAxis == plane) && MathF.Abs(Vector3.Dot(ViewDirection(context, origin), PlaneNormal(plane))) < MinPlaneFacing) return;
+        var ltw = Matrix4x4.CreateScale(scale) * XMatrix;
+        Vector3 end1 = Vector3.Transform(axis1 * PlaneHandleSize, ltw);
+        Vector3 end2 = Vector3.Transform(axis2 * PlaneHandleSize, ltw);
+        Vector3 corner = Vector3.Transform((axis1 + axis2) * PlaneHandleSize, ltw);
+        int hitId = AxisHitIds[(int)plane];
+        context.UIPrimitives.AddLine(end1, corner, color1, hitId);
+        context.UIPrimitives.AddLine(corner, end2, color2, hitId);
+    }
+
+    private static Vector3 ViewDirection(LevelEditorRenderContext context, Vector3 point)
+    {
+        Vector3 toPoint = point - context.Camera.EyePosition;
+        return context.Camera.IsOrthographic || toPoint.LengthSquared() is 0 ? context.Camera.CameraForward : Vector3.Normalize(toPoint);
+    }
+
+    /// <summary>The normal of the plane a dual-axis handle drags in: the axis it leaves out</summary>
+    private Vector3 PlaneNormal(EWidgetAxis plane) => plane switch
+    {
+        EWidgetAxis.XY => LocalRotation.Z.AsVector3(),
+        EWidgetAxis.XZ => LocalRotation.Y.AsVector3(),
+        EWidgetAxis.YZ => LocalRotation.X.AsVector3(),
+        _ => throw new ArgumentOutOfRangeException(nameof(plane))
+    };
+
+    /// <summary>Where the ray through a pixel meets the plane a dual-axis drag is in, which goes through where the widget started. Null if it misses</summary>
+    private Vector3? PlaneHit(LevelEditorRenderContext context, Vector2 pixel)
+    {
+        (Vector3 rayOrigin, Vector3 rayDirection) = context.GetPixelRay((int)pixel.X, (int)pixel.Y);
+        Vector3 normal = PlaneNormal(CurrentAxis);
+        float facing = Vector3.Dot(rayDirection, normal);
+        if (MathF.Abs(facing) < 1e-4f) return null;
+        float distance = Vector3.Dot(_planeOrigin - rayOrigin, normal) / facing;
+        return distance < 0 ? null : rayOrigin + rayDirection * distance;
+    }
+
+    /// <summary>
+    /// Moves the actor in a dual-axis handle's plane, keeping the point of the plane the mouse grabbed under it. Snapping rounds the move along each axis
+    /// </summary>
+    private void DragInPlane(LevelEditorRenderContext context, Vector2 mousePos)
+    {
+        //(the grab is where the drag started, unless the plane was edge-on there)
+        if (_planeGrab is null) _planeOrigin = Attach.LocalToWorld.Translation;
+        _planeGrab ??= PlaneHit(context, DragStart) ?? PlaneHit(context, mousePos);
+        if (_planeGrab is not { } grab || PlaneHit(context, mousePos) is not { } hit) return;
+        //into the widget's axes, without the rounding error off the plane
+        Vector3 local = Vector3.TransformNormal(hit - grab, Matrix4x4.Transpose(LocalRotation));
+        local = CurrentAxis switch
+        {
+            EWidgetAxis.XY => local with { Z = 0 },
+            EWidgetAxis.XZ => local with { Y = 0 },
+            _ => local with { X = 0 }
+        };
+        if (TranslateSnapEnabled) local = SnapVec(local, TranslateSnapValue);
+        DragTo(context, _dragStartSnapshot.Location + Vector3.TransformNormal(local, LocalRotation));
+    }
+
+    private static bool IsPlane(EWidgetAxis axis) => axis is EWidgetAxis.XY or EWidgetAxis.XZ or EWidgetAxis.YZ;
+
+    /// <summary>How big the widget is drawn, in every mode</summary>
+    //(to become a user setting)
+    public const float WidgetSize = 2.5f;
+
     private static float GetScale(LevelEditorRenderContext context, Vector3 origin)
     {
-        const float scaleFactor = 4f;
+        const float scaleFactor = WidgetSize;
         if (context.Camera.IsOrthographic)
         {
             return context.Camera.OrthoWidth * scaleFactor / context.Width;
@@ -329,7 +416,11 @@ public class Widget : UIElement
             && Vector2.Distance(mousePos, DragStart) < System.Windows.SystemParameters.MinimumHorizontalDragDistance) return;
         Vector2 dragDiff = PrevDragPos - mousePos;
 
-        if (Mode is EWidgetMode.Rotate)
+        if (Mode is EWidgetMode.Translate && IsPlane(CurrentAxis))
+        {
+            DragInPlane(context, mousePos);
+        }
+        else if (Mode is EWidgetMode.Rotate)
         {
             Vector2 startDir = Vector2.Normalize(PrevDragPos - Origin);
             Vector2 mouseDir = Vector2.Normalize(mousePos - Origin);
@@ -501,6 +592,7 @@ public class Widget : UIElement
         _accumulatedRotation = 0f;
         _accumulatedScaleUniform = 0f;
         _accumulatedScale3D = Vector3.Zero;
+        _planeGrab = null;
         if (Attach is not null)
         {
             _dragStartSnapshot = Attach.SnapshotTransform();
