@@ -151,22 +151,27 @@ public partial class LevelEditor
             return;
         }
         AssetReference asset = null;
-        if (ActorCreation.AssetKindOf(className) is { } assetKind)
+        try
         {
-            asset = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest($"The new {className}'s {AssetPicking.NameOf(assetKind)}", placementFile.Package, assetKind));
-            //(the scene may have become busy, or the file read-only, while the dialog was open)
-            if (asset is null || !CanMutateScene || ActorCreation.FileRefusal(placementFile) is not null) return;
+            if (ActorCreation.AssetKindOf(className) is { } assetKind)
+            {
+                asset = pickInUse = PickAsset(new AssetPickRequest($"The new {className}'s {AssetPicking.NameOf(assetKind)}", placementFile.Package, assetKind));
+                //(the scene may have become busy, or the file read-only, while the dialog was open)
+                if (asset is null || !CanMutateScene || ActorCreation.FileRefusal(placementFile) is not null) return;
+            }
+            CancelViewportDrag();
+            EndPlacement(release: false);
+            EndSculpting();
+            placing = option;
+            option.IsPlacing = true;
+            placingAsset = asset;
+            RenderContext.PlaceAt = PlaceAt;
+            SceneViewer.Cursor = Cursors.Cross;
+            string what = asset is null ? className : $"{className} of {asset.Name}";
+            PlacementStatus = $"Click where the {what} goes in {placementFile.FileName}: on a surface, or anywhere else to place it in front of the camera. Esc cancels.";
         }
-        CancelViewportDrag();
-        EndPlacement();
-        EndSculpting();
-        placing = option;
-        option.IsPlacing = true;
-        placingAsset = asset;
-        RenderContext.PlaceAt = PlaceAt;
-        SceneViewer.Cursor = Cursors.Cross;
-        string what = asset is null ? className : $"{className} of {asset.Name}";
-        PlacementStatus = $"Click where the {what} goes in {placementFile.FileName}: on a surface, or anywhere else to place it in front of the camera. Esc cancels.";
+        //(the placement that was ended, or the pick that wasn't used)
+        finally { ReleaseUnusedPick(); }
     }
 
     /// <summary>
@@ -183,8 +188,8 @@ public partial class LevelEditor
             return;
         }
         string className = placing.ClassName;
-        AssetReference asset = placingAsset;
-        EndPlacement();
+        AssetReference asset = pickInUse = placingAsset;
+        EndPlacement(release: false);
         //from a viewport click: finding where it goes reads the level's geometry and the class, which mustn't escape the mouse handler if they fail
         try
         {
@@ -197,9 +202,12 @@ public partial class LevelEditor
         {
             MessageBox.Show(this, error.Message, "Place actor");
         }
+        //(the draft refers to its asset, unless it wasn't placed)
+        finally { ReleaseUnusedPick(); }
     }
 
-    private void EndPlacement()
+    /// <summary>Ends placing, if it's placing, and releases the chosen asset's package if nothing else refers to it, unless <paramref name="release"/> is false</summary>
+    private void EndPlacement(bool release = true)
     {
         if (placing is null) return;
         placing.IsPlacing = false;
@@ -208,5 +216,6 @@ public partial class LevelEditor
         RenderContext.PlaceAt = null;
         SceneViewer.Cursor = null;
         PlacementStatus = null;
+        if (release) ReleaseUnused();
     }
 }

@@ -9,7 +9,8 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// <summary>
 /// An asset a draft or a pending edit uses: an entry of the package it's for (an export or an import), or an export of another file. Another file's is
 /// referred to by that file and the export's instanced full path, never by an object or index of the file, so it doesn't hold the package cache's copy
-/// of it, and stays right if the file is reopened. Previews open it through their package cache; nothing is added to the destination until a commit
+/// of it, and stays right if the file is reopened. Previews open it through their package cache; nothing is added to the destination until a commit.
+/// A picked asset of another file is usually a copy in a package of its own (<see cref="AssetPackage"/>), which its file is read once for
 /// </summary>
 public sealed record AssetReference
 {
@@ -44,7 +45,7 @@ public sealed record AssetReference
         if (entry.FileRef == package) return To(entry);
         var export = EffectiveLightingProperties.Resolve(entry, cache) ?? entry;
         if (export.FileRef.FilePath is null)
-            throw new InvalidOperationException($"{export.InstancedFullPath} is in a package that wasn't opened from a file, so it can't be referred to from {ActorCapture.FileName(package.FilePath)}.");
+            throw new InvalidOperationException($"{export.InstancedFullPath} is in a package that wasn't opened from a file, so it can't be referred to from {TemporaryPackages.FileName(package.FilePath)}.");
         return InFile(export.FileRef.FilePath, export.InstancedFullPath);
     }
 
@@ -67,7 +68,7 @@ public sealed record AssetReference
     public string Name => Entry?.ObjectName.Instanced ?? SourcePath[(SourcePath.LastIndexOf('.') + 1)..];
 
     /// <summary>The path, and for another file's, which file</summary>
-    public string Description => Entry is not null ? InstancedFullPath : $"{SourcePath} (from {ActorCapture.FileName(SourceFile)})";
+    public string Description => Entry is not null ? InstancedFullPath : $"{SourcePath} (from {TemporaryPackages.FileName(SourceFile)})";
 
     /// <summary>
     /// What it refers to: the destination's entry, or the export of the other file, opened through <paramref name="cache"/>. Null if the file can't be
@@ -82,8 +83,8 @@ public sealed record AssetReference
     public IEntry EntryIn(IMEPackage package)
     {
         if (Entry is null)
-            throw new InvalidOperationException($"{SourcePath}, from {ActorCapture.FileName(SourceFile)}, wasn't copied into {ActorCapture.FileName(package.FilePath)}.");
-        if (Entry.FileRef != package) throw new InvalidOperationException($"{Entry.InstancedFullPath} is an entry of another package than {ActorCapture.FileName(package.FilePath)}.");
+            throw new InvalidOperationException($"{SourcePath}, from {TemporaryPackages.FileName(SourceFile)}, wasn't copied into {TemporaryPackages.FileName(package.FilePath)}.");
+        if (Entry.FileRef != package) throw new InvalidOperationException($"{Entry.InstancedFullPath} is an entry of another package than {TemporaryPackages.FileName(package.FilePath)}.");
         return Entry;
     }
 

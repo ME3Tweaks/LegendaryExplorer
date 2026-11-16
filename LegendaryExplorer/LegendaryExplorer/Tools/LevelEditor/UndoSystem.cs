@@ -40,6 +40,13 @@ public interface IUndoAction
     /// Null if it doesn't say, so it's assumed to share state with every other step
     /// </summary>
     IReadOnlyCollection<ActorId> Subjects => null;
+
+    /// <summary>
+    /// The assets it restores references to, which undoing or redoing it brings back: a chosen asset's package (<see cref="AssetPackage"/>) is kept while
+    /// it's in the history. Every step says, so that none can leave one out: none, for one that restores no asset (an actor it keeps for redo says what
+    /// it uses itself: <see cref="AssetPackage.ReferencesIn"/>)
+    /// </summary>
+    IEnumerable<AssetReference> Assets { get; }
 }
 
 /// <summary>
@@ -60,6 +67,7 @@ public class TransformAction : IUndoAction
     private readonly TransformSnapshot _after;
 
     public string Description { get; }
+    public IEnumerable<AssetReference> Assets => [];
 
     public TransformAction(ActorProxy actor, TransformSnapshot before, TransformSnapshot after, string description)
     {
@@ -86,6 +94,9 @@ public class UndoHistory : NotifyPropertyChangedBase
     public event Action Dropped;
 
     public bool CanUndo => _undoStack.Count > 0;
+
+    /// <summary>The steps it can undo, then those it can redo</summary>
+    public IEnumerable<IUndoAction> Steps => _undoStack.Concat(_redoStack);
     public bool CanRedo => _redoStack.Count > 0;
 
     private void NotifyCanUndoRedoChanged()

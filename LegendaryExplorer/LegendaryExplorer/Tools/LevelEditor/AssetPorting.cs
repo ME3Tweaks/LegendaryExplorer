@@ -27,7 +27,8 @@ internal static class AssetPorting
     /// <summary>Copies in the assets <paramref name="actors"/> would write references to</summary>
     /// <param name="sources">
     /// The commit's own cache the other files are opened from disk in, as the asset database found them: never the editor's (another tool's copy may
-    /// have unsaved edits), and porting can change its source (EntryExporter.PrepareGlobalFileForPorting)
+    /// have unsaved edits), and porting can change its source (EntryExporter.PrepareGlobalFileForPorting). A chosen asset is usually in a package of its
+    /// own (<see cref="AssetPackage"/>), which is copied from as it is in memory
     /// </param>
     /// <param name="inMemory">The package an asset of a file is copied from instead of that file, if any: a snapshot of a pasted copy's source's level as it
     /// is in memory (<see cref="ActorCloning.SourceSnapshots.OfFile"/>), which the copy itself is made from</param>
@@ -90,8 +91,9 @@ internal static class AssetPorting
     /// <summary>The entry of <paramref name="package"/> that is <paramref name="asset"/>: one it has at its path that's the same object, or a new copy</summary>
     internal static IEntry Copy(AssetReference asset, IMEPackage package, PackageCache sources, Func<string, IMEPackage> inMemory = null)
     {
-        string file = ActorCapture.FileName(asset.SourceFile), destination = ActorCapture.FileName(package.FilePath);
-        var sourcePackage = inMemory?.Invoke(asset.SourceFile) ?? sources.GetCachedPackage(asset.SourceFile) ?? throw new InvalidOperationException($"{file} couldn't be opened to copy {asset.SourcePath} from.");
+        string file = TemporaryPackages.FileName(asset.SourceFile), destination = TemporaryPackages.FileName(package.FilePath);
+        // A temporary package (a chosen asset's, or a copied actor's level) is read as it is: nothing changes it, and it's in memory only
+        var sourcePackage = inMemory?.Invoke(asset.SourceFile) ?? TemporaryPackages.Find(asset.SourceFile) ?? sources.GetCachedPackage(asset.SourceFile) ?? throw new InvalidOperationException($"{file} couldn't be opened to copy {asset.SourcePath} from.");
         if (sourcePackage.Game != package.Game)
             throw new InvalidOperationException($"{asset.SourcePath} is in {file}, a {sourcePackage.Game} file, so it can't be used in {destination}, a {package.Game} file.");
         if (sourcePackage.FindExport(asset.SourcePath) is not { } source)
@@ -118,7 +120,7 @@ internal static class AssetPorting
     /// </summary>
     internal static ExportEntry Port(ExportEntry source, IMEPackage package, PackageCache sources, IEntry parent = null)
     {
-        string file = ActorCapture.FileName(source.FileRef.FilePath), destination = ActorCapture.FileName(package.FilePath);
+        string file = TemporaryPackages.FileName(source.FileRef.FilePath), destination = TemporaryPackages.FileName(package.FilePath);
         int exportsBefore = package.ExportCount, importsBefore = package.ImportCount;
         var issues = EntryExporter.ExportExportToPackage(source, package, out var copy, sources, targetParent: parent);
         if (issues.Count > 0)

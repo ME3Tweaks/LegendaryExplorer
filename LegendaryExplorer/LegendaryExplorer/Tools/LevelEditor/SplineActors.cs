@@ -550,6 +550,7 @@ public sealed class SplineSettingsAction : IMergeableUndoAction
 
     private SplineActorProxy Point => (SplineActorProxy)actor.View;
     public string Description => $"Edit spline {property}";
+    public IEnumerable<AssetReference> Assets => [];
     public bool IsOrphaned => actor.IsOrphaned;
     public IReadOnlyCollection<ActorId> Subjects => [actor.Id];
     public void Undo() => Point.RestoreSettings(before);

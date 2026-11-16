@@ -232,7 +232,14 @@ public sealed partial class SplineActorProxy
     /// spline values and mesh choices, as a topology step restores them. Not its transform
     /// </summary>
     private sealed record TopologyState(Connection[] Connections, ActorId[] LinksFrom, SplineLoftSettings Settings,
-        AssetReference DeformMesh, AssetReference[] DeformMaterials);
+        AssetReference DeformMesh, AssetReference[] DeformMaterials)
+    {
+        /// <summary>The mesh and materials it restores (<see cref="IUndoAction.Assets"/>)</summary>
+        public IEnumerable<AssetReference> Assets => DeformMaterials.Prepend(DeformMesh);
+
+        /// <summary>The assets <paramref name="states"/> restore</summary>
+        public static IEnumerable<AssetReference> AssetsOf(IEnumerable<(ActorRef Point, TopologyState State)> states) => states.SelectMany(s => s.State.Assets);
+    }
 
     private TopologyState CaptureTopology() => new([.. connections], [.. linksFrom], settings, deformMesh, [.. deformMaterials]);
 
@@ -257,6 +264,7 @@ public sealed partial class SplineActorProxy
         public string Description => description;
         public bool IsOrphaned => before.Any(s => s.Point.IsOrphaned);
         public IReadOnlyCollection<ActorId> Subjects => before.Select(s => s.Point.Id).ToArray();
+        public IEnumerable<AssetReference> Assets => TopologyState.AssetsOf(before.Concat(after));
         public void Undo() => Restore(before);
         public void Redo() => Restore(after);
         private static void Restore((ActorRef Point, TopologyState State)[] states)

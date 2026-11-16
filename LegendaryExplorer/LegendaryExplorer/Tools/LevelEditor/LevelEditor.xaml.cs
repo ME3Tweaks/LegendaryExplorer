@@ -503,7 +503,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         SceneViewer.Context = RenderContext;
         UndoHistory.PropertyChanged += UndoHistory_PropertyChanged;
         //(an undone paste a dropped step held may have been the last user of its copied actor)
-        UndoHistory.Dropped += ReleaseUnusedCaptures;
+        UndoHistory.Dropped += ReleaseUnused;
+        assetPackages = new AssetPackages(this);
         OpenFiles.CollectionChanged += (_, _) =>
         {
             foreach (var key in _outlinerGroupStates.Keys
@@ -948,6 +949,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         IsDirty = false;
         UndoHistory.Clear();
         _preEditSnapshot = null;
+        //the chosen assets' packages nothing refers to, which an empty history didn't release: the previews' caches are empty now
+        ReleaseUnused();
     }
 
     public async void CloseFile(OpenLevelFile file)
@@ -1053,7 +1056,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         CancelDeletions([], errors);
         UndoHistory.RemoveOrphaned();
         //(its pastes went with it; the clipboard stays, to paste into another level)
-        ReleaseUnusedCaptures();
+        ReleaseUnused();
         HasAnyFileOpen = OpenFiles.Count > 0;
         UpdateGlobalDirtyState();
         UpdateTitle();
@@ -1067,6 +1070,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             TextBelowActors = "";
             UndoHistory.Clear();
             _preEditSnapshot = null;
+            ReleaseUnused();
         }
         //(a dialog keeps dispatching, so it comes once the file's gone)
         if (errors.Count != 0) MessageBox.Show(this, string.Join("\n", errors), "Pending deletions");
@@ -1737,6 +1741,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         //(undone pastes go with the history, which releases their copied actors. A committed paste's view still has its copied actor until it's drawn from
         //its export: ProcessPreviewUpdates)
         ClearUndoHistory();
+        //(the history's steps, and the committed actors' picks, are let go of: an empty history raises nothing)
+        ReleaseUnused();
         return true;
     }
 
@@ -1978,7 +1984,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             LightDiagnosticsStale = true;
             //actors rebuilt by other tools' edits
             UndoHistory.RemoveOrphaned();
-            ReleaseUnusedCaptures();
+            ReleaseUnused();
             RenderContext.LightingMode = _lightingMode;
             PreviewRefreshInProgress = false;
             EndBusy();
@@ -2498,7 +2504,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         finally { Mouse.OverrideCursor = null; }
         clipboard = capture;
         captures.Add(capture);
-        ReleaseUnusedCaptures();
+        ReleaseUnused();
         NotifyPasteRefusal();
         StatusBar_LeftMostText.Text = $"Copied {actor.ActorName}. Paste (Ctrl+V) puts a copy of it in the level chosen in the Place Actors tab."
             + (PlacementFile is { } destination ? $" ({destination.FileName})" : "")
@@ -2515,17 +2521,54 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     /// <summary>
     /// Disposes the copied actors (<see cref="ActorCapture"/>) that nothing uses any more: not the clipboard, nor the source of any open level's
-    /// uncommitted paste or undone one (which redo would bring back)
+    /// uncommitted paste or undone one (which redo would bring back). And the chosen assets' packages (<see cref="AssetPackage"/>) that nothing refers to:
+    /// not the actor being placed, nor any open level's actor (a draft, an undone one, or a pending edit), nor any undo step, nor a pick being put to use
     /// </summary>
-    private void ReleaseUnusedCaptures()
+    private void ReleaseUnused()
     {
-        if (captures.All(capture => capture == clipboard)) return;
-        var actors = OpenFiles.SelectMany(f => f.Actors.Concat(f.RetainedActors)).ToList();
-        foreach (var capture in captures.Where(c => c != clipboard && !c.IsUsedBy(actors)).ToList())
+        if (captures.Any(capture => capture != clipboard))
         {
-            captures.Remove(capture);
-            capture.Dispose();
+            var actors = OpenFiles.SelectMany(f => f.Actors.Concat(f.RetainedActors)).ToList();
+            foreach (var capture in captures.Where(c => c != clipboard && !c.IsUsedBy(actors)).ToList())
+            {
+                captures.Remove(capture);
+                capture.Dispose();
+            }
         }
+        assetPackages.ReleaseUnused(AssetPackage.ReferencesIn(OpenFiles, UndoHistory).Append(placingAsset).Append(pickInUse));
+    }
+
+    //a pick being put to use, which isn't released before what it's for refers to it (UsePick, placement)
+    private AssetReference pickInUse;
+
+    //once a pick has been put to use: it's released if it wasn't used, with anything else nothing refers to
+    private void ReleaseUnusedPick()
+    {
+        pickInUse = null;
+        ReleaseUnused();
+    }
+
+    //the chosen assets of other files that are copied into packages of their own, which drafts and edits refer to until they're committed
+    private readonly AssetPackages assetPackages;
+
+    //an asset picker of the request, whose choice from another file is kept in a package of its own (KeepAsset)
+    private AssetReference PickAsset(AssetPickRequest request) => AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, request,
+        chosen => KeepAsset(chosen, request.Destination));
+
+    //what a picked asset is kept as (AssetPackages.Keep)
+    private AssetReference KeepAsset(AssetReference chosen, IMEPackage destination) => assetPackages.Keep(chosen, destination);
+
+    /// <summary>
+    /// For a pick's handler: <paramref name="use"/> uses the asset picked, if any, then the packages of picks that weren't used (refused, or cancelled) are
+    /// released
+    /// </summary>
+    private void UsePick(AssetPickRequest request, Action<AssetReference> use)
+    {
+        try
+        {
+            if ((pickInUse = PickAsset(request)) is { } picked) use(picked);
+        }
+        finally { ReleaseUnusedPick(); }
     }
 
     //before the previews' caches are emptied, which their views' meshes were made with
@@ -2534,12 +2577,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         foreach (var capture in captures) capture.ForgetView();
     }
 
-    //disposes every copied actor, as the levels pasted into are closed
-    private void ReleaseAllCaptures()
+    //disposes every copied actor and chosen asset's package, as the levels pasted into or using them are closed
+    private void ReleaseAll()
     {
         foreach (var capture in captures) capture.Dispose();
         captures.Clear();
         clipboard = null;
+        assetPackages.ReleaseAll();
     }
 
     /// <summary>
@@ -2645,15 +2689,17 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void SplineMesh_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
-        var mesh = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest($"DeformMesh of {point.ActorName}", point.Package, AssetKind.StaticMesh));
-        if (mesh is null || point.SetDeformMesh(mesh, point.DeformMeshMaterials) is null) return;
-        //allowed, since its sections can be given overrides next
-        var problems = point.SplineMeshMaterialProblems(mesh, [.. point.DeformMeshMaterials]).ToList();
-        if (problems.Count > 0)
+        UsePick(new AssetPickRequest($"DeformMesh of {point.ActorName}", point.Package, AssetKind.StaticMesh), mesh =>
         {
-            MessageBox.Show(this, $"In game, some of {mesh.Name}'s sections won't be drawn with their materials on a spline. " +
-                $"Give them DeformMeshMaterials overrides that can be:\n\n{string.Join("\n", problems)}", "DeformMesh");
-        }
+            if (point.SetDeformMesh(mesh, point.DeformMeshMaterials) is null) return;
+            //allowed, since its sections can be given overrides next
+            var problems = point.SplineMeshMaterialProblems(mesh, [.. point.DeformMeshMaterials]).ToList();
+            if (problems.Count > 0)
+            {
+                MessageBox.Show(this, $"In game, some of {mesh.Name}'s sections won't be drawn with their materials on a spline. " +
+                    $"Give them DeformMeshMaterials overrides that can be:\n\n{string.Join("\n", problems)}", "DeformMesh");
+            }
+        });
     }
 
     /// <summary>The games whose missing or out-of-date asset database an asset picker shouldn't ask about again while this editor is open</summary>
@@ -2677,8 +2723,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void SplineMaterials_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
-        var material = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, SplineMaterialRequest($"Add a DeformMeshMaterials override to {point.ActorName}", point));
-        if (material is not null && !RefuseSplineMaterial(point, material)) point.SetDeformMesh(point.DeformMesh, point.DeformMeshMaterials.Append(material));
+        UsePick(SplineMaterialRequest($"Add a DeformMeshMaterials override to {point.ActorName}", point), material =>
+        {
+            if (!RefuseSplineMaterial(point, material)) point.SetDeformMesh(point.DeformMesh, point.DeformMeshMaterials.Append(material));
+        });
     }
     private void SplineClearMaterials_Click(object sender, RoutedEventArgs e)
     {
@@ -2691,10 +2739,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         switch (operation)
         {
             case "Choose":
-                var material = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, SplineMaterialRequest($"Material override for slot {slot.Index} of {slot.Point.ActorName}", slot.Point));
-                if (material is null || RefuseSplineMaterial(slot.Point, material)) return;
-                values[slot.Index] = material;
-                break;
+                UsePick(SplineMaterialRequest($"Material override for slot {slot.Index} of {slot.Point.ActorName}", slot.Point), material =>
+                {
+                    if (RefuseSplineMaterial(slot.Point, material)) return;
+                    values[slot.Index] = material;
+                    slot.Point.SetDeformMesh(slot.Point.DeformMesh, values);
+                });
+                return;
             case "Clear": values[slot.Index] = null; break;
             case "Remove": values.RemoveAt(slot.Index); break;
         }
@@ -2714,8 +2765,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void DecalMaterial_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedDecal is not { IsEditable: true } decal) return;
-        var material = AssetPickerWindow.Pick(this, declinedAssetDatabasePrompts, new AssetPickRequest("DecalMaterial", decal.Package, AssetKind.DecalMaterial));
-        if (material is not null && decal.SetMaterial(material) is { } problem) MessageBox.Show(this, problem, "DecalMaterial");
+        UsePick(new AssetPickRequest("DecalMaterial", decal.Package, AssetKind.DecalMaterial), material =>
+        {
+            if (decal.SetMaterial(material) is { } problem) MessageBox.Show(this, problem, "DecalMaterial");
+        });
     }
 
     private void EditLightEnvironment_Click(object sender, RoutedEventArgs e)
@@ -3270,7 +3323,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
 
         CloseAllFiles();
-        ReleaseAllCaptures();
+        ReleaseAll();
         //a search of the game's files for missing assets
         scanCancellation?.Cancel();
         scanCancellation?.Dispose();
@@ -3286,7 +3339,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext.ActorMenuRequested -= ViewportActorMenu;
 
         UndoHistory.PropertyChanged -= UndoHistory_PropertyChanged;
-        UndoHistory.Dropped -= ReleaseUnusedCaptures;
+        UndoHistory.Dropped -= ReleaseUnused;
         UndoHistory.Clear();
 
         SceneViewer.Dispose();
@@ -3486,7 +3539,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 ReloadFile(file);
             }
             UndoHistory.RemoveOrphaned();
-            ReleaseUnusedCaptures();
+            ReleaseUnused();
         }
     }
 

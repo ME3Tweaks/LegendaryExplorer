@@ -407,6 +407,7 @@ internal static class ActorLightEnvironment
 public sealed class ActorLightingAction(EditableActorLighting lighting, ActorLightingSettings before, ActorLightingSettings after) : IUndoAction
 {
     public string Description => $"Edit {lighting.ComponentName} lighting";
+    public IEnumerable<AssetReference> Assets => [];
     public bool IsOrphaned => lighting.IsOrphaned;
     //a model with no actor isn't known to be independent of anything
     public IReadOnlyCollection<ActorId> Subjects => lighting.OwnerId is { } owner ? [owner] : null;

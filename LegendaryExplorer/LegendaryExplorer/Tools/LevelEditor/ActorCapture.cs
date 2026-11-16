@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using LegendaryExplorer.Lightmaps.Game;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -16,19 +14,10 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// into a level of its own, which the editor doesn't show and nothing else uses, so that what it was copied from can then be edited, deleted or closed.
 /// It's made as a copy in another level is (<see cref="ActorCloning"/>): without its baked lighting or its references to its old level's other objects,
 /// a collection's member made an actor of its own, with copies of what it uses. A paste is a copy of it in another level, made at its commit from its
-/// level, which never changes. Its level is a package in memory only, named LEXLevelEditorTEMP and a number, in its source's file's folder: what its
-/// imports are found from, as its source's are (its source's file's folder, and its tag data: whether it's loaded after a save, and its import hints)
+/// level, which never changes. Its level is one of <see cref="TemporaryPackages"/>, made from its source's, whose imports are found as its source's are
 /// </summary>
 public sealed class ActorCapture : IDisposable
 {
-    private static int lastNumber;
-
-    //what each copied actor's level is called in messages, by its path: no file the user has is at it
-    private static readonly ConcurrentDictionary<string, string> namesByPath = new(StringComparer.OrdinalIgnoreCase);
-
-    /// <summary>What the file at <paramref name="path"/> is called in messages: its name, or for a copied actor's level, what it's a copy of</summary>
-    public static string FileName(string path) => path is not null && namesByPath.TryGetValue(path, out string name) ? name : Path.GetFileName(path);
-
     private readonly IActorEditorContext editor;
 
     /// <summary>The level's package</summary>
@@ -44,26 +33,9 @@ public sealed class ActorCapture : IDisposable
     {
         var source = copied.Package;
         this.editor = editor;
-        string folder = Path.GetDirectoryName(source.FilePath) ?? "";
-        string path;
-        do path = Path.Combine(folder, $"LEXLevelEditorTEMP_{Interlocked.Increment(ref lastNumber)}.pcc");
-        while (System.IO.File.Exists(path));
-        Package = MEPackageHandler.CreateMemoryEmptyPackage(path, source.Game);
-        namesByPath[path] = $"the copy of {copied.ActorName} from {Path.GetFileName(source.FilePath)}";
+        Package = TemporaryPackages.Create(source, $"the copy of {copied.ActorName} from {Path.GetFileName(source.FilePath)}");
         try
         {
-            // Its imports are found as its source's are (EntryImporter.GetPossibleImportFiles), and it imports what its source can (IsSafeToImportFrom):
-            // what a file loaded after a save imports from (the game's files, and those the user named) are its import hints, since its name isn't a level's
-            var tags = Package.LECLTagData;
-            tags.ImportHintFiles.AddRange(source.LECLTagData.ImportHintFiles);
-            tags.IsPostLoadFile = source.LECLTagData.IsPostLoadFile ?? EntryImporter.IsPostLoadFile(source.FilePath, source.Game);
-            if (tags.IsPostLoadFile == true)
-            {
-                tags.ImportHintFiles.AddRange(EntryImporter.FilesSafeToImportFromPostLoad(source.Game));
-                tags.ImportHintFiles.AddRange(EntryImporter.UserSpecifiedSafeToImportFromFiles(source.Game));
-            }
-            const UnrealFlags.EPackageFlags requireLoaded = UnrealFlags.EPackageFlags.RequireImportsAlreadyLoaded;
-            Package.setFlags(Package.Flags & ~requireLoaded | source.Flags & requireLoaded);
             var world = Add("Package", "TheWorld", null);
             var level = Add("Level", "PersistentLevel", world);
             level.WriteBinary(LegendaryExplorerCore.Unreal.BinaryConverters.Level.Create(source.Game));
@@ -71,8 +43,7 @@ public sealed class ActorCapture : IDisposable
         }
         catch
         {
-            namesByPath.TryRemove(path, out _);
-            Package.Dispose();
+            TemporaryPackages.Release(Package);
             throw;
         }
     }
@@ -189,7 +160,6 @@ public sealed class ActorCapture : IDisposable
         context.ForgetPackage(Package);
         context.Registry.Forget(Package);
         File.Dispose();
-        namesByPath.TryRemove(Package.FilePath, out _);
-        Package.Dispose();
+        TemporaryPackages.Release(Package);
     }
 }

@@ -152,6 +152,7 @@ public static class CollectionMemberUpgrade
     private sealed class UpgradeAction(ActorProxy member) : IUndoAction
     {
         public string Description => $"Upgrade {member.ActorName} to an actor";
+        public IEnumerable<AssetReference> Assets => [];
         public bool IsOrphaned => member.IsDisposed;
         public IReadOnlyCollection<ActorId> Subjects => [member.Id];
         public void Undo() => SetPending(false);

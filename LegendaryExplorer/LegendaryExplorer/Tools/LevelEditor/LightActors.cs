@@ -812,6 +812,7 @@ public class LightSettingsAction : IMergeableUndoAction
     private readonly string[] ChangedFields;
 
     public string Description { get; }
+    public IEnumerable<AssetReference> Assets => [];
 
     public LightSettingsAction(EditableLight light, LightSettings before, LightSettings after, string actorName)
     {

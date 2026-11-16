@@ -116,6 +116,7 @@ public sealed partial class SplineActorProxy
         //(including a point whose deletion was cancelled, which is disposed)
         public bool IsOrphaned => before.Any(s => s.Point.IsOrphaned);
         public IReadOnlyCollection<ActorId> Subjects => before.Select(s => s.Point.Id).ToArray();
+        public IEnumerable<AssetReference> Assets => TopologyState.AssetsOf(before.Concat(after));
 
         public void Undo() => Apply(deleted: false);
         public void Redo() => Apply(deleted: true);

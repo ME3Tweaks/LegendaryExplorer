@@ -290,6 +290,7 @@ public sealed class TerrainSculptAction(TerrainProxy terrain, TerrainEdit edit, 
         TerrainSculptTool.Holes => "Edit terrain holes",
         _ => throw new ArgumentOutOfRangeException(nameof(tool), tool, null)
     };
+    public IEnumerable<AssetReference> Assets => [];
 
     public void Undo() => ((TerrainProxy)actor.View).ApplyEdit(edit, after: false);
     public void Redo() => ((TerrainProxy)actor.View).ApplyEdit(edit, after: true);

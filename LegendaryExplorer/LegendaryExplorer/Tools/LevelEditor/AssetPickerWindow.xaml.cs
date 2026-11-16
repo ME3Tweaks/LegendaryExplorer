@@ -17,17 +17,20 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// <summary>
 /// Picks an asset of a kind for a file being edited, from the file's own entries and every asset of the kind in the game that the asset database lists,
 /// marked with where each is, with search and a preview. The highlighted asset is opened and checked as its use asks. One in another file is chosen by
-/// that file and its path (<see cref="AssetReference"/>): choosing it adds nothing to the file, and a commit copies it in (<see cref="AssetPorting"/>)
+/// that file and its path (<see cref="AssetReference"/>), which the editor then keeps, as a copy in a package of its own unless the file can import it
+/// (<see cref="AssetPackages.Keep"/>): choosing it adds nothing to the file, and a commit copies it in (<see cref="AssetPorting"/>)
 /// </summary>
 public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
 {
     /// <summary>
-    /// The asset chosen, an entry of <see cref="AssetPickRequest.Destination"/> or another file's export, or null if none was. If the game's asset database is missing or out of date,
-    /// it asks to rebuild it, unless its game is in <paramref name="declinedDatabasePrompts"/>; it adds the game when that's declined
+    /// The asset chosen, an entry of <see cref="AssetPickRequest.Destination"/> or another file's export, as <paramref name="keep"/> keeps it, or null if none
+    /// was. If the game's asset database is missing or out of date, it asks to rebuild it, unless its game is in <paramref name="declinedDatabasePrompts"/>;
+    /// it adds the game when that's declined
     /// </summary>
-    public static AssetReference Pick(Window owner, ISet<MEGame> declinedDatabasePrompts, AssetPickRequest request)
+    /// <param name="keep">What a choice is kept as, once Use is pressed. If it fails, its error is the choice's problem, and another can be chosen</param>
+    public static AssetReference Pick(Window owner, ISet<MEGame> declinedDatabasePrompts, AssetPickRequest request, Func<AssetReference, AssetReference> keep)
     {
-        var window = new AssetPickerWindow(request, declinedDatabasePrompts) { Owner = owner };
+        var window = new AssetPickerWindow(request, declinedDatabasePrompts, keep) { Owner = owner };
         return window.ShowDialog() == true ? window.chosen : null;
     }
 
@@ -35,6 +38,7 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
 
     private readonly AssetPickRequest request;
     private readonly ISet<MEGame> declinedDatabasePrompts;
+    private readonly Func<AssetReference, AssetReference> keep;
     private readonly AssetPreviewScene preview = new();
     private readonly DispatcherTimer searchTimer;
     private List<AssetChoice> choices = [];
@@ -45,10 +49,11 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
     private AssetReference usable, chosen;
     private bool closed;
 
-    private AssetPickerWindow(AssetPickRequest request, ISet<MEGame> declinedDatabasePrompts) : base("Asset Picker", false)
+    private AssetPickerWindow(AssetPickRequest request, ISet<MEGame> declinedDatabasePrompts, Func<AssetReference, AssetReference> keep) : base("Asset Picker", false)
     {
         this.request = request;
         this.declinedDatabasePrompts = declinedDatabasePrompts;
+        this.keep = keep;
         PickTitle = request.Title;
         IsMaterialPick = request.Kind is AssetKind.Material or AssetKind.DecalMaterial;
         //a decal is projected onto surfaces, so its material is seen flat
@@ -316,7 +321,12 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
             not null => $"In {fileName}",
             _ => $"From {choice.Indexed.Source.File.FileName} ({choice.SourceLabel})"
         });
-        if (choice.Entry is null) lines.Add($"Copied into {fileName}, with what it uses, when the change is committed. Until then, nothing is added to it.");
+        if (choice.Entry is null)
+        {
+            lines.Add(AssetPackage.IsNeeded(AssetReference.InFile(choice.Indexed.Source.File.FilePath, choice.InstancedFullPath), request.Destination)
+                ? $"Copied when it's first chosen (choosing it again uses that copy), and into {fileName}, with what it uses, when the change is committed. Until then, nothing is added to it."
+                : $"Imported by {fileName} from its file when the change is committed, since the game has that file loaded with it. Until then, nothing is added to it.");
+        }
         if (choice.Indexed is { } indexed)
         {
             //the file being edited may be a game file the database lists
@@ -337,7 +347,20 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
     private void Use_Click(object sender, RoutedEventArgs e)
     {
         if (!CanUse || usable is null) return;
-        chosen = usable;
+        try
+        {
+            // (another file's asset is copied, from its file read again from disk, which takes a while for a large level)
+            Mouse.OverrideCursor = Cursors.Wait;
+            chosen = keep(usable);
+        }
+        catch (Exception error) when (error is not OutOfMemoryException)
+        {
+            SelectedProblem = $"It couldn't be used: {error.Message}";
+            CanUse = false;
+            usable = null;
+            return;
+        }
+        finally { Mouse.OverrideCursor = null; }
         DialogResult = true;
     }
 

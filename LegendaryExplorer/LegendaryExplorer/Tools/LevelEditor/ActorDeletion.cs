@@ -827,6 +827,7 @@ public sealed class PendingActorDeletion
         public string Description => $"{steps[0].Description} and {(steps.Count == 2 ? "1 other actor" : $"{steps.Count - 1} other actors")}";
         public bool IsOrphaned => steps.Any(s => s.IsOrphaned);
         public IReadOnlyCollection<ActorId> Subjects => steps.SelectMany(s => s.Subjects).ToArray();
+        public IEnumerable<AssetReference> Assets => steps.SelectMany(s => s.Assets);
         public void Undo()
         {
             foreach (var step in Enumerable.Reverse(steps)) step.Undo();
@@ -960,6 +961,7 @@ public sealed class PendingActorDeletion
             fileIndex = draft.OwningFile.Actors.IndexOf(draft);
         }
         public string Description => $"Delete new {draft.ActorName}";
+        public IEnumerable<AssetReference> Assets => [];
         public bool IsOrphaned => draft.IsDisposed;
         public IReadOnlyCollection<ActorId> Subjects => [draft.Id];
         public void Undo()
@@ -994,6 +996,7 @@ public sealed class PendingActorDeletion
             fileIndex = Actor.OwningFile.Actors.IndexOf(Actor);
         }
         public string Description => $"Delete {Actor.ActorName}";
+        public IEnumerable<AssetReference> Assets => [];
         public bool IsOrphaned => Actor.IsDisposed;
         public IReadOnlyCollection<ActorId> Subjects => [Actor.Id];
         // The deletion is listed only while the actor is out of the scene, so the change list never shows it twice. (This step holds the actor,

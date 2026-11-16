@@ -621,7 +621,7 @@ public static class ActorCloning
         internal PackageCache Sources { get; }
 
         internal IMEPackage Of(IMEPackage package) => snapshots.GetValueOrDefault(package)
-            ?? throw new InvalidOperationException($"{ActorCapture.FileName(package.FilePath)} wasn't snapshotted for the commit.");
+            ?? throw new InvalidOperationException($"{TemporaryPackages.FileName(package.FilePath)} wasn't snapshotted for the commit.");
 
         /// <summary>
         /// The snapshot of the file at <paramref name="filePath"/>, or null: what an asset of a copy's source's file is copied from (a decal's changed
@@ -650,7 +650,7 @@ public static class ActorCloning
         out Dictionary<ExportEntry, ExportEntry> copies)
     {
         var source = copy.CloneSource;
-        string file = ActorCapture.FileName(source.FileRef.FilePath);
+        string file = TemporaryPackages.FileName(source.FileRef.FilePath);
         if (source.FileRef.GetEntry(source.UIndex) != source) throw new InvalidOperationException($"{source.ObjectName.Instanced} is no longer in {file}, so it can't be copied.");
         var snapshot = snapshots.Of(source.FileRef);
         // A member's level is its collection's

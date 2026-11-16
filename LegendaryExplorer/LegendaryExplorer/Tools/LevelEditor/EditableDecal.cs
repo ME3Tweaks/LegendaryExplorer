@@ -192,6 +192,7 @@ public sealed class DecalSettingsAction(DecalActorProxy actor, DecalSettings bef
     public string Description => $"Edit decal {property}";
     public bool IsOrphaned => subject.IsOrphaned;
     public IReadOnlyCollection<ActorId> Subjects => [subject.Id];
+    public IEnumerable<AssetReference> Assets => [before.Material, latest.Material];
     public void Undo() => ((DecalActorProxy)subject.View).Decal.Restore(before);
     public void Redo() => ((DecalActorProxy)subject.View).Decal.Restore(latest);
     public bool TryMerge(IUndoAction next)

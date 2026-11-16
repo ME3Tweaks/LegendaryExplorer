@@ -452,6 +452,7 @@ public static class ActorCreation
         }
 
         public string Description => description ?? $"Place {draft.ActorName}";
+        public IEnumerable<AssetReference> Assets => [];
         public bool IsOrphaned => draft.IsDisposed;
         public IReadOnlyCollection<ActorId> Subjects => [draft.Id];
 

@@ -119,7 +119,8 @@ public static class AssetPicking
 
     /// <summary>
     /// Opens the choice: an entry of the destination as it is, resolved through <paramref name="cache"/>; another file's asset from the copy the catalog
-    /// prefers, opened through it, which a pick refers to by that file and its path. Then runs the kind's check on it and the use's. Can be called off the UI thread
+    /// prefers, opened through it, which a pick refers to by that file and its path (until the editor keeps it, usually as a copy: <see cref="AssetPackage"/>).
+    /// Then runs the kind's check on it and the use's. Can be called off the UI thread
     /// </summary>
     public static ResolvedAssetChoice Resolve(AssetChoice choice, AssetPickRequest request, PackageCache cache)
     {
