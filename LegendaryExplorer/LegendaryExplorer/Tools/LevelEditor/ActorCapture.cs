@@ -14,12 +14,12 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// into a level of its own, which the editor doesn't show and nothing else uses, so that what it was copied from can then be edited, deleted or closed.
 /// It's made as a copy in another level is (<see cref="ActorCloning"/>): without its baked lighting or its references to its old level's other objects,
 /// a collection's member made an actor of its own, with copies of what it uses. A paste is a copy of it in another level, made at its commit from its
-/// level, which never changes. Its level is one of <see cref="TemporaryPackages"/>, made from its source's, whose imports are found as its source's are
+/// level, which never changes. Its level is one of <see cref="TemporaryPackages"/>, made from its source's, whose imports are found as its source's are.
+/// It's shared by every Level Editor window (<see cref="ActorClipboard"/>), which only read its level. What a window makes of it (a view to paste from,
+/// its previews' copy of its package, the actors' identities in its registry) is the window's, which it lets go of itself (<see cref="CopiedActors"/>)
 /// </summary>
-public sealed class ActorCapture : IDisposable
+public sealed class ActorCapture
 {
-    private readonly IActorEditorContext editor;
-
     /// <summary>The level's package</summary>
     public IMEPackage Package { get; }
     /// <summary>The level, as the commit that made the copy wrote it</summary>
@@ -29,10 +29,9 @@ public sealed class ActorCapture : IDisposable
     /// <summary>What its source had that it doesn't, as the copy's status says: its baked lighting, its references to its old level's other objects</summary>
     public IReadOnlyList<string> NotCopied { get; private set; } = [];
 
-    private ActorCapture(IActorEditorContext editor, ActorProxy copied)
+    private ActorCapture(ActorProxy copied)
     {
         var source = copied.Package;
-        this.editor = editor;
         Package = TemporaryPackages.Create(source, $"the copy of {copied.ActorName} from {Path.GetFileName(source.FilePath)}");
         try
         {
@@ -60,11 +59,11 @@ public sealed class ActorCapture : IDisposable
     /// Copies <paramref name="source"/> as it's shown. Its source's package is read as it is in memory, and nothing is written to it. If it can't be
     /// copied, the error says why, and nothing is left of the copy
     /// </summary>
-    public static ActorCapture Make(IActorEditorContext editor, ActorProxy source)
+    internal static ActorCapture Make(IActorEditorContext editor, ActorProxy source)
     {
         string Refused(string refusal) => $"{source?.ActorName} can't be copied. {refusal}";
         if (ActorCloning.Refusal(source, null) is { } refusal) throw new InvalidOperationException(Refused(refusal));
-        var capture = new ActorCapture(editor, source);
+        var capture = new ActorCapture(source);
         ActorProxy draft = null;
         try
         {
@@ -83,14 +82,18 @@ public sealed class ActorCapture : IDisposable
             capture.Actor = draft.Export ?? throw new InvalidOperationException($"{source.ActorName}'s copy wasn't made.");
             // (a paste is made as changed since its level's bake by its own commit)
             StaticLightingChanges.ClearAll(capture.Package);
-            // Only its export is kept: a paste is drawn from a view of it (View)
+            // Only its export is kept: a paste is drawn from a window's view of it (CopiedActors.ViewOf)
             capture.File.Actors.Remove(draft);
             draft.Dispose();
         }
         catch (Exception error)
         {
-            // (its record goes with the level's: Dispose). The copy's error is the one to say, whatever letting go of the level does
-            try { capture.Dispose(); }
+            // (its record goes with the level's). The copy's error is the one to say, whatever letting go of the level does
+            try
+            {
+                try { capture.ForgetIn(editor); }
+                finally { capture.Release(); }
+            }
             catch (Exception disposal) when (disposal is not OutOfMemoryException) { throw new AggregateException(error.Message, error, disposal); }
             throw;
         }
@@ -110,56 +113,24 @@ public sealed class ActorCapture : IDisposable
     }
 
     /// <summary>
-    /// For a paste: makes the level's package one the previews find by its path, as a paste's view is drawn from its assets. Once is enough until the
-    /// previews' packages are let go of (when the last open level closes), so it's done by each paste
+    /// Lets go of what <paramref name="editor"/>'s previews and registry know of the level (<see cref="CopiedActors"/>, Make): its previews' copy of its
+    /// package, the meshes and materials made from it, the actors' identities. Only <paramref name="editor"/>'s own state, which only it changes
     /// </summary>
-    public void Use() => editor.RenderContext.PackageCache.UsePackage(Package);
-
-    private ActorProxy view;
-
-    /// <summary>
-    /// For a paste: a view of the copied actor, which Paste makes a copy of (<see cref="ActorCloning.BeginClone"/>). Not drawn. Made by the first paste
-    /// and kept for the next, until the previews' caches it was made with are emptied (<see cref="ForgetView"/>) or the copy is let go of
-    /// </summary>
-    public ActorProxy View
+    internal void ForgetIn(IActorEditorContext editor)
     {
-        get
-        {
-            if (view is { IsDisposed: false }) return view;
-            var made = ActorProxy.Create(editor, Actor);
-            try
-            {
-                made.OwningFile = File;
-                made.IsOutOfScene = true;
-                made.LeaveSceneIfOutOfIt();
-            }
-            catch
-            {
-                made.Dispose();
-                throw;
-            }
-            return view = made;
-        }
-    }
-
-    /// <summary>Lets go of <see cref="View"/>, before the previews' caches that its meshes were made with are emptied. The next paste makes another</summary>
-    public void ForgetView()
-    {
-        view?.Dispose();
-        view = null;
+        var context = editor.RenderContext;
+        context.PackageCache.ReleasePackage(Package.FilePath);
+        context.ForgetPackage(Package);
+        context.Registry.Forget(Package);
     }
 
     /// <summary>Whether any of <paramref name="actors"/> is a copy of it (a paste), which its commit makes from its level</summary>
     public bool IsUsedBy(IEnumerable<ActorProxy> actors) => actors.Any(a => a is { IsDisposed: false } && a.CloneSource?.FileRef == Package);
 
-    public void Dispose()
+    /// <summary>Lets go of the level, once no window has anything of it (<see cref="ActorClipboard"/>, which is all that calls it)</summary>
+    internal void Release()
     {
-        ForgetView();
-        var context = editor.RenderContext;
-        context.PackageCache.ReleasePackage(Package.FilePath);
-        context.ForgetPackage(Package);
-        context.Registry.Forget(Package);
-        File.Dispose();
-        TemporaryPackages.Release(Package);
+        try { File.Dispose(); }
+        finally { TemporaryPackages.Release(Package); }
     }
 }
