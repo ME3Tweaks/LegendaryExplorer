@@ -666,6 +666,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             RenderContext.SplineGizmo.Attach = selectedActor as SplineActorProxy;
             OnPropertyChanged(nameof(SelectedSpline));
             OnPropertyChanged(nameof(IsSplineSelected));
+            RefreshMeshChoices();
             RefreshLightingDiagnostics();
             RefreshCommandStates();
         }
@@ -2770,6 +2771,63 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     }
     private void OnSplineGizmoDragComplete(SplineActorProxy actor, SplineLoftSettings before, SplineLoftSettings after) =>
         UndoHistory.Push(new SplineSettingsAction(actor, before, after, "tangent"));
+
+    /// <summary>The selected actor's static mesh components whose mesh can be chosen (<see cref="StaticMeshComponentProxy.CanChooseMesh"/>)</summary>
+    public ObservableCollectionExtended<StaticMeshComponentProxy> SelectedMeshChoices { get; } = [];
+
+    private bool isMeshChoiceSelected;
+    public bool IsMeshChoiceSelected
+    {
+        get => isMeshChoiceSelected;
+        private set => SetProperty(ref isMeshChoiceSelected, value);
+    }
+
+    private void RefreshMeshChoices()
+    {
+        List<StaticMeshComponentProxy> meshes = selectedActor?.Components.OfType<StaticMeshComponentProxy>().Where(m => m.CanChooseMesh).ToList() ?? [];
+        SelectedMeshChoices.ReplaceAll(meshes);
+        IsMeshChoiceSelected = meshes.Count > 0;
+    }
+
+    //Choose mesh: another static mesh for the component to draw until a commit writes it, as one undo step
+    private void ChooseMesh_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: StaticMeshComponentProxy mesh } || MeshChangeRefused(mesh)) return;
+        // Asked again once it's picked: the picker is modal, so a preview refresh may have begun meanwhile
+        UsePick(new AssetPickRequest($"StaticMesh of {mesh.Actor.ActorName}", mesh.Actor.Package, AssetKind.StaticMesh), chosen =>
+        {
+            if (!MeshChangeRefused(mesh)) ChangeMesh(() => mesh.ChooseMesh(chosen));
+        });
+    }
+
+    //Revert: the component draws its own mesh again
+    private void RevertMesh_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { DataContext: StaticMeshComponentProxy mesh } && !MeshChangeRefused(mesh)) ChangeMesh(mesh.RevertMesh);
+    }
+
+    //says why the mesh can't be changed now, if it can't
+    private bool MeshChangeRefused(StaticMeshComponentProxy mesh)
+    {
+        string refusal = !CanMutateScene ? "Wait for the current operation (such as a preview refresh) to finish, then try again." : mesh.MeshChangeRefusal;
+        if (refusal is not null) MessageBox.Show(this, refusal, "StaticMesh");
+        return refusal is not null;
+    }
+
+    private void ChangeMesh(Func<IUndoAction> change)
+    {
+        IUndoAction step;
+        try { step = change(); }
+        catch (Exception error) when (error is not OutOfMemoryException)
+        {
+            MessageBox.Show(this, error.Message, "StaticMesh");
+            return;
+        }
+        if (step is not null) UndoHistory.Push(step);
+    }
+
+    //(by an edit or an undo step) the selected actor may draw another mesh, which other lights reach
+    void IActorEditorContext.OnMeshChosen(StaticMeshComponentProxy mesh) => LightDiagnosticsStale = true;
 
     private void RefreshDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.RefreshFilterCandidates();
     private void ClearDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.ClearFilter();

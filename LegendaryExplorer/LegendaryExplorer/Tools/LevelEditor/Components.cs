@@ -1,4 +1,5 @@
 ﻿using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -392,8 +393,21 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
         }
     }
 
-    /// <summary>A preview's mesh and material overrides, in place of its pending properties' (which can't refer to another file's): see <see cref="PreviewAssets"/></summary>
-    protected readonly PreviewAssets PreviewAssets;
+    /// <summary>
+    /// A preview's mesh and material overrides, in place of its pending properties' (which can't refer to another file's): see <see cref="PreviewAssets"/>.
+    /// Its mesh is the one its commit wrote, once it's written (<see cref="StaticMeshComponentProxy.AcceptChosenMesh"/>)
+    /// </summary>
+    protected PreviewAssets PreviewAssets { get; private protected set; }
+
+    /// <summary>The name of the mesh <paramref name="component"/>'s <paramref name="meshProperty"/> refers to, as the bake reads it (inherited too)</summary>
+    internal static string SavedMeshName(ExportEntry component, string meshProperty, PackageCache cache)
+    {
+        var (property, package) = EffectiveLightingProperties.Reference(component, meshProperty, cache);
+        return property is { Value: not 0 } ? property.ResolveToEntry(package)?.ObjectName.Instanced ?? "Unresolved mesh" : "None";
+    }
+
+    /// <summary>A preview's mesh (<see cref="PreviewAssets"/>): a draft's, or a copy's stand-in's. Null for a saved component's</summary>
+    internal AssetReference PreviewMesh => PreviewAssets?.Mesh;
 
     protected MeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null,
         PreviewAssets previewAssets = null) : base(context, componentExport, parent, previewProperties)
@@ -407,9 +421,17 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     /// file's (its export, if the package doesn't have it, has none of its own); that mesh and its materials are tracked in <paramref name="dependencies"/>.
     /// Null if it has none, or it can't be found
     /// </summary>
-    private protected ExportEntry ResolveMesh(string meshProperty, PreviewMeshDependencies dependencies)
+    /// <param name="chosen">A mesh chosen in its place, drawn instead (and tracked)</param>
+    private protected ExportEntry ResolveMesh(string meshProperty, PreviewMeshDependencies dependencies, AssetReference chosen = null)
     {
         var cache = RenderContext.PackageCache;
+        if (chosen is not null)
+        {
+            var found = chosen.Find(cache);
+            dependencies.Track(found);
+            foreach (var material in MaterialOverrides) dependencies.Track(material);
+            return EffectiveLightingProperties.Resolve(found, cache);
+        }
         if (PreviewProperties is null) return EffectiveLightingProperties.ResolveReference(Export, meshProperty, cache);
         var meshReference = PreviewAssets?.Mesh?.Find(cache);
         dependencies.Track(meshReference);
@@ -534,11 +556,201 @@ public class StaticMeshComponentProxy : MeshComponentProxy
     /// <summary>The mesh it draws, as it's shown (a preview's <see cref="PreviewAssets"/> mesh). Null if it has none, or it can't be found</summary>
     internal ExportEntry StaticMeshExport { get; private set; }
 
+    /// <summary>
+    /// The mesh chosen in place of its own (Choose mesh: <see cref="ChooseMesh"/>), an entry of its package or another file's, which a commit writes
+    /// (<see cref="StaticMeshChange"/>). Null while it has its own. It's drawn without baked lighting, which the commit drops. Its material overrides are
+    /// kept, as UE3's SetStaticMesh keeps them
+    /// </summary>
+    public AssetReference ChosenMesh { get; private set; }
+
+    /// <summary>
+    /// The mesh it has until a commit writes another: its saved component's, as its package refers to it; a draft's (its <see cref="PreviewAssets"/>), or
+    /// for a copy's stand-in, its source's component's
+    /// </summary>
+    internal AssetReference OwnMesh
+    {
+        get
+        {
+            if (PreviewProperties is not null) return PreviewAssets?.Mesh;
+            var (mesh, package) = EffectiveLightingProperties.Reference(Export, "StaticMesh", RenderContext.PackageCache);
+            return AssetReference.Of(mesh?.ResolveToEntry(package), Export.FileRef, RenderContext.PackageCache);
+        }
+    }
+
+    /// <summary>Whether a mesh is chosen, which a commit writes</summary>
+    public bool HasChosenMesh => ChosenMesh is not null;
+
+    /// <summary>
+    /// What its commit does with a chosen mesh, or null if none is: it drops the baked lighting the mesh is drawn with in the level (its own, or for a copy in
+    /// its source's level, its source's, which its commit copies), and its painted vertex colors. A new mesh, or a copy in another level, has neither.
+    /// Worked out when a mesh is chosen
+    /// </summary>
+    public string ChosenMeshNote { get; private set; }
+
+    private string NoteFor(AssetReference chosen) => chosen is null ? null
+        : BakedLightingOf() is { } baked && StaticMeshChange.HasBakedLighting(baked)
+            ? "Uncommitted. Committing drops this mesh's baked lighting and painted vertex colors: rebake its level."
+            : "Uncommitted.";
+
+    //the component whose baked lighting it's drawn with in its level, if any
+    private ExportEntry BakedLightingOf() => CopiedFrom is { } source ? (source.FileRef == Export.FileRef ? source : null) : IsStandIn ? null : Export;
+
+    /// <summary>Whether its mesh can be chosen now (<see cref="MeshChangeRefusal"/>), which Choose mesh is enabled by</summary>
+    public bool CanChangeMesh => MeshChangeRefusal is null;
+
+    private void NotifyChosenMesh()
+    {
+        ChosenMeshNote = NoteFor(ChosenMesh);
+        OnPropertyChanged(nameof(ChosenMesh));
+        OnPropertyChanged(nameof(HasChosenMesh));
+        OnPropertyChanged(nameof(ChosenMeshNote));
+        OnPropertyChanged(nameof(MeshName));
+        ExistingLighting?.NotifyMeshName();
+    }
+
+    /// <summary>The name of the mesh it's shown with until a commit: the chosen one, or its own (as the bake reads it, for a saved component)</summary>
+    public string MeshName
+    {
+        get
+        {
+            if ((ChosenMesh ?? (PreviewProperties is not null ? PreviewAssets?.Mesh : null)) is { } shown) return shown.Name;
+            return PreviewProperties is not null ? "None" : SavedMeshName(Export, "StaticMesh", RenderContext.PackageCache);
+        }
+    }
+
+    /// <summary>What the Mesh section calls it: the actor property it's loaded from, or for a collection member's copy, which has none, its class</summary>
+    public string MeshLabel => ActorPropertyName ?? "StaticMeshComponent";
+
+    /// <summary>
+    /// Whether its mesh can be chosen: it's the StaticMeshComponent of a static mesh actor or an InterpActor, a static mesh collection's member, or a copy's
+    /// stand-in drawn from one of those. Other DynamicSMActors (KActors and other physics actors) aren't offered, as their mesh is also their rigid body
+    /// </summary>
+    public bool CanChooseMesh => canChooseMesh ??= this is not SplineMeshComponentProxy && Actor switch
+    {
+        MeshActorProxy mesh => mesh.StaticMeshComponent == this && IsMeshChangeClass(mesh.ClassName),
+        StaticMeshComponentActorProxy => true,
+        // A member's copy is drawn from the member itself; an actor's, from the component its StaticMeshComponent is
+        ActorCloneProxy clone => clone.DrawnFrom(this) is { } component && clone.CloneSource is { } saved && (component == saved
+            || IsMeshChangeClass(saved.ClassName)
+            && saved.GetProperty<ObjectProperty>(nameof(MeshActorProxy.StaticMeshComponent))?.ResolveToEntry(saved.FileRef) == component),
+        _ => false
+    };
+
+    private bool? canChooseMesh;
+
+    private bool IsMeshChangeClass(string className) => GlobalUnrealObjectInfo.IsA(className, "StaticMeshActor", Export.Game)
+        || GlobalUnrealObjectInfo.IsA(className, "InterpActor", Export.Game);
+
+    /// <summary>Why its mesh can't be chosen now, or null</summary>
+    public string MeshChangeRefusal =>
+        !CanChooseMesh ? "Only a static mesh actor's, an InterpActor's or a static mesh collection member's mesh can be chosen."
+        : Actor.IsDisposed ? "It isn't in the scene."
+        : Actor.IsReadOnly ? "Its file is read-only."
+        : Actor.PendingDeletion is not null ? "It's being deleted." : null;
+
+    /// <summary>
+    /// Draws <paramref name="mesh"/>, an entry of its package or another file's static mesh, in place of its own, until a commit writes it; or with its own
+    /// again. Throws why it can't
+    /// </summary>
+    /// <returns>The undo step, or null if nothing changed</returns>
+    public IUndoAction ChooseMesh(AssetReference mesh)
+    {
+        ArgumentNullException.ThrowIfNull(mesh);
+        if (MeshChangeRefusal is { } refusal) throw new InvalidOperationException(refusal);
+        if (mesh.Entry is { } entry && entry.FileRef != Export.FileRef)
+            throw new InvalidOperationException($"{mesh.Description} is another package's entry: choose a static mesh of its package, or another file's.");
+        if (mesh.Find(RenderContext.PackageCache) is not { } found || !found.IsA(AssetPicking.ClassOf(AssetKind.StaticMesh)))
+            throw new InvalidOperationException($"{mesh.Description} isn't a static mesh that can be found.");
+        var before = ChosenMesh;
+        if (Shown(mesh) == before) return null;
+        ShowMesh(mesh);
+        return new StaticMeshChange.ChooseAction(this, before, ChosenMesh);
+    }
+
+    /// <summary>Draws its own mesh again, discarding the chosen one</summary>
+    /// <returns>The undo step, or null if none was chosen</returns>
+    public IUndoAction RevertMesh()
+    {
+        if (ChosenMesh is null) return null;
+        if (MeshChangeRefusal is { } refusal) throw new InvalidOperationException(refusal);
+        var before = ChosenMesh;
+        ShowMesh(null);
+        return new StaticMeshChange.ChooseAction(this, before, null);
+    }
+
+    /// <summary>
+    /// Draws <paramref name="mesh"/> in place of its own (none, or its own, draws its own), and its actor is dirty for it, or clean once it has its own. If it
+    /// can't be drawn, it's drawn as it was, with what was chosen before, and why is thrown
+    /// </summary>
+    internal void ShowMesh(AssetReference mesh)
+    {
+        var shown = ChosenMesh;
+        ChosenMesh = Shown(mesh);
+        try { Redraw(); }
+        catch (Exception failure) when (failure is not OutOfMemoryException)
+        {
+            // (an undo step's failure is shown and the step stays where it was, as an edit's is: both are told of it as an InvalidOperationException)
+            string couldnt = $"{mesh?.Description ?? "Its own mesh"} couldn't be drawn: {failure.Message}";
+            ChosenMesh = shown;
+            try { Redraw(); }
+            catch (Exception restoring) when (restoring is not OutOfMemoryException)
+            {
+                throw new InvalidOperationException($"{couldnt} Nor could {shown?.Description ?? "its own mesh"}, which it had: {restoring.Message}",
+                    new AggregateException(failure, restoring));
+            }
+            throw new InvalidOperationException(couldnt, failure);
+        }
+        finally { NotifyChosenMesh(); }
+    }
+
+    //what choosing mesh makes chosen: nothing, for its own
+    private AssetReference Shown(AssetReference mesh) => mesh is null || mesh == OwnMesh ? null : mesh;
+
+    //reloads its preview, and its actor takes on what it draws
+    private void Redraw()
+    {
+        using var load = RenderContext.BeginLoad();
+        try { RefreshPreviewJoiningScene(Export.FileRef, new HashSet<int>(), force: true); }
+        finally
+        {
+            UpdateLocalToWorld();
+            Actor?.OnMeshChosen();
+            Actor?.Editor?.OnMeshChosen(this);
+        }
+    }
+
+    /// <summary>
+    /// For a commit: puts <paramref name="mesh"/> (the chosen one's copy, <see cref="AssetPorting"/>) in the chosen one's place, without redrawing it, as
+    /// it's already drawn
+    /// </summary>
+    internal void UseCopiedMesh(AssetReference mesh) => ChosenMesh = mesh;
+
+    /// <summary>
+    /// Once a commit has written the chosen mesh: it's its own. A saved component is redrawn from what was written (and a new actor's or a copy's view is
+    /// made again from its export); until then a preview's own mesh is the one written
+    /// </summary>
+    internal void AcceptChosenMesh()
+    {
+        if (ChosenMesh is null) return;
+        AcceptWrittenMesh(ChosenMesh);
+    }
+
+    /// <summary>
+    /// For a preview whose commit wrote <paramref name="mesh"/> (its package's entry: the chosen one, or a new actor's, as copied in): its own mesh is that one,
+    /// until its view is made again from its export, so it no longer refers to another file's (or its package: <see cref="ActorProxy.AssetsInUse"/>)
+    /// </summary>
+    internal void AcceptWrittenMesh(AssetReference mesh)
+    {
+        if (PreviewProperties is not null) PreviewAssets = (PreviewAssets ?? new PreviewAssets(null, [])) with { Mesh = mesh };
+        ChosenMesh = null;
+        NotifyChosenMesh();
+    }
+
     private void LoadMesh()
     {
         var context = RenderContext;
         Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
-        StaticMeshExport = ResolveMesh("StaticMesh", Dependencies);
+        StaticMeshExport = ResolveMesh("StaticMesh", Dependencies, ChosenMesh);
         if (StaticMeshExport is { } meshExport)
         {
             StaticMesh stm = context.GetStaticMesh(meshExport);
@@ -554,7 +766,16 @@ public class StaticMeshComponentProxy : MeshComponentProxy
                     SplineActorProxy.UseGameSplineMeshMaterials(stm.LODModels[LOD].Elements, meshExport.FileRef, MaterialOverrides, context.PackageCache,
                         MaterialUsage.EngineMaterial(Export.Game, "DefaultMaterial", context.PackageCache));
                 }
-                MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD, Properties, PreviewProperties is not null && bakedLighting is null, bakedLighting);
+                // A chosen mesh is drawn without baked lighting, which was another mesh's, nor its IrrelevantLights, as its commit leaves it
+                // (StaticMeshChange.Write)
+                var lightingProperties = Properties;
+                if (ChosenMesh is not null)
+                {
+                    lightingProperties = Properties.DeepClone();
+                    lightingProperties.RemoveNamedProperty("IrrelevantLights");
+                }
+                MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD, lightingProperties,
+                    ChosenMesh is not null || PreviewProperties is not null && bakedLighting is null, bakedLighting);
                 Mesh = new ModelPreview<VertexType>(context, stm, LOD, staticLighting, MaterialOverrides, deformation);
                 MaterialOverrides.Clear();
                 MeshIFP = meshExport.InstancedFullPath;

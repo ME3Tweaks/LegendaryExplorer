@@ -281,6 +281,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public virtual void MarkClean()
     {
+        foreach (var mesh in Components.OfType<StaticMeshComponentProxy>()) mesh.AcceptChosenMesh();
         upgradeRequested = false;
         neededBy = null;
         propertiesBeforeCommit = null;
@@ -403,14 +404,51 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     /// <summary>The meshes whose pending lighting edits a commit writes to their own components, alongside this actor's</summary>
     internal virtual IEnumerable<MeshComponentProxy> LightingMeshes => Components.OfType<MeshComponentProxy>();
 
-    /// <summary>The assets a commit of its pending values would write references to, which <see cref="AssetPorting"/> copies in first if they're other files'</summary>
-    internal virtual IEnumerable<AssetReference> AssetsToCopy => [];
+    /// <summary>
+    /// The assets a commit of its pending values would write references to, which <see cref="AssetPorting"/> copies in first if they're other files': by
+    /// default, its meshes' chosen ones (<see cref="StaticMeshComponentProxy.ChosenMesh"/>)
+    /// </summary>
+    internal virtual IEnumerable<AssetReference> AssetsToCopy => ChosenMeshes.Select(m => m.ChosenMesh);
+
+    /// <summary>
+    /// The assets it refers to, whose packages (<see cref="AssetPackage"/>) are kept while it's in a level: those a commit copies in (<see cref="AssetsToCopy"/>),
+    /// and its meshes' previews' own, which Revert draws again (a draft's placed mesh, while another is chosen)
+    /// </summary>
+    internal IEnumerable<AssetReference> AssetsInUse => AssetsToCopy.Concat(Components.OfType<MeshComponentProxy>().Select(m => m.PreviewMesh));
+
+    //its meshes with a chosen mesh, which a commit writes
+    private protected IEnumerable<StaticMeshComponentProxy> ChosenMeshes => Components.OfType<StaticMeshComponentProxy>().Where(m => m.ChosenMesh is not null);
 
     /// <summary>
     /// For a commit, once <see cref="AssetsToCopy"/> are copied in: uses what <paramref name="copyOf"/> gives for each (its copy, or the asset itself) in
-    /// its place, as if it had been chosen. Returns what puts them back, for when the commit is abandoned
+    /// its place, as if it had been chosen. Returns what puts them back, for when the commit is abandoned. By default, its meshes' chosen ones, whose
+    /// previews, already drawing them, are left as they are
     /// </summary>
-    internal virtual Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf) => () => { };
+    internal virtual Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf)
+    {
+        var chosen = ChosenMeshes.Select(m => (Mesh: m, m.ChosenMesh)).ToList();
+        foreach (var (mesh, asset) in chosen) mesh.UseCopiedMesh(copyOf(asset));
+        return () =>
+        {
+            foreach (var (mesh, asset) in chosen) mesh.UseCopiedMesh(asset);
+        };
+    }
+
+    /// <summary>One of its meshes was given another mesh to draw, or its own again (<see cref="StaticMeshComponentProxy.ShowMesh"/>)</summary>
+    internal void OnMeshChosen()
+    {
+        if (!IsDisposed) LeaveSceneIfOutOfIt();
+        RefreshVolumetricMesh();
+        NotifyCoverageChanged();
+        UpdateDirty();
+    }
+
+    //a mesh actor's (or a copy's) meshes, once reloaded, may be volumetric or no longer be, which moves it to another outliner category
+    private void RefreshVolumetricMesh()
+    {
+        if (this is MeshActorProxy or StaticMeshComponentActorProxy or ActorCloneProxy)
+            IsVolumetricMesh = Components.OfType<StaticMeshComponentProxy>().Any(component => component.IsVolumetric);
+    }
 
     /// <summary>Undoes what a commit begun with <see cref="BeginCommit"/> changed in this view, leaving its pending edits as they were</summary>
     internal virtual void AbandonCommit()
@@ -433,7 +471,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     public bool IsTransformDirty => !SnapshotTransform().Equals(_cleanSnapshot);
 
     protected virtual bool HasUncommittedChanges() => IsDraft || IsTransformDirty
-        || Components.OfType<MeshComponentProxy>().Any(mesh => mesh.ExistingLighting?.HasChanges == true);
+        || Components.OfType<MeshComponentProxy>().Any(mesh => mesh.ExistingLighting?.HasChanges == true) || ChosenMeshes.Any();
 
     /// <summary>Whether its uncommitted changes are more than a pending upgrade, which moves a collection member under an actor of its own unchanged</summary>
     internal virtual bool HasChangesBesidesUpgrade => HasUncommittedChanges();
@@ -1065,8 +1103,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         if (refreshed)
             foreach (var component in Components) component.UpdateLocalToWorld();
         if (refreshed) NotifyCoverageChanged();
-        if (refreshed && this is MeshActorProxy or StaticMeshComponentActorProxy)
-            IsVolumetricMesh = Components.OfType<StaticMeshComponentProxy>().Any(component => component.IsVolumetric);
+        if (refreshed) RefreshVolumetricMesh();
         return refreshed;
     }
 
@@ -1232,14 +1269,25 @@ public abstract class MeshActorProxy : ActorProxy
 
     internal override AssetReference DraftAsset => componentTemplate is not null ? mesh : null;
 
-    internal override IEnumerable<AssetReference> AssetsToCopy => IsDraft && componentTemplate is not null ? [mesh] : [];
+    //a draft's: the mesh its commit makes its component with (one chosen since it was placed, or the one it was placed with)
+    private AssetReference CommittedMesh => StaticMeshComponent.ChosenMesh ?? mesh;
+
+    internal override IEnumerable<AssetReference> AssetsToCopy => IsDraft && componentTemplate is not null ? [CommittedMesh] : base.AssetsToCopy;
 
     //the preview, already drawing the asset, is left as it is
     internal override Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf)
     {
-        var chosen = mesh;
+        if (!IsDraft || componentTemplate is null || StaticMeshComponent.ChosenMesh is not null) return base.UseCopiedAssets(copyOf);
+        var placed = mesh;
         mesh = copyOf(mesh);
-        return () => mesh = chosen;
+        return () => mesh = placed;
+    }
+
+    //a new actor's preview draws what its commit wrote, the level's copy of another file's mesh, until its view is made again from its export
+    public override void MarkClean()
+    {
+        if (Materialized && componentTemplate is not null) StaticMeshComponent.AcceptWrittenMesh(CommittedMesh);
+        base.MarkClean();
     }
 
     //a draft's mesh lighting is written to the component its commit makes
@@ -1258,7 +1306,7 @@ public abstract class MeshActorProxy : ActorProxy
         // binary (no light-maps until a bake). The actor refers to it as its StaticMeshComponent and CollisionComponent; neither has a Components array
         if (Materialized && componentTemplate is not null)
         {
-            var component = NewComponent(componentTemplate, [new ObjectProperty(mesh.EntryIn(Pcc), "StaticMesh")],
+            var component = NewComponent(componentTemplate, [new ObjectProperty(CommittedMesh.EntryIn(Pcc), "StaticMesh")],
                 LegendaryExplorerCore.Unreal.BinaryConverters.StaticMeshComponent.Create());
             StaticMeshComponent.ExistingLighting?.Write(component);
             Properties.AddOrReplaceProp(new ObjectProperty(component, nameof(StaticMeshComponent)));

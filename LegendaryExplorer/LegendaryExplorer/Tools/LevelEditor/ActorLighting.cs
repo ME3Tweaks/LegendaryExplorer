@@ -52,13 +52,12 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
     {
         get
         {
-            string propertyName = Component.IsA("SkeletalMeshComponent") ? "SkeletalMesh" : "StaticMesh";
-            var (property, package) = EffectiveLightingProperties.Reference(SavedComponent, propertyName, Context.PackageCache);
-            return property is { Value: not 0 }
-                ? property.ResolveToEntry(package)?.ObjectName.Instanced ?? "Unresolved mesh"
-                : "None";
+            // (with one chosen in place of its own, until a commit writes it)
+            if (Mesh is StaticMeshComponentProxy staticMesh) return staticMesh.MeshName;
+            return MeshComponentProxy.SavedMeshName(SavedComponent, Component.IsA("SkeletalMeshComponent") ? "SkeletalMesh" : "StaticMesh", Context.PackageCache);
         }
     }
+    internal void NotifyMeshName() => OnPropertyChanged(nameof(MeshName));
     public bool IsReadOnly => Mesh.Actor is null || Mesh.Actor.IsReadOnly;
     internal bool IsOrphaned => Mesh.Actor is null || Mesh.Actor.IsDisposed;
     internal ActorId? OwnerId => Mesh.Actor?.Id;

@@ -77,7 +77,7 @@ public sealed class AssetPackage : IDisposable
     /// <paramref name="history"/>'s steps refer to, which a chosen asset's package is kept for
     /// </summary>
     public static IEnumerable<AssetReference> ReferencesIn(IEnumerable<OpenLevelFile> files, UndoHistory history) =>
-        files.SelectMany(f => f.Actors.Concat(f.RetainedActors)).Where(a => !a.IsDisposed).SelectMany(a => a.AssetsToCopy)
+        files.SelectMany(f => f.Actors.Concat(f.RetainedActors)).Where(a => !a.IsDisposed).SelectMany(a => a.AssetsInUse)
             .Concat(history.Steps.SelectMany(s => s.Assets)).Where(r => r is { IsExternal: true });
 
     /// <summary>Whether any of <paramref name="references"/> is to its copy</summary>

@@ -218,7 +218,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     private readonly Dictionary<ExportEntry, StaticMesh> sourceMeshes = [];
     //(collections' members, and uncommitted copies of them)
     private HashSet<ActorProxy> neededMembers = [];
-    private List<(MeshComponentProxy Source, Matrix4x4 Transform)> projectedSources = [];
+    private List<(MeshComponentProxy Source, Matrix4x4 Transform, ExportEntry Mesh)> projectedSources = [];
     //a new decal's, until the commit that makes it is accepted: it has no cooked receivers, so it's projected wherever it is, and its commit writes them
     private bool isNew;
     public bool HasReprojectedReceivers => originalReceivers is not null && !ReferenceEquals(receivers, originalReceivers);
@@ -416,9 +416,16 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
 
     // A receiver pending deletion isn't drawn on, and has no say in a reprojection. It's still one until the commit that takes it out, which undoing the deletion avoids
     private static bool PendingDeletion(Receiver r) => r.Source?.Actor.PendingDeletion is not null;
+    // A receiver drawing another mesh than it was projected onto (one chosen for it, StaticMeshComponentProxy.ChosenMesh) is projected onto again, as a moved
+    // one is: its triangles are the other mesh's. A projection onto the chosen mesh is of the mesh drawn
     private bool Stale(Receiver r) => r.Invalidated
         || r.Source is { } source && (source.Actor.IsDisposed || !source.Actor.Components.Contains(source)
-            || source.LocalToWorld != r.OriginalTransform);
+            || source.LocalToWorld != r.OriginalTransform || source is StaticMeshComponentProxy mesh && !SameMesh(mesh.StaticMeshExport, r.Geometry));
+
+    //the same mesh as the game has it, by the path it loads it at: whichever package it was found in (a chosen mesh's own package of another file's, or the
+    //level's copy its commit made), and however often the preview cache opened that again
+    private static bool SameMesh(ExportEntry drawn, ExportEntry projected) => drawn == projected || drawn is not null && projected is not null
+        && string.Equals(drawn.MemoryFullPath, projected.MemoryFullPath, StringComparison.OrdinalIgnoreCase);
 
     internal void BindReceivers(LevelEditorRenderContext context)
     {
@@ -463,10 +470,11 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         var sources = context.DrawList_3D.SelectMany(a => a.Components).OfType<StaticMeshComponentProxy>()
             .Where(s => (s.IsStandIn || s.Export.ClassName == "StaticMeshComponent") && s.Actor.Editor is not null && s.Actor.PendingDeletion is null).ToList();
         if (projectedTransform == transform && projectedSettings == settings && sources.Count == projectedSources.Count
-            && sources.Select((source, i) => ReferenceEquals(source, projectedSources[i].Source) && source.LocalToWorld == projectedSources[i].Transform).All(x => x)) return;
+            && sources.Select((source, i) => ReferenceEquals(source, projectedSources[i].Source) && source.LocalToWorld == projectedSources[i].Transform
+                && SameMesh(source.StaticMeshExport, projectedSources[i].Mesh)).All(x => x)) return;
         projectedTransform = transform;
         projectedSettings = settings;
-        projectedSources = sources.Select(s => ((MeshComponentProxy)s, s.LocalToWorld)).ToList();
+        projectedSources = sources.Select(s => ((MeshComponentProxy)s, s.LocalToWorld, s.StaticMeshExport)).ToList();
         reprojectionError = null;
         try
         {

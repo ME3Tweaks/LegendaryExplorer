@@ -19,6 +19,9 @@ public interface IActorEditorContext
 
     void OnDecalEdited(DecalActorProxy actor, DecalSettings before, DecalSettings after, string property) { }
 
+    /// <summary>A mesh component was given another mesh to draw, or its own again (<see cref="StaticMeshComponentProxy.ShowMesh"/>), by an edit or an undo step</summary>
+    void OnMeshChosen(StaticMeshComponentProxy mesh) { }
+
     /// <summary>A loft point's uncommitted spline values changed</summary>
     void OnSplineEdited(SplineActorProxy actor, SplineLoftSettings before, SplineLoftSettings after, string property) { }
 

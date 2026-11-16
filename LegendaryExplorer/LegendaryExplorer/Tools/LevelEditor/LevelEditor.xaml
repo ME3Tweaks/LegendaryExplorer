@@ -635,6 +635,23 @@
                                         <DockPanel Margin="0,10,0,0"><TextBlock Text="Uniform scale" VerticalAlignment="Center"/><xctk:SingleUpDown x:Name="scaleUpDown" Width="108" HorizontalAlignment="Right" Value="{Binding DrawScale}" Increment="{Binding ScaleIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Uniform scale"/></DockPanel>
                                     </StackPanel>
                                 </Expander>
+                                <Expander Header="Mesh" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding IsMeshChoiceSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <ItemsControl ItemsSource="{Binding SelectedMeshChoices}">
+                                        <ItemsControl.ItemTemplate><DataTemplate>
+                                            <StackPanel Margin="0,0,0,8">
+                                                <TextBlock Text="{Binding MeshLabel}" Style="{StaticResource EditorSectionLabel}"/>
+                                                <TextBlock Text="{Binding MeshName, StringFormat='StaticMesh: {0}'}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="{Binding ChosenMeshNote}" Foreground="{StaticResource EditorDirty}" FontSize="11" TextWrapping="Wrap"
+                                                           Visibility="{Binding ChosenMeshNote, Converter={StaticResource NullVisibilityConverter}}"/>
+                                                <WrapPanel Margin="0,4,0,0">
+                                                    <Button Content="Choose mesh…" Click="ChooseMesh_Click" Margin="0,0,4,0" IsEnabled="{Binding CanChangeMesh, Converter={StaticResource BoolEnabledConverter}}"
+                                                            ToolTip="Draw another static mesh. Its material overrides are kept. Committing writes it and drops the component's baked lighting, which was made for the old mesh."/>
+                                                    <Button Content="Revert" Click="RevertMesh_Click" IsEnabled="{Binding HasChosenMesh, Converter={StaticResource BoolEnabledConverter}}" ToolTip="Draw its own mesh again: the committed one, or for a new actor, the one it was placed with."/>
+                                                </WrapPanel>
+                                            </StackPanel>
+                                        </DataTemplate></ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Expander>
                                 <Expander Header="Decal projection" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding IsDecalSelected, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="{Binding SelectedActor.DecalEditingStatus}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,6,0,8"/>

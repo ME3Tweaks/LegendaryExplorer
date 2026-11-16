@@ -8,7 +8,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 namespace LegendaryExplorer.Tools.LevelEditor;
 
 /// <summary>
-/// Writes level files' pending actor edits (transforms, spline points, lights, decals, sculpted terrain and mesh lighting) inside one <see cref="PackageEditScope"/>,
+/// Writes level files' pending actor edits (transforms, spline points, lights, decals, sculpted terrain, mesh lighting and chosen meshes) inside one <see cref="PackageEditScope"/>,
 /// then accepts them. Either every write lands and the actors become clean, or the packages are restored exactly and every actor keeps its pending edits.
 /// Writers change only the packages (and what <see cref="ActorProxy.AbandonCommit"/> puts back); views take on what was written in <see cref="ActorProxy.MarkClean"/>.
 /// What it adds, changes or deletes that a bake reads (<see cref="BakeInputs"/>) is marked as changed since the last bake (<see cref="StaticLightingChanges"/>)
@@ -147,6 +147,9 @@ public static class ActorCommit
                 if (created.Contains(actor) || actor.IsTransformDirty || actor is ILightProxy or DecalActorProxy or SplineActorProxy or TerrainProxy { IsHeightFieldDirty: true }) actor.CommitChanges();
             }
             foreach (var mesh in actor.LightingMeshes) mesh.ExistingLighting?.Write();
+            // A chosen mesh is written to its saved component (a draft's new component is made with it: MeshActorProxy.CommitChanges)
+            foreach (var mesh in actor.Components.OfType<StaticMeshComponentProxy>().Where(m => m.ChosenMesh is not null && !m.IsStandIn))
+                StaticMeshChange.Write(mesh.Export, mesh.ChosenMesh);
         }
         foreach (var collectionActor in collectionActorMap.Values)
         {
