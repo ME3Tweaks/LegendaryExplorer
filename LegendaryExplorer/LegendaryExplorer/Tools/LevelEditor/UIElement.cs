@@ -581,11 +581,17 @@ public class Widget : UIElement
     private IActorDuplication duplication;
     private ActorProxy duplicateSource;
 
+    /// <summary>Whether a drag begun now with Alt would move a copy of the actor</summary>
+    public bool CanDuplicateDrag => Mode is EWidgetMode.Translate && Attach is not null && OnDuplicateDragStart is not null;
+
+    /// <summary>Whether the drag is an Alt+drag, moving a copy of the actor once it moves</summary>
+    public bool IsDuplicateDrag => IsDragging && duplicateArmed;
+
     /// <param name="duplicate">Whether a translation drag moves a copy of the actor (an Alt+drag)</param>
     public void BeginDrag(int x, int y, bool duplicate = false)
     {
         IsDragging = true;
-        duplicateArmed = duplicate && Mode is EWidgetMode.Translate && Attach is not null && OnDuplicateDragStart is not null;
+        duplicateArmed = duplicate && CanDuplicateDrag;
         duplication = null;
         PrevDragPos = DragStart = new Vector2(x, y);
         _accumulatedTranslationLocal = Vector3.Zero;

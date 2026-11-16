@@ -84,5 +84,9 @@ namespace LegendaryExplorer.Libraries
 
         [LibraryImport("dwmapi.dll")]
         public static partial int DwmFlush();
+
+        /// <returns>A shared cursor, which mustn't be destroyed, or zero if there's none</returns>
+        [LibraryImport("user32.dll", EntryPoint = "LoadCursorW")]
+        public static partial IntPtr LoadCursor(IntPtr hInstance, nint cursorName);
     }
 }

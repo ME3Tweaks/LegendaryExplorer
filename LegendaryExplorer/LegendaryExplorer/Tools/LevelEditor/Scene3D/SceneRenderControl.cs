@@ -458,6 +458,9 @@ public abstract class RenderContext
     /// </summary>
     public virtual bool ClaimsAltKeys => HoldsMouseCapture;
 
+    /// <summary>The cursor over the viewport, or null for the usual one. Read each frame</summary>
+    public virtual Cursor ViewportCursor => null;
+
     public virtual void EmptyCaches()
     {
         
@@ -764,6 +767,8 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
             // Debug.WriteLine("_shouldRender");
             Context.Update((float)Stopwatch.Elapsed.Ticks / TimeSpan.TicksPerSecond);
             Stopwatch.Restart();
+            //(after the update, which resolves what's hovered; pressing or releasing a key over the viewport shows by the next frame)
+            Cursor = Context.ViewportCursor;
             bool capturing = false;
             if (CaptureNextFrame && RenderDoc.IsRenderDocAttached())
             {

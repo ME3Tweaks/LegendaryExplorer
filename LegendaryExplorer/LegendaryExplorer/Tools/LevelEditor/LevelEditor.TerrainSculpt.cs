@@ -120,7 +120,6 @@ public partial class LevelEditor
         option.IsActive = true;
         sculptMode.Tool = option.Tool;
         RenderContext.TerrainSculpt = sculptMode;
-        SceneViewer.Cursor = Cursors.Cross;
         SculptStatus = SculptInstructions(option);
     }
 
@@ -134,7 +133,6 @@ public partial class LevelEditor
         sculpting.IsActive = false;
         sculpting = null;
         RenderContext.TerrainSculpt = null;
-        SceneViewer.Cursor = null;
         SculptStatus = null;
     }
 }

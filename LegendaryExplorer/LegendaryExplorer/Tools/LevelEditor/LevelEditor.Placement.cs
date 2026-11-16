@@ -166,7 +166,6 @@ public partial class LevelEditor
             option.IsPlacing = true;
             placingAsset = asset;
             RenderContext.PlaceAt = PlaceAt;
-            SceneViewer.Cursor = Cursors.Cross;
             string what = asset is null ? className : $"{className} of {asset.Name}";
             PlacementStatus = $"Click where the {what} goes in {placementFile.FileName}: on a surface, or anywhere else to place it in front of the camera. Esc cancels.";
         }
@@ -214,7 +213,6 @@ public partial class LevelEditor
         placing = null;
         placingAsset = null;
         RenderContext.PlaceAt = null;
-        SceneViewer.Cursor = null;
         PlacementStatus = null;
         if (release) ReleaseUnused();
     }

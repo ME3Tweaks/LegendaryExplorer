@@ -1,4 +1,5 @@
-﻿using LegendaryExplorer.Tools.LevelEditor.Scene3D;
+﻿using LegendaryExplorer.Libraries;
+using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.SharpDX;
@@ -16,6 +17,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Interop;
+using Microsoft.Win32.SafeHandles;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
@@ -374,6 +377,34 @@ public class LevelEditorRenderContext : MeshRenderContext
     private bool altReleaseOwed;
 
     public override bool ClaimsAltKeys => IsDragging || altReleaseOwed;
+
+    /// <summary>
+    /// The copy cursor during an Alt+drag of the widget, and while Alt alone is held over an axis it could start one on; a crosshair while placing or sculpting
+    /// </summary>
+    public override Cursor ViewportCursor
+    {
+        get
+        {
+            if (TransformWidget.IsDuplicateDrag) return CopyCursor;
+            if (PlaceAt is not null || TerrainSculpt is not null) return Cursors.Cross;
+            return !IsDragging && TransformWidget.CurrentAxis is not EWidgetAxis.None && TransformWidget.CanDuplicateDrag
+                && CurrentModifiers() is ModifierKeys.Alt ? CopyCursor : null;
+        }
+    }
+
+    /// <summary>The modifier keys held now, for the cursor. Replaceable in tests</summary>
+    public Func<ModifierKeys> CurrentModifiers { get; set; } = static () => Keyboard.Modifiers;
+
+    /// <summary>Windows' drag-and-drop copy cursor (the arrow with a "+"), which OLE keeps as cursor 3 in ole32.dll; the arrow if it's missing</summary>
+    public static Cursor CopyCursor => copyCursor ??= LoadCopyCursor();
+    private static Cursor copyCursor;
+
+    private static Cursor LoadCopyCursor()
+    {
+        IntPtr cursor = NativeLibrary.TryLoad("ole32.dll", out IntPtr ole32) ? WindowsAPI.LoadCursor(ole32, 3) : IntPtr.Zero;
+        //(shared, so it's never destroyed)
+        return cursor == IntPtr.Zero ? Cursors.Arrow : CursorInteropHelper.Create(new SafeFileHandle(cursor, ownsHandle: false));
+    }
 
     /// <summary>Whether the left button is down, for noticing a release the viewport never received. Replaceable in tests</summary>
     public Func<bool> IsLeftButtonDown { get; set; } = static () => Mouse.LeftButton is MouseButtonState.Pressed;
