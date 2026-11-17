@@ -162,7 +162,7 @@ public static class LevelScan
         {
             if (StaticLightingChanges.IsMarked(file.LevelExport))
                 problems.Add(new(LevelCheck.ChangedSinceBake, ProblemSeverity.Warning, file.Package, file.FileName,
-                    "A light or an actor the bake lights was deleted from it since it was last baked: its light or shadows stay in the baked lighting until it's rebaked."));
+                    "A light, an actor the bake lights or an importance volume was deleted from it since it was last baked: its baked lighting is as it was with it until it's rebaked."));
             // A mark is on the actor's export, or a collection member's component, which an upgrade moves under an actor of its own
             var actors = ActorsByExport(file);
             var deleting = PendingDeletionExports(file);
@@ -178,7 +178,9 @@ public static class LevelScan
             }
             foreach (var deletion in file.PendingDeletions)
             {
-                string message = "It's pending deletion: once that's committed, its light or shadows stay in the level's baked lighting until it's rebaked.";
+                string message = LightmassSceneBuilder.IsImportanceVolume(deletion.Actor.ClassName)
+                    ? "It's pending deletion: once that's committed, the level's baked lighting is as it was worked out with it until it's rebaked."
+                    : "It's pending deletion: once that's committed, its light or shadows stay in the level's baked lighting until it's rebaked.";
                 try
                 {
                     if (BakeInputs.Reads(deletion.Actor, context.PackageCache))
@@ -208,7 +210,9 @@ public static class LevelScan
                     }
                 }
                 changed.Add(actor);
-                string what = actor is ILightProxy ? "the baked lighting has it as it was before" : "its baked lighting, and the shadows it casts in the bake, are as they were before";
+                string what = actor is ILightProxy ? "the baked lighting has it as it was before"
+                    : LightmassSceneBuilder.IsImportanceVolume(actor.ClassName) ? "the level's baked lighting was worked out with its box as it was before"
+                    : "its baked lighting, and the shadows it casts in the bake, are as they were before";
                 problems.Add(About(LevelCheck.ChangedSinceBake, ProblemSeverity.Warning, actor, isMarked
                     ? $"It's been added or changed since its level was last baked, so {what} until the level is rebaked."
                     : $"It has uncommitted changes the level's bake hasn't seen: once they're committed, {what} until the level is rebaked."));

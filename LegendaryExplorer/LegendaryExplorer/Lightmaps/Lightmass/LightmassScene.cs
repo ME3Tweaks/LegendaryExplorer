@@ -1497,11 +1497,14 @@ public sealed class LightmassSceneBuilder : IDisposable
 
     // ================= importance volumes =================
 
+    /// <summary>Whether an actor of <paramref name="className"/> is an importance volume, which the bake reads as its box (<see cref="LightmassScene.ImportanceVolumes"/>)</summary>
+    public static bool IsImportanceVolume(string className) => className == "LightmassImportanceVolume";
+
     void AddImportanceVolumes(IMEPackage package, Level level)
     {
         foreach (int u in level.Actors)
         {
-            if (u == 0 || !package.TryGetUExport(u, out var actor) || actor.ClassName != "LightmassImportanceVolume") continue;
+            if (u == 0 || !package.TryGetUExport(u, out var actor) || !IsImportanceVolume(actor.ClassName)) continue;
             // Cooked brushes keep no BSP points or polygons; their collision's convex elements keep a local bounding box each.
             var points = new List<Vector3>();
             if (actor.GetProperty<ObjectProperty>("BrushComponent") is { Value: not 0 } brushComponent && package.TryGetUExport(brushComponent.Value, out var componentExport)

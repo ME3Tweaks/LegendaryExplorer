@@ -29,11 +29,12 @@ internal static class BakeInputs
 
     /// <summary>
     /// Whether the actor is one a bake reads, as it's shown or as the package has it: a light that contributes to static lighting, a terrain with a
-    /// section that takes part in it, or an actor with a static or spline mesh component that does. The package's own components count too, such as a
-    /// spline connection's mesh that the edit removes
+    /// section that takes part in it, an actor with a static or spline mesh component that does, or an importance volume, whose box decides where the
+    /// bake spends its detail. The package's own components count too, such as a spline connection's mesh that the edit removes
     /// </summary>
     public static bool Reads(ActorProxy actor, PackageCache cache)
     {
+        if (LightmassSceneBuilder.IsImportanceVolume(actor.ClassName)) return true;
         switch (actor)
         {
             case ILightProxy light:

@@ -93,7 +93,7 @@ public static class ActorCreation
                 ["DirectionalLightToggleable"] = "Light from one direction across the level, as sunlight. Kismet can turn it on and off; its shadows are baked"
             }
         },
-        new(PlacementCategory.Volumes, ["BlockingVolume", "TriggerVolume", "BioTriggerVolume"],
+        new(PlacementCategory.Volumes, ["BlockingVolume", "TriggerVolume", "BioTriggerVolume", "LightmassImportanceVolume"],
             (editor, record, properties, _, template) => new BrushProxy(editor, record, properties, template))
         {
             ComponentProperty = "BrushComponent", AcceptsComponent = component => component.ClassName == "BrushComponent",
@@ -101,7 +101,8 @@ public static class ActorCreation
             {
                 ["BlockingVolume"] = "An invisible box that blocks players and physics",
                 ["TriggerVolume"] = "An invisible box that fires Kismet's Touched events",
-                ["BioTriggerVolume"] = "A trigger volume that can be disabled, or set to fire once (Enabled, OneShot)"
+                ["BioTriggerVolume"] = "A trigger volume that can be disabled, or set to fire once (Enabled, OneShot)",
+                ["LightmassImportanceVolume"] = "Where a lighting bake spends its detail: bounced light is worked out finely inside it, coarsely outside. Nothing in game"
             }
         },
         // Placed disabled, so that it changes nothing until it's set up: its class default's Settings override every setting (each bOverride_ is set) with
