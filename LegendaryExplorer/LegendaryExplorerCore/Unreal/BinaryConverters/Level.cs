@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal.Collections;
+using LegendaryExplorerCore.Unreal.PhysX;
 using CommunityToolkit.HighPerformance;
 using UIndex = System.Int32;
 
@@ -330,6 +331,27 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class KCachedConvexData
     {
         public KCachedConvexDataElement[] CachedConvexElements;
+
+        /// <summary>
+        /// Cooks <paramref name="convexElems"/> (KConvexElem structs) for rigid-body collision at <paramref name="scale3D"/>, as UE3's MakeCachedConvexDataForAggGeom does:
+        /// a hull with no vertices is skipped, and one PhysX can't cook (as a flat one) is left out. Matches the cooked data of every shipping LE1-LE3 volume and static mesh
+        /// </summary>
+        public static KCachedConvexDataElement[] Cook(IEnumerable<StructProperty> convexElems, Vector3 scale3D) => PhysXCooker.Use(cooker =>
+        {
+            var cooked = new List<KCachedConvexDataElement>();
+            var verts = new List<Vector3>();
+            foreach (var hull in convexElems)
+            {
+                if (hull.GetProp<ArrayProperty<StructProperty>>("VertexData") is not { Count: > 0 } vertexDataProp) continue;
+                verts.Clear();
+                foreach (StructProperty vertProp in vertexDataProp)
+                {
+                    verts.Add(CommonStructs.GetVector3(vertProp) * scale3D * PhysXSDK.UnrealtoPhysXScale);
+                }
+                if (cooker.TryGenerateCachedPhysicsData(verts.AsSpan()) is { } data) cooked.Add(new KCachedConvexDataElement { ConvexElementData = data });
+            }
+            return cooked.ToArray();
+        });
     }
 
     public class KCachedConvexDataElement

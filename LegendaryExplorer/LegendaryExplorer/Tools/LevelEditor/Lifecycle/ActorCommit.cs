@@ -4,6 +4,7 @@ using System.Linq;
 using LegendaryExplorer.Lightmaps.Game;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
@@ -72,6 +73,14 @@ public static class ActorCommit
                 }
                 foreach (var file in files) Write(file, skipped, written, created);
                 foreach (var file in files) CollectionMemberUpgrade.Apply(file);
+                // Cooked collision for the meshes and scales the written actors now have, as a save in UE3's editor cooks it
+                foreach (var file in files.Where(f => f.LevelExport is not null))
+                {
+                    var owners = written.Where(w => w.File == file).Select(w => w.Actor.Export).Where(e => e is not null).ToHashSet();
+                    if (owners.Count == 0) continue;
+                    var components = file.Package.Exports.Where(e => (owners.Contains(e) || e.Parent is ExportEntry parent && owners.Contains(parent)) && e.IsA("StaticMeshComponent"));
+                    StaticMeshCollisionCache.AddMissing(file.LevelExport, components, written.First(w => w.File == file).Actor.Editor?.PackageCache);
+                }
                 // Include references written by other participants in this commit before approving any deletion.
                 var deletionPlans = PendingActorDeletion.Revalidate(deletions);
                 ActorDeletionPlan.Apply(deletionPlans);
