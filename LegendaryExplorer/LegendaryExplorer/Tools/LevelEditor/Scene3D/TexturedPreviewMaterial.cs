@@ -11,9 +11,6 @@ using System.Linq;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
 
-// MODEL RENDERING OVERVIEW:
-// Construct a ModelPreview instance with an existing SkeletalMesh or StaticMesh.
-// Call ModelPreview.Render(...) every frame. Boom.
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
 public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>

@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-//LEVertex meshes can be rendered with either the game's shaders or LEX's, see MeshRenderContext.UseGameShaders
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
