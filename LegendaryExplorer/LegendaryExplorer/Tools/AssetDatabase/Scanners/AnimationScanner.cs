@@ -61,7 +61,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                     {
                         IsAmbPerf = true;
                         aSeq = "Multiple";
-                        var pAnimsets = e.Properties.GetProp<ArrayProperty<StructProperty>>("m_aAnimsets");
+                        var pAnimsets = e.Properties.GetProp<ArrayProperty<ObjectProperty>>("m_aAnimsets");
                         aFrames = pAnimsets?.Count ?? 0;
                     }
 

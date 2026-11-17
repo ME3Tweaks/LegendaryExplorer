@@ -30,7 +30,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 StaticReceiverData data = StaticReceivers[i];
                 Unsafe.AsRef(in action).Invoke(ref data.Component, $"StaticReceiver[{i}].Component");
-                data.LightMap.ForEachUIndex(game, action, $"StaticReceiver[{i}].");
+                data.LightMap?.ForEachUIndex(game, action, $"StaticReceiver[{i}].");
                 if (game >= MEGame.ME3)
                 {
                     ForEachUIndexInSpan(action, data.ShadowMap1D.AsSpan(), $"StaticReceiver[{i}].ShadowMap1D");
@@ -52,6 +52,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UIndex[] ShadowMap1D;//ME3/LE
         public int Data;//ME3/LE
         public int InstanceIndex;//ME3/LE
+
+        /// <summary>A copy of it that shares its arrays and light-map</summary>
+        public StaticReceiverData ShallowCopy() => (StaticReceiverData)MemberwiseClone();
     }
 
     public class DecalVertex

@@ -13,6 +13,7 @@
     <SolidColorBrush x:Key="EditorAccent" Color="#286DA8"/>
     <SolidColorBrush x:Key="EditorHover" Color="#424242"/>
     <SolidColorBrush x:Key="EditorDirty" Color="#E7B65B"/>
+    <SolidColorBrush x:Key="EditorProblem" Color="#E0705F"/>
     <SolidColorBrush x:Key="EditorX" Color="#973E3E"/>
     <SolidColorBrush x:Key="EditorY" Color="#426F43"/>
     <SolidColorBrush x:Key="EditorZ" Color="#3C6791"/>
@@ -103,6 +104,52 @@
         </Setter.Value></Setter>
     </Style>
     <Style TargetType="Button" BasedOn="{StaticResource EditorButtonBase}"/>
+    <Style x:Key="EditorDropDownButton" TargetType="xctk:DropDownButton">
+        <Setter Property="Foreground" Value="{StaticResource EditorText}"/>
+        <Setter Property="Background" Value="{StaticResource EditorInput}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource EditorBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="9,6"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Template"><Setter.Value>
+            <ControlTemplate TargetType="xctk:DropDownButton">
+                <Grid>
+                    <ToggleButton x:Name="PART_DropDownButton" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}"
+                                  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}"
+                                  IsChecked="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Border x:Name="Surface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2">
+                                    <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorHover}"/></Trigger>
+                                    <Trigger Property="IsPressed" Value="True"><Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorRaised}"/></Trigger>
+                                    <Trigger Property="IsChecked" Value="True"><Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorRaised}"/></Trigger>
+                                    <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource EditorText}"/></Trigger>
+                                    <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value="0.4"/></Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                        <DockPanel>
+                            <Path DockPanel.Dock="Right" Data="M 0 0 L 4 4 L 8 0 Z" Fill="{TemplateBinding Foreground}" Width="8" Height="4" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" RecognizesAccessKey="True"/>
+                        </DockPanel>
+                    </ToggleButton>
+                    <Popup x:Name="PART_Popup" AllowsTransparency="True" StaysOpen="False" Focusable="False"
+                           Placement="{TemplateBinding DropDownPosition}" PlacementTarget="{Binding ElementName=PART_DropDownButton}"
+                           IsOpen="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                        <ScrollViewer MaxHeight="{TemplateBinding MaxDropDownHeight}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding DropDownContent}"/>
+                        </ScrollViewer>
+                    </Popup>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsOpen" Value="True"><Setter TargetName="PART_DropDownButton" Property="IsHitTestVisible" Value="False"/></Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value></Setter>
+    </Style>
     <Style x:Key="EditorCompactButton" TargetType="Button" BasedOn="{StaticResource EditorButtonBase}"><Setter Property="Padding" Value="5,4"/></Style>
     <Style TargetType="ToggleButton" BasedOn="{StaticResource EditorButtonBase}">
         <Style.Triggers><Trigger Property="IsChecked" Value="True"><Setter Property="Background" Value="{StaticResource EditorAccent}"/></Trigger></Style.Triggers>
@@ -184,6 +231,42 @@
     <Style TargetType="Separator"><Setter Property="Margin" Value="4"/><Setter Property="Background" Value="{StaticResource EditorBorder}"/></Style>
     <Style x:Key="EditorToolbarSeparator" TargetType="Border"><Setter Property="Width" Value="1"/><Setter Property="Height" Value="22"/><Setter Property="Background" Value="{StaticResource EditorBorder}"/><Setter Property="Margin" Value="8,0"/></Style>
     <Style x:Key="EditorDockTitle" TargetType="Border"><Setter Property="Background" Value="{StaticResource EditorPanel}"/><Setter Property="Padding" Value="12,7"/><Setter Property="CornerRadius" Value="3,3,0,0"/><Setter Property="HorizontalAlignment" Value="Left"/><Setter Property="MinWidth" Value="120"/></Style>
+    <Style x:Key="EditorDockTabs" TargetType="TabControl">
+        <Setter Property="Background" Value="{StaticResource EditorPanel}"/>
+        <Setter Property="Template"><Setter.Value>
+            <ControlTemplate TargetType="TabControl">
+                <Grid Background="{TemplateBinding Background}" KeyboardNavigation.TabNavigation="Local">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <Border Background="{StaticResource EditorChrome}">
+                        <TabPanel IsItemsHost="True" KeyboardNavigation.TabIndex="1"/>
+                    </Border>
+                    <ContentPresenter x:Name="PART_SelectedContentHost" Grid.Row="1" ContentSource="SelectedContent" KeyboardNavigation.TabIndex="2"/>
+                </Grid>
+            </ControlTemplate>
+        </Setter.Value></Setter>
+    </Style>
+    <Style x:Key="EditorDockTab" TargetType="TabItem">
+        <Setter Property="Foreground" Value="{StaticResource EditorMuted}"/>
+        <Setter Property="Background" Value="{StaticResource EditorChrome}"/>
+        <Setter Property="Padding" Value="12,7"/>
+        <Setter Property="Template"><Setter.Value>
+            <ControlTemplate TargetType="TabItem">
+                <Border x:Name="Surface" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="0,0,0,2" CornerRadius="3,3,0,0">
+                    <ContentPresenter ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorHover}"/></Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorPanel}"/>
+                        <Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource EditorAccent}"/>
+                        <Setter Property="Foreground" Value="{StaticResource EditorText}"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                    </Trigger>
+                    <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource EditorText}"/></Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value></Setter>
+    </Style>
     <Style x:Key="EditorSectionLabel" TargetType="TextBlock"><Setter Property="Foreground" Value="{StaticResource EditorMuted}"/><Setter Property="Margin" Value="0,9,0,5"/><Setter Property="FontSize" Value="11"/></Style>
     <Style x:Key="EditorAxisLabel" TargetType="TextBlock"><Setter Property="Foreground" Value="White"/><Setter Property="Padding" Value="5,0"/><Setter Property="TextAlignment" Value="Center"/><Setter Property="MinWidth" Value="21"/><Setter Property="LineHeight" Value="26"/><Setter Property="LineStackingStrategy" Value="BlockLineHeight"/></Style>
     <Style TargetType="Expander">
@@ -279,5 +362,33 @@
             </ControlTemplate>
         </Setter.Value></Setter>
         <Style.Triggers><Trigger Property="Orientation" Value="Horizontal"><Setter Property="Width" Value="Auto"/><Setter Property="Height" Value="12"/></Trigger></Style.Triggers>
+    </Style>
+    <Style x:Key="CommitButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Style.Triggers><DataTrigger Binding="{Binding IsDirty}" Value="True"><Setter Property="Background" Value="{StaticResource EditorAccent}"/></DataTrigger></Style.Triggers>
+    </Style>
+    <Style x:Key="OutlinerGroupExpander" TargetType="Expander">
+        <Setter Property="Foreground" Value="{StaticResource EditorText}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Expander">
+                    <StackPanel>
+                        <ToggleButton x:Name="HeaderSite" Style="{StaticResource EditorButtonBase}" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                      HorizontalContentAlignment="Stretch" Padding="0" AutomationProperties.Name="Expand or collapse group">
+                            <DockPanel>
+                                <TextBlock x:Name="Arrow" Text="›" Width="14" TextAlignment="Center" VerticalAlignment="Center"/>
+                                <ContentPresenter ContentSource="Header"/>
+                            </DockPanel>
+                        </ToggleButton>
+                        <ContentPresenter x:Name="GroupItems" ContentSource="Content" Visibility="Collapsed" Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="GroupItems" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Arrow" Property="Text" Value="⌄"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>

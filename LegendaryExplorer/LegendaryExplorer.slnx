@@ -31,6 +31,11 @@
   <Project Path="../SharedProjects/Piccolo/Piccolo.csproj">
     <Platform Project="x64" />
   </Project>
+  <Project Path="LEX.SwarmBridge/LEX.SwarmBridge.csproj">
+    <BuildType Project="Release" />
+    <Platform Project="x64" />
+    <Build Project="false" />
+  </Project>
   <Project Path="LegendaryExplorer.Tests/LegendaryExplorer.Tests.csproj">
     <BuildType Solution="WinAzureRelease|*" Project="Release" />
     <BuildType Solution="WinAzureTest|*" Project="Debug" />

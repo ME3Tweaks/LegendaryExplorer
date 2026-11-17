@@ -5,7 +5,6 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LegendaryExplorerCore.Unreal.PhysX;
 
@@ -18,9 +17,8 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
 
     private bool isDisposed;
     private NxPhysicsSDK* SDK;
-    private PhysXCooker Cooker;
 
-    public PhysXSDK()
+    private PhysXSDK()
     {
         if (!PhysXDllLoader.EnsureCoreDll())
         {
@@ -46,8 +44,6 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
         }
         SDK = sdk;
 
-        Cooker = new PhysXCooker();
-
         //just duplicating LE3 settings here, probably unnecessary for generating meshes
         SDK->SetParameter(NxParameter.NX_SKIN_WIDTH, 0.025f);
         SDK->SetParameter(NxParameter.NX_ASYNCHRONOUS_MESH_CREATION, 1.0f);
@@ -58,13 +54,18 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
 
     public static KConvexElem GenerateHullData(ReadOnlySpan<Vector3> convexHull)
     {
-        using var sdk = new PhysXSDK();
         var physXScaleHullVerts = new Vector3[convexHull.Length];
         for (int i = 0; i < convexHull.Length; i++)
         {
             physXScaleHullVerts[i] = convexHull[i] * UnrealtoPhysXScale;
         }
-        using NxStream stream = sdk.Cooker.GenerateCachedPhysicsDataStream(physXScaleHullVerts);
+        return PhysXCooker.Use(cooker => GenerateHullData(cooker, physXScaleHullVerts));
+    }
+
+    private static KConvexElem GenerateHullData(PhysXCooker cooker, Vector3[] physXScaleHullVerts)
+    {
+        using var sdk = new PhysXSDK();
+        using NxStream stream = cooker.GenerateCachedPhysicsDataStream(physXScaleHullVerts, hullOnly: true);
         NxConvexMesh* mesh = sdk.SDK->CreateConvexMesh(&stream);
         if (mesh is null)
         {
@@ -131,17 +132,16 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
                 int edge1 = edges[i * 2 + 1];
                 
                 (int tri0Index, int tri1Index) = getTriIndicesUsingEdge(edge0, edge1, convexElem.FaceTriData);
-                if (tri0Index == -1 || tri1Index == -1)
-                {
-                    throw new Exception("Open Mesh");
-                }
+                //(an open mesh's edge with one triangle isn't counted, as UE3 does)
+                if (tri0Index == -1 || tri1Index == -1) continue;
                 Vector3 tri0Normal = triNormals[tri0Index];
                 Vector3 tri1Normal = triNormals[tri1Index];
                 float faceNormalDot = Vector3.Dot(tri0Normal, tri1Normal);
 
-                if (MathF.Abs(faceNormalDot - 1.0f) < AngleCompareThreshold)
+                //an edge between faces that aren't parallel, not one inside a face
+                if (faceNormalDot < 1.0f - AngleCompareThreshold)
                 {
-                    Vector3 edgeDir = Vector3.Normalize(convexElem.VertexData[edge1] - convexElem.VertexData[edge0]);
+                    Vector3 edgeDir = Vector3.Normalize(convexElem.VertexData[edge0] - convexElem.VertexData[edge1]);
                     AddDirIfNotPresent(convexElem.EdgeDirections, edgeDir);
                 }
             }
@@ -258,10 +258,7 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
                     {
                         tri1Index = i;
                     }
-                    else
-                    {
-                        throw new Exception("3 tris share an edge.");
-                    }
+                    //(a third that shares it is ignored, as GetTriIndicesUsingEdge only logs it)
                 }
             }
             return (tri0Index, tri1Index);
@@ -275,27 +272,14 @@ internal sealed unsafe partial class PhysXSDK : IDisposable
         }
     }
 
-    private void InternalDispose()
+    public void Dispose()
     {
         if (!isDisposed)
         {
-            Cooker?.Dispose();
-            Cooker = null;
             NxReleasePhysicsSDK(SDK);
             SDK = null;
             isDisposed = true;
         }
-    }
-
-    public void Dispose()
-    {
-        InternalDispose();
-        GC.SuppressFinalize(this);
-    }
-
-    ~PhysXSDK()
-    {
-        InternalDispose();
     }
 
 

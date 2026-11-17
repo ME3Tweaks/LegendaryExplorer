@@ -11,12 +11,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
     public class EntryExporter
     {
-        private static List<EntryStringPair> ExportExportToPackageInternal(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache cache = null, RelinkerOptionsPackage customROP = null, ObjectInstanceDB targetDb = null)
+        private static List<EntryStringPair> ExportExportToPackageInternal(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache cache = null, RelinkerOptionsPackage customROP = null, ObjectInstanceDB targetDb = null, IEntry targetParent = null)
         {
-            List<EntryStringPair> issues = new List<EntryStringPair>();
+            List<EntryStringPair> issues = [];
 
             // Does entry already exist in destination package?
-            var newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath, sourceExport.ClassName);
+            string targetPath = targetParent is null ? sourceExport.InstancedFullPath : $"{targetParent.InstancedFullPath}.{sourceExport.ObjectName.Instanced}";
+            var newEntry = targetPackage.FindEntry(targetPath, sourceExport.ClassName);
             if (newEntry != null)
             {
                 portedEntry = newEntry;
@@ -70,10 +71,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             customROP?.CrossPackageMap.Clear();
 
             // Import the original item now
-            var lParent = PortParents(sourceExport, targetPackage, cache: cache, customROP: customROP);
+            var lParent = targetParent ?? PortParents(sourceExport, targetPackage, cache: cache, customROP: customROP);
 
             // Test the entry was not ported in already, such as from a Parent reference
-            newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath, sourceExport.ClassName);
+            newEntry = targetPackage.FindEntry(targetPath, sourceExport.ClassName);
             if (newEntry == null)
             {
                 var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true,
@@ -103,10 +104,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="targetPackage"></param>
         /// <param name="newEntry"></param>
         /// <param name="packageCache"></param>
+        /// <param name="targetParent">The entry of the target package to port it under, in place of the source's parents, which are then not ported</param>
         /// <returns></returns>
-        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry newEntry, PackageCache packageCache = null, RelinkerOptionsPackage customROP = null)
+        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry newEntry, PackageCache packageCache = null, RelinkerOptionsPackage customROP = null, IEntry targetParent = null)
         {
-            var exp = ExportExportToPackageInternal(sourceExport, targetPackage, out var nEntry, packageCache, customROP);
+            if (targetParent is not null && targetParent.FileRef != targetPackage)
+                throw new ArgumentException($"{targetParent.InstancedFullPath} isn't an entry of the target package.", nameof(targetParent));
+            var exp = ExportExportToPackageInternal(sourceExport, targetPackage, out var nEntry, packageCache, customROP, targetParent: targetParent);
             newEntry = nEntry;
             return exp;
         }

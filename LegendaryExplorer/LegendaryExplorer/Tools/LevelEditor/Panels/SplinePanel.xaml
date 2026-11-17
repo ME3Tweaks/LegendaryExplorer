@@ -1,0 +1,96 @@
+<UserControl x:Class="LegendaryExplorer.Tools.LevelEditor.SplinePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="../LevelEditorStyles.xaml"/></ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Expander Header="Spline point" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding IsSplineSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+        <StackPanel>
+            <StackPanel.Resources>
+                <DataTemplate x:Key="SplineConnectionTemplate">
+                    <StackPanel Margin="0,4,0,6" IsEnabled="{Binding IsEditable}">
+                        <TextBlock Text="{Binding Name}" TextWrapping="Wrap"/>
+                        <WrapPanel>
+                            <Button Content="Break" Tag="Break" Click="SplineConnection_Click" Margin="0,3,4,0"/>
+                            <Button Content="Reverse" Tag="Reverse" IsEnabled="{Binding CanReverse}" Click="SplineConnection_Click" Margin="0,3,4,0"/>
+                            <Button Content="Straight tangents" Tag="Straight" Click="SplineConnection_Click" Margin="0,3,0,0"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </StackPanel.Resources>
+            <TextBlock Text="{Binding SelectedSpline.EditingStatus}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,6,0,8"/>
+            <TextBlock Text="Ctrl+click a spline point or mesh to connect or flip. Ctrl+Shift+click breaks." TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}"/>
+            <TextBlock Text="Connections must join the same point type. Loft start points need a DeformMesh." TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}"/>
+            <StackPanel IsEnabled="{Binding SelectedSpline.Point.IsEditable}">
+                <WrapPanel Margin="0,6,0,0">
+                    <Button Content="Break all" Click="SplineBreakAll_Click" Margin="0,0,4,0"/>
+                    <Button Content="Reverse whole spline" Click="SplineReverseAll_Click"/>
+                </WrapPanel>
+                <TextBlock Text="Outgoing connections" Style="{StaticResource EditorSectionLabel}"/>
+                <ItemsControl ItemsSource="{Binding SelectedSpline.OutgoingConnections}" ItemTemplate="{StaticResource SplineConnectionTemplate}"/>
+                <TextBlock Text="Incoming connections" Style="{StaticResource EditorSectionLabel}"/>
+                <ItemsControl ItemsSource="{Binding SelectedSpline.IncomingConnections}" ItemTemplate="{StaticResource SplineConnectionTemplate}"/>
+                <StackPanel Visibility="{Binding SelectedSpline.IsLoft, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBlock Text="DeformMesh" Style="{StaticResource EditorSectionLabel}"/>
+                    <TextBlock Text="{Binding SelectedSpline.DeformMeshName}" TextWrapping="Wrap"/>
+                    <WrapPanel><Button Content="Choose mesh…" Click="SplineMesh_Click" Margin="0,4,4,0"/><Button Content="Clear" IsEnabled="{Binding SelectedSpline.CanClearDeformMesh}" Click="SplineClearMesh_Click" Margin="0,4,0,0" ToolTip="Break outgoing connections before clearing the mesh."/></WrapPanel>
+                    <TextBlock Text="DeformMeshMaterials · slot order" Style="{StaticResource EditorSectionLabel}"/>
+                    <ItemsControl ItemsSource="{Binding SelectedSpline.MaterialSlots}">
+                        <ItemsControl.ItemTemplate><DataTemplate>
+                            <StackPanel Margin="0,3,0,4">
+                                <TextBlock Text="{Binding Index, StringFormat='Slot {0}'}"/>
+                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}"/>
+                                <WrapPanel>
+                                    <Button Content="Choose…" Tag="Choose" Click="SplineMaterialSlot_Click" Margin="0,3,4,0"/>
+                                    <Button Content="Use mesh material" Tag="Clear" Click="SplineMaterialSlot_Click" Margin="0,3,4,0"/>
+                                    <Button Content="Remove slot" Tag="Remove" Click="SplineMaterialSlot_Click" Margin="0,3,0,0"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </DataTemplate></ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <WrapPanel><Button Content="Add override…" Click="SplineMaterials_Click" Margin="0,4,4,0"/><Button Content="Clear overrides" Click="SplineClearMaterials_Click" Margin="0,4,0,0"/></WrapPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel DataContext="{Binding SelectedSpline.Point}" IsEnabled="{Binding IsEditable}">
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="140"/></Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+                    <TextBlock Text="Tangent length" VerticalAlignment="Center" ToolTip="The curves' strength at this point, in world units. The arrow grabbers in the viewport drag it"/><xctk:SingleUpDown Grid.Column="1" Value="{Binding TangentLength}" Minimum="0" Increment="50" FormatString="F2" AutomationProperties.Name="Tangent length"/>
+                    <TextBlock Grid.Row="1" Text="Tangent yaw · degrees" VerticalAlignment="Center" ToolTip="The curves' world heading at this point. The sphere grabbers in the viewport turn it"/><xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding TangentYaw}" Increment="5" FormatString="F2" AutomationProperties.Name="Tangent yaw"/>
+                    <TextBlock Grid.Row="2" Text="Tangent pitch · degrees" VerticalAlignment="Center" ToolTip="The curves' world elevation at this point, from -90 (down) to 90 (up)"/><xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding TangentPitch}" Minimum="-90" Maximum="90" Increment="5" FormatString="F2" AutomationProperties.Name="Tangent pitch"/>
+                </Grid>
+                <TextBlock Text="Tangent · actor space" Style="{StaticResource EditorSectionLabel}" ToolTip="SplineActorTangent: the curves' direction and strength at this point, in the point's own space"/>
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                    <DockPanel><TextBlock Text="X" Background="{StaticResource EditorX}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding TangentX}" Increment="50" FormatString="F2" AutomationProperties.Name="Tangent X"/></DockPanel>
+                    <DockPanel Grid.Column="2"><TextBlock Text="Y" Background="{StaticResource EditorY}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding TangentY}" Increment="50" FormatString="F2" AutomationProperties.Name="Tangent Y"/></DockPanel>
+                    <DockPanel Grid.Column="4"><TextBlock Text="Z" Background="{StaticResource EditorZ}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding TangentZ}" Increment="50" FormatString="F2" AutomationProperties.Name="Tangent Z"/></DockPanel>
+                </Grid>
+                <StackPanel Visibility="{Binding IsLoft, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBlock Text="Mesh X axis · world direction" Style="{StaticResource EditorSectionLabel}" ToolTip="WorldXDir: the direction the deformed mesh's X axis is turned towards along the connections leaving this point"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                        <DockPanel><TextBlock Text="X" Background="{StaticResource EditorX}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding WorldXDirX}" Increment="0.1" FormatString="F3" AutomationProperties.Name="WorldXDir X"/></DockPanel>
+                        <DockPanel Grid.Column="2"><TextBlock Text="Y" Background="{StaticResource EditorY}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding WorldXDirY}" Increment="0.1" FormatString="F3" AutomationProperties.Name="WorldXDir Y"/></DockPanel>
+                        <DockPanel Grid.Column="4"><TextBlock Text="Z" Background="{StaticResource EditorZ}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding WorldXDirZ}" Increment="0.1" FormatString="F3" AutomationProperties.Name="WorldXDir Z"/></DockPanel>
+                    </Grid>
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="140"/></Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+                        <TextBlock Text="Roll · degrees" VerticalAlignment="Center" ToolTip="Roll of the mesh around the spline at this point"/><xctk:SingleUpDown Grid.Column="1" Value="{Binding Roll}" Increment="5" FormatString="F2"/>
+                        <TextBlock Grid.Row="1" Text="Scale X" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding ScaleX}" Increment="0.1" FormatString="F3"/>
+                        <TextBlock Grid.Row="2" Text="Scale Y" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding ScaleY}" Increment="0.1" FormatString="F3"/>
+                        <TextBlock Grid.Row="3" Text="Offset X" VerticalAlignment="Center" ToolTip="Offset of the mesh from the spline, applied before scale and roll"/><xctk:SingleUpDown Grid.Row="3" Grid.Column="1" Value="{Binding OffsetX}" Increment="10" FormatString="F2"/>
+                        <TextBlock Grid.Row="4" Text="Offset Y" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="4" Grid.Column="1" Value="{Binding OffsetY}" Increment="10" FormatString="F2"/>
+                    </Grid>
+                    <CheckBox Content="Smooth roll and scale" IsChecked="{Binding SmoothInterpRollAndScale}" Margin="0,6,0,0" ToolTip="bSmoothInterpRollAndScale: ease roll, scale and offset along the connections leaving this point, instead of changing them linearly"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Expander>
+</UserControl>

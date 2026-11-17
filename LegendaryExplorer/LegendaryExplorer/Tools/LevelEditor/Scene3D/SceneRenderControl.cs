@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
@@ -6,396 +6,21 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FontAwesome5;
-using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
 using LegendaryExplorerCore.Unreal;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using SharpDX.DXGI;
+using System.Threading;
+using System.Windows.Threading;
 using Device = SharpDX.Direct3D11.Device;
 using Point = System.Windows.Point;
 using Resource = SharpDX.Direct3D11.Resource;
-using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Packages;
 using Texture2D = SharpDX.Direct3D11.Texture2D;
 using LegendaryExplorer.Dialogs;
-using System.Numerics;
+using LegendaryExplorer.Libraries;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
-
-using LECTexture2D = LegendaryExplorerCore.Unreal.Classes.Texture2D;
-
-public enum MouseButtons
-{
-    None,
-    Left,
-    Middle,
-    Right
-}
-
-public static class RenderContextExtensions
-{
-    /// <param name="resourceFormat">Format to create the texture with, if different from <paramref name="format"/>. (eg. a typeless format, so that it can have both UNORM and sRGB views)</param>
-    public static unsafe Texture2D LoadTexture(this RenderContext renderContext, uint width, uint height, Format format, byte[] pixelData, Format? resourceFormat = null)
-    {
-        Texture2DDescription texture2DDescription = GetTextureDescription(width, height, format, false, out int pitch);
-        texture2DDescription.Format = resourceFormat ?? format;
-        fixed (byte* pixelDataPointer = pixelData)
-        {
-            return new Texture2D(renderContext.Device, texture2DDescription, new SharpDX.DataRectangle((IntPtr)pixelDataPointer, pitch));
-        }
-    }
-
-    private static Texture2DDescription GetTextureDescription(uint width, uint height, Format format, bool isCube, out int pitch)
-    {
-        pitch = (int)(format.SizeOfInBits() * width / 8);
-        if (format.IsCompressed())
-        {
-            // Pitch calculation for compressed formats from https://docs.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds-pguide
-            int blockSize = 16;
-            if (format is Format.BC1_UNorm or Format.BC1_UNorm_SRgb or Format.BC4_SNorm or Format.BC4_UNorm)
-            {
-                blockSize = 8;
-            }
-            pitch = (int)(Math.Max(1, ((width + 3) / 4)) * blockSize);
-        }
-
-        var texture2DDescription = new Texture2DDescription
-        {
-            Width = (int)width,
-            Height = (int)height,
-            ArraySize = isCube ? 6 : 1,
-            BindFlags = BindFlags.ShaderResource,
-            Usage = isCube ? ResourceUsage.Default : ResourceUsage.Immutable,
-
-            CpuAccessFlags = CpuAccessFlags.None,
-            Format = format,
-            MipLevels = 1,
-            OptionFlags = isCube ? ResourceOptionFlags.TextureCube : ResourceOptionFlags.None,
-            SampleDescription = new SampleDescription(1, 0),
-        };
-        return texture2DDescription;
-    }
-
-    public static Texture2D LoadTextureCube(this RenderContext renderContext, uint size, Format format, Fixed6<byte[]> faceData, Format? resourceFormat = null)
-    {
-        Texture2DDescription texture2DDescription = GetTextureDescription(size, size, format, true, out int pitch);
-        texture2DDescription.Format = resourceFormat ?? format;
-        var tex = new Texture2D(renderContext.Device, texture2DDescription);
-
-        for (int i = 0; i < faceData.Length; i++)
-        {
-            renderContext.Device.ImmediateContext.UpdateSubresource(faceData[i], tex, i, pitch);
-        }
-
-        return tex;
-    }
-
-    public static unsafe Texture2D LoadTextureFromFile(this RenderContext renderContext, string filename)
-    {
-        var pixelFormat = LegendaryExplorerCore.Textures.PixelFormat.ARGB;
-        byte[] pixelData = LegendaryExplorerCore.Textures.TexConverter.LoadTexture(filename, out uint width, out uint height, ref pixelFormat); // NEEDS WAY TO HAVE ALPHA AS BLACK!
-        Format format = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
-        return renderContext.LoadTexture(width, height, format, pixelData);
-    }
-
-    public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat, bool typelessResource = false)
-    {
-        // Todo: Needs way to set black alpha
-        var imagebytes = LECTexture2D.GetTextureData(mip, mip.Export.Game);
-        uint mipWidth = (uint)mip.width;
-        uint mipHeight = (uint)mip.height;
-        var mipFormat = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
-        if (mipFormat.IsCompressed())
-        {
-            mipWidth = (mipWidth < 4) ? 4 : mipWidth;
-            mipHeight = (mipHeight < 4) ? 4 : mipHeight;
-        }
-        Format? resourceFormat = typelessResource ? GetSRGBFormats(mipFormat)?.Typeless : null;
-        return renderContext.LoadTexture(mipWidth, mipHeight, mipFormat, imagebytes, resourceFormat);
-    }
-
-    /// <summary>
-    /// Loads <paramref name="topMip"/> and as many of the mips below it as are available, so the texture can be minified without aliasing.
-    /// </summary>
-    /// <param name="mips">All of the texture's mips, largest first</param>
-    public static unsafe Texture2D LoadUnrealMipChain(this RenderContext renderContext, IReadOnlyList<LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo> mips,
-        LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo topMip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat, bool typelessResource = false)
-    {
-        var format = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
-        bool isCompressed = format.IsCompressed();
-        int topWidth = topMip.width;
-        int topHeight = topMip.height;
-        //block-compressed textures must have dimensions that are multiples of 4. Tiny ones are padded, and can't have mips below them
-        if (isCompressed && (topWidth % 4 != 0 || topHeight % 4 != 0))
-        {
-            return renderContext.LoadUnrealMip(topMip, pixelFormat, typelessResource);
-        }
-
-        var levels = new List<byte[]>();
-        int topIndex = -1;
-        for (int i = 0; i < mips.Count; i++)
-        {
-            if (mips[i] == topMip) topIndex = i;
-        }
-        for (int i = topIndex; i >= 0 && i < mips.Count; i++)
-        {
-            var mip = mips[i];
-            int level = levels.Count;
-            int expectedWidth = Math.Max(1, topWidth >> level);
-            int expectedHeight = Math.Max(1, topHeight >> level);
-            if (mip.storageType is StorageTypes.empty || mip.width != expectedWidth || mip.height != expectedHeight)
-            {
-                break;
-            }
-            byte[] data;
-            try
-            {
-                data = LECTexture2D.GetTextureData(mip, mip.Export.Game);
-            }
-            catch when (level > 0)
-            {
-                //a missing lower mip shouldn't prevent the texture from loading
-                break;
-            }
-            if (data is null || data.Length < GetMipByteSize(format, expectedWidth, expectedHeight, out _))
-            {
-                if (level == 0) return renderContext.LoadUnrealMip(topMip, pixelFormat, typelessResource);
-                break;
-            }
-            levels.Add(data);
-        }
-
-        Texture2DDescription desc = GetTextureDescription((uint)topWidth, (uint)topHeight, format, false, out _);
-        desc.MipLevels = levels.Count;
-        if (typelessResource && GetSRGBFormats(format) is { } srgbFormats)
-        {
-            desc.Format = srgbFormats.Typeless;
-        }
-
-        var handles = new System.Runtime.InteropServices.GCHandle[levels.Count];
-        var rects = new SharpDX.DataRectangle[levels.Count];
-        try
-        {
-            for (int level = 0; level < levels.Count; level++)
-            {
-                handles[level] = System.Runtime.InteropServices.GCHandle.Alloc(levels[level], System.Runtime.InteropServices.GCHandleType.Pinned);
-                GetMipByteSize(format, Math.Max(1, topWidth >> level), Math.Max(1, topHeight >> level), out int pitch);
-                rects[level] = new SharpDX.DataRectangle(handles[level].AddrOfPinnedObject(), pitch);
-            }
-            return new Texture2D(renderContext.Device, desc, rects);
-        }
-        finally
-        {
-            foreach (var handle in handles)
-            {
-                if (handle.IsAllocated) handle.Free();
-            }
-        }
-    }
-
-    private static int GetMipByteSize(Format format, int width, int height, out int pitch)
-    {
-        if (format.IsCompressed())
-        {
-            int blockSize = format is Format.BC1_UNorm or Format.BC1_UNorm_SRgb or Format.BC4_SNorm or Format.BC4_UNorm ? 8 : 16;
-            int blocksWide = Math.Max(1, (width + 3) / 4);
-            int blocksHigh = Math.Max(1, (height + 3) / 4);
-            pitch = blocksWide * blockSize;
-            return pitch * blocksHigh;
-        }
-        pitch = format.SizeOfInBits() * width / 8;
-        return pitch * height;
-    }
-
-    /// <summary>
-    /// For formats that have an sRGB variant, returns the typeless format a texture must be created with to have both UNORM and sRGB views.
-    /// Returns null for formats without an sRGB variant (eg. BC4/BC5, which are only used for non-color data).
-    /// </summary>
-    public static (Format Typeless, Format UNorm, Format SRGB)? GetSRGBFormats(Format format) => format switch
-    {
-        Format.BC1_UNorm or Format.BC1_UNorm_SRgb => (Format.BC1_Typeless, Format.BC1_UNorm, Format.BC1_UNorm_SRgb),
-        Format.BC2_UNorm or Format.BC2_UNorm_SRgb => (Format.BC2_Typeless, Format.BC2_UNorm, Format.BC2_UNorm_SRgb),
-        Format.BC3_UNorm or Format.BC3_UNorm_SRgb => (Format.BC3_Typeless, Format.BC3_UNorm, Format.BC3_UNorm_SRgb),
-        Format.BC7_UNorm or Format.BC7_UNorm_SRgb => (Format.BC7_Typeless, Format.BC7_UNorm, Format.BC7_UNorm_SRgb),
-        Format.R8G8B8A8_UNorm or Format.R8G8B8A8_UNorm_SRgb => (Format.R8G8B8A8_Typeless, Format.R8G8B8A8_UNorm, Format.R8G8B8A8_UNorm_SRgb),
-        Format.B8G8R8A8_UNorm or Format.B8G8R8A8_UNorm_SRgb => (Format.B8G8R8A8_Typeless, Format.B8G8R8A8_UNorm, Format.B8G8R8A8_UNorm_SRgb),
-        Format.B8G8R8X8_UNorm or Format.B8G8R8X8_UNorm_SRgb => (Format.B8G8R8X8_Typeless, Format.B8G8R8X8_UNorm, Format.B8G8R8X8_UNorm_SRgb),
-        _ => null
-    };
-
-    public static Mesh<WorldVertex> GetMeshFromAggGeom(this RenderContext renderContext, StructProperty aggGeom)
-    {
-        if (aggGeom?.GetProp<ArrayProperty<StructProperty>>("ConvexElems") is ArrayProperty<StructProperty> convexElems)
-        {
-            var vertices = new List<WorldVertex>();
-            var triangles = new List<Triangle>();
-            int vertTotal = 0;
-            foreach (StructProperty convexElem in convexElems)
-            {
-                var faceTriData = convexElem.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
-                for (int i = 0; i < faceTriData.Count; i += 3)
-                {
-                    triangles.Add(new Triangle((uint)(faceTriData[i].Value + vertTotal), (uint)(faceTriData[i + 1].Value + vertTotal), (uint)(faceTriData[i + 2].Value + vertTotal)));
-                }
-
-                var vertexData = convexElem.GetProp<ArrayProperty<StructProperty>>("VertexData");
-                foreach (StructProperty vertex in vertexData)
-                {
-                    float x = vertex.GetProp<FloatProperty>("X").Value;
-                    float y = vertex.GetProp<FloatProperty>("Y").Value;
-                    float z = vertex.GetProp<FloatProperty>("Z").Value;
-                    vertices.Add(new WorldVertex(new Vector3(x, y, z), Vector4.Zero, Vector2.Zero));
-                    ++vertTotal;
-                }
-            }
-
-            return new Mesh<WorldVertex>(renderContext.Device, triangles, vertices);
-        }
-
-        return null;
-    }
-}
-
-public abstract class RenderContext
-{
-    [Flags]
-    public enum ShaderFlags : int
-    {
-        None = 0,
-        /// <summary>
-        /// If normals should have the third color channel populated
-        /// </summary>
-        ReconstructNormalZ = 1 << 0,
-        /// <summary>
-        /// If alpha channel should be set to black, so textures can properly be viewed
-        /// </summary>
-        AlphaAsBlack = 1 << 1,
-        EnableRedChannel = 1 << 2,
-        EnableGreenChannel = 1 << 3,
-        EnableBlueChannel = 1 << 4,
-        EnableAlphaChannel = 1 << 5,
-
-        //level editor flags
-        Unlit = 1 << 28,
-        Wireframe = 1 << 29,
-        Selected = 1 << 30,
-        PrimitiveRendering = 1 << 31,
-    }
-
-    public int Width { get; private set; } = 0;
-    public int Height { get; private set; } = 0;
-    public Device Device { get; private set; }
-    public DeviceContext ImmediateContext { get; private set; }
-    public Texture2D Backbuffer { get; private set; }
-    public BlendState AlphaBlendState { get; private set; } // A BlendState that uses standard alpha blending
-    public bool IsReady => Device != null;
-
-    public virtual void CreateResources()
-    {
-        DeviceCreationFlags deviceFlags = DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded;
-#if D3D11_DEBUG
-        deviceFlags |= DeviceCreationFlags.Debug;
-#endif
-        Device = new Device(DriverType.Hardware, deviceFlags);
-        ImmediateContext = Device.ImmediateContext;
-
-        var alphaBlendDesc = new BlendStateDescription();
-        alphaBlendDesc.RenderTarget[0] = new RenderTargetBlendDescription
-        {
-            RenderTargetWriteMask = ColorWriteMaskFlags.All, 
-            BlendOperation = BlendOperation.Add, 
-            AlphaBlendOperation = BlendOperation.Add, 
-            SourceBlend = BlendOption.SourceAlpha, 
-            DestinationBlend = BlendOption.InverseSourceAlpha, 
-            SourceAlphaBlend = BlendOption.SourceAlpha, 
-            DestinationAlphaBlend = BlendOption.InverseSourceAlpha, 
-            IsBlendEnabled = true
-        };
-        AlphaBlendState = new BlendState(Device, alphaBlendDesc);
-    }
-
-    public virtual void CreateSizeDependentResources(int width, int height, Texture2D newBackbuffer)
-    {
-        Width = width;
-        Height = height;
-        Backbuffer = newBackbuffer;
-    }
-
-    public virtual void DisposeSizeDependentResources()
-    {
-        Backbuffer.Dispose();
-        Backbuffer = null;
-    }
-
-    public virtual void DisposeResources()
-    {
-        AlphaBlendState.Dispose();
-        AlphaBlendState = null;
-        ImmediateContext.Dispose();
-        ImmediateContext = null;
-
-#if D3D11_DEBUG
-        var debug = Device.QueryInterface<DeviceDebug>();
-        debug.ReportLiveDeviceObjects(ReportingLevel.Detail);
-        debug.Dispose();
-#endif
-
-        Device.Dispose();
-        Device = null;
-    }
-
-    public abstract void Update(float timestep);
-    public virtual void Render()
-    {
-        ImmediateContext.Flush();
-    }
-
-    public virtual bool MouseDown(MouseButtons button, int x, int y)
-    {
-        return false;
-    }
-
-    public virtual bool MouseUp(MouseButtons button, int x, int y)
-    {
-        return false;
-    }
-
-    public virtual bool MouseMove(int x, int y)
-    {
-        return false;
-    }
-
-    public virtual bool MouseScroll(int delta)
-    {
-        return false;
-    }
-
-    public virtual bool KeyDown(Key key)
-    {
-        return false;
-    }
-
-    public virtual bool KeyUp(Key key)
-    {
-        return false;
-    }
-
-    public virtual bool LostKeyboardFocus()
-    {
-        return false;
-    }
-
-    public virtual bool LostMouseFocus()
-    {
-        return false;
-    }
-
-    public virtual void EmptyCaches()
-    {
-        
-    }
-}
 
 /// <summary>
 /// Hosts a <see cref="RenderContext"/> in a WPF control.
@@ -497,7 +122,7 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
                 return;
             }
 
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
+            FramePacer.Add(this);
             InitiallyLoaded = true;
             D3DImage.SetPixelSize(RenderWidth, RenderHeight);
         }
@@ -514,6 +139,7 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
         KeyUp += OnKeyUp;
         LostKeyboardFocus += SceneRenderControl_LostKeyboardFocus;
         LostMouseCapture += SceneRenderControl_LostMouseCapture;
+        MouseLeave += SceneRenderControl_MouseLeave;
         SizeChanged += SceneRenderControlWPF_SizeChanged;
     }
 
@@ -528,6 +154,7 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
         KeyDown -= OnKeyDown;
         LostKeyboardFocus -= SceneRenderControl_LostKeyboardFocus;
         LostMouseCapture -= SceneRenderControl_LostMouseCapture;
+        MouseLeave -= SceneRenderControl_MouseLeave;
         SizeChanged -= SceneRenderControlWPF_SizeChanged;
     }
 
@@ -536,7 +163,8 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
     /// </summary>
     public void Dispose()
     {
-        CompositionTarget.Rendering -= CompositionTarget_Rendering;
+        //(a round of frames already asked for draws nothing for it)
+        FramePacer.Remove(this);
         Unloaded -= SceneRenderControlWPF_Unloaded;
 
         if (Context.Backbuffer != null)
@@ -574,12 +202,85 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
         D3DImage.SetPixelSize(RenderWidth, RenderHeight);
     }
 
-    private void CompositionTarget_Rendering(object sender, EventArgs e)
+    /// <summary>
+    /// Asks for every viewport's frame, as one round, each time the desktop is composed (once a refresh), if the last round has been drawn. Frames
+    /// aren't drawn from CompositionTarget.Rendering: WPF paces those itself, and once frames at Render priority have kept its Input-priority check
+    /// from running for half a second, it drops the next one to Input priority. Input-priority work only runs while no input is waiting, so a mouse
+    /// that keeps moving then holds frames back until it stops. Rounds asked for here stay at Render priority (updating the image has WPF draw it
+    /// at Render priority too), and the next isn't asked for until the refresh after one finishes, so input is processed in between.
+    /// The viewports share one round: paced apart, one's frame was asked for while another's was drawing, so with two open there was nearly always
+    /// a frame waiting at Render priority, and the windows stopped responding until one closed or frames got cheaper
+    /// </summary>
+    private static class FramePacer
     {
-        if (_shouldRender && Context is { IsReady: true })
+        //the viewports drawn each round, in the order they were loaded. Locked, and waited on while there are none
+        private static readonly List<SceneRenderControl> viewports = [];
+        private static Thread thread;
+        //1 from when a round is asked for until it has been drawn
+        private static int roundPending;
+
+        public static void Add(SceneRenderControl viewport)
         {
-            //Debug.WriteLine("Rendering");
-            D3DImage?.RequestRender();
+            lock (viewports)
+            {
+                if (viewports.Count > 0 && viewports[0].Dispatcher != viewport.Dispatcher)
+                    throw new InvalidOperationException("Viewports are drawn on one UI thread.");
+                viewports.Add(viewport);
+                if (thread is null)
+                {
+                    thread = new Thread(Pace) { IsBackground = true, Name = "Viewport frame pacing" };
+                    thread.Start();
+                }
+                Monitor.PulseAll(viewports);
+            }
+        }
+
+        public static void Remove(SceneRenderControl viewport)
+        {
+            lock (viewports) viewports.Remove(viewport);
+        }
+
+        private static void Pace()
+        {
+            while (true)
+            {
+                Dispatcher dispatcher;
+                lock (viewports)
+                {
+                    while (viewports.Count == 0) Monitor.Wait(viewports);
+                    dispatcher = viewports[0].Dispatcher;
+                }
+                long start = Stopwatch.GetTimestamp();
+                //returns at the next composition, or at once if composition is off
+                if (WindowsAPI.DwmFlush() < 0 || Stopwatch.GetElapsedTime(start).TotalMilliseconds < 1) Thread.Sleep(15);
+                if (Interlocked.CompareExchange(ref roundPending, 1, 0) == 0)
+                {
+                    dispatcher.InvokeAsync(DrawRound, DispatcherPriority.Render);
+                }
+            }
+        }
+
+        private static void DrawRound()
+        {
+            try
+            {
+                SceneRenderControl[] round;
+                lock (viewports) round = [.. viewports];
+                foreach (var viewport in round) viewport.DrawFrame();
+            }
+            finally
+            {
+                Volatile.Write(ref roundPending, 0);
+            }
+        }
+    }
+
+    private void DrawFrame()
+    {
+        //(not once disposed, which removes it from rounds, though one drawing before it may have disposed it)
+        if (D3DImage is not null && _shouldRender && Context is { IsReady: true })
+        {
+            D3DImage.RequestRender();
         }
     }
 
@@ -621,6 +322,8 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
             // Debug.WriteLine("_shouldRender");
             Context.Update((float)Stopwatch.Elapsed.Ticks / TimeSpan.TicksPerSecond);
             Stopwatch.Restart();
+            //(after the update, which resolves what's hovered; pressing or releasing a key over the viewport shows by the next frame)
+            Cursor = Context.ViewportCursor;
             bool capturing = false;
             if (CaptureNextFrame && RenderDoc.IsRenderDocAttached())
             {
@@ -668,6 +371,7 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
             return;
         Point position = e.GetPosition(this);
         e.Handled = Context.MouseDown(buttons, (int)position.X, (int)position.Y);
+        SyncMouseCapture();
     }
 
     private void SceneRenderControlWPF_PreviewMouseUp(object sender, MouseButtonEventArgs e)
@@ -683,17 +387,35 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
             return;
         Point position = e.GetPosition(this);
         e.Handled = Context.MouseUp(buttons, (int)position.X, (int)position.Y);
+        SyncMouseCapture();
     }
 
     private void SceneRenderControlWPF_PreviewMouseMove(object sender, MouseEventArgs e)
     {
         Point position = e.GetPosition(this);
         e.Handled = Context.MouseMove((int)position.X, (int)position.Y);
+        SyncMouseCapture();
+    }
+
+    /// <summary>
+    /// Captures the mouse while the context holds it, so a drag's release outside the viewport still reaches it.
+    /// Call after ending a drag from outside the input events
+    /// </summary>
+    public void SyncMouseCapture()
+    {
+        if (Context?.HoldsMouseCapture == true)
+        {
+            if (!IsMouseCaptured) CaptureMouse();
+        }
+        else if (IsMouseCaptured)
+        {
+            ReleaseMouseCapture();
+        }
     }
 
     private void SceneRenderControlWPF_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
     {
-        e.Handled = Context.MouseScroll(e.Delta);
+        e.Handled = Context.MouseScroll(e.Delta, Keyboard.Modifiers);
     }
 
     public void OnKeyDown(object sender, KeyEventArgs e)
@@ -705,19 +427,29 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
         }
         else
         {
-            e.Handled = Context.KeyDown(e.Key);
+            e.Handled = Context.KeyDown(InputKey(e));
+            SyncMouseCapture();
         }
     }
 
     public void OnKeyUp(object sender, KeyEventArgs e)
     {
-        e.Handled = Context.KeyUp(e.Key);
+        e.Handled = Context.KeyUp(InputKey(e));
+        SyncMouseCapture();
     }
+
+    /// <summary>
+    /// While Alt is held WPF reports keys as <see cref="Key.System"/>. During a drag the context gets the real key, so Escape still cancels;
+    /// otherwise Alt combinations stay the window's (menu access keys, Alt+F4)
+    /// </summary>
+    private Key InputKey(KeyEventArgs e) => e.Key is Key.System && Context.ClaimsAltKeys ? e.SystemKey : e.Key;
 
     private void SceneRenderControl_LostMouseCapture(object sender, MouseEventArgs e)
     {
         e.Handled = Context.LostMouseFocus();
     }
+
+    private void SceneRenderControl_MouseLeave(object sender, MouseEventArgs e) => Context.MouseLeft();
 
     private void SceneRenderControl_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
     {

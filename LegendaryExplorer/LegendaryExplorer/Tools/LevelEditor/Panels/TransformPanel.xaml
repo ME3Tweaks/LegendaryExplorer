@@ -1,0 +1,40 @@
+<UserControl x:Class="LegendaryExplorer.Tools.LevelEditor.TransformPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:LegendaryExplorer.Tools.LevelEditor"
+             xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="../LevelEditorStyles.xaml"/></ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Expander Header="Transform" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding SelectedActor.HasSpatialRepresentation, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+        <StackPanel DataContext="{Binding SelectedActor}">
+            <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="IsEnabled" Value="True"/><Style.Triggers><DataTrigger Binding="{Binding}" Value="{x:Null}"><Setter Property="IsEnabled" Value="False"/></DataTrigger><DataTrigger Binding="{Binding CanEditTransform}" Value="False"><Setter Property="IsEnabled" Value="False"/></DataTrigger><DataTrigger Binding="{Binding OwningFile.IsReadOnly}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
+            <TextBlock Text="Position · world units" Style="{StaticResource EditorSectionLabel}"/>
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <DockPanel><TextBlock Text="X" Background="{StaticResource EditorX}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="xPosUpDown" Value="{Binding XPos}" Increment="{Binding PosIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Position X"/></DockPanel>
+                <DockPanel Grid.Column="2"><TextBlock Text="Y" Background="{StaticResource EditorY}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="yPosUpDown" Value="{Binding YPos}" Increment="{Binding PosIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Position Y"/></DockPanel>
+                <DockPanel Grid.Column="4"><TextBlock Text="Z" Background="{StaticResource EditorZ}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="zPosUpDown" Value="{Binding ZPos}" Increment="{Binding PosIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Position Z"/></DockPanel>
+            </Grid>
+            <TextBlock Text="Rotation · degrees" Style="{StaticResource EditorSectionLabel}"/>
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <DockPanel ToolTip="Roll (X)"><TextBlock Text="X" Background="{StaticResource EditorX}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="rollUpDown" Value="{Binding RollDegrees}" Increment="{Binding RotIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F2" AutomationProperties.Name="Roll degrees"/></DockPanel>
+                <DockPanel Grid.Column="2" ToolTip="Pitch (Y)"><TextBlock Text="Y" Background="{StaticResource EditorY}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="pitchUpDown" Value="{Binding PitchDegrees}" Increment="{Binding RotIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F2" AutomationProperties.Name="Pitch degrees"/></DockPanel>
+                <DockPanel Grid.Column="4" ToolTip="Yaw (Z)"><TextBlock Text="Z" Background="{StaticResource EditorZ}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="yawUpDown" Value="{Binding YawDegrees}" Increment="{Binding RotIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F2" AutomationProperties.Name="Yaw degrees"/></DockPanel>
+            </Grid>
+            <TextBlock Text="Scale · per axis" Style="{StaticResource EditorSectionLabel}"/>
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <DockPanel><TextBlock Text="X" Background="{StaticResource EditorX}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="xScaleUpDown" Value="{Binding XScale}" Increment="{Binding ScaleIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Scale X"/></DockPanel>
+                <DockPanel Grid.Column="2"><TextBlock Text="Y" Background="{StaticResource EditorY}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="yScaleUpDown" Value="{Binding YScale}" Increment="{Binding ScaleIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Scale Y"/></DockPanel>
+                <DockPanel Grid.Column="4"><TextBlock Text="Z" Background="{StaticResource EditorZ}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="zScaleUpDown" Value="{Binding ZScale}" Increment="{Binding ScaleIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Scale Z"/></DockPanel>
+            </Grid>
+            <DockPanel Margin="0,10,0,0"><TextBlock Text="Uniform scale" VerticalAlignment="Center"/><xctk:SingleUpDown x:Name="scaleUpDown" Width="108" HorizontalAlignment="Right" Value="{Binding DrawScale}" Increment="{Binding ScaleIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Uniform scale"/></DockPanel>
+        </StackPanel>
+    </Expander>
+</UserControl>

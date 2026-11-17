@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace LegendaryExplorerCore.Unreal.PhysX
 {
@@ -21,31 +22,58 @@ namespace LegendaryExplorerCore.Unreal.PhysX
         [LibraryImport(PhysXDllLoader.PHYSXCOOKING64_DLL)]
         private static partial void NxCloseCooking();
 
+        /// <summary>
+        /// Held while a cooker exists. Cooking is global to the process: NxInitCooking and NxCloseCooking start and end it for everyone, so a cooker
+        /// on one thread can't overlap another's
+        /// </summary>
+        private static readonly Lock Sync = new();
+
+        public static T Use<T>(Func<PhysXCooker, T> cook)
+        {
+            lock (Sync)
+            {
+                using var cooker = new PhysXCooker();
+                return cook(cooker);
+            }
+        }
+
         private bool isDisposed;
-        public PhysXCooker()
+        private PhysXCooker()
         {
             if (!PhysXDllLoader.EnsureCookingDll())
             {
                 isDisposed = true;
                 throw new Exception($"Unable to load {PhysXDllLoader.PHYSXCOOKING64_DLL}");
             }
-            NxInitCooking(null, null);
-            NxCookingParams* parms = NxGetCookingParams();
-            NxCookingParams defaultParms = *parms;
-            parms->skinWidth = 0.025f;
-            NxSetCookingParams(&defaultParms);
+            if (NxInitCooking(null, null) is 0)
+            {
+                isDisposed = true;
+                throw new Exception("PhysX cooking couldn't be started");
+            }
+            //as UE3 does (PhysSkinWidth)
+            NxCookingParams parms = *NxGetCookingParams();
+            parms.skinWidth = 0.025f;
+            NxSetCookingParams(&parms);
         }
 
-        public byte[] GenerateCachedPhysicsData(ReadOnlySpan<Vector3> verts)
+        /// <returns>The convex mesh of <paramref name="verts"/> cooked for collision, or null if PhysX can't cook it (as for a flat hull)</returns>
+        public byte[] TryGenerateCachedPhysicsData(ReadOnlySpan<Vector3> verts)
         {
-            using NxStream stream = GenerateCachedPhysicsDataStream(verts);
-
-            byte[] cachedData = new byte[stream.Count];
-            new Span<byte>(stream.Data, (int)stream.Count).CopyTo(cachedData);
-            return cachedData;
+            if (!TryCook(verts, hullOnly: false, out NxStream stream)) return null;
+            using (stream)
+            {
+                byte[] cachedData = new byte[stream.Count];
+                new Span<byte>(stream.Data, (int)stream.Count).CopyTo(cachedData);
+                return cachedData;
+            }
         }
 
-        public NxStream GenerateCachedPhysicsDataStream(ReadOnlySpan<Vector3> verts)
+        /// <param name="hullOnly">Only compute the convex hull of <paramref name="verts"/>, as FKConvexElem::GenerateHullData does, rather than cook it for
+        /// collision as MakeCachedConvexDataForAggGeom does, which inflates it</param>
+        public NxStream GenerateCachedPhysicsDataStream(ReadOnlySpan<Vector3> verts, bool hullOnly = false) =>
+            TryCook(verts, hullOnly, out NxStream stream) ? stream : throw new Exception("Convex Mesh cooking failed!");
+
+        private bool TryCook(ReadOnlySpan<Vector3> verts, bool hullOnly, out NxStream cooked)
         {
             if (isDisposed)
             {
@@ -58,7 +86,7 @@ namespace LegendaryExplorerCore.Unreal.PhysX
                     NumVertices = (uint)verts.Length,
                     PointStrideBytes = 12u,
                     Points = data,
-                    Flags = ConvexFlags.ComputeConvex | ConvexFlags.InflateConvex | ConvexFlags.UseUncompressedNormals
+                    Flags = hullOnly ? ConvexFlags.ComputeConvex : ConvexFlags.ComputeConvex | ConvexFlags.InflateConvex | ConvexFlags.UseUncompressedNormals
                 };
 
                 var stream = new NxStream();
@@ -66,30 +94,22 @@ namespace LegendaryExplorerCore.Unreal.PhysX
                 if (NxCookConvexMesh(&meshDesc, &stream) is 0)
                 {
                     stream.Dispose();
-                    throw new Exception("Convex Mesh cooking failed!");
+                    cooked = default;
+                    return false;
                 }
-                return stream;
+                cooked = stream;
+                return true;
             }
         }
 
-        private void InternalDispose()
+        // No finalizer: only Use makes one, and it disposes it inside the lock
+        public void Dispose()
         {
             if (!isDisposed)
             {
                 NxCloseCooking();
                 isDisposed = true;
             }
-        }
-
-        public void Dispose()
-        {
-            InternalDispose();
-            GC.SuppressFinalize(this);
-        }
-
-        ~PhysXCooker()
-        {
-            InternalDispose();
         }
 
         [Flags]

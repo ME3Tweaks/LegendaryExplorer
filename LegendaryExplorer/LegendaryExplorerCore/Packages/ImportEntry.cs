@@ -434,6 +434,36 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
         }
+
+        /// <summary>
+        /// Everything an <see cref="PackageEditScope"/> restores if its edits are abandoned
+        /// </summary>
+        internal sealed class EditState(ImportEntry entry)
+        {
+            public readonly ImportEntry Entry = entry;
+            private readonly ImportHeader header = entry._header;
+            private readonly int index = entry.Index;
+            private readonly long headerOffset = entry.HeaderOffset;
+            private readonly bool changed = entry.headerChanged;
+            private readonly bool pending = entry._entryHasPendingChanges;
+
+            /// <summary>Puts the entry back without raising change notifications. Returns whether anything was different</summary>
+            public bool Restore()
+            {
+                ImportEntry e = Entry;
+                bool differed = !header.Equals(e._header) || index != e.Index || headerOffset != e.HeaderOffset
+                    || changed != e.headerChanged || pending != e._entryHasPendingChanges;
+                e._header = header;
+                e.Index = index;
+                e.HeaderOffset = headerOffset;
+                e.headerChanged = changed;
+                e._entryHasPendingChanges = pending;
+                return differed;
+            }
+        }
+
+        //lets bindings re-read an entry an edit scope restored
+        internal void NotifyRestored() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         public bool IsClass => ClassName == "Class";
 
         public ImportEntry Clone(int newIndex = -1, int newParentUIndex = int.MaxValue)

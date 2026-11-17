@@ -6,9 +6,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
     public static class EntryCloner
     {
-        public static T CloneTree<T>(T entry, bool incrementIndex = true) where T : IEntry
+        /// <param name="objectMap">
+        /// If given, filled with each cloned entry's clone, by the entry it's a clone of. Pass it empty: the clones' references are relinked through
+        /// everything in it, entries it already had among them
+        /// </param>
+        public static T CloneTree<T>(T entry, bool incrementIndex = true, ListenableDictionary<IEntry, IEntry> objectMap = null) where T : IEntry
         {
-            var objectMap = new ListenableDictionary<IEntry, IEntry>();
+            objectMap ??= new ListenableDictionary<IEntry, IEntry>();
             T newRoot = CloneEntry(entry, objectMap, incrementIndex);
             EntryTree tree = entry.FileRef.Tree;
             var stack = new Stack<(IEntry, IEntry)>();

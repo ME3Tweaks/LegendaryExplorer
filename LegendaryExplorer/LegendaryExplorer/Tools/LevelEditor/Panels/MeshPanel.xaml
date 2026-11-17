@@ -1,0 +1,101 @@
+<UserControl x:Class="LegendaryExplorer.Tools.LevelEditor.MeshPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             xmlns:fa="http://schemas.fontawesome.com/icons/">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="../LevelEditorStyles.xaml"/></ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:BoolEnabledConverter x:Key="BoolEnabledConverter"/>
+            <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Expander Header="Mesh" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding IsMeshChoiceSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+        <ItemsControl ItemsSource="{Binding SelectedMeshChoices}">
+            <ItemsControl.ItemTemplate><DataTemplate>
+                <StackPanel Margin="0,0,0,8">
+                    <TextBlock Text="{Binding MeshLabel}" Style="{StaticResource EditorSectionLabel}"/>
+                    <StackPanel Visibility="{Binding CanChooseMesh, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Text="{Binding MeshName, StringFormat='StaticMesh: {0}'}" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding ChosenMeshNote}" Foreground="{StaticResource EditorDirty}" FontSize="11" TextWrapping="Wrap"
+                                   Visibility="{Binding ChosenMeshNote, Converter={StaticResource NullVisibilityConverter}}"/>
+                        <WrapPanel Margin="0,4,0,0">
+                            <Button Content="Choose mesh…" Click="ChooseMesh_Click" Margin="0,0,4,0" IsEnabled="{Binding CanChangeMesh, Converter={StaticResource BoolEnabledConverter}}"
+                                    ToolTip="Draw another static mesh. Its material overrides are kept. Committing writes it and drops the component's baked lighting, which was made for the old mesh."/>
+                            <Button Content="Revert" Click="RevertMesh_Click" IsEnabled="{Binding HasChosenMesh, Converter={StaticResource BoolEnabledConverter}}" ToolTip="Draw its own mesh again: the committed one, or for a new actor, the one it was placed with."/>
+                        </WrapPanel>
+                    </StackPanel>
+                    <TextBlock Text="{Binding MeshName, StringFormat='StaticMesh: {0}'}" TextWrapping="Wrap"
+                               Visibility="{Binding CanChooseMesh, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}"/>
+                    <StackPanel Visibility="{Binding CanChooseMaterials, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0,8,0,0">
+                        <TextBlock Text="Material Overrides" Style="{StaticResource EditorSectionLabel}"/>
+                        <ItemsControl ItemsSource="{Binding MaterialSlots}" Grid.IsSharedSizeScope="True">
+                            <ItemsControl.ItemTemplate><DataTemplate>
+                                <Border BorderBrush="{StaticResource EditorBorder}" BorderThickness="1" CornerRadius="2" Background="{StaticResource EditorInput}"
+                                        Margin="0,0,0,3" Padding="6,3">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="MaterialSlotIndex"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="MaterialSlotButtons"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Index}" Foreground="{StaticResource EditorMuted}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="ToolTip" Value="{Binding Path}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsDefault}" Value="True">
+                                                            <Setter Property="Foreground" Value="{StaticResource EditorMuted}"/>
+                                                            <Setter Property="FontStyle" Value="Italic"/>
+                                                            <Setter Property="ToolTip" Value="{Binding Path, StringFormat='No override: the mesh’s own material, {0}'}"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsExtra}" Value="True">
+                                                            <Setter Property="Foreground" Value="{StaticResource EditorMuted}"/>
+                                                            <Setter Property="TextDecorations" Value="Strikethrough"/>
+                                                            <Setter Property="ToolTip" Value="{Binding ExtraNote}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="6,0,0,0">
+                                            <Button Click="ChooseMaterial_Click" Style="{StaticResource EditorCompactButton}" Margin="0,0,3,0" AutomationProperties.Name="Choose material"
+                                                    ToolTip="Choose a material for this slot. Only materials the game draws on a static mesh are offered."
+                                                    Visibility="{Binding CanEdit, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                    IsEnabled="{Binding CanChoose, Converter={StaticResource BoolEnabledConverter}}">
+                                                <fa:ImageAwesome Icon="Solid_FolderOpen" Width="11" Foreground="{StaticResource EditorText}"/>
+                                            </Button>
+                                            <Button Click="ClearMaterial_Click" Style="{StaticResource EditorCompactButton}" AutomationProperties.Name="Use the mesh's material"
+                                                    ToolTip="Revert to default: draw the mesh's own material in this slot, with no override." ToolTipService.ShowOnDisabled="True"
+                                                    Visibility="{Binding CanEdit, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                    IsEnabled="{Binding CanRevert, Converter={StaticResource BoolEnabledConverter}}">
+                                                <fa:ImageAwesome Icon="Solid_Undo" Width="11" Foreground="{StaticResource EditorText}"/>
+                                            </Button>
+                                            <Button Click="DeleteExtraMaterial_Click" Style="{StaticResource EditorCompactButton}" AutomationProperties.Name="Delete unused override"
+                                                    ToolTip="{Binding ExtraNote}"
+                                                    Visibility="{Binding IsExtra, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                    IsEnabled="{Binding CanDelete, Converter={StaticResource BoolEnabledConverter}}">
+                                                <fa:ImageAwesome Icon="Solid_MinusCircle" Width="11" Foreground="{StaticResource EditorProblem}"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                    <TextBlock Text="{Binding Problem}" Visibility="{Binding Problem, Converter={StaticResource NullVisibilityConverter}}"
+                                               TextWrapping="Wrap" Foreground="{StaticResource EditorProblem}" FontSize="11" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                </Border>
+                            </DataTemplate></ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Uncommitted." Foreground="{StaticResource EditorDirty}" FontSize="11"
+                                   Visibility="{Binding HasChosenMaterials, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <Button Content="Revert materials" Click="RevertMaterials_Click" HorizontalAlignment="Left" Margin="0,4,0,0"
+                                IsEnabled="{Binding HasChosenMaterials, Converter={StaticResource BoolEnabledConverter}}"
+                                ToolTip="Draw its own material overrides again: the committed ones, or for a new actor, the ones it was placed with."/>
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate></ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Expander>
+</UserControl>

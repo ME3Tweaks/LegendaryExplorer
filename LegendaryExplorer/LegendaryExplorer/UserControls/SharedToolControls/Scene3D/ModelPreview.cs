@@ -399,6 +399,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
             Mesh<LEVertex> mesh = lod.Mesh;
             SceneCamera camera = context.Camera;
             var material = (MaterialRenderProxy)Material;
+            //a material the shader caches have no shaders for (none for its static parameters, or not the types this draws with) has nothing to draw with
+            if (material.VertexShader is null || material.PixelShader is null)
+            {
+                return;
+            }
             LEEffect effect = context.LEEffect;
             PixelShader ps = context.GetCachedPixelShader(material.PixelShader.Guid, material.PixelShader.ShaderByteCode);
             (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(material.VertexShader.Guid, material.VertexShader.ShaderByteCode);

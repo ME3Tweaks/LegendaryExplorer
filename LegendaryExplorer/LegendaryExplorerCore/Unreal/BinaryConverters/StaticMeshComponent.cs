@@ -127,8 +127,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Guid[] LightGuids;
         public int unkInt;
         public QuantizedDirectionalLightSample[] DirectionalSamples; //BULKDATA
-        public Vector3 unkVector1;
-        public Vector3 unkVector2;
+        public Vector3 ScaleVector1;
+        public Vector3 ScaleVector2;
     }
 
     public partial class LightMap_4or6 : LightMap
@@ -152,7 +152,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Guid[] LightGuids;
         public int unkInt;
         public QuantizedSimpleLightSample[] SimpleSamples; //BULKDATA
-        public Vector3 unkVector;
+        public Vector3 ScaleVector;
     }
 
     public class QuantizedDirectionalLightSample
@@ -297,8 +297,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Serialize(ref lmap.LightGuids, Serialize);
             Serialize(ref lmap.unkInt);
             SerializeBulkData(ref lmap.DirectionalSamples, Serialize);
-            Serialize(ref lmap.unkVector1);
-            Serialize(ref lmap.unkVector2);
+            Serialize(ref lmap.ScaleVector1);
+            Serialize(ref lmap.ScaleVector2);
         }
         private void Serialize(LightMap_4or6 lmap)
         {
@@ -326,7 +326,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Serialize(ref lmap.LightGuids, Serialize);
             Serialize(ref lmap.unkInt);
             SerializeBulkData(ref lmap.SimpleSamples, Serialize);
-            Serialize(ref lmap.unkVector);
+            Serialize(ref lmap.ScaleVector);
         }
         public void Serialize(ref StaticMeshComponentLODInfo lod)
         {

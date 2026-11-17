@@ -31,6 +31,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
         private readonly List<string> Uniform2DTextureExpressions = [];
         public Dictionary<string, PreviewTextureCache.TextureEntry> TextureMap;
         private MaterialShaderMap ShaderMap;
+        //the outermost material instance with a static permutation, or else the base material, owns the shaders: once one has been read, materials further up
+        //the chain mustn't replace them, even when the caches have none for it (as the Level Editor's MaterialRenderProxy does)
+        private bool FoundShaderMapOwner;
         private uint CachedPixelFrameNumber = uint.MaxValue;
         private uint CachedVertexFrameNumber = uint.MaxValue;
         private readonly List<Vector4> CachedVertexScalarParameters = [];
@@ -51,7 +54,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
             Enum.TryParse(props.GetProp<EnumProperty>("BlendMode")?.Value ?? "BLEND_Opaque", out BlendMode);
 
             //if the MIC had a StaticPermutationResource, this is already set
-            if (Uniform2DTextureExpressions.IsEmpty())
+            if (!FoundShaderMapOwner)
             {
                 foreach (int uIndex in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
                 {
@@ -95,7 +98,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
             }
 
             //if the MIC had a StaticPermutationResource, this is already set
-            if (ShaderMap is null)
+            if (!FoundShaderMapOwner)
             {
                 LoadShaders(mat);
             }
@@ -103,6 +106,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
 
         private void LoadShaders(ExportEntry mat)
         {
+            FoundShaderMapOwner = true;
             (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat, VERTEX_SHADER_TYPE_NAME, LIT_PIXEL_SHADER_TYPE_NAME, UNLIT_PIXEL_SHADER_TYPE_NAME);
 
             VertexShader = (VertexShaderType)shaders[0];
@@ -112,6 +116,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
         protected override void ReadMaterialInstanceConstant(ExportEntry matInst, PropertyCollection props)
         {
             base.ReadMaterialInstanceConstant(matInst, props);
+            //The most derived value wins (UMaterialInstanceConstant::Get*ParameterValue); a null texture defers to the parent
             if (props.GetProp<ArrayProperty<StructProperty>>("ScalarParameterValues") is { } scalarValues)
             {
                 foreach (StructProperty scalarValue in scalarValues)
@@ -119,7 +124,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
                     if (scalarValue.GetProp<NameProperty>("ParameterName") is { } paramNameProp
                         && scalarValue.GetProp<FloatProperty>("ParameterValue") is { } valProp)
                     {
-                        ScalarParameterValues[paramNameProp.Value.Instanced] = valProp.Value;
+                        ScalarParameterValues.TryAdd(paramNameProp.Value.Instanced, valProp.Value);
                     }
                 }
             }
@@ -130,7 +135,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
                     if (vectorValue.GetProp<NameProperty>("ParameterName") is { } paramNameProp
                         && vectorValue.GetProp<StructProperty>("ParameterValue") is { } valProp)
                     {
-                        VectorParameterValues[paramNameProp.Value.Instanced] = CommonStructs.GetLinearColor(valProp);
+                        VectorParameterValues.TryAdd(paramNameProp.Value.Instanced, CommonStructs.GetLinearColor(valProp));
                     }
                 }
             }
@@ -139,18 +144,25 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
                 foreach (StructProperty textureValue in textureValues)
                 {
                     if (textureValue.GetProp<NameProperty>("ParameterName") is { } paramNameProp
-                        && textureValue.GetProp<ObjectProperty>("ParameterValue") is { } valProp)
+                        && textureValue.GetProp<ObjectProperty>("ParameterValue") is { } valProp
+                        && valProp.ResolveToEntry(matInst.FileRef) is { } texEntry)
                     {
-                        TextureParameterValues[paramNameProp.Value.Instanced] = valProp.ResolveToEntry(matInst.FileRef)?.InstancedFullPath;
+                        TextureParameterValues.TryAdd(paramNameProp.Value.Instanced, texEntry.InstancedFullPath);
                     }
                 }
             }
 
-            if (ObjectBinary.From(matInst) is MaterialInstance binary)
+            if (!FoundShaderMapOwner && ObjectBinary.From(matInst) is MaterialInstance binary)
             {
                 foreach (int uIndex in binary.SM3StaticPermutationResource.UniformExpressionTextures)
                 {
-                    Uniform2DTextureExpressions.Add(matInst.FileRef.GetEntry(uIndex)?.InstancedFullPath);
+                    IEntry texEntry = matInst.FileRef.GetEntry(uIndex);
+                    Uniform2DTextureExpressions.Add(texEntry?.InstancedFullPath);
+                    //A static permutation can sample textures the base material's resource doesn't
+                    if (texEntry is not null)
+                    {
+                        Textures.Add(texEntry);
+                    }
                 }
                 LoadShaders(matInst);
             }

@@ -764,6 +764,19 @@ public static class ToolSet
             category = "Core Editors",
             description = "Level Editor is a minimalist level editor, capable only of displaying and editing the positions, rotations, and scale of Actors.",
         });
+        set.Add(new Tool
+        {
+            name = "Lightmass Baker",
+            type = typeof(Tools.LightmassBaker.LightmassBakerWindow),
+            icon = Application.Current.FindResource("iconLightmassBaker") as ImageSource,
+            open = () =>
+            {
+                (new Tools.LightmassBaker.LightmassBakerWindow()).Show();
+            },
+            tags = ["user", "developer", "me1", "me2", "me3", "lightmap", "lighting", "lightmass", "bake", "shadow"],
+            category = "Meshes + Textures",
+            description = "Lightmass Baker rebuilds static lighting for LE1, LE2 and LE3, preserving existing lightmap types and supporting shadow-only meshes. Requires UDK-2015-02.",
+        });
         #endregion
 
         items = set;
