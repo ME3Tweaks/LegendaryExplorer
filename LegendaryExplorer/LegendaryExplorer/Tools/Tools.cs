@@ -762,7 +762,7 @@ public static class ToolSet
             },
             tags = ["user", "developer", "me1", "me2", "me3"],
             category = "Core Editors",
-            description = "Level Editor is a minimalist level editor, capable only of displaying and editing the positions, rotations, and scale of Actors.",
+            description = "Level Editor can display and edit Legendary Edition level files.",
         });
         set.Add(new Tool
         {

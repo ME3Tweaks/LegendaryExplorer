@@ -875,6 +875,24 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     #endregion
 
+    private LevelEditorHelpWindow helpWindow;
+
+    private void Help_Click(object sender, RoutedEventArgs e)
+    {
+        if (helpWindow is null)
+        {
+            //owned, so it stays over this window while it's read, and closes with it
+            helpWindow = new LevelEditorHelpWindow { Owner = this };
+            helpWindow.Closed += (_, _) => helpWindow = null;
+            helpWindow.Show();
+        }
+        else
+        {
+            if (helpWindow.WindowState == WindowState.Minimized) helpWindow.WindowState = WindowState.Normal;
+            helpWindow.Activate();
+        }
+    }
+
     public void UpdateGlobalDirtyState()
     {
         IsDirty = OpenFiles.Any(f => f.IsDirty);
