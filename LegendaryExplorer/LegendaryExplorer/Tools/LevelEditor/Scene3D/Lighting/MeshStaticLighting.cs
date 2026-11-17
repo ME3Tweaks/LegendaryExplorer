@@ -16,44 +16,6 @@ using Buffer = SharpDX.Direct3D11.Buffer;
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
 /// <summary>
-/// How a light's shadows on a primitive were precomputed. Determines which of the game's light shaders render it (the light's shadowing policy)
-/// </summary>
-public enum StaticShadowingType
-{
-    /// <summary>
-    /// Not precomputed: the light is fully dynamic for this primitive. (FNoStaticShadowingPolicy)
-    /// </summary>
-    None,
-    /// <summary>
-    /// A texture of how much of the light reaches each texel (FShadowTexturePolicy)
-    /// </summary>
-    ShadowTexture,
-    /// <summary>
-    /// A texture of the distance to the shadow's edge (FSignedDistanceFieldShadowTexturePolicy)
-    /// </summary>
-    DistanceFieldShadowTexture,
-    /// <summary>
-    /// How much of the light reaches each vertex (FShadowVertexBufferPolicy)
-    /// </summary>
-    ShadowVertexBuffer,
-}
-
-/// <summary>
-/// A light that's rendered on a primitive in its own pass, and how its shadows were precomputed. (UE3's FLightInteraction, minus the light-mapped and irrelevant kinds)
-/// </summary>
-/// <param name="ShadowMap">For <see cref="StaticShadowingType.ShadowTexture"/> and <see cref="StaticShadowingType.DistanceFieldShadowTexture"/></param>
-/// <param name="ShadowVertexBuffer">For <see cref="StaticShadowingType.ShadowVertexBuffer"/>. Bound at <see cref="MeshStaticLighting.ShadowVertexStreamSlot"/></param>
-public readonly record struct LightInteraction(SceneLight Light, StaticShadowingType Shadowing, MeshStaticLighting.ShadowMapTexture ShadowMap, Buffer ShadowVertexBuffer);
-
-/// <summary>
-/// Hemispherical ambient light from the level's sky lights, in linear color: <paramref name="Upper"/> from above (world +Z), <paramref name="Lower"/> from below
-/// </summary>
-public readonly record struct SkyLighting(Vector3 Upper, Vector3 Lower)
-{
-    public bool IsBlack => Upper == Vector3.Zero && Lower == Vector3.Zero;
-}
-
-/// <summary>
 /// The precomputed lighting of one LOD of a static mesh component, in the form the game's shaders read it:
 /// <list type="bullet">
 /// <item>Its light-map, the baked lighting the base pass renders. Texture light-maps are atlases sampled with the mesh's light-map UVs; vertex light-maps have one sample per vertex.</item>

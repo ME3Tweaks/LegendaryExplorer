@@ -16,39 +16,6 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
-/// <summary>What a level scan looks for, in the order the Problems tab lists them</summary>
-public enum LevelCheck
-{
-    ChangedSinceBake, UnbakedMeshes, SharedLightGuids, DecalReceivers, DecalWithoutReceivers, DecalMaterial, ActorList, TrashReferences, MissingAssets,
-    VolumeCollision
-}
-
-/// <summary>A problem breaks something in game; a warning is something that works, but not as the level was made to</summary>
-public enum ProblemSeverity { Problem, Warning }
-
-/// <summary>
-/// Something <see cref="LevelScan"/> found in <see cref="Package"/>: what it's about (<see cref="Subject"/>), and what it does in game. Each is its own
-/// (reference equality), so that two that read the same are still two rows of the Problems tab
-/// </summary>
-public sealed class LevelProblem(LevelCheck check, ProblemSeverity severity, IMEPackage package, string subject, string message)
-{
-    public LevelCheck Check { get; } = check;
-    public ProblemSeverity Severity { get; } = severity;
-    public IMEPackage Package { get; } = package;
-    public string Subject { get; } = subject;
-    public string Message { get; } = message;
-
-    /// <summary>The actor it's about, as it was shown when the scan ran. Null if it's about another object</summary>
-    public ActorProxy Actor { get; init; }
-
-    /// <summary>The actor's export, to find its view by once that view is rebuilt. Null for a new actor (a draft)</summary>
-    public ExportEntry Export { get; init; }
-
-    public string FileName => Path.GetFileName(Package.FilePath);
-    public bool IsWarning => Severity is ProblemSeverity.Warning;
-    public string CheckTitle => LevelScan.Title(Check);
-}
-
 /// <summary>
 /// Finds problems in the open levels, as they're shown: uncommitted edits included, since they're what a commit writes. It reports; it changes no file
 /// (copying a level brings the offsets in its exports up to date in memory, as saving it does).
