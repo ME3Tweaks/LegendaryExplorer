@@ -8,7 +8,6 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorer.Lightmaps.Lightmass;
 
@@ -39,9 +38,7 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
     readonly Dictionary<ExportEntry, ObjectBinary> binaries = new();
     readonly Dictionary<ExportEntry, PropertyCollection> properties = new();
     readonly Dictionary<LightmapRef, List<ExportEntry>> newShadowMaps = new();
-    /// <summary>Per new export's name, the next free number, and per class the flags new exports copy (both scan every export once).</summary>
-    readonly Dictionary<string, int> nextNameNumber = new();
-    readonly Dictionary<string, EObjectFlags?> templateFlags = new();
+    readonly NewExports newExports = new(package);
 
     /// <param name="appliedLightmaps">Only targets whose new lightmaps were successfully applied may replace their shadow data.</param>
     /// <param name="shadowOnlyAllocations">New mappings that get only their shadow maps (LightmapRewriter.Summary.ShadowOnlyAllocations)</param>
@@ -218,12 +215,12 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
 
     ExportEntry NewTexture()
     {
-        var texture = new ExportEntry(package, 0, NextName("ShadowMapTexture2D_LE3LM"),
+        var texture = new ExportEntry(package, 0, newExports.NextName("ShadowMapTexture2D_LE3LM"),
             binary: new UTexture2D { Mips = [], TextureGuid = Guid.NewGuid() })
         {
             Class = EntryImporter.EnsureClassIsInFile(package, "ShadowMapTexture2D", new RelinkerOptionsPackage()),
         };
-        if (TemplateFlags("ShadowMapTexture2D", "LightMapTexture2D") is { } flags) texture.ObjectFlags = flags;
+        if (newExports.TemplateFlags("ShadowMapTexture2D", "LightMapTexture2D") is { } flags) texture.ObjectFlags = flags;
         package.AddExport(texture);
         return texture;
     }
@@ -238,46 +235,15 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
             CommonStructs.GuidProp(lightGuid, "LightGuid"),
         };
         if (sdf) props.Add(new BoolProperty(false, "bIsShadowFactorTexture"));
-        return NewObject(owner, "ShadowMap2D", props, null);
+        return newExports.Add(owner, "ShadowMap2D", props, null);
     }
 
     ExportEntry ShadowMap1D(ExportEntry owner, LightmassShadowMap shadow, Guid lightGuid) =>
-        NewObject(owner, "ShadowMap1D", null, new ShadowMap1D
+        newExports.Add(owner, "ShadowMap1D", null, new ShadowMap1D
         {
             Samples = shadow.Samples.Select(BitConverter.SingleToInt32Bits).ToArray(),
             LightGuid = lightGuid,
         });
-
-    ExportEntry NewObject(ExportEntry owner, string className, PropertyCollection props, ObjectBinary binary)
-    {
-        var export = new ExportEntry(package, owner, NextName(className), properties: props, binary: binary)
-        {
-            Class = EntryImporter.EnsureClassIsInFile(package, className, new RelinkerOptionsPackage()),
-        };
-        if (TemplateFlags(className) is { } flags) export.ObjectFlags = flags;
-        package.AddExport(export);
-        return export;
-    }
-
-    /// <summary>GetNextIndexedName, counting on from the first call instead of rescanning the exports for each new object.</summary>
-    NameReference NextName(string name)
-    {
-        if (!nextNameNumber.TryGetValue(name, out int number)) number = package.GetNextIndexedName(name).Number;
-        nextNameNumber[name] = number + 1;
-        return new NameReference(name, number);
-    }
-
-    /// <summary>The flags of the package's first export of these classes (in order of preference), if it has any.</summary>
-    EObjectFlags? TemplateFlags(params string[] classNames)
-    {
-        string key = string.Join("|", classNames);
-        if (!templateFlags.TryGetValue(key, out var flags))
-        {
-            var template = classNames.Select(c => package.Exports.FirstOrDefault(e => e.ClassName == c)).FirstOrDefault(e => e != null);
-            templateFlags[key] = flags = template?.ObjectFlags;
-        }
-        return flags;
-    }
 
     // ================= components =================
 

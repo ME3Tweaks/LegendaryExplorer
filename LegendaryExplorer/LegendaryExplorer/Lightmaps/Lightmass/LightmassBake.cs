@@ -9,6 +9,7 @@ using LegendaryExplorer.Lightmaps.Codec;
 using LegendaryExplorer.Lightmaps.Game;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorer.Lightmaps.Lightmass;
 
@@ -44,6 +45,7 @@ public sealed class LightmassBakeResult
     public TimeSpan ExportTime, LightmassTime, ApplyTime;
     public Dictionary<IMEPackage, LightmapRewriter.Summary> Rewrites = new();
     public Dictionary<IMEPackage, LightmassShadowMapWriter.Summary> ShadowMaps = new();
+    public Dictionary<IMEPackage, DecalReceiverLighting.Summary> Decals = new();
     public Dictionary<string, int> KeptOriginal = new();
     /// <summary>Levels that had marks of what's changed since their last bake, which the bake cleared: they're saved even if no lightmap of theirs changed</summary>
     public HashSet<IMEPackage> ClearedMarks = [];
@@ -218,7 +220,7 @@ public static class LightmassBake
 
         timer.Restart();
         log("Writing lightmaps...");
-        Apply(levels, scene, result, settings, log, cancel);
+        Apply(levels, scene, result, settings, builder.PackageCache, log, cancel);
         result.ApplyTime = timer.Elapsed;
         log($"Done in {result.ApplyTime:mm\\:ss}.");
         return result;
@@ -261,8 +263,9 @@ public static class LightmassBake
         foreach (var r in read) result.Results[r.Guid] = r;
     }
 
-    static void Apply(IReadOnlyList<IMEPackage> levels, LightmassScene scene, LightmassBakeResult result, LightmassBakeSettings settings, Action<string> log,
-        CancellationToken cancel)
+    /// <param name="cache">The scene's, which has the packages its materials are in</param>
+    static void Apply(IReadOnlyList<IMEPackage> levels, LightmassScene scene, LightmassBakeResult result, LightmassBakeSettings settings, PackageCache cache,
+        Action<string> log, CancellationToken cancel)
     {
         string tfcDirectory = settings.TfcDirectory ?? Path.GetDirectoryName(levels[0].FilePath);
         using var source = new LightmassBakeSource(scene, result.Results);
@@ -279,6 +282,9 @@ public static class LightmassBake
             log($"{package.FileNameNoExtension}: {LightmassBakeReport.LightmapLine(summary)}");
             var shadows = result.ShadowMaps[package] = new LightmassShadowMapWriter(package, tfc, scene, result.Results).Write(summary.AppliedLightmaps, summary.ShadowOnlyAllocations);
             log($"{package.FileNameNoExtension}: {LightmassBakeReport.ShadowLine(shadows)}");
+            var decals = result.Decals[package] = DecalReceiverLighting.Write(package, DecalReceivers(scene, package, summary), cache);
+            if (decals.Receivers > 0 || decals.Problems.Count > 0) log($"{package.FileNameNoExtension}: {LightmassBakeReport.DecalLine(decals)}");
+            foreach (string problem in decals.Problems) log(problem);
         }
         tfc.PreserveUnwrittenTextures(packages);
         foreach (var (why, n) in source.Report) result.KeptOriginal[why] = n;
@@ -287,6 +293,12 @@ public static class LightmassBake
             .Concat(scene.Mappings.Where(m => !result.Results.ContainsKey(m.Guid)).SelectMany(m => m.OutputTargets).Select(t => t.Owner.FileRef)).ToHashSet();
         result.ClearedMarks.UnionWith(ClearMarks(levels, settings.Scene.ContextOnly, scene.UnreadPrimitives > 0, unfinished, log));
     }
+
+    /// <summary>The static meshes whose LOD 0 got new lighting, each with its mesh's LOD 0: their decals copy it (<see cref="DecalReceiverLighting"/>)</summary>
+    static Dictionary<ExportEntry, StaticMeshRenderData> DecalReceivers(LightmassScene scene, IMEPackage package, LightmapRewriter.Summary summary) =>
+        scene.Instances.Where(i => i.LodIndex == 0 && i.Spline == null && i.Component.FileRef == package
+                && (summary.AppliedLightmaps.Contains((i.Component, "LOD0")) || summary.ShadowOnlyAllocations.Contains((i.Component, "LOD0"))))
+            .ToDictionary(i => i.Component, i => i.Mesh.Mesh.LODModels[0]);
 
     /// <summary>
     /// After a bake: clears the marks of what's changed since the last bake (<see cref="StaticLightingChanges"/>) in each level it finished, which is baked
@@ -320,6 +332,12 @@ public static class LightmassBakeReport
     public static string ShadowLine(LightmassShadowMapWriter.Summary s) =>
         $"{s.TextureShadowMaps} texture shadow maps in {s.Atlases} atlases, {s.VertexShadowMaps} vertex shadow maps (replacing {s.Removed})";
 
+    public static string DecalLine(DecalReceiverLighting.Summary s) =>
+        $"{s.Receivers} decal surfaces copied their receivers' lighting ({s.VertexLit} with vertex lighting, {s.ShadowMaps} vertex shadow maps" +
+        (s.Removed > 0 ? $", {s.Removed} old ones removed" : "") + ")" +
+        (s.UnknownMaterials > 0 ? $" ({s.UnknownMaterials} decals' materials couldn't be found, so they were taken to be lit)" : "") +
+        (s.Problems.Count > 0 ? $" ({s.Problems.Count} left as they were)" : "");
+
     public static string LightmapLine(LightmapRewriter.Summary s) =>
         $"{s.Allocations} texture lightmaps in {s.TextureSets} atlases, {s.VertexLightmaps} vertex lightmaps" +
         (s.AllocatedLightmaps > 0 ? $" ({s.AllocatedLightmaps} newly allocated)" : "") +
@@ -340,6 +358,7 @@ public static class LightmassBakeReport
         {
             lines.Add($"{package.FileNameNoExtension}: {LightmapLine(summary)}");
             if (result.ShadowMaps.TryGetValue(package, out var shadows)) lines.Add($"    {ShadowLine(shadows)}");
+            if (result.Decals.TryGetValue(package, out var decals) && (decals.Receivers > 0 || decals.Problems.Count > 0)) lines.Add($"    {DecalLine(decals)}");
         }
         if (result.KeptOriginal.Count > 0)
             lines.Add($"Kept their original lighting: {string.Join(", ", result.KeptOriginal.Select(k => $"{k.Value} {k.Key}"))}.");

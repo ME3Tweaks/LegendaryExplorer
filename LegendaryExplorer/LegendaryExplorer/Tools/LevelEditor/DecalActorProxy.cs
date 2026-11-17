@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using LegendaryExplorer.Lightmaps.Lightmass;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Helpers;
@@ -237,12 +238,12 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
             {
                 return receivers.Count == 0
                     ? "No receiving triangles in the projection volume: it's committed with none, until it's moved onto a static mesh."
-                    : "Projected onto loaded static meshes, with no baked decal lighting or shadows: decal baking is not yet supported.";
+                    : "Projected onto loaded static meshes. Committing copies their baked vertex lighting and shadows onto it, as the game does.";
             }
             if (!HasReprojectedReceivers) return "Move, rotate or resize to reproject onto loaded static meshes. A projection must belong to one package.";
             if (receivers.Count == 0) return "No receiving triangles in the projection volume. Committing removes the old projected surfaces.";
             return (ProjectionPackage != Export.FileRef ? $"Committing moves this actor to {System.IO.Path.GetFileName(ProjectionPackage.FilePath)}. " : "")
-                   + "Reprojected onto loaded static meshes. Committing clears baked decal lighting and shadows; decal rebaking is not yet supported.";
+                   + "Reprojected onto loaded static meshes. Committing copies their baked vertex lighting and shadows onto it again.";
         }
     }
     private sealed class Receiver(StaticReceiverData data, ExportEntry export)
@@ -340,8 +341,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         materialEntry = reference;
         materialRead = true;
         var entry = reference?.Find(cache);
-        var drawn = MaterialUsage.DecalDrawsDefault(entry, cache) && MaterialUsage.EngineMaterial(Export.Game, "DefaultDecalMaterial", cache) is { } fallback
-            ? fallback : EffectiveLightingProperties.Resolve(entry, cache);
+        var drawn = MaterialUsage.DecalDrawnMaterial(entry, Export.Game, cache);
         if (drawn == material && !redraw) return;
         material = drawn;
         foreach (var receiver in (originalReceivers ?? []).Concat(receivers).Distinct())
@@ -629,9 +629,14 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
             props.AddOrReplaceProp(new ArrayProperty<StructProperty>(committed.Select(r => new StructProperty("DecalReceiver",
                 new PropertyCollection { new ObjectProperty(r.Export.UIndex, "Component") })), "DecalReceivers"));
             settings.Write(props);
+            int[] released = destination.GetBinaryData<DecalComponent>().StaticReceivers.SelectMany(r => r.ShadowMap1D ?? []).ToArray();
             var binary = DecalComponent.Create();
             binary.StaticReceivers = committed.Select(r => r.Data).ToArray();
             destination.WritePropertiesAndBinary(props, binary);
+            // As UE3 projects a decal: a lit one on a mesh with vertex lighting gets its own copy of it, interpolated at its clipped vertices
+            var meshes = committed.Where(r => r.Geometry is not null && sourceMeshes.ContainsKey(r.Geometry)).DistinctBy(r => r.Export)
+                .ToDictionary(r => r.Export, r => sourceMeshes[r.Geometry].LODModels[0]);
+            DecalReceiverLighting.Write(destination, meshes, owner.Editor.RenderContext.PackageCache, released);
         }
         else { settings.Write(props); destination.WriteProperties(props); }
     }
@@ -757,7 +762,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         return new(loaded > 0 ? ActorRepresentation.PartialScene : ActorRepresentation.EditorMarker,
             $"Cooked static surfaces: {loaded}/{receivers.Count} ready. " +
             (issues.Length > 0 ? string.Join(" ", issues) + " " : "") +
-            "Requires loaded receivers and game shaders. " + (HasReprojectedReceivers ? "Reprojected geometry has no separate baked decal samples. " : "")
+            "Requires loaded receivers and game shaders. " + (HasReprojectedReceivers ? "Reprojected geometry gets its receivers' baked samples when it's committed. " : "")
             + "Uses receiver lighting, decal lightmaps and level lights.");
     }
 

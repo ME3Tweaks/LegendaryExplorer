@@ -336,6 +336,8 @@ public sealed class LightmassSceneBuilder : IDisposable
 
     readonly LightmassSceneOptions options;
     readonly PackageCache packageCache = new();
+    /// <summary>The packages the scene's imports resolved in, until the builder is disposed</summary>
+    public PackageCache PackageCache => packageCache;
     readonly Dictionary<IMEPackage, MeshResolver> meshResolvers = new();
     readonly Dictionary<string, LightmassMesh> meshes = new(StringComparer.OrdinalIgnoreCase);
     readonly Dictionary<Guid, LightmassMaterial> materials = new();

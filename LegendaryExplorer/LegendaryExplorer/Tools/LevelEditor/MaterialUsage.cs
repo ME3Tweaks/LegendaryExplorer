@@ -71,6 +71,22 @@ public static class MaterialUsage
     public static bool DecalDrawsDefault(IEntry material, PackageCache cache) =>
         material is null || BaseMaterial(material, cache, out _, out _) is null && DecalProblem(material, cache) is not null;
 
+    /// <summary>
+    /// The material the game draws a decal with (UDecalComponent::CaptureDecalState): its own, or the engine's DefaultDecalMaterial in place of none or of one
+    /// it can't draw on a decal (<see cref="DecalDrawsDefault"/>). Null when it can't be found
+    /// </summary>
+    public static ExportEntry DecalDrawnMaterial(IEntry material, MEGame game, PackageCache cache) =>
+        DecalDrawsDefault(material, cache) && EngineMaterial(game, "DefaultDecalMaterial", cache) is { } fallback ? fallback : EffectiveLightingProperties.Resolve(material, cache);
+
+    /// <summary>
+    /// Whether a material is unlit, as FDecalState::bDecalMaterialHasUnlitLightingModel decides for a decal's: its base material's LightingModel is MLM_Unlit.
+    /// Null when its base material can't be found
+    /// </summary>
+    public static bool? IsUnlit(IEntry material, PackageCache cache) => BaseMaterial(material, cache, out _, out var baseMaterial) is null
+        ? (baseMaterial.GetProperty<EnumProperty>("LightingModel")
+           ?? EffectiveLightingProperties.ClassDefaultProperty<EnumProperty>(baseMaterial, "LightingModel", cache))?.Value.Name == "MLM_Unlit"
+        : null;
+
     /// <summary>The material, resolved, and the base material it's an instance of (through every parent), or why they can't be found</summary>
     private static string BaseMaterial(IEntry material, PackageCache cache, out ExportEntry resolved, out ExportEntry baseMaterial)
     {
