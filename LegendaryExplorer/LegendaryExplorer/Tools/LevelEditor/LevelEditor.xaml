@@ -923,6 +923,7 @@
                                                     <TextBlock Text="{Binding ComponentName, StringFormat='Export: {0}'}" TextWrapping="Wrap" Margin="0,3,0,0"/>
                                                     <TextBlock Text="{Binding MeshName, StringFormat='Mesh: {0}'}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,3,0,0"/>
                                                     <TextBlock Text="Uncommitted" Foreground="{StaticResource EditorDirty}" FontSize="11" Visibility="{Binding HasChanges, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                    <!-- Light environment editing is disabled for now. To bring it back, uncomment this block; its handlers (EditLightEnvironment_Click, CreateLightEnvironment_Click) are still in the code-behind.
                                                     <TextBlock Text="Light environment" Style="{StaticResource EditorSectionLabel}"/>
                                                     <ComboBox ItemsSource="{Binding Environments}" SelectedItem="{Binding Environment}" DisplayMemberPath="Name" ToolTip="Choose a LightEnvironment owned by this actor or its archetype, or None for direct lighting. Commit to apply the assignment." AutomationProperties.Name="Light environment">
                                                         <ComboBox.ItemContainerStyle><Style TargetType="ComboBoxItem"><Setter Property="IsEnabled" Value="{Binding IsSelectable}"/></Style></ComboBox.ItemContainerStyle>
@@ -933,6 +934,7 @@
                                                         <Button Content="New Bio" Click="CreateLightEnvironment_Click" Tag="Bio" IsEnabled="{Binding CanCreateEnvironment}" Margin="0,0,0,4" ToolTip="Create and assign a BioDynamicLightEnvironmentComponent owned by this actor."/>
                                                     </WrapPanel>
                                                     <TextBlock Text="Assignments use Commit and Undo. New components and property edits change the package immediately; save the package to keep them. Inherited or imported environments need a local component to edit." TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11"/>
+                                                    -->
                                                     <TextBlock Text="Lighting channels" Style="{StaticResource EditorSectionLabel}"/>
                                                     <ItemsControl ItemsSource="{Binding Channels}">
                                                         <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>

@@ -45,6 +45,7 @@ public class LightGizmo : UIElement
 
     private static readonly Vector4 HandleColor = new(1, 1, 1, 1);
     private static readonly Vector4 ActiveHandleColor = new(1, 1, 0, 1);
+    private const float InnerConeRadiusScale = 0.7f;
 
     public void GetHandleHitProxies(ref USparseArray<IHitProxy> hitProxies)
     {
@@ -87,9 +88,11 @@ public class LightGizmo : UIElement
                 float outer = light.Settings.OuterConeAngle * MathF.PI / 180;
                 float inner = light.Settings.InnerConeAngle * MathF.PI / 180;
                 DrawCone(context, position, direction, u, v, radius, outer, color, true);
+                //drawn short of the radius, with its handle on it, so that handle doesn't sit on the radius handle at the default inner angle of 0
+                float innerRadius = radius * InnerConeRadiusScale;
                 if (inner > 0)
                 {
-                    DrawCone(context, position, direction, u, v, radius, inner, faint, false);
+                    DrawCone(context, position, direction, u, v, innerRadius, inner, faint, false);
                 }
                 //the sphere cap at the light's radius
                 DrawArc(context, position, direction, u, radius, -outer, outer, color);
@@ -99,7 +102,7 @@ public class LightGizmo : UIElement
                     Vector3 side = HandleSide(context, direction);
                     DrawHandle(context, LightHandle.Radius, position + direction * radius, pixel);
                     DrawHandle(context, LightHandle.OuterCone, position + ConePoint(direction, side, outer) * radius, pixel);
-                    DrawHandle(context, LightHandle.InnerCone, position + ConePoint(direction, side, inner) * (radius * 0.7f), pixel);
+                    DrawHandle(context, LightHandle.InnerCone, position + ConePoint(direction, side, inner) * innerRadius, pixel);
                 }
                 break;
             }
