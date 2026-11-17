@@ -8,8 +8,9 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 namespace LegendaryExplorer.Tools.LevelEditor;
 
 /// <summary>
-/// Whether the game draws a material on a spline mesh or a decal, as UE3 decides. A cooked game can't compile the shaders a material wasn't
-/// cooked with, so where one fails it draws an engine material instead: DefaultMaterial for a spline mesh's section, DefaultDecalMaterial for a decal
+/// Whether the game draws a material on a spline mesh, a decal or a static mesh, as UE3 decides. A cooked game can't compile the shaders a material wasn't
+/// cooked with, so where one fails it draws an engine material instead: DefaultMaterial for a spline or static mesh's section, DefaultDecalMaterial for a
+/// decal
 /// </summary>
 public static class MaterialUsage
 {
@@ -26,6 +27,19 @@ public static class MaterialUsage
             return $"{name} is a decal or fog volume material, which the game won't draw on a spline mesh.";
         if (Flag(baseMaterial, "bUsedWithSplineMeshes", cache) || Flag(baseMaterial, "bUsedAsSpecialEngineMaterial", cache)) return null;
         return $"{name}'s base material, {baseMaterial.ObjectName.Instanced}, isn't marked bUsedWithSplineMeshes. The game has no shaders to draw it on a spline mesh, so it draws its default material instead.";
+    }
+
+    /// <summary>
+    /// Why the game won't draw a material as a static mesh's override, or null: on a mesh with static lighting, its base material must be marked
+    /// bUsedWithStaticLighting (or be a special engine material), or FStaticMeshSceneProxy::FLODInfo draws the default material in its place. That's the
+    /// only usage a static mesh asks for, and it isn't a primitive usage, so a decal or fog volume material isn't refused (LE3 RVA 0x29E260)
+    /// </summary>
+    /// <param name="staticLighting">Whether the mesh is drawn with a light-map, shadow maps or shadow vertex buffers once its level is baked</param>
+    public static string StaticMeshProblem(IEntry material, PackageCache cache, bool staticLighting)
+    {
+        if (BaseMaterial(material, cache, out _, out var baseMaterial) is { } problem) return problem;
+        if (!staticLighting || Flag(baseMaterial, "bUsedWithStaticLighting", cache) || Flag(baseMaterial, "bUsedAsSpecialEngineMaterial", cache)) return null;
+        return $"{material.ObjectName.Instanced}'s base material, {baseMaterial.ObjectName.Instanced}, isn't marked bUsedWithStaticLighting. The game draws its default material in its place on a mesh with static lighting, as this one has once its level is baked.";
     }
 
     /// <summary>

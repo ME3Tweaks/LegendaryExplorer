@@ -41,9 +41,15 @@ public static class ActorCommit
                 // First, since it checks that nothing has changed the packages since it was prepared. A moved decal's material from another file is
                 // copied into its new package there
                 beforeActors?.Invoke();
+                var committing = files.SelectMany(f => f.PendingCreations.Concat(f.Actors.Where(a => a.IsDirty))).Where(a => skipped?.Contains(a) != true).Distinct().ToList();
+                // Chosen materials the game wouldn't draw aren't written: what decides that can change after they're chosen
+                foreach (var actor in committing)
+                {
+                    if (actor.Components.OfType<StaticMeshComponentProxy>().Select(m => m.ChosenMaterialProblem).FirstOrDefault(p => p is not null) is { } problem)
+                        throw new InvalidOperationException($"{actor.ActorName}'s chosen materials: {problem}");
+                }
                 // Other files' assets are copied in before anything refers to them: those of a pasted copy's source's file from its snapshot, as the copy is
-                useChosenAssets = AssetPorting.CopyIn(files.SelectMany(f => f.PendingCreations.Concat(f.Actors.Where(a => a.IsDirty)))
-                    .Where(a => skipped?.Contains(a) != true).Distinct().ToList(), sources, snapshots.OfFile);
+                useChosenAssets = AssetPorting.CopyIn(committing, sources, snapshots.OfFile);
                 // What a bake reads that this commit adds, changes or deletes, judged before anything is written (an edit can make one stop contributing)
                 var unbaked = files.SelectMany(f => f.PendingCreations.Concat(f.Actors.Where(a => a.HasChangesBesidesUpgrade)))
                     .Where(a => skipped?.Contains(a) != true).Distinct().Where(a => BakeInputs.MayRead(a, a.Editor?.PackageCache)).ToList();
@@ -147,9 +153,13 @@ public static class ActorCommit
                 if (created.Contains(actor) || actor.IsTransformDirty || actor is ILightProxy or DecalActorProxy or SplineActorProxy or TerrainProxy { IsHeightFieldDirty: true }) actor.CommitChanges();
             }
             foreach (var mesh in actor.LightingMeshes) mesh.ExistingLighting?.Write();
-            // A chosen mesh is written to its saved component (a draft's new component is made with it: MeshActorProxy.CommitChanges)
-            foreach (var mesh in actor.Components.OfType<StaticMeshComponentProxy>().Where(m => m.ChosenMesh is not null && !m.IsStandIn))
-                StaticMeshChange.Write(mesh.Export, mesh.ChosenMesh);
+            // A chosen mesh is written to its saved component (a draft's new component is made with it, and its materials: MeshActorProxy.CommitChanges)
+            // So are chosen materials, after it (the mesh's commit rewrites its properties)
+            foreach (var mesh in actor.Components.OfType<StaticMeshComponentProxy>().Where(m => !m.IsStandIn))
+            {
+                if (mesh.ChosenMesh is not null) StaticMeshChange.Write(mesh.Export, mesh.ChosenMesh);
+                if (mesh.ChosenMaterials is not null) StaticMeshChange.WriteMaterials(mesh.Export, mesh.ChosenMaterials);
+            }
         }
         foreach (var collectionActor in collectionActorMap.Values)
         {

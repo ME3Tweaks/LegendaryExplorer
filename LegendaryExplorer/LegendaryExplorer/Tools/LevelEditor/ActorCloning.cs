@@ -488,12 +488,16 @@ public static class ActorCloning
             bool lit = counterpart?.ExistingLighting is { HasChanges: true };
             if (lit) mesh.Lighting.Seed(counterpart.ExistingLighting);
             // Drawn with them, as a mesh is redrawn when its lighting is edited (LevelEditor.ApplyActorLightingEdits): its preview reads them into the
-            // properties it's drawn with. Once, with its chosen mesh (as its new package refers to it) if it has one
-            if (counterpart is StaticMeshComponentProxy { ChosenMesh: { } chosen })
+            // properties it's drawn with. Once, with its chosen mesh and materials (as its new package refers to them) if it has them
+            if (counterpart is StaticMeshComponentProxy pending && (pending.HasChosenMesh || pending.HasChosenMaterials))
             {
-                if (mesh is not StaticMeshComponentProxy { CanChooseMesh: true } copied)
+                var copied = mesh as StaticMeshComponentProxy;
+                if (pending.ChosenMesh is { } chosen && copied is not { CanChooseMesh: true })
                     throw new InvalidOperationException($"{source.ActorName} can't be copied with its chosen mesh, {chosen.Name}: commit it first.");
-                copied.ShowMesh(chosen.In(destination.Package, copy.Editor.PackageCache));
+                if (pending.HasChosenMaterials && copied is not { CanChooseMaterials: true })
+                    throw new InvalidOperationException($"{source.ActorName} can't be copied with its chosen materials: commit them first.");
+                var cache = copy.Editor.PackageCache;
+                copied.ShowChosen(pending.ChosenMesh?.In(destination.Package, cache), pending.ChosenMaterials?.Select(m => m?.In(destination.Package, cache)).ToList());
             }
             else if (lit)
             {
@@ -892,7 +896,7 @@ internal sealed class ActorCloneProxy : ActorProxy
         drawnFrom.FirstOrDefault(p => p.Value == component).Key as MeshComponentProxy;
 
     /// <summary>
-    /// Writes its meshes' lighting edits and chosen meshes onto its copies of the components they're drawn from. A volume whose scale isn't the one it was copied (or last
+    /// Writes its meshes' lighting edits, chosen meshes and chosen materials onto its copies of the components they're drawn from. A volume whose scale isn't the one it was copied (or last
     /// committed) with has its collision cooked again, if it has cooked collision, as a rescaled volume's commit does (<see cref="BrushProxy.CommitChanges"/>)
     /// </summary>
     private protected override void CommitCloneEdits(IReadOnlyDictionary<ExportEntry, ExportEntry> copies)
@@ -904,6 +908,7 @@ internal sealed class ActorCloneProxy : ActorProxy
         {
             if (proxy is MeshComponentProxy { ExistingLighting: { HasChanges: true } lighting }) lighting.Write(CopyOf(component), copiedIndexes);
             if (proxy is StaticMeshComponentProxy { ChosenMesh: { } mesh }) StaticMeshChange.Write(CopyOf(component), mesh);
+            if (proxy is StaticMeshComponentProxy { ChosenMaterials: { } materials }) StaticMeshChange.WriteMaterials(CopyOf(component), materials);
         }
         if (!IsScaleDirty) return;
         foreach (var (proxy, component) in drawnFrom)

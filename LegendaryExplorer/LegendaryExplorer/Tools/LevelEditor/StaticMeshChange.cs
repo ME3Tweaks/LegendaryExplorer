@@ -53,6 +53,31 @@ internal static class StaticMeshChange
         return false;
     }
 
+    /// <summary>
+    /// For a commit: writes <paramref name="materials"/> (each an entry of <paramref name="component"/>'s package, or null for a slot drawn with the mesh's
+    /// own material) as its Materials, keeping its baked lighting: materials don't change the mesh's light-map coordinates. An empty list is written too,
+    /// so none of its archetypes' overrides are inherited
+    /// </summary>
+    internal static void WriteMaterials(ExportEntry component, IReadOnlyList<AssetReference> materials) =>
+        component.WriteProperty(MaterialsProperty(materials, component.FileRef));
+
+    /// <summary><paramref name="materials"/> as a Materials property of <paramref name="package"/>'s</summary>
+    internal static ArrayProperty<ObjectProperty> MaterialsProperty(IReadOnlyList<AssetReference> materials, IMEPackage package) =>
+        new(materials.Select(m => new ObjectProperty(m?.EntryIn(package).UIndex ?? 0)), "Materials");
+
+    /// <summary>Material overrides chosen for a static mesh component, or its own drawn again</summary>
+    internal sealed class ChooseMaterialsAction(StaticMeshComponentProxy mesh, IReadOnlyList<AssetReference> before, IReadOnlyList<AssetReference> after,
+        string description) : IUndoAction
+    {
+        public string Description => description;
+        public bool IsOrphaned => mesh.Actor is null || mesh.Actor.IsDisposed || !mesh.Actor.Components.Contains(mesh);
+        public IReadOnlyCollection<ActorId> Subjects => mesh.Actor is { } actor ? [actor.Id] : null;
+        //(the overrides it goes back to with neither are its own, which a preview keeps: ActorProxy.AssetsInUse)
+        public IEnumerable<AssetReference> Assets => (before ?? []).Concat(after ?? []).Where(m => m is not null);
+        public void Undo() => mesh.ShowMaterials(before);
+        public void Redo() => mesh.ShowMaterials(after);
+    }
+
     /// <summary>A mesh chosen for a static mesh component, or its own drawn again</summary>
     internal sealed class ChooseAction(StaticMeshComponentProxy mesh, AssetReference before, AssetReference after) : IUndoAction
     {

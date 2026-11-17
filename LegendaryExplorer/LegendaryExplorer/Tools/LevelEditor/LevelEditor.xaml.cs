@@ -2772,7 +2772,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void OnSplineGizmoDragComplete(SplineActorProxy actor, SplineLoftSettings before, SplineLoftSettings after) =>
         UndoHistory.Push(new SplineSettingsAction(actor, before, after, "tangent"));
 
-    /// <summary>The selected actor's static mesh components whose mesh can be chosen (<see cref="StaticMeshComponentProxy.CanChooseMesh"/>)</summary>
+    /// <summary>
+    /// The selected actor's static mesh components whose materials can be chosen (<see cref="StaticMeshComponentProxy.CanChooseMaterials"/>), as can
+    /// every one's whose mesh can be (<see cref="StaticMeshComponentProxy.CanChooseMesh"/>)
+    /// </summary>
     public ObservableCollectionExtended<StaticMeshComponentProxy> SelectedMeshChoices { get; } = [];
 
     private bool isMeshChoiceSelected;
@@ -2784,7 +2787,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void RefreshMeshChoices()
     {
-        List<StaticMeshComponentProxy> meshes = selectedActor?.Components.OfType<StaticMeshComponentProxy>().Where(m => m.CanChooseMesh).ToList() ?? [];
+        List<StaticMeshComponentProxy> meshes = selectedActor?.Components.OfType<StaticMeshComponentProxy>().Where(m => m.CanChooseMaterials).ToList() ?? [];
         SelectedMeshChoices.ReplaceAll(meshes);
         IsMeshChoiceSelected = meshes.Count > 0;
     }
@@ -2806,25 +2809,68 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (sender is Button { DataContext: StaticMeshComponentProxy mesh } && !MeshChangeRefused(mesh)) ChangeMesh(mesh.RevertMesh);
     }
 
-    //says why the mesh can't be changed now, if it can't
-    private bool MeshChangeRefused(StaticMeshComponentProxy mesh)
+    private bool MeshChangeRefused(StaticMeshComponentProxy mesh) => MeshEditRefused(mesh.MeshChangeRefusal, "StaticMesh");
+
+    //says why a mesh component's edit can't be made now, if it can't (refusal: the component's own reason), titled caption
+    private bool MeshEditRefused(string refusal, string caption)
     {
-        string refusal = !CanMutateScene ? "Wait for the current operation (such as a preview refresh) to finish, then try again." : mesh.MeshChangeRefusal;
-        if (refusal is not null) MessageBox.Show(this, refusal, "StaticMesh");
+        if (!CanMutateScene) refusal = "Wait for the current operation (such as a preview refresh) to finish, then try again.";
+        if (refusal is not null) MessageBox.Show(this, refusal, caption);
         return refusal is not null;
     }
 
-    private void ChangeMesh(Func<IUndoAction> change)
+    private void ChangeMesh(Func<IUndoAction> change) => ApplyMeshEdit(change, "StaticMesh");
+
+    //an edit of a mesh component, as one undo step; why it can't be made is shown, titled caption
+    private void ApplyMeshEdit(Func<IUndoAction> change, string caption)
     {
         IUndoAction step;
         try { step = change(); }
         catch (Exception error) when (error is not OutOfMemoryException)
         {
-            MessageBox.Show(this, error.Message, "StaticMesh");
+            MessageBox.Show(this, error.Message, caption);
             return;
         }
         if (step is not null) UndoHistory.Push(step);
     }
+
+    //Choose: another material for a slot of the component's mesh, drawn until a commit writes it, as one undo step. Only one the game draws there
+    private void ChooseMaterial_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: MeshMaterialSlot slot } || MaterialChangeRefused(slot.Mesh)) return;
+        var mesh = slot.Mesh;
+        var request = new AssetPickRequest($"Material for slot {slot.Index} of {mesh.Actor.ActorName}", mesh.Actor.Package, AssetKind.Material)
+        {
+            Problem = (material, cache) => MaterialUsage.StaticMeshProblem(material, cache, mesh.HasStaticLighting)
+        };
+        // Asked again once it's picked: the picker is modal, so a preview refresh may have begun meanwhile
+        UsePick(request, chosen =>
+        {
+            if (!MaterialChangeRefused(mesh)) ChangeMaterials(() => mesh.ChooseMaterial(slot.Index, chosen));
+        });
+    }
+
+    //Revert to default: the slot is drawn with the mesh's own material again
+    private void ClearMaterial_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { DataContext: MeshMaterialSlot slot } && !MaterialChangeRefused(slot.Mesh)) ChangeMaterials(() => slot.Mesh.ClearMaterial(slot.Index));
+    }
+
+    //Delete: an override past the mesh's slots, which the game never reads
+    private void DeleteExtraMaterial_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { DataContext: MeshMaterialSlot slot } && !MaterialChangeRefused(slot.Mesh)) ChangeMaterials(() => slot.Mesh.DeleteExtraMaterial(slot.Index));
+    }
+
+    //Revert materials: the component's own overrides again
+    private void RevertMaterials_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { DataContext: StaticMeshComponentProxy mesh } && !MaterialChangeRefused(mesh)) ChangeMaterials(mesh.RevertMaterials);
+    }
+
+    private bool MaterialChangeRefused(StaticMeshComponentProxy mesh) => MeshEditRefused(mesh.MaterialChangeRefusal, "Materials");
+
+    private void ChangeMaterials(Func<IUndoAction> change) => ApplyMeshEdit(change, "Materials");
 
     //(by an edit or an undo step) the selected actor may draw another mesh, which other lights reach
     void IActorEditorContext.OnMeshChosen(StaticMeshComponentProxy mesh) => LightDiagnosticsStale = true;

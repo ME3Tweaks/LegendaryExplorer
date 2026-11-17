@@ -230,6 +230,8 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
             {
                 OnPropertyChanged(nameof(CanChangeReadOnly));
                 Owner?.UpdatePlacementOptions();
+                //(a read-only file's meshes and materials can't be chosen)
+                foreach (var mesh in Actors.SelectMany(a => a.Components).OfType<StaticMeshComponentProxy>()) mesh.NotifyCanChange();
             }
         }
     }

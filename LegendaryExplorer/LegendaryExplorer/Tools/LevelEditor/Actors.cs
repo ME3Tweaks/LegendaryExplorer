@@ -104,6 +104,8 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
             pendingDeletion = value;
             OnPendingDeletionChanged();
             NotifyPendingChange();
+            //(a mesh or materials can't be chosen for an actor being deleted)
+            foreach (var mesh in Components.OfType<StaticMeshComponentProxy>()) mesh.NotifyCanChange();
         }
     }
     private protected virtual void OnPendingDeletionChanged() { }
@@ -281,7 +283,11 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public virtual void MarkClean()
     {
-        foreach (var mesh in Components.OfType<StaticMeshComponentProxy>()) mesh.AcceptChosenMesh();
+        foreach (var mesh in Components.OfType<StaticMeshComponentProxy>())
+        {
+            mesh.AcceptChosenMesh();
+            mesh.AcceptChosenMaterials();
+        }
         upgradeRequested = false;
         neededBy = null;
         propertiesBeforeCommit = null;
@@ -406,9 +412,13 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     /// <summary>
     /// The assets a commit of its pending values would write references to, which <see cref="AssetPorting"/> copies in first if they're other files': by
-    /// default, its meshes' chosen ones (<see cref="StaticMeshComponentProxy.ChosenMesh"/>)
+    /// default, its meshes' chosen ones (<see cref="StaticMeshComponentProxy.ChosenMesh"/>) and chosen materials (<see cref="StaticMeshComponentProxy.ChosenMaterials"/>)
     /// </summary>
-    internal virtual IEnumerable<AssetReference> AssetsToCopy => ChosenMeshes.Select(m => m.ChosenMesh);
+    internal virtual IEnumerable<AssetReference> AssetsToCopy => ChosenMeshes.Select(m => m.ChosenMesh).Concat(ChosenMaterialAssets);
+
+    //the materials its meshes' chosen overrides are, which a commit writes
+    private protected IEnumerable<AssetReference> ChosenMaterialAssets =>
+        Components.OfType<StaticMeshComponentProxy>().SelectMany(m => m.ChosenMaterials ?? []).Where(m => m is not null);
 
     /// <summary>
     /// The assets it refers to, whose packages (<see cref="AssetPackage"/>) are kept while it's in a level: those a commit copies in (<see cref="AssetsToCopy"/>),
@@ -427,14 +437,20 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     internal virtual Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf)
     {
         var chosen = ChosenMeshes.Select(m => (Mesh: m, m.ChosenMesh)).ToList();
+        var materials = Components.OfType<StaticMeshComponentProxy>().Where(m => m.ChosenMaterials is not null).Select(m => (Mesh: m, m.ChosenMaterials)).ToList();
         foreach (var (mesh, asset) in chosen) mesh.UseCopiedMesh(copyOf(asset));
+        foreach (var (mesh, list) in materials) mesh.UseCopiedMaterials([.. list.Select(m => m is null ? null : copyOf(m))]);
         return () =>
         {
             foreach (var (mesh, asset) in chosen) mesh.UseCopiedMesh(asset);
+            foreach (var (mesh, list) in materials) mesh.UseCopiedMaterials(list);
         };
     }
 
-    /// <summary>One of its meshes was given another mesh to draw, or its own again (<see cref="StaticMeshComponentProxy.ShowMesh"/>)</summary>
+    /// <summary>
+    /// One of its meshes was given another mesh or other materials to draw, or its own again (<see cref="StaticMeshComponentProxy.ShowMesh"/>,
+    /// <see cref="StaticMeshComponentProxy.ShowMaterials"/>)
+    /// </summary>
     internal void OnMeshChosen()
     {
         if (!IsDisposed) LeaveSceneIfOutOfIt();
@@ -471,7 +487,8 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     public bool IsTransformDirty => !SnapshotTransform().Equals(_cleanSnapshot);
 
     protected virtual bool HasUncommittedChanges() => IsDraft || IsTransformDirty
-        || Components.OfType<MeshComponentProxy>().Any(mesh => mesh.ExistingLighting?.HasChanges == true) || ChosenMeshes.Any();
+        || Components.OfType<MeshComponentProxy>().Any(mesh => mesh.ExistingLighting?.HasChanges == true) || ChosenMeshes.Any()
+        || Components.OfType<StaticMeshComponentProxy>().Any(m => m.HasChosenMaterials);
 
     /// <summary>Whether its uncommitted changes are more than a pending upgrade, which moves a collection member under an actor of its own unchanged</summary>
     internal virtual bool HasChangesBesidesUpgrade => HasUncommittedChanges();
@@ -1272,15 +1289,20 @@ public abstract class MeshActorProxy : ActorProxy
     //a draft's: the mesh its commit makes its component with (one chosen since it was placed, or the one it was placed with)
     private AssetReference CommittedMesh => StaticMeshComponent.ChosenMesh ?? mesh;
 
-    internal override IEnumerable<AssetReference> AssetsToCopy => IsDraft && componentTemplate is not null ? [CommittedMesh] : base.AssetsToCopy;
+    internal override IEnumerable<AssetReference> AssetsToCopy => IsDraft && componentTemplate is not null ? [CommittedMesh, .. ChosenMaterialAssets] : base.AssetsToCopy;
 
     //the preview, already drawing the asset, is left as it is
     internal override Action UseCopiedAssets(Func<AssetReference, AssetReference> copyOf)
     {
-        if (!IsDraft || componentTemplate is null || StaticMeshComponent.ChosenMesh is not null) return base.UseCopiedAssets(copyOf);
+        var restore = base.UseCopiedAssets(copyOf);
+        if (!IsDraft || componentTemplate is null || StaticMeshComponent.ChosenMesh is not null) return restore;
         var placed = mesh;
         mesh = copyOf(mesh);
-        return () => mesh = placed;
+        return () =>
+        {
+            mesh = placed;
+            restore();
+        };
     }
 
     //a new actor's preview draws what its commit wrote, the level's copy of another file's mesh, until its view is made again from its export
@@ -1306,7 +1328,10 @@ public abstract class MeshActorProxy : ActorProxy
         // binary (no light-maps until a bake). The actor refers to it as its StaticMeshComponent and CollisionComponent; neither has a Components array
         if (Materialized && componentTemplate is not null)
         {
-            var component = NewComponent(componentTemplate, [new ObjectProperty(CommittedMesh.EntryIn(Pcc), "StaticMesh")],
+            // Chosen materials are its own Materials (an empty list too: its template's overrides are what it differs from)
+            PropertyCollection values = [new ObjectProperty(CommittedMesh.EntryIn(Pcc), "StaticMesh")];
+            if (StaticMeshComponent.ChosenMaterials is { } materials) values.Add(StaticMeshChange.MaterialsProperty(materials, Pcc));
+            var component = NewComponent(componentTemplate, values,
                 LegendaryExplorerCore.Unreal.BinaryConverters.StaticMeshComponent.Create());
             StaticMeshComponent.ExistingLighting?.Write(component);
             Properties.AddOrReplaceProp(new ObjectProperty(component, nameof(StaticMeshComponent)));

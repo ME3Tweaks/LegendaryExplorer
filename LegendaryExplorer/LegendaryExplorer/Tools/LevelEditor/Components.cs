@@ -439,9 +439,18 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
         return EffectiveLightingProperties.Resolve(meshReference, cache);
     }
 
+    /// <summary>Overrides chosen in place of its own, which it's drawn with until a commit writes them (<see cref="StaticMeshComponentProxy.ChosenMaterials"/>)</summary>
+    private protected virtual IReadOnlyList<AssetReference> ChosenOverrides => null;
+
     protected void ReadMaterialOverrides()
     {
         MaterialOverrides.Clear();
+        if (ChosenOverrides is { } chosen)
+        {
+            //(one another file no longer has is drawn as none is, as a preview's)
+            MaterialOverrides.AddRange(chosen.Select(m => m?.Find(RenderContext.PackageCache)));
+            return;
+        }
         if (PreviewProperties is not null)
         {
             //a material another file no longer has is drawn as none is: with the mesh's own
@@ -598,14 +607,41 @@ public class StaticMeshComponentProxy : MeshComponentProxy
     /// <summary>Whether its mesh can be chosen now (<see cref="MeshChangeRefusal"/>), which Choose mesh is enabled by</summary>
     public bool CanChangeMesh => MeshChangeRefusal is null;
 
-    private void NotifyChosenMesh()
+    private void NotifyChosenMesh() => NotifyChosen(mesh: true, materials: false);
+
+    private void NotifyChosenMaterials() => NotifyChosen(mesh: false, materials: true);
+
+    private void NotifyChosen(bool mesh, bool materials)
     {
-        ChosenMeshNote = NoteFor(ChosenMesh);
-        OnPropertyChanged(nameof(ChosenMesh));
-        OnPropertyChanged(nameof(HasChosenMesh));
-        OnPropertyChanged(nameof(ChosenMeshNote));
-        OnPropertyChanged(nameof(MeshName));
-        ExistingLighting?.NotifyMeshName();
+        if (mesh)
+        {
+            ChosenMeshNote = NoteFor(ChosenMesh);
+            OnPropertyChanged(nameof(ChosenMesh));
+            OnPropertyChanged(nameof(HasChosenMesh));
+            OnPropertyChanged(nameof(ChosenMeshNote));
+            OnPropertyChanged(nameof(MeshName));
+            ExistingLighting?.NotifyMeshName();
+        }
+        if (materials)
+        {
+            OnPropertyChanged(nameof(ChosenMaterials));
+            OnPropertyChanged(nameof(HasChosenMaterials));
+        }
+        //its slots are the mesh's, and whether it keeps baked lighting decides what can be drawn in them
+        NotifyMaterialSlots();
+    }
+
+    /// <summary>
+    /// What decides whether its mesh and materials can be chosen now changed: its actor's deletion (<see cref="ActorProxy.PendingDeletion"/>), or whether its
+    /// file is read-only (<see cref="OpenLevelFile.IsReadOnly"/>)
+    /// </summary>
+    internal void NotifyCanChange()
+    {
+        OnPropertyChanged(nameof(MeshChangeRefusal));
+        OnPropertyChanged(nameof(CanChangeMesh));
+        OnPropertyChanged(nameof(MaterialChangeRefusal));
+        OnPropertyChanged(nameof(CanChangeMaterials));
+        NotifyMaterialSlots();
     }
 
     /// <summary>The name of the mesh it's shown with until a commit: the chosen one, or its own (as the bake reads it, for a saved component)</summary>
@@ -682,26 +718,42 @@ public class StaticMeshComponentProxy : MeshComponentProxy
     /// Draws <paramref name="mesh"/> in place of its own (none, or its own, draws its own), and its actor is dirty for it, or clean once it has its own. If it
     /// can't be drawn, it's drawn as it was, with what was chosen before, and why is thrown
     /// </summary>
-    internal void ShowMesh(AssetReference mesh)
+    internal void ShowMesh(AssetReference mesh) => Show(mesh, ChosenMaterials);
+
+    /// <summary>
+    /// Draws <paramref name="materials"/> in place of its own overrides (null, or its own, draws its own), and its actor is dirty for them, or clean once it
+    /// has its own. If they can't be drawn, it's drawn as it was, and why is thrown
+    /// </summary>
+    internal void ShowMaterials(IReadOnlyList<AssetReference> materials) => Show(ChosenMesh, materials);
+
+    /// <summary>For a copy carrying its source's pending changes: draws both, once (see <see cref="ShowMesh"/>, <see cref="ShowMaterials"/>)</summary>
+    internal void ShowChosen(AssetReference mesh, IReadOnlyList<AssetReference> materials) => Show(mesh, materials);
+
+    private void Show(AssetReference mesh, IReadOnlyList<AssetReference> materials)
     {
-        var shown = ChosenMesh;
+        var (shownMesh, shownMaterials) = (ChosenMesh, ChosenMaterials);
         ChosenMesh = Shown(mesh);
+        ChosenMaterials = ShownMaterials(materials);
         try { Redraw(); }
         catch (Exception failure) when (failure is not OutOfMemoryException)
         {
             // (an undo step's failure is shown and the step stays where it was, as an edit's is: both are told of it as an InvalidOperationException)
-            string couldnt = $"{mesh?.Description ?? "Its own mesh"} couldn't be drawn: {failure.Message}";
-            ChosenMesh = shown;
+            string couldnt = $"{Drawing(ChosenMesh, ChosenMaterials, "Its")} couldn't be drawn: {failure.Message}";
+            (ChosenMesh, ChosenMaterials) = (shownMesh, shownMaterials);
             try { Redraw(); }
             catch (Exception restoring) when (restoring is not OutOfMemoryException)
             {
-                throw new InvalidOperationException($"{couldnt} Nor could {shown?.Description ?? "its own mesh"}, which it had: {restoring.Message}",
+                throw new InvalidOperationException($"{couldnt} Nor could {Drawing(shownMesh, shownMaterials, "its")}, which it had: {restoring.Message}",
                     new AggregateException(failure, restoring));
             }
             throw new InvalidOperationException(couldnt, failure);
         }
-        finally { NotifyChosenMesh(); }
+        finally { NotifyChosen(mesh: true, materials: true); }
     }
+
+    //what it's drawn with, for a message: its mesh (chosen, or its own) and its overrides if they're chosen
+    private static string Drawing(AssetReference mesh, IReadOnlyList<AssetReference> materials, string its) =>
+        (mesh?.Description ?? $"{its} own mesh") + (materials is null ? "" : " with the chosen materials");
 
     //what choosing mesh makes chosen: nothing, for its own
     private AssetReference Shown(AssetReference mesh) => mesh is null || mesh == OwnMesh ? null : mesh;
@@ -710,6 +762,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
     private void Redraw()
     {
         using var load = RenderContext.BeginLoad();
+        long mark = RenderContext.MarkShaderLoads();
         try { RefreshPreviewJoiningScene(Export.FileRef, new HashSet<int>(), force: true); }
         finally
         {
@@ -717,6 +770,11 @@ public class StaticMeshComponentProxy : MeshComponentProxy
             Actor?.OnMeshChosen();
             Actor?.Editor?.OnMeshChosen(this);
         }
+        // Its materials' game shaders and its light shaders now, before another frame is drawn, rather than in the window's next preparation batch, until
+        // which it would be drawn with LEX's shader (they're mostly in the caches: the materials it was drawn with are its level's). Only for how it's drawn:
+        // what fails is drawn with LEX's shader, as a batch's failures are
+        try { RenderContext.LoadGameShadersNow(mark); }
+        catch (Exception error) when (error is not OutOfMemoryException) { System.Diagnostics.Debug.WriteLine($"Could not load {MeshLabel}'s game shaders: {error}"); }
     }
 
     /// <summary>
@@ -746,14 +804,282 @@ public class StaticMeshComponentProxy : MeshComponentProxy
         NotifyChosenMesh();
     }
 
+    /// <summary>
+    /// Material overrides chosen in place of its own (by MaterialIndex; null for a slot drawn with the mesh's own), each an entry of its package or
+    /// another file's material, which a commit writes as its Materials (<see cref="StaticMeshChange.WriteMaterials"/>). Null while it has its own. Its baked
+    /// lighting is kept: materials don't change the mesh's light-map coordinates
+    /// </summary>
+    public IReadOnlyList<AssetReference> ChosenMaterials { get; private set; }
+
+    private protected override IReadOnlyList<AssetReference> ChosenOverrides => ChosenMaterials;
+
+    /// <summary>Whether materials are chosen, which a commit writes</summary>
+    public bool HasChosenMaterials => ChosenMaterials is not null;
+
+    /// <summary>
+    /// The overrides it has until a commit writes others: its saved component's, as the bake reads them (inherited too, from archetypes in other packages
+    /// as well), as its package refers to them; a draft's or a copy's stand-in's (its <see cref="PreviewAssets"/>)
+    /// </summary>
+    internal IReadOnlyList<AssetReference> OwnMaterials
+    {
+        get
+        {
+            if (PreviewProperties is not null) return PreviewAssets?.Materials ?? [];
+            var cache = RenderContext.PackageCache;
+            var (materials, package) = EffectiveLightingProperties.Inherited<ArrayProperty<ObjectProperty>>(Export, "Materials", cache);
+            return materials?.Select(m => m.Value != 0 ? AssetReference.Of(m.ResolveToEntry(package), Export.FileRef, cache) : null).ToList() ?? [];
+        }
+    }
+
+    /// <summary>The overrides it's drawn with until a commit: the chosen ones, or its own</summary>
+    internal IReadOnlyList<AssetReference> ShownMaterialList => ChosenMaterials ?? OwnMaterials;
+
+    //what choosing materials makes chosen: nothing, for its own (trailing slots with none are as good as none)
+    private IReadOnlyList<AssetReference> ShownMaterials(IReadOnlyList<AssetReference> materials)
+    {
+        if (materials is null) return null;
+        var trimmed = Trimmed(materials);
+        return trimmed.SequenceEqual(Trimmed(OwnMaterials)) ? null : trimmed;
+    }
+
+    private static List<AssetReference> Trimmed(IEnumerable<AssetReference> materials)
+    {
+        var list = materials.ToList();
+        while (list.Count > 0 && list[^1] is null) list.RemoveAt(list.Count - 1);
+        return list;
+    }
+
+    /// <summary>Whether two lists of overrides are the same (null for none chosen)</summary>
+    internal static bool SameMaterials(IReadOnlyList<AssetReference> a, IReadOnlyList<AssetReference> b) =>
+        a is null || b is null ? a is null && b is null : a.SequenceEqual(b);
+
+    //the mesh's own material for each of its slots (by MaterialIndex), as drawn: null where it has none. Null if its mesh can't be read
+    private IEntry[] meshSlotMaterials;
+
+    /// <summary>
+    /// Its material slots, as its drawn mesh has them (MaterialIndex 0 up to its sections' highest, in any LOD), each with its override or the mesh's own
+    /// material; then any override past them up to the last that isn't none, which the game never reads (UStaticMeshComponent::GetMaterial). Every override
+    /// if the mesh can't be read
+    /// </summary>
+    public IReadOnlyList<MeshMaterialSlot> MaterialSlots => materialSlots ??= ReadMaterialSlots();
+
+    //(made again when what they show changes: NotifyMaterialSlots)
+    private IReadOnlyList<MeshMaterialSlot> materialSlots;
+
+    private void NotifyMaterialSlots()
+    {
+        materialSlots = null;
+        OnPropertyChanged(nameof(MaterialSlots));
+    }
+
+    private List<MeshMaterialSlot> ReadMaterialSlots()
+    {
+        var overrides = ShownMaterialList;
+        var cache = RenderContext.PackageCache;
+        bool staticLighting = HasStaticLighting;
+        bool canChange = CanChangeMaterials;
+        int slots = meshSlotMaterials?.Length ?? overrides.Count;
+        // Past its slots, up to the last override: trailing ones with none are as good as none (deleting one would be no change)
+        int listed = overrides.Count;
+        while (listed > slots && overrides[listed - 1] is null) listed--;
+        var rows = new List<MeshMaterialSlot>();
+        for (int i = 0; i < Math.Max(slots, listed); i++)
+        {
+            var material = i < overrides.Count ? overrides[i] : null;
+            bool extra = i >= slots;
+            if (material is not null)
+            {
+                string problem = extra ? null : material.Find(cache) is { } found ? MaterialUsage.StaticMeshProblem(found, cache, staticLighting)
+                    : $"{material.Description} can't be found.";
+                rows.Add(new MeshMaterialSlot(this, i, material.Name, material.Description, IsOverride: true, extra, canChange, problem));
+            }
+            else if (!extra)
+            {
+                var own = meshSlotMaterials?[i];
+                rows.Add(new MeshMaterialSlot(this, i, own?.ObjectName.Instanced ?? "None", own?.InstancedFullPath, IsOverride: false, IsExtra: false, canChange, null));
+            }
+            else rows.Add(new MeshMaterialSlot(this, i, "None", null, IsOverride: true, IsExtra: true, canChange, null));
+        }
+        return rows;
+    }
+
+    /// <summary>
+    /// Whether it's drawn with static lighting once committed and its level baked, so the game draws a slot whose material isn't for static lighting with
+    /// its default material (<see cref="MaterialUsage.StaticMeshProblem"/>): it takes part in a bake, as the bake decides
+    /// (<see cref="LightAssignment.TakesPartInStaticLighting"/>), or it keeps baked lighting it has. A chosen mesh's commit drops its baked lighting
+    /// </summary>
+    public bool HasStaticLighting
+    {
+        get
+        {
+            var component = BakeInputs.BakedComponent(this);
+            var binary = ChosenMesh is null && component is not null ? component.GetBinaryData<StaticMeshComponent>() : StaticMeshComponent.Create();
+            return LightAssignment.TakesPartInStaticLighting(component ?? Export, Properties, binary, component is null ? Actor?.ClassName : null)
+                || ChosenMesh is null && BakedLightingOf() is { } baked && StaticMeshChange.HasBakedLighting(baked);
+        }
+    }
+
+    /// <summary>
+    /// Why a commit can't write its chosen materials, or null: one chosen for a slot that the game wouldn't draw there, as what decides that can change
+    /// after it's chosen (another mesh chosen or reverted, its lighting edited). An override it had already isn't its commit's to refuse
+    /// </summary>
+    internal string ChosenMaterialProblem
+    {
+        get
+        {
+            if (ChosenMaterials is not { } chosen) return null;
+            var own = OwnMaterials;
+            var cache = RenderContext.PackageCache;
+            bool staticLighting = HasStaticLighting;
+            // (one that can't be found is AssetPorting's to refuse, as it copies them in)
+            for (int i = 0; i < Math.Min(chosen.Count, meshSlotMaterials?.Length ?? chosen.Count); i++)
+            {
+                if (chosen[i] is not { } material || i < own.Count && Equals(own[i], material)) continue;
+                if (material.Find(cache) is { } found && MaterialUsage.StaticMeshProblem(found, cache, staticLighting) is { } problem) return $"Slot {i}: {problem}";
+            }
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Whether its material overrides can be chosen: it's the StaticMeshComponent of a static mesh actor or any DynamicSMActor (a KActor's too: materials
+    /// aren't its rigid body), a static mesh collection's member, or a copy's stand-in drawn from one of those
+    /// </summary>
+    public bool CanChooseMaterials => canChooseMaterials ??= this is not SplineMeshComponentProxy && Actor switch
+    {
+        MeshActorProxy mesh => mesh.StaticMeshComponent == this,
+        StaticMeshComponentActorProxy => true,
+        ActorCloneProxy clone => clone.DrawnFrom(this) is { } component && clone.CloneSource is { } saved && (component == saved
+            || ActorClassification.Get(saved).Kind is ActorKind.StaticMesh or ActorKind.DynamicMesh
+            && saved.GetProperty<ObjectProperty>(nameof(MeshActorProxy.StaticMeshComponent))?.ResolveToEntry(saved.FileRef) == component),
+        _ => false
+    };
+
+    private bool? canChooseMaterials;
+
+    /// <summary>Why its materials can't be chosen now, or null</summary>
+    public string MaterialChangeRefusal =>
+        !CanChooseMaterials ? "Only a static mesh actor's, a DynamicSMActor's or a static mesh collection member's materials can be chosen."
+        : Actor.IsDisposed ? "It isn't in the scene."
+        : Actor.IsReadOnly ? "Its file is read-only."
+        : Actor.PendingDeletion is not null ? "It's being deleted." : null;
+
+    /// <summary>Whether its materials can be chosen now (<see cref="MaterialChangeRefusal"/>)</summary>
+    public bool CanChangeMaterials => MaterialChangeRefusal is null;
+
+    /// <summary>
+    /// Draws <paramref name="material"/>, an entry of its package or another file's material, in slot <paramref name="slot"/> (a MaterialIndex its mesh has)
+    /// until a commit writes it. Throws why it can't, including why the game wouldn't draw it there (<see cref="MaterialUsage.StaticMeshProblem"/>)
+    /// </summary>
+    /// <returns>The undo step, or null if nothing changed</returns>
+    public IUndoAction ChooseMaterial(int slot, AssetReference material)
+    {
+        ArgumentNullException.ThrowIfNull(material);
+        RefuseSlotEdit(slot);
+        var cache = RenderContext.PackageCache;
+        if (material.Entry is { } entry && entry.FileRef != Export.FileRef)
+            throw new InvalidOperationException($"{material.Description} is another package's entry: choose a material of its package, or another file's.");
+        if (material.Find(cache) is not { } found || !found.IsA(AssetPicking.ClassOf(AssetKind.Material)))
+            throw new InvalidOperationException($"{material.Description} isn't a material that can be found.");
+        if (MaterialUsage.StaticMeshProblem(found, cache, HasStaticLighting) is { } problem) throw new InvalidOperationException(problem);
+        return ChangeMaterials(With(slot, material), $"Choose {material.Name} for slot {slot} of {MaterialOwnerName}");
+    }
+
+    /// <summary>Draws the mesh's own material in slot <paramref name="slot"/> again, with no override</summary>
+    /// <returns>The undo step, or null if it had none</returns>
+    public IUndoAction ClearMaterial(int slot)
+    {
+        RefuseSlotEdit(slot);
+        return ChangeMaterials(With(slot, null), $"Use the mesh's material in slot {slot} of {MaterialOwnerName}");
+    }
+
+    /// <summary>Removes the override at <paramref name="slot"/>, one past the mesh's slots, which the game never reads (those after it stay past them)</summary>
+    /// <returns>The undo step, or null if there's none there</returns>
+    public IUndoAction DeleteExtraMaterial(int slot)
+    {
+        if (MaterialChangeRefusal is { } refusal) throw new InvalidOperationException(refusal);
+        if (meshSlotMaterials is null) throw new InvalidOperationException($"{MeshName} can't be read, so which overrides are past its slots isn't known.");
+        if (slot < meshSlotMaterials.Length) throw new InvalidOperationException($"Slot {slot} is one of {MeshName}'s, so it can't be deleted.");
+        var list = ShownMaterialList.ToList();
+        if (slot >= list.Count) return null;
+        list.RemoveAt(slot);
+        return ChangeMaterials(list, $"Delete override {slot} of {MaterialOwnerName}");
+    }
+
+    /// <summary>Draws its own overrides again, discarding the chosen ones</summary>
+    /// <returns>The undo step, or null if none were chosen</returns>
+    public IUndoAction RevertMaterials()
+    {
+        if (ChosenMaterials is null) return null;
+        if (MaterialChangeRefusal is { } refusal) throw new InvalidOperationException(refusal);
+        return ChangeMaterials(null, $"Revert {MaterialOwnerName}'s materials");
+    }
+
+    private string MaterialOwnerName => Actor?.ActorName ?? ActorPropertyName;
+
+    //an override can be chosen or cleared only in one of the mesh's slots
+    private void RefuseSlotEdit(int slot)
+    {
+        if (MaterialChangeRefusal is { } refusal) throw new InvalidOperationException(refusal);
+        int slots = meshSlotMaterials?.Length ?? ShownMaterialList.Count;
+        if (slot < 0 || slot >= slots) throw new InvalidOperationException($"{MeshName} has no material slot {slot}.");
+    }
+
+    //the overrides with slot's set to material (none, for the mesh's own)
+    private List<AssetReference> With(int slot, AssetReference material)
+    {
+        var list = ShownMaterialList.ToList();
+        while (list.Count <= slot) list.Add(null);
+        list[slot] = material;
+        return list;
+    }
+
+    private IUndoAction ChangeMaterials(IReadOnlyList<AssetReference> materials, string description)
+    {
+        var before = ChosenMaterials;
+        if (SameMaterials(ShownMaterials(materials), before)) return null;
+        ShowMaterials(materials);
+        return new StaticMeshChange.ChooseMaterialsAction(this, before, ChosenMaterials, description);
+    }
+
+    /// <summary>For a commit: puts <paramref name="materials"/> (the chosen ones' copies, <see cref="AssetPorting"/>) in their place, without redrawing</summary>
+    internal void UseCopiedMaterials(IReadOnlyList<AssetReference> materials)
+    {
+        ChosenMaterials = materials;
+        materialSlots = null;
+    }
+
+    /// <summary>
+    /// Once a commit has written the chosen materials: they're its own. A preview's own are the ones written until its view is made again from its export
+    /// </summary>
+    internal void AcceptChosenMaterials()
+    {
+        if (ChosenMaterials is null) return;
+        if (PreviewProperties is not null) PreviewAssets = (PreviewAssets ?? new PreviewAssets(null, [])) with { Materials = ChosenMaterials };
+        ChosenMaterials = null;
+        NotifyChosenMaterials();
+    }
+
+    //the mesh's own material for each of its slots, by MaterialIndex: LOD 0's section with it, or another LOD's
+    private static IEntry[] SlotMaterials(StaticMesh stm, IMEPackage meshPackage)
+    {
+        var elements = stm.LODModels.SelectMany(lod => lod.Elements).Where(e => e.MaterialIndex >= 0).ToList();
+        if (elements.Count == 0) return [];
+        var slots = new IEntry[elements.Max(e => e.MaterialIndex) + 1];
+        foreach (var element in elements) slots[element.MaterialIndex] ??= meshPackage.GetEntry(element.Material);
+        return slots;
+    }
+
     private void LoadMesh()
     {
         var context = RenderContext;
+        meshSlotMaterials = null;
         Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
         StaticMeshExport = ResolveMesh("StaticMesh", Dependencies, ChosenMesh);
         if (StaticMeshExport is { } meshExport)
         {
             StaticMesh stm = context.GetStaticMesh(meshExport);
+            meshSlotMaterials = SlotMaterials(stm, meshExport.FileRef);
             Dependencies.TrackData(meshExport.FileRef.GetEntry(stm.BodySetup) as ExportEntry);
             SplineMeshDeformation deformation = ReadDeformation(stm);
             if (stm.LODModels.Length > LOD)
@@ -828,6 +1154,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
         ReadProperties();
         ReadMaterialOverrides();
         LoadMesh();
+        NotifyMaterialSlots();
         return true;
     }
 
