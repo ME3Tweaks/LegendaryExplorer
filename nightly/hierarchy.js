@@ -542,7 +542,9 @@ var hierarchy =
         [ "LegendaryExplorerCore.Packages.SFARPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_s_f_a_r_package_cache.html", null ],
         [ "LegendaryExplorerCore.Packages.TieredPackageCache", "class_legendary_explorer_core_1_1_packages_1_1_tiered_package_cache.html", null ]
       ] ],
+      [ "LegendaryExplorerCore.Packages.PackageEditScope", "class_legendary_explorer_core_1_1_packages_1_1_package_edit_scope.html", null ],
       [ "LegendaryExplorerCore.Shaders.LE3TextureMetadataReader", "class_legendary_explorer_core_1_1_shaders_1_1_l_e3_texture_metadata_reader.html", null ],
+      [ "LegendaryExplorerCore.Unreal.Classes.TextureDataReadCache", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture_data_read_cache.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Compiling.BytecodeWriter.SkipPlaceholder", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer_1_1_skip_placeholder.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.FileLib", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html", null ]
     ] ],

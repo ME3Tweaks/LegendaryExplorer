@@ -95,7 +95,9 @@ var class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file =
     [ "FileSize", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ab4b6e419bf8e5e82924c123fe9c95327", null ],
     [ "Users", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a918fce8df40787297ad0404396cb6d73", null ],
     [ "WeakUsers", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ae2c65fe708382180f738387e5d82b19c", null ],
+    [ "ChangeCount", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a13bed52b12bfd633a11d304a700427a8", null ],
     [ "RefCount", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#af01365428d585db924f5a53169e2a63d", null ],
+    [ "IsInEditScope", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a323982087cd250168eb3e154ebf97d7c", null ],
     [ "NoLongerOpenInTools", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aa7eaf191ac4d65ecd91e2badf47a78b6", null ],
     [ "NoLongerUsed", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ab19cea8b557fcc0f46446f7fc837279f", null ],
     [ "PropertyChanged", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a614c6824d4e358259b692afaeccc4c48", null ]

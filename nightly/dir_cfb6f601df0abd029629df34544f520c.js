@@ -7,5 +7,6 @@ var dir_cfb6f601df0abd029629df34544f520c =
     [ "MaterialInstanceConstant.cs", "_material_instance_constant_8cs.html", "_material_instance_constant_8cs" ],
     [ "MaterialInstanceConstantLevelEditor.cs", "_material_instance_constant_level_editor_8cs.html", "_material_instance_constant_level_editor_8cs" ],
     [ "SkeletalMesh.cs", "_classes_2_skeletal_mesh_8cs.html", null ],
-    [ "Texture2D.cs", "_texture2_d_8cs.html", "_texture2_d_8cs" ]
+    [ "Texture2D.cs", "_texture2_d_8cs.html", "_texture2_d_8cs" ],
+    [ "TextureDataReadCache.cs", "_texture_data_read_cache_8cs.html", "_texture_data_read_cache_8cs" ]
 ];

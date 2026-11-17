@@ -32,6 +32,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d =
     [ "ReplaceWithEncodedMips", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a9d31582b32d9f7921b77cb4652176aca", null ],
     [ "LightMapStreamingFlag", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#af02084584df09c4d1d8efd94d083fb7c", null ],
     [ "NeverStream", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#ac424085e58d867b1be9b4a6119755cd4", null ],
+    [ "SRGB", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a26cdbaaf9761b45f7ef0b4e37db831f2", null ],
     [ "Export", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#aaacf35979065df5d83303a69ae0df43f", null ],
     [ "TextureGuid", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#ae8384fb889959a9d59d00c9b731fe17c", null ],
     [ "Mips", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#ab3d0876ce41ce344f8096622aa0f7a96", null ],

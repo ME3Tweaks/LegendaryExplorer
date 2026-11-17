@@ -263,8 +263,11 @@ Properties</h2></td></tr>
 <tr class="memitem:ab4b6e419bf8e5e82924c123fe9c95327" id="r_ab4b6e419bf8e5e82924c123fe9c95327"><td class="memItemLeft">long&#160;</td><td class="memItemRight"><a class="el" href="#ab4b6e419bf8e5e82924c123fe9c95327">FileSize</a><code> [get]</code></td></tr>
 <tr class="memitem:a918fce8df40787297ad0404396cb6d73" id="r_a918fce8df40787297ad0404396cb6d73"><td class="memItemLeft">IReadOnlyCollection&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a918fce8df40787297ad0404396cb6d73">Users</a><code> [get]</code></td></tr>
 <tr class="memitem:ae2c65fe708382180f738387e5d82b19c" id="r_ae2c65fe708382180f738387e5d82b19c"><td class="memItemLeft">WeakCollection&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html">IWeakPackageUser</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ae2c65fe708382180f738387e5d82b19c">WeakUsers</a> = new()<code> [get]</code></td></tr>
+<tr class="memitem:a13bed52b12bfd633a11d304a700427a8" id="r_a13bed52b12bfd633a11d304a700427a8"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a13bed52b12bfd633a11d304a700427a8">ChangeCount</a><code> [get]</code></td></tr>
 <tr class="memitem:af01365428d585db924f5a53169e2a63d" id="r_af01365428d585db924f5a53169e2a63d"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#af01365428d585db924f5a53169e2a63d">RefCount</a><code> [get]</code></td></tr>
 <tr class="memdesc:af01365428d585db924f5a53169e2a63d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Amount of known tracked references to this object that were acquired through OpenMEPackage(). Manual references are not tracked.  <br /></td></tr>
+<tr class="memitem:a323982087cd250168eb3e154ebf97d7c" id="r_a323982087cd250168eb3e154ebf97d7c"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a323982087cd250168eb3e154ebf97d7c">IsInEditScope</a><code> [get]</code></td></tr>
+<tr class="memdesc:a323982087cd250168eb3e154ebf97d7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether a PackageEditScope is open on this package. It can't be saved meanwhile.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-events" class="groupheader"><a id="events" name="events"></a>
 Events</h2></td></tr>
@@ -2548,6 +2551,28 @@ Events</h2></td></tr>
 
 </div>
 </div>
+<a id="a13bed52b12bfd633a11d304a700427a8" name="a13bed52b12bfd633a11d304a700427a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13bed52b12bfd633a11d304a700427a8">&#9670;&#160;</a></span>ChangeCount</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int LegendaryExplorerCore.Packages.UnrealPackageFile.ChangeCount</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af01365428d585db924f5a53169e2a63d" name="af01365428d585db924f5a53169e2a63d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af01365428d585db924f5a53169e2a63d">&#9670;&#160;</a></span>RefCount</h2>
 
@@ -2569,6 +2594,30 @@ Events</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Amount of known tracked references to this object that were acquired through OpenMEPackage(). Manual references are not tracked. </p>
+
+</div>
+</div>
+<a id="a323982087cd250168eb3e154ebf97d7c" name="a323982087cd250168eb3e154ebf97d7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a323982087cd250168eb3e154ebf97d7c">&#9670;&#160;</a></span>IsInEditScope</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Packages.UnrealPackageFile.IsInEditScope</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel get">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Whether a PackageEditScope is open on this package. It can't be saved meanwhile. </p>
 
 </div>
 </div>
@@ -2618,6 +2667,7 @@ Events</h2></td></tr>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>LegendaryExplorer/LegendaryExplorerCore/Packages/<a class="el" href="_package_comparer_8cs.html">PackageComparer.cs</a></li>
 <li>LegendaryExplorer/LegendaryExplorerCore/Packages/<a class="el" href="_unreal_package_file_8cs.html">UnrealPackageFile.cs</a></li>
+<li>LegendaryExplorer/LegendaryExplorerCore/Packages/<a class="el" href="_unreal_package_file_8_edit_scope_8cs.html">UnrealPackageFile.EditScope.cs</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

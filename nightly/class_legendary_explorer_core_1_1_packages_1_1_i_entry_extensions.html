@@ -132,6 +132,10 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a2f5c1fc5ea5563f0ee263abba2e804a0" id="r_a2f5c1fc5ea5563f0ee263abba2e804a0"><td class="memItemLeft">static List&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a2f5c1fc5ea5563f0ee263abba2e804a0">GetAllDescendants</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> entry)</td></tr>
 <tr class="memdesc:a2f5c1fc5ea5563f0ee263abba2e804a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets all descendents of <em>entry</em> .  <br /></td></tr>
 <tr class="memitem:a58a631c73d2ffde4d2ef7c14ad57cc07" id="r_a58a631c73d2ffde4d2ef7c14ad57cc07"><td class="memItemLeft">static Dictionary&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, List&lt; string &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a58a631c73d2ffde4d2ef7c14ad57cc07">GetEntriesThatReferenceThisOne</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> baseEntry)</td></tr>
+<tr class="memitem:a0cae685ce24acb93fc6b44572a75b01b" id="r_a0cae685ce24acb93fc6b44572a75b01b"><td class="memItemLeft">static Dictionary&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, Dictionary&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, List&lt; string &gt; &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a0cae685ce24acb93fc6b44572a75b01b">GetEntriesThatReferenceThese</a> (this IReadOnlyCollection&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt; baseEntries)</td></tr>
+<tr class="memdesc:a0cae685ce24acb93fc6b44572a75b01b"><td class="mdescLeft">&#160;</td><td class="mdescRight">GetEntriesThatReferenceThisOne for each of several entries in one package, from one pass over its exports  <br /></td></tr>
+<tr class="memitem:a2c7f2794ffcb615d041530daede061df" id="r_a2c7f2794ffcb615d041530daede061df"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a2c7f2794ffcb615d041530daede061df">WouldReferenceAny</a> (this <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, IReadOnlySet&lt; int &gt; uIndexes, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> properties=null, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a> binary=null)</td></tr>
+<tr class="memdesc:a2c7f2794ffcb615d041530daede061df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether <em>export</em>  would refer to any of <em>uIndexes</em>  if its properties and binary were <em>properties</em>  and <em>binary</em>  (null for its current ones), its header as it is: whether an edit of it leaves such a reference, before the edit is made. Found as GetEntriesThatReferenceThese finds references.  <br /></td></tr>
 <tr class="memitem:a8e7f2bbbdfeb829e38c47d17436a041f" id="r_a8e7f2bbbdfeb829e38c47d17436a041f"><td class="memItemLeft">static int&#160;</td><td class="memItemRight"><a class="el" href="#a8e7f2bbbdfeb829e38c47d17436a041f">ReplaceAllReferencesToThisOne</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> baseEntry, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> replacementEntry)</td></tr>
 <tr class="memitem:a24bf6cc7157385e4dee45d7148c55f86" id="r_a24bf6cc7157385e4dee45d7148c55f86"><td class="memItemLeft">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a>&#160;</td><td class="memItemRight"><a class="el" href="#a24bf6cc7157385e4dee45d7148c55f86">GetCondensedProperties</a> (this <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, bool resolveImports=false, bool mergeStructs=false)</td></tr>
 <tr class="memdesc:a24bf6cc7157385e4dee45d7148c55f86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads an export's properties, filling in missing values from its archetypes. The nearest value wins.  <br /></td></tr>
@@ -443,6 +447,75 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0cae685ce24acb93fc6b44572a75b01b" name="a0cae685ce24acb93fc6b44572a75b01b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0cae685ce24acb93fc6b44572a75b01b">&#9670;&#160;</a></span>GetEntriesThatReferenceThese()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Dictionary&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, Dictionary&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, List&lt; string &gt; &gt; &gt; LegendaryExplorerCore.Packages.IEntryExtensions.GetEntriesThatReferenceThese </td>
+          <td>(</td>
+          <td class="paramtype">this IReadOnlyCollection&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>baseEntries</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>GetEntriesThatReferenceThisOne for each of several entries in one package, from one pass over its exports </p>
+<dl class="section return"><dt>Returns</dt><dd>For each entry, the entries that reference it and where</dd></dl>
+
+</div>
+</div>
+<a id="a2c7f2794ffcb615d041530daede061df" name="a2c7f2794ffcb615d041530daede061df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c7f2794ffcb615d041530daede061df">&#9670;&#160;</a></span>WouldReferenceAny()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Packages.IEntryExtensions.WouldReferenceAny </td>
+          <td>(</td>
+          <td class="paramtype">this <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a></td>          <td class="paramname"><span class="paramname"><em>export</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">IReadOnlySet&lt; int &gt;</td>          <td class="paramname"><span class="paramname"><em>uIndexes</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a></td>          <td class="paramname"><span class="paramname"><em>properties</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a></td>          <td class="paramname"><span class="paramname"><em>binary</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Whether <em>export</em>  would refer to any of <em>uIndexes</em>  if its properties and binary were <em>properties</em>  and <em>binary</em>  (null for its current ones), its header as it is: whether an edit of it leaves such a reference, before the edit is made. Found as GetEntriesThatReferenceThese finds references. </p>
 
 </div>
 </div>

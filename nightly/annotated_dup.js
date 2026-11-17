@@ -403,6 +403,7 @@ var annotated_dup =
         [ "MEPackageExtensions", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions" ],
         [ "PackageCache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html", "class_legendary_explorer_core_1_1_packages_1_1_package_cache" ],
         [ "PackageDiff", "class_legendary_explorer_core_1_1_packages_1_1_package_diff.html", "class_legendary_explorer_core_1_1_packages_1_1_package_diff" ],
+        [ "PackageEditScope", "class_legendary_explorer_core_1_1_packages_1_1_package_edit_scope.html", "class_legendary_explorer_core_1_1_packages_1_1_package_edit_scope" ],
         [ "PackageResynthesizer", "class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer.html", "class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer" ],
         [ "PackageSaver", "class_legendary_explorer_core_1_1_packages_1_1_package_saver.html", "class_legendary_explorer_core_1_1_packages_1_1_package_saver" ],
         [ "PackageUpdate", "struct_legendary_explorer_core_1_1_packages_1_1_package_update.html", "struct_legendary_explorer_core_1_1_packages_1_1_package_update" ],
@@ -967,7 +968,8 @@ var annotated_dup =
           [ "MaterialInstanceConstantLevelEditor", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant_level_editor.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant_level_editor" ],
           [ "MorphFeature", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_morph_feature.html", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_morph_feature" ],
           [ "Texture2D", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d" ],
-          [ "Texture2DMipInfo", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info" ]
+          [ "Texture2DMipInfo", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info" ],
+          [ "TextureDataReadCache", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture_data_read_cache.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture_data_read_cache" ]
         ] ],
         [ "Collections", "namespace_legendary_explorer_core_1_1_unreal_1_1_collections.html", [
           [ "DefaultKeyFuncs&lt; T &gt;", "struct_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_default_key_funcs-1-g.html", "struct_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_default_key_funcs-1-g" ],

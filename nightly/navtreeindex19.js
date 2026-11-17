@@ -1,5 +1,8 @@
 var NAVTREEINDEX19 =
 {
+"class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_memory_tributary.html#a0d7c88c1623121a5ccc5f35cef8217aa":[2,0,0,7,6,19,12],
+"class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_memory_tributary.html#a2cbfd919ee6e3906a8c9c1e23979e4ed":[1,0,1,7,6,19,7],
+"class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_memory_tributary.html#a2cbfd919ee6e3906a8c9c1e23979e4ed":[2,0,0,7,6,19,7],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_memory_tributary.html#a4f36fa080bd5741d2a40a626e0066804":[1,0,1,7,6,19,1],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_memory_tributary.html#a4f36fa080bd5741d2a40a626e0066804":[2,0,0,7,6,19,1],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_memory_tributary.html#a57e3a42801d4962ac6e2a4a3c3feac52":[1,0,1,7,6,19,17],
@@ -246,8 +249,5 @@ var NAVTREEINDEX19 =
 "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#ad860c4faeec87a5a27f1071605a3274e":[2,0,0,7,8,0,1,19],
 "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#af2094df3501ad2b4bedfc7cf78789c9d":[1,0,1,7,8,0,1,11],
 "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#af2094df3501ad2b4bedfc7cf78789c9d":[2,0,0,7,8,0,1,11],
-"class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#af4fb63d96940317c2406727d508eba70":[1,0,1,7,8,0,1,10],
-"class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#af4fb63d96940317c2406727d508eba70":[2,0,0,7,8,0,1,10],
-"class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#af9fdb9ff6f0f3217380bd0af64906d48":[1,0,1,7,8,0,1,4],
-"class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#af9fdb9ff6f0f3217380bd0af64906d48":[2,0,0,7,8,0,1,4]
+"class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#af4fb63d96940317c2406727d508eba70":[1,0,1,7,8,0,1,10]
 };

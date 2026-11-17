@@ -118,12 +118,12 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_legendar
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a6fb9c9f924f8b8b2335f08c857268a3b" id="r_a6fb9c9f924f8b8b2335f08c857268a3b"><td class="memItemLeft">static T&#160;</td><td class="memItemRight"><a class="el" href="#a6fb9c9f924f8b8b2335f08c857268a3b">CloneTree&lt; T &gt;</a> (T entry, bool incrementIndex=true)</td></tr>
+<tr class="memitem:ab13779ded5f52464475eecee8a46ab23" id="r_ab13779ded5f52464475eecee8a46ab23"><td class="memItemLeft">static T&#160;</td><td class="memItemRight"><a class="el" href="#ab13779ded5f52464475eecee8a46ab23">CloneTree&lt; T &gt;</a> (T entry, bool incrementIndex=true, ListenableDictionary&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt; objectMap=null)</td></tr>
 <tr class="memitem:ae5fc1bc2aca0446d9ba4e3b80b378fdd" id="r_ae5fc1bc2aca0446d9ba4e3b80b378fdd"><td class="memItemLeft">static T&#160;</td><td class="memItemRight"><a class="el" href="#ae5fc1bc2aca0446d9ba4e3b80b378fdd">CloneEntry&lt; T &gt;</a> (T entry, IDictionary&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt; objectMap=null, bool incrementIndex=true, int newParentUIndex=int.MaxValue)</td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
-<a id="a6fb9c9f924f8b8b2335f08c857268a3b" name="a6fb9c9f924f8b8b2335f08c857268a3b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6fb9c9f924f8b8b2335f08c857268a3b">&#9670;&#160;</a></span>CloneTree&lt; T &gt;()</h2>
+<a id="ab13779ded5f52464475eecee8a46ab23" name="ab13779ded5f52464475eecee8a46ab23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab13779ded5f52464475eecee8a46ab23">&#9670;&#160;</a></span>CloneTree&lt; T &gt;()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -139,7 +139,12 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>incrementIndex</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>&#160;)</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>incrementIndex</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ListenableDictionary&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>objectMap</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -148,6 +153,12 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">objectMap</td><td>If given, filled with each cloned entry's clone, by the entry it's a clone of. Pass it empty: the clones' references are relinked through everything in it, entries it already had among them </td></tr>
+  </table>
+  </dd>
+</dl>
 <div class="typeconstraint">
 <dl><dt><b>Type Constraints</b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">

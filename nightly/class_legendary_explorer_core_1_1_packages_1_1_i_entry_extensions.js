@@ -10,6 +10,8 @@ var class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions =
     [ "GetChildren< T >", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a1fdbe89f9b8fd53b75f45510dcf7b68a", null ],
     [ "GetAllDescendants", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a2f5c1fc5ea5563f0ee263abba2e804a0", null ],
     [ "GetEntriesThatReferenceThisOne", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a58a631c73d2ffde4d2ef7c14ad57cc07", null ],
+    [ "GetEntriesThatReferenceThese", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a0cae685ce24acb93fc6b44572a75b01b", null ],
+    [ "WouldReferenceAny", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a2c7f2794ffcb615d041530daede061df", null ],
     [ "ReplaceAllReferencesToThisOne", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a8e7f2bbbdfeb829e38c47d17436a041f", null ],
     [ "GetCondensedProperties", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a24bf6cc7157385e4dee45d7148c55f86", null ],
     [ "CondenseArchetypes", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#aa58aa7e674caee8c5b364cec4db1b767", null ],

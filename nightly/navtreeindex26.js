@@ -1,5 +1,10 @@
 var NAVTREEINDEX26 =
 {
+"class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#a22377f79911cf061c5765c98b50c4f46":[2,0,0,11,0,2],
+"class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#a57d60b5209f04fa86faffea626802166":[1,0,1,11,0,7],
+"class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#a57d60b5209f04fa86faffea626802166":[2,0,0,11,0,7],
+"class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#a7fd7aae341109d5a5291b0687d1d9be7":[1,0,1,11,0,0],
+"class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#a7fd7aae341109d5a5291b0687d1d9be7":[2,0,0,11,0,0],
 "class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#ab24db9532ca0681f4ee19f0816f85ec8":[1,0,1,11,0,3],
 "class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#ab24db9532ca0681f4ee19f0816f85ec8":[2,0,0,11,0,3],
 "class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#ad3beb1eb8d093d499ded309bc23b3e1e":[1,0,1,11,0,6],
@@ -244,10 +249,5 @@ var NAVTREEINDEX26 =
 "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3e780da8424ddc8cd79a88577b61fc17":[2,0,0,14,0,0,29],
 "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3f22b4f2469711c34e3122e23fc5ca17":[1,0,1,14,0,0,32],
 "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3f22b4f2469711c34e3122e23fc5ca17":[2,0,0,14,0,0,32],
-"class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3f8f5ee27522aed2022cc00c51aa150b":[1,0,1,14,0,0,46],
-"class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3f8f5ee27522aed2022cc00c51aa150b":[2,0,0,14,0,0,46],
-"class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a4516cd10c87e1e670bb8742813e87a92":[1,0,1,14,0,0,68],
-"class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a4516cd10c87e1e670bb8742813e87a92":[2,0,0,14,0,0,68],
-"class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a4e253731038c8459f14264931b41fb5c":[1,0,1,14,0,0,43],
-"class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a4e253731038c8459f14264931b41fb5c":[2,0,0,14,0,0,43]
+"class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3f8f5ee27522aed2022cc00c51aa150b":[1,0,1,14,0,0,46]
 };

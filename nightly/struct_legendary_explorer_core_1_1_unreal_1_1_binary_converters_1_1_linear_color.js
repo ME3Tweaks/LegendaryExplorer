@@ -5,6 +5,7 @@ var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_linear_c
     [ "ToString", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_linear_color.html#a6c82501b83d1e0fddb2d5cfe4a3ed63e", null ],
     [ "operator Vector4", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_linear_color.html#ad328699a2a45c05df9d11cec4f6e90f4", null ],
     [ "operator LinearColor", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_linear_color.html#abd40a99be34b32025d400b9270d50b59", null ],
+    [ "ToVector3", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_linear_color.html#a7e0e25c3cc9a02cd26737f56c48f41e0", null ],
     [ "R", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_linear_color.html#a493725c78f966ad36c98fa431ddc613c", null ],
     [ "G", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_linear_color.html#a1b8280ce338254491c114a25a733becb", null ],
     [ "B", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_linear_color.html#aa31be31c0f36f045aaec435a0f1cc9dc", null ],

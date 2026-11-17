@@ -1,5 +1,6 @@
 var NAVTREEINDEX3 =
 {
+"_t_l_k_bit_array_8cs.html":[3,0,0,0,24,10],
 "_t_l_k_string_ref_8cs.html":[3,0,0,0,24,11],
 "_t_o_c_bin_file_8cs.html":[3,0,0,0,26,26],
 "_t_o_c_creator_8cs.html":[3,0,0,0,26,27],
@@ -14,13 +15,14 @@ var NAVTREEINDEX3 =
 "_texture2_d_8cs.html#aace610f795944b5957b2e8538ee25ace":[3,0,0,0,26,2,7,2],
 "_texture_c_r_c_8cs.html":[3,0,0,0,23,13],
 "_texture_compression_8cs.html":[3,0,0,0,26,25],
+"_texture_data_read_cache_8cs.html":[3,0,0,0,26,2,8],
 "_texture_l_o_d_info_8cs.html":[3,0,0,0,23,15],
 "_texture_load_overrides_8cs.html":[3,0,0,0,23,14],
 "_texture_movie_8cs.html":[3,0,0,0,26,1,60],
 "_texture_replace_callbacks_8cs.html":[3,0,0,0,23,16],
 "_texture_tree_view_entry_8cs.html":[3,0,0,0,23,1,1],
 "_throw_helper_8cs.html":[3,0,0,0,7,16],
-"_tiered_package_cache_8cs.html":[3,0,0,0,16,23],
+"_tiered_package_cache_8cs.html":[3,0,0,0,16,24],
 "_tlk_system_8cs.html":[3,0,0,0,6,14],
 "_token_stream_8cs.html":[3,0,0,0,27,6,5],
 "_tree_node_8cs.html":[3,0,0,0,26,1,61],
@@ -31,7 +33,7 @@ var NAVTREEINDEX3 =
 "_u_const_8cs.html":[3,0,0,0,26,1,63],
 "_u_d_k_directory_8cs.html":[3,0,0,0,6,15],
 "_u_d_k_material_port_8cs.html":[3,0,0,0,25,3],
-"_u_d_k_package_8cs.html":[3,0,0,0,16,24],
+"_u_d_k_package_8cs.html":[3,0,0,0,16,25],
 "_u_d_k_unreal_object_info_8cs.html":[3,0,0,0,26,28],
 "_u_e3_function_reader_8cs.html":[3,0,0,0,12,0,0,5],
 "_u_enum_8cs.html":[3,0,0,0,26,1,64],
@@ -57,7 +59,8 @@ var NAVTREEINDEX3 =
 "_un_function_8cs.html":[3,0,0,0,12,0,0,7],
 "_unreal_extensions_8cs.html":[3,0,0,0,7,4,22],
 "_unreal_flags_8cs.html":[3,0,0,0,26,29],
-"_unreal_package_file_8cs.html":[3,0,0,0,16,25],
+"_unreal_package_file_8_edit_scope_8cs.html":[3,0,0,0,16,27],
+"_unreal_package_file_8cs.html":[3,0,0,0,16,26],
 "_unreal_script_compiler_8cs.html":[3,0,0,0,27,9],
 "_unreal_script_lookup_8cs.html":[3,0,0,0,27,10],
 "_unreal_script_options_package_8cs.html":[3,0,0,0,27,11],
@@ -246,8 +249,5 @@ var NAVTREEINDEX3 =
 "class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#a2b164952571bf109da9348010a105216":[2,0,0,0,0,0,9],
 "class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#a56dcadf70541d4882a1085ab545b0102":[1,0,1,0,0,0,8],
 "class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#a56dcadf70541d4882a1085ab545b0102":[2,0,0,0,0,0,8],
-"class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#a8c2b484918dbe7d4373dac705ab7a2f8":[1,0,1,0,0,0,4],
-"class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#a8c2b484918dbe7d4373dac705ab7a2f8":[2,0,0,0,0,0,4],
-"class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#aa2b22aaf23eab667675933536c970faf":[1,0,1,0,0,0,5],
-"class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#aa2b22aaf23eab667675933536c970faf":[2,0,0,0,0,0,5]
+"class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#a8c2b484918dbe7d4373dac705ab7a2f8":[1,0,1,0,0,0,4]
 };

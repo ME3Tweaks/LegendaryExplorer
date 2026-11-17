@@ -1,5 +1,8 @@
 var NAVTREEINDEX14 =
 {
+"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_stream_extensions.html#a8674080bbbfcbebd077acfabcd045028":[2,0,0,7,4,1,2,9],
+"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_stream_extensions.html#a98a0164c78cb1a18b9cf7921dd125cfc":[1,0,1,7,4,1,2,15],
+"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_stream_extensions.html#a98a0164c78cb1a18b9cf7921dd125cfc":[2,0,0,7,4,1,2,15],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_stream_extensions.html#aa73013080f3cc40e8e46cd82ddac0b14":[1,0,1,7,4,1,2,10],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_stream_extensions.html#aa73013080f3cc40e8e46cd82ddac0b14":[2,0,0,7,4,1,2,10],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_stream_extensions.html#ac953f667478121c54475f21d7ff123b4":[1,0,1,7,4,1,2,2],
@@ -246,8 +249,5 @@ var NAVTREEINDEX14 =
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a70ec90f2230ab95684024f918a1f3503":[2,0,0,7,4,3,2,51],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a81e1f8a182a6cb3929a1279c42f92384":[1,0,1,7,4,3,2,30],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a81e1f8a182a6cb3929a1279c42f92384":[2,0,0,7,4,3,2,30],
-"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a92ea2723889d9e34582429af0fbb2f25":[1,0,1,7,4,3,2,46],
-"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a92ea2723889d9e34582429af0fbb2f25":[2,0,0,7,4,3,2,46],
-"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a99d9aa5efb19f4e0c8b6c24e4ffc380d":[1,0,1,7,4,3,2,42],
-"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a99d9aa5efb19f4e0c8b6c24e4ffc380d":[2,0,0,7,4,3,2,42]
+"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a92ea2723889d9e34582429af0fbb2f25":[1,0,1,7,4,3,2,46]
 };

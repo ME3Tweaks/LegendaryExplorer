@@ -127,7 +127,10 @@ Inheritance diagram for LegendaryExplorerCore.Unreal.BinaryConverters.BrushCompo
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a63a0611b655ca08fa86d6e0d4be13fa2" id="r_a63a0611b655ca08fa86d6e0d4be13fa2"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a63a0611b655ca08fa86d6e0d4be13fa2">RegenCachedPhysBrushData</a> ()</td></tr>
+<tr class="memitem:abb55bf23eec3ed353f5943d79bca4d00" id="r_abb55bf23eec3ed353f5943d79bca4d00"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#abb55bf23eec3ed353f5943d79bca4d00">RegenCachedPhysBrushData</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
+<tr class="memdesc:abb55bf23eec3ed353f5943d79bca4d00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cooks BrushAggGeom for rigid-body collision at its total scale, as UBrushComponent::BuildPhysBrushData does. Verified to produce identical data as BW's cooker.  <br /></td></tr>
+<tr class="memitem:a3a2c3c7e0e11d867a43b46e9274db266" id="r_a3a2c3c7e0e11d867a43b46e9274db266"><td class="memItemLeft"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data_element.html">KCachedConvexDataElement</a>[]&#160;</td><td class="memItemRight"><a class="el" href="#a3a2c3c7e0e11d867a43b46e9274db266">CookCachedPhysBrushData</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
+<tr class="memdesc:a3a2c3c7e0e11d867a43b46e9274db266"><td class="mdescLeft">&#160;</td><td class="mdescRight">What RegenCachedPhysBrushData would cook for the export as it is now, leaving the binary and the export unchanged. Null if it has no hulls to cook; empty if none of them can be cooked (no vertices, or flat).  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary"><td colspan="2">Public Member Functions inherited from <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">LegendaryExplorerCore.Unreal.BinaryConverters.ObjectBinary</a></td></tr>
 <tr class="memitem:a45ec2f5055533833b0732be2eb564c47 pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary" id="r_a45ec2f5055533833b0732be2eb564c47"><td class="memItemLeft">List&lt; int &gt;&#160;</td><td class="memItemRight"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a45ec2f5055533833b0732be2eb564c47">GetUIndexes</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="memdesc:a45ec2f5055533833b0732be2eb564c47 pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a list of entry references made in this <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a>.  <br /></td></tr>
@@ -153,6 +156,11 @@ Static Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a8ae3ff6cc9ce511a810d27e03144bdd6" id="r_a8ae3ff6cc9ce511a810d27e03144bdd6"><td class="memItemLeft"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data.html">KCachedConvexData</a>&#160;</td><td class="memItemRight"><a class="el" href="#a8ae3ff6cc9ce511a810d27e03144bdd6">CachedPhysBrushData</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-attribs" class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a93c205f8808b7a149845a05748857c85" id="r_a93c205f8808b7a149845a05748857c85"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a93c205f8808b7a149845a05748857c85">CurrentCachedPhysBrushDataVersion</a> = 34079762</td></tr>
+<tr class="memdesc:a93c205f8808b7a149845a05748857c85"><td class="mdescLeft">&#160;</td><td class="mdescRight">The CachedPhysBrushDataVersion of the data RegenCachedPhysBrushData cooks, in LE1-LE3.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -216,8 +224,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a63a0611b655ca08fa86d6e0d4be13fa2" name="a63a0611b655ca08fa86d6e0d4be13fa2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a63a0611b655ca08fa86d6e0d4be13fa2">&#9670;&#160;</a></span>RegenCachedPhysBrushData()</h2>
+<a id="abb55bf23eec3ed353f5943d79bca4d00" name="abb55bf23eec3ed353f5943d79bca4d00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb55bf23eec3ed353f5943d79bca4d00">&#9670;&#160;</a></span>RegenCachedPhysBrushData()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -228,7 +236,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void LegendaryExplorerCore.Unreal.BinaryConverters.BrushComponent.RegenCachedPhysBrushData </td>
           <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a></td>          <td class="paramname"><span class="paramname"><em>packageCache</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -238,6 +246,47 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Cooks BrushAggGeom for rigid-body collision at its total scale, as UBrushComponent::BuildPhysBrushData does. Verified to produce identical data as BW's cooker. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">packageCache</td><td>For values inherited from archetypes in other packages</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3a2c3c7e0e11d867a43b46e9274db266" name="a3a2c3c7e0e11d867a43b46e9274db266"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a2c3c7e0e11d867a43b46e9274db266">&#9670;&#160;</a></span>CookCachedPhysBrushData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data_element.html">KCachedConvexDataElement</a>[] LegendaryExplorerCore.Unreal.BinaryConverters.BrushComponent.CookCachedPhysBrushData </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a></td>          <td class="paramname"><span class="paramname"><em>packageCache</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>What RegenCachedPhysBrushData would cook for the export as it is now, leaving the binary and the export unchanged. Null if it has no hulls to cook; empty if none of them can be cooked (no vertices, or flat). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">packageCache</td><td>For values inherited from archetypes in other packages</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -253,6 +302,30 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a93c205f8808b7a149845a05748857c85" name="a93c205f8808b7a149845a05748857c85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93c205f8808b7a149845a05748857c85">&#9670;&#160;</a></span>CurrentCachedPhysBrushDataVersion</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Unreal.BinaryConverters.BrushComponent.CurrentCachedPhysBrushDataVersion = 34079762</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The CachedPhysBrushDataVersion of the data RegenCachedPhysBrushData cooks, in LE1-LE3. </p>
 
 </div>
 </div>

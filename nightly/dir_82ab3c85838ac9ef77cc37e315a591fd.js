@@ -18,6 +18,7 @@ var dir_82ab3c85838ac9ef77cc37e315a591fd =
     [ "PackageCache.cs", "_package_cache_8cs.html", "_package_cache_8cs" ],
     [ "PackageComparer.cs", "_package_comparer_8cs.html", "_package_comparer_8cs" ],
     [ "PackageDiff.cs", "_package_diff_8cs.html", "_package_diff_8cs" ],
+    [ "PackageEditScope.cs", "_package_edit_scope_8cs.html", "_package_edit_scope_8cs" ],
     [ "PackageExtensions.cs", "_package_extensions_8cs.html", "_package_extensions_8cs" ],
     [ "PackageResynthesizer.cs", "_package_resynthesizer_8cs.html", "_package_resynthesizer_8cs" ],
     [ "PackageSaver.cs", "_package_saver_8cs.html", "_package_saver_8cs" ],
@@ -25,5 +26,6 @@ var dir_82ab3c85838ac9ef77cc37e315a591fd =
     [ "SFARPackageCache.cs", "_s_f_a_r_package_cache_8cs.html", "_s_f_a_r_package_cache_8cs" ],
     [ "TieredPackageCache.cs", "_tiered_package_cache_8cs.html", "_tiered_package_cache_8cs" ],
     [ "UDKPackage.cs", "_u_d_k_package_8cs.html", "_u_d_k_package_8cs" ],
-    [ "UnrealPackageFile.cs", "_unreal_package_file_8cs.html", "_unreal_package_file_8cs" ]
+    [ "UnrealPackageFile.cs", "_unreal_package_file_8cs.html", "_unreal_package_file_8cs" ],
+    [ "UnrealPackageFile.EditScope.cs", "_unreal_package_file_8_edit_scope_8cs.html", "_unreal_package_file_8_edit_scope_8cs" ]
 ];

@@ -18,6 +18,7 @@ var class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions =
     [ "Normal", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html#a2f3c11734696b213b491d26d7bd9ebce", null ],
     [ "RotDeterminant", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html#afd5ac2b5a5030bb859648d8fc03eb491", null ],
     [ "UnrealDecompose", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html#a591362fbdc0d268288049815d0296d34", null ],
+    [ "WithoutScaling", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html#aa7d1d6dc6ffaeb46bec7fbba446f98b0", null ],
     [ "ReinterpretAsUint", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html#a420d08fe13ed4a90aba0e525f87920c6", null ],
     [ "ReinterpretAsInt", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html#a53ac3510ae90f6cb9e32b2a55a6fc11c", null ],
     [ "translation", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html#acea993c0da96427c8e5c75d0c00c2984", null ],

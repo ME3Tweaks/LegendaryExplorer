@@ -1,5 +1,8 @@
 var NAVTREEINDEX15 =
 {
+"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a92ea2723889d9e34582429af0fbb2f25":[2,0,0,7,4,3,2,46],
+"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a99d9aa5efb19f4e0c8b6c24e4ffc380d":[1,0,1,7,4,3,2,42],
+"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a99d9aa5efb19f4e0c8b6c24e4ffc380d":[2,0,0,7,4,3,2,42],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#aa4bc1aa8576fd4b2b9fa6e04c2e70739":[1,0,1,7,4,3,2,37],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#aa4bc1aa8576fd4b2b9fa6e04c2e70739":[2,0,0,7,4,3,2,37],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#aa50f2a40ccb0f0bc16213cfd696def8c":[1,0,1,7,4,3,2,33],
@@ -246,8 +249,5 @@ var NAVTREEINDEX15 =
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html#a1d9c6132ed063f0a356e72338d60d20b":[2,0,0,7,4,20,2],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html#a1f250c6f4833c86e42a8d19d4c1351d7":[1,0,1,7,4,20,3],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html#a1f250c6f4833c86e42a8d19d4c1351d7":[2,0,0,7,4,20,3],
-"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html#a2170ed866e22c99edefc6a0ca5efda96":[1,0,1,7,4,20,17],
-"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html#a2170ed866e22c99edefc6a0ca5efda96":[2,0,0,7,4,20,17],
-"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html#a2d64ada61328a318af05d7aff5c19e11":[1,0,1,7,4,20,1],
-"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html#a2d64ada61328a318af05d7aff5c19e11":[2,0,0,7,4,20,1]
+"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html#a2170ed866e22c99edefc6a0ca5efda96":[1,0,1,7,4,20,17]
 };
