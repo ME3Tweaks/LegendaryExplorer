@@ -73,7 +73,7 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
             PlotElementType.Float => "A floating point number",
             PlotElementType.Mod => "A category for items for a single mod or modder",
             PlotElementType.Category => "A category of various states",
-            _ => throw new ArgumentException($"Unexpected plot type: ${plotType}")
+            _ => throw new ArgumentException($"Unexpected plot type: {plotType}")
         };
     }
 }

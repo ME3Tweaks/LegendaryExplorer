@@ -270,9 +270,13 @@ namespace LegendaryExplorerCore.GameFilesystem
                     Game = MEGame.LE2;
                     LoadMountFileME2(ms);
                     break;
+                case 0x8: // 8 is the ID used for LMP
+                    Game = MEGame.LMP;
+                    LoadMountFileME3(ms);
+                    break;
                 default:
                     ms.JumpTo(0x4);
-                    Game = ms.ReadInt32() == 0x2AC ? MEGame.ME3 : MEGame.LE3;
+                    Game = ms.ReadInt32() == 0x2AC ? MEGame.ME3 : MEGame.LE3; // We have no way to distinguish the mount file... maybe we should edit this?
                     LoadMountFileME3(ms);
                     break;
             }
@@ -332,6 +336,9 @@ namespace LegendaryExplorerCore.GameFilesystem
                 case MEGame.LE3:
                     WriteLE3Mount(stream);
                     break;
+                case MEGame.LMP:
+                    WriteLE3Mount(stream, 0x8); // Use LMP version of mount file
+                    break;
                 default:
                     throw new Exception($"Cannot write a mount file for {Game}!");
             }
@@ -348,11 +355,11 @@ namespace LegendaryExplorerCore.GameFilesystem
             ms.WriteToFile(path);
         }
 
-        private void WriteLE3Mount(Stream ms)
+        private void WriteLE3Mount(Stream ms, int version = 0x1)
         {
-            ms.WriteInt32(0x1); // MountingInfoVersion
+            ms.WriteInt32(version); // MountingInfoVersion
             ms.WriteInt32(0x2AD); // PackageFileVersion
-            ms.WriteInt32(0xCD); // PackageLicenseeVersion
+            ms.WriteInt32(Game == MEGame.LMP ? 0xCE : 0xCD); // PackageLicenseeVersion
             ms.WriteInt32(0x3006B); // PackageFileCookedContentVersion
 
             //@ 0x10 - Mount Priority

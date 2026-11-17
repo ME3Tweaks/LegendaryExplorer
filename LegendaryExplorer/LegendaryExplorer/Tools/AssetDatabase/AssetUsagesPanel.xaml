@@ -13,7 +13,7 @@
             <RowDefinition Height="24"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="{Binding HeaderText, ElementName=usagesPanel}" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3"
+        <TextBlock Text="{Binding HeaderText, ElementName=usagesPanel}" Background="{DynamicResource Theme.Background.InfoBar}" Foreground="{DynamicResource Theme.Foreground.Primary}" HorizontalAlignment="Stretch" Padding="3"
                    ToolTip="{Binding HeaderToolTip, ElementName=usagesPanel}" Grid.Row="0"/>
         <Button ToolTip="Copies the list of usages to the clipboard as text" Click="CopyButton_Click"
                 VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0">
@@ -37,9 +37,28 @@
             </controls:ListBoxScroll.ItemTemplate>
             <controls:ListBoxScroll.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Padding" Value="2"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                    <ContentPresenter/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.Selected}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=IsInDLC}" Value="True">
-                            <Setter Property="Background" Value="LightGray"/>
+                            <Setter Property="Background" Value="{DynamicResource Theme.Background.InfoBar}"/>
                             <Setter Property="TextElement.ToolTip" Value="DLC content"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=IsInMod}" Value="True">

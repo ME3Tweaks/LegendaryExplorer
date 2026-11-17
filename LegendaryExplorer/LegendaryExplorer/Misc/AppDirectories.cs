@@ -41,6 +41,7 @@ namespace LegendaryExplorer.Misc
                 if (LE1Directory.DefaultGamePath != null && Directory.Exists(LE1Directory.DefaultGamePath)) list.Add(new FileDialogCustomPlace(LE1Directory.DefaultGamePath));
                 if (LE2Directory.DefaultGamePath != null && Directory.Exists(LE2Directory.DefaultGamePath)) list.Add(new FileDialogCustomPlace(LE2Directory.DefaultGamePath));
                 if (LE3Directory.DefaultGamePath != null && Directory.Exists(LE3Directory.DefaultGamePath)) list.Add(new FileDialogCustomPlace(LE3Directory.DefaultGamePath));
+                if (LMPDirectory.DefaultGamePath != null && Directory.Exists(LMPDirectory.DefaultGamePath)) list.Add(new FileDialogCustomPlace(LMPDirectory.DefaultGamePath));
 
                 // Useful place: ME3Tweaks Mod Manager library
                 var m3settingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ME3TweaksModManager", "settings.ini");

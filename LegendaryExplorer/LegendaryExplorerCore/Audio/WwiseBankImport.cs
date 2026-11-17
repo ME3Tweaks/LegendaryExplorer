@@ -200,7 +200,7 @@ namespace LegendaryExplorerCore.Audio
                     PropertyCollection p = new PropertyCollection();
                     if (!importNewStreamsOnly || newStreamExport)
                     {
-                        if (package.Game == MEGame.LE3)
+                        if (package.Game.IsLEGame3())
                         {
                             // LE3
                             p.Add(new NameProperty(Path.GetFileNameWithoutExtension(afcPath), "Filename"));
@@ -217,7 +217,7 @@ namespace LegendaryExplorerCore.Audio
                     else
                     {
                         p = streamExport.GetProperties();
-                        if (package.Game == MEGame.LE3)
+                        if (package.Game.IsLEGame3())
                         {
                             // LE3
                             p.AddOrReplaceProp(new IntProperty((int)streamInfo.Id, "Id"));
@@ -272,7 +272,7 @@ namespace LegendaryExplorerCore.Audio
                 }
 
                 PropertyCollection p = new PropertyCollection();
-                if (package.Game == MEGame.LE3)
+                if (package.Game.IsLEGame3())
                 {
                     // LE3
                     p.Add(new StructProperty("WwiseRelationships", false,
@@ -312,7 +312,7 @@ namespace LegendaryExplorerCore.Audio
                 we.Links = new List<WwiseEvent.WwiseEventLink>();
 
                 // LE3 puts this in binary instead of properties
-                if (package.Game == MEGame.LE3)
+                if (package.Game.IsLEGame3())
                 {
 
                     //Only want the binary associated to the Event. For dialogue event must conform to VO_123456_m_Play format.

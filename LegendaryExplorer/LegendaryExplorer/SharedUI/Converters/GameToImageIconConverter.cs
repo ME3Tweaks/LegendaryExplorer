@@ -18,6 +18,7 @@ namespace LegendaryExplorer.SharedUI.Converters
         private static BitmapImage le1Icon;
         private static BitmapImage le2Icon;
         private static BitmapImage le3Icon;
+        private static BitmapImage lmpIcon;
         private static BitmapImage unknownIcon;
         private static BitmapImage udkIcon;
 
@@ -45,6 +46,8 @@ namespace LegendaryExplorer.SharedUI.Converters
                     return le2Icon;
                 case MEGame.LE3:
                     return le3Icon;
+                case MEGame.LMP:
+                    return lmpIcon;
                 case MEGame.UDK:
                     return udkIcon;
                 case MEGame.Unknown:
@@ -64,6 +67,7 @@ namespace LegendaryExplorer.SharedUI.Converters
             le1Icon = (BitmapImage)Application.Current.Resources[@"le1gameicon"];
             le2Icon = (BitmapImage)Application.Current.Resources[@"le2gameicon"];
             le3Icon = (BitmapImage)Application.Current.Resources[@"le3gameicon"];
+            lmpIcon = (BitmapImage)Application.Current.Resources[@"lmpgameicon"];
             udkIcon = (BitmapImage)Application.Current.Resources[@"udkgameicon"];
             unknownIcon = (BitmapImage)Application.Current.Resources[@"unknowngameicon"];
             initialized = true;

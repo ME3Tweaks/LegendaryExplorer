@@ -39,10 +39,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
         public static void TrashEntries(IMEPackage pcc, IEnumerable<IEntry> itemsToTrash)
         {
+            // Materialize up front - this is enumerated multiple times, and a lazy source (e.g. one ordered by InstancedFullPath) would change as entries are trashed
+            var entriesToTrash = itemsToTrash as IReadOnlyCollection<IEntry> ?? itemsToTrash.ToList();
+
+            // Trashing changes the class to Package, so textures have to be identified before trashing
+            var trashedTextureUIndexes = entriesToTrash.Where(x => x.IsTexture()).Select(x => x.UIndex).ToList();
+
             ExportEntry trashTopLevel = pcc.FindExport(UnrealPackageFile.TrashPackageName);
             IEntry packageClass = pcc.GetEntryOrAddImport("Core.Package", "Class");
 
-            foreach (IEntry entry in itemsToTrash)
+            foreach (IEntry entry in entriesToTrash)
             {
                 if (entry == trashTopLevel || entry.ObjectName == "Trash") //don't trash what's already been trashed
                 {
@@ -53,13 +59,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             // 02/04/2023: #353 Remove from ClientDestroyedActorContent and TextureToInstancesMap
             var level = pcc.FindExport("TheWorld.PersistentLevel");
-            if (level != null)
+            if (level != null && level.ClassName == "Level")
             {
                 var l = ObjectBinary.From<Level>(level);
                 var trashed = false;
-                foreach (var item in itemsToTrash.Where(x => x.IsTexture()))
+                foreach (var textureUIndex in trashedTextureUIndexes)
                 {
-                    trashed |= l.TextureToInstancesMap.Remove(item.UIndex);
+                    trashed |= l.TextureToInstancesMap.Remove(textureUIndex);
                 }
 
                 if (trashed)
@@ -69,7 +75,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
                 var bwi = pcc.GetUExport(l.Actors[0]); // 0 is always BioWorldInfo
                 var props = bwi.GetProperties();
-                var uindexes = itemsToTrash.Select(x => x.UIndex).ToList();
+                var uindexes = entriesToTrash.Select(x => x.UIndex).ToHashSet();
                 foreach (var propName in BWIProperitesToCleanupOnTrash)
                 {
                     var array = props.GetProp<ArrayProperty<ObjectProperty>>(propName);
@@ -374,7 +380,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         /// <returns></returns>
         private static Property AttemptArrayStructCorrection(ArrayProperty<StructProperty> arrayOfStructs, MEGame sourcePccGame, MEGame newGame)
         {
-            if (sourcePccGame == MEGame.ME3 && newGame == MEGame.LE3 && arrayOfStructs.Name == "Slots")
+            if (sourcePccGame == MEGame.ME3 && newGame.IsLEGame3() && arrayOfStructs.Name == "Slots")
             {
                 // This makes a copy to ensure whatever calls this doesn't get a side effect
                 // Correction: CoverSlot ME3 -> LE3
@@ -392,7 +398,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             // This is missing a significant amount of info so the ported info may not be that useful.
-            if (sourcePccGame == MEGame.LE1 && newGame == MEGame.LE3 && arrayOfStructs.Name == "Slots")
+            if (sourcePccGame == MEGame.LE1 && newGame.IsLEGame3() && arrayOfStructs.Name == "Slots")
             {
                 // This has potential to be very slow because we have to reference the level index
 
@@ -453,7 +459,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return newProp;
             }
 
-            if (sourcePccGame == MEGame.LE2 && newGame == MEGame.LE3 && arrayOfStructs.Name == "Slots")
+            if (sourcePccGame == MEGame.LE2 && newGame.IsLEGame3() && arrayOfStructs.Name == "Slots")
             {
                 // This has potential to be very slow because we have to reference the level index
 

@@ -31,13 +31,13 @@
             </Button>
             <TextBox Name="boxSearch" Height="26" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" KeyUp="Evt_KeyUp" VerticalAlignment="Stretch"/>
             <Button Name="btnSearch" Command="{Binding SearchCommand}" Content="Search" ToolTip="Search strings" Padding="5,0" VerticalAlignment="Stretch"/>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Separator Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Name="btnAddNew" Command="{Binding AddStringCommand}" Content="Add String" ToolTip="Add a new string"  Padding="5,0" VerticalAlignment="Stretch"/>
             <Button Name="btnAddStringRange" Command="{Binding AddStringRangeCommand}" Content="Add String Range" ToolTip="Add multiple new strings in a range"  Padding="5,0" VerticalAlignment="Stretch"/>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Separator Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Name="btnSetID" Command="{Binding SetIDCommand}" Content="Change ID" ToolTip="Set StringRef ID"  Padding="5,0" VerticalAlignment="Stretch"/>
             <Button Name="btnDelete" Command="{Binding DeleteStringCommand}" Content="Delete String" ToolTip="Delete selected string"  Padding="5,0" VerticalAlignment="Stretch"/>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Separator Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Name="btnExportXML" Command="{Binding ExportXmlCommand}" Content="Export" ToolTip="Export to XML"  Padding="5,0" VerticalAlignment="Stretch"/>
             <Button Name="btnImportXML" Command="{Binding ImportXmlCommand}" Content="Import" ToolTip="Import from XML"  Padding="5,0" VerticalAlignment="Stretch"/>
             <Button Name="btnViewXML" Command="{Binding ViewXmlCommand}" Content="View XML" ToolTip="View as XML"  Padding="5,0" VerticalAlignment="Stretch"/>
@@ -51,7 +51,7 @@
         </ToolBar>
         <DockPanel Name="LowerDock" DockPanel.Dock="Bottom" MinHeight="120" MaxHeight="450">
             <Button Name="btnSaveEdit" Content="Save" DockPanel.Dock="Right" Width="50"  Command="{Binding SaveCommand}"/>
-            <TextBlock Text="Press enter to save the string. Press Shift+Enter to enter a newline." DockPanel.Dock="Bottom" Background="LightGray"/>
+            <TextBlock Text="Press enter to save the string. Press Shift+Enter to enter a newline." DockPanel.Dock="Bottom" Background="{DynamicResource Theme.Background.InfoBar}" Foreground="{DynamicResource Theme.Foreground.Primary}"/>
             <TextBox Name="editBox" Text="No string selected" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsEnabled="{Binding StringSelected, FallbackValue=False}" TextWrapping="Wrap" Visibility="Visible" AcceptsReturn="True" PreviewKeyDown="TlkStrField_PreviewKeyDown" />
         </DockPanel>
         <Popup Name="popupDlg" Placement="Center" VerticalOffset="15" Width="640" Height="800" Margin="0,12,0,0" Closed="Evt_CloseXML" StaysOpen="false">

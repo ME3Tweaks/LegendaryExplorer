@@ -27,7 +27,8 @@ namespace LegendaryExplorerCore.UDK
         {
             return (x.IsA("Material") ||
                     x.IsA("Texture") ||
-                    x.ClassName.CaseInsensitiveEquals("MaterialInstanceConstant"));
+                    x.ClassName.CaseInsensitiveEquals("MaterialInstanceConstant") ||
+                    x.ClassName.CaseInsensitiveEquals("MaterialInstanceTimeVarying"));
         }
 
         public static void PortMaterialsIntoUDK(MEGame game, string inputPath, string folderNameOverride = null, string gameRootOverride = null, Func<ExportEntry, bool> shouldPortDelegate = null)

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorerCore.Packages
@@ -85,7 +86,8 @@ namespace LegendaryExplorerCore.Packages
                 if (entry is ImportEntry)
                 {
                     Debug.WriteLine("THIS IS AN INVALID IMPORT - ROOT IMPORTS MUST BE FOR PACKAGES!");
-                    Debugger.Break();
+                    LECLog.Error($"{entry.ObjectName} ({entry.ClassName}) IS AN INVALID IMPORT - ROOT IMPORTS MUST BE FOR PACKAGES!");
+                    // Debugger.Break();
                 }
 #endif
                 // It's part of the package file itself.

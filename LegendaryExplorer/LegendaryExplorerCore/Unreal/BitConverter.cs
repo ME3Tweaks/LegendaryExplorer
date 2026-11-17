@@ -1,9 +1,11 @@
-﻿using System;
+﻿
+
+using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Gammtek.IO;
+using System;
 using System.Buffers.Binary;
 using System.Linq;
 using System.Runtime.InteropServices;
-using LegendaryExplorerCore.Gammtek.Extensions;
-using LegendaryExplorerCore.Gammtek.IO;
 
 namespace LegendaryExplorerCore.Unreal
 {
@@ -257,7 +259,7 @@ namespace LegendaryExplorerCore.Unreal
             }
         }
 
-        public static void WriteAsBytes(long value, Span<byte> buff, Endian endian)
+        public static void WriteAsBytes(long value, System.Span<byte> buff, Endian endian)
         {
             if (!endian.IsNative)
             {
@@ -266,7 +268,7 @@ namespace LegendaryExplorerCore.Unreal
             MemoryMarshal.Write(buff, in value);
         }
 
-        public static void WriteAsBytes(ulong value, Span<byte> buff, Endian endian)
+        public static void WriteAsBytes(ulong value, System.Span<byte> buff, Endian endian)
         {
             if (!endian.IsNative)
             {
@@ -275,7 +277,7 @@ namespace LegendaryExplorerCore.Unreal
             MemoryMarshal.Write(buff, in value);
         }
 
-        public static void WriteAsBytes(int value, Span<byte> buff, Endian endian)
+        public static void WriteAsBytes(int value, System.Span<byte> buff, Endian endian)
         {
             if (!endian.IsNative)
             {
@@ -284,7 +286,7 @@ namespace LegendaryExplorerCore.Unreal
             MemoryMarshal.Write(buff, in value);
         }
 
-        public static void WriteAsBytes(Guid value, Span<byte> buff, Endian endian)
+        public static void WriteAsBytes(System.Guid value, System.Span<byte> buff, Endian endian)
         {
             if (!endian.IsNative)
             {

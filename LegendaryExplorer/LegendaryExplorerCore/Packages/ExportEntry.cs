@@ -1034,6 +1034,7 @@ namespace LegendaryExplorerCore.Packages
                 MEGame.LE1 => 30,
                 MEGame.LE2 => 30,
                 MEGame.LE3 => 30,
+                MEGame.LMP => 30,
                 MEGame.ME1 when _fileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
                 MEGame.ME2 when _fileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
                 _ => 32

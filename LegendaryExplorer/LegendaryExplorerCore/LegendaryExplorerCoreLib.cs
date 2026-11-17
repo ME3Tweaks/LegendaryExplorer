@@ -102,6 +102,7 @@ namespace LegendaryExplorerCore
                     (MEGame.LE1, LE1UnrealObjectInfo.ObjectInfo.LoadData),
                     (MEGame.LE2, LE2UnrealObjectInfo.ObjectInfo.LoadData),
                     (MEGame.LE3, LE3UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.LMP, LMPUnrealObjectInfo.ObjectInfo.LoadData),
                     (MEGame.UDK, UDKUnrealObjectInfo.ObjectInfo.LoadData)
                 ];
                 var jsonLoaders = new List<Action<string>>(gameToLoaderMap.Length);

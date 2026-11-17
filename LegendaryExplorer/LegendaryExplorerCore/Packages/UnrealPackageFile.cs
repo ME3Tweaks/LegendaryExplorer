@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using LegendaryExplorerCore.Gammtek.Collections.Specialized;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -165,6 +166,7 @@ namespace LegendaryExplorerCore.Packages
             MEGame.LE1 => MEPackage.LE1UnrealVersion,
             MEGame.LE2 => MEPackage.LE2UnrealVersion,
             MEGame.LE3 => MEPackage.LE3UnrealVersion,
+            MEGame.LMP => MEPackage.LE3UnrealVersion, // LMP uses LE3 UnrealVersion.
             MEGame.UDK => UDKPackage.UDKUnrealVersion2015, // This is technically not correct since UDK has many versions we support
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
         };
@@ -177,6 +179,7 @@ namespace LegendaryExplorerCore.Packages
             MEGame.LE1 => MEPackage.LE1LicenseeVersion,
             MEGame.LE2 => MEPackage.LE2LicenseeVersion,
             MEGame.LE3 => MEPackage.LE3LicenseeVersion,
+            MEGame.LMP => MEPackage.LMPLicenseeVersion,
             MEGame.UDK => UDKPackage.UDKLicenseeVersion,
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
         };
@@ -265,6 +268,24 @@ namespace LegendaryExplorerCore.Packages
             NameCount = names.Count;
         }
 
+        /// <summary>
+        /// Restores the import list to a previous snapshot, e.g. after a speculative port that ended up being
+        /// discarded. Unhooks change notifications from any import that isn't part of the restored list.
+        /// </summary>
+        public void restoreImports(List<ImportEntry> list)
+        {
+            foreach (var imp in imports)
+            {
+                if (!list.Contains(imp))
+                {
+                    imp.PropertyChanged -= importChanged;
+                }
+            }
+            imports = list;
+            ImportCount = imports.Count;
+            InvalidateLookupTable();
+        }
+
         private void mapNames()
         {
             nameLookupTable.Clear();
@@ -322,8 +343,8 @@ namespace LegendaryExplorerCore.Packages
         public void AddExport(ExportEntry exportEntry)
         {
             // Uncomment this to debug when an export is being added
-            //if (exportEntry.ObjectName == TrashPackageName)
-            //    Debugger.Break();
+            if (exportEntry.InstancedFullPath == "BioT_Rannoch_Ext.MissingTexture")
+                Debugger.Break();
 
             if (exportEntry.FileRef != this)
                 throw new Exception("Cannot add an export entry from another package file");
@@ -358,6 +379,12 @@ namespace LegendaryExplorerCore.Packages
 
         public IEntry FindEntry(string instancedPath)
         {
+            if (instancedPath == null)
+            {
+                // Can't find null.
+                return null;
+            }
+
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
             lock (_findEntrySyncObj)
@@ -641,7 +668,7 @@ namespace LegendaryExplorerCore.Packages
             return false;
         }
 
-#endregion
+        #endregion
 
         #region IEntry
         /// <summary>
@@ -893,16 +920,31 @@ namespace LegendaryExplorerCore.Packages
             return tlks;
         }
 
-        public bool HasDuplicateObjects()
+        /// <summary>
+        /// Returns if the lookup table is the same size as the count of imports and exports put together. If you exclude trash, this lookup is a bit slower.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasDuplicateObjects(bool excludeTrash = false)
         {
-            if (lookupTableNeedsToBeRegenerated)
+            if (excludeTrash)
             {
-                RebuildLookupTable();
+                if (this is IMEPackage ime)
+                {
+                    return EntryChecker.CheckForDuplicateIndices(ime).Count > 0;
+                }
+                throw new Exception("Cannot check for duplicate objects with excludeTrash=true on a package that is not an IMEPackage");
             }
-
-            lock (_findEntrySyncObj)
+            else
             {
-                return EntryLookupTable?.Count != (ImportCount + ExportCount);
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+
+                lock (_findEntrySyncObj)
+                {
+                    return EntryLookupTable?.Count != (ImportCount + ExportCount);
+                }
             }
         }
 
@@ -1089,7 +1131,7 @@ namespace LegendaryExplorerCore.Packages
         /// List of stack traces for when the RefCount was incremented
         /// </summary>
         public List<string> RegisterStackTraces = new();
-        
+
         /// <summary>
         /// Stack trace for how this package object was created - used for memory leak tracing
         /// </summary>

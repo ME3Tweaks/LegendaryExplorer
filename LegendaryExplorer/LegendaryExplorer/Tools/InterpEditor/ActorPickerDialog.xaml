@@ -1,6 +1,7 @@
-<Window x:Class="LegendaryExplorer.Tools.InterpEditor.ActorPickerDialog"
+<misc:NotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.InterpEditor.ActorPickerDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         Title="Pick Group Actor" Width="600" Height="450"
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
         ResizeMode="CanResizeWithGrip">
@@ -42,4 +43,4 @@
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
-</Window>
+</misc:NotifyPropertyChangedWindowBase>

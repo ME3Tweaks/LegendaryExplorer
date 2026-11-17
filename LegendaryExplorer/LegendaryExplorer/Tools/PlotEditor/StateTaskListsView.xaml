@@ -11,7 +11,25 @@
 	d:DesignHeight="480" d:DesignWidth="640">
 	<!-- UserControl Resources -->
 	<UserControl.Resources>
+		<!-- Explicitly assigning ANY Style (even via DynamicResource, even one defined locally like this) stops
+             the ListBox from picking up the dark theme's own implicit ListBox style entirely - a plain-text
+             replica of that style's Setters/Template has to be duplicated in here alongside the SelectedIndex
+             triggers this one actually exists for, or the control falls back to native unstyled chrome. -->
 		<Style TargetType="{x:Type ListBox}" x:Key="ListBoxStyle">
+			<Setter Property="Background" Value="{DynamicResource Theme.Background.Panel}"/>
+			<Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ListBox">
+						<Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+							<ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+								<ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+							</ScrollViewer>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
 			<Style.Triggers>
 				<Trigger Property="HasItems" Value="True">
 					<Setter Property="SelectedIndex" Value="0" />

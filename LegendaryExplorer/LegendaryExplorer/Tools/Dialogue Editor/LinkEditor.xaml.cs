@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.Helpers;
@@ -20,7 +21,7 @@ namespace LegendaryExplorer.DialogueEditor
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class LinkEditor : Window
+    public partial class LinkEditor : NotifyPropertyChangedWindowBase
     {
         private readonly DialogueEditorWindow ParentWindow;
         private readonly DiagNode Dnode;

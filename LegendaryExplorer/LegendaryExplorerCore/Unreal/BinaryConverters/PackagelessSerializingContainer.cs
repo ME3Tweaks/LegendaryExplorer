@@ -79,8 +79,16 @@ public class PackagelessWithObjectsSerializingContainer(Stream stream, IMEPackag
             throw new Exception(nameof(PackagelessSerializingContainer) + " cannot be used to serialize object references when saving.");
         }
 
-        var objectIfp = stream.ReadUnrealString();
+        var len = stream.ReadInt32();
+        var objectIfp = stream.ReadStringUnicode(len * 2);
         var foundEntry = pcc.FindEntry(objectIfp);
+        if (foundEntry == null && objectIfp.Contains(".TheWorld."))
+        {
+            // Strip linker off, try again.
+            // The owning package may have been named differently in game
+            var localifp = objectIfp.Substring(objectIfp.IndexOf('.') + 1);
+            foundEntry = pcc.FindEntry(localifp);
+        }
         if (foundEntry == null)
         {
             Debug.WriteLine($"Could not find {objectIfp} in package, value will be set to null");

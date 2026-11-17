@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorerCore.Helpers;
 using Microsoft.AppCenter.Crashes;
@@ -11,7 +12,7 @@ namespace LegendaryExplorer.Dialogs
     /// <summary>
     /// Interaction logic for ExceptionHandlerDialogWPF.xaml
     /// </summary>
-    public partial class ExceptionHandlerDialog : Window
+    public partial class ExceptionHandlerDialog : NotifyPropertyChangedWindowBase
     {
         public bool Handled;
 

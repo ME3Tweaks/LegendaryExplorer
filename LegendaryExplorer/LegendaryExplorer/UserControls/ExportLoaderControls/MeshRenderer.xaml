@@ -27,6 +27,9 @@
                 <Setter Property="IsIndeterminate" Value="{Binding BusyProgressIndeterminate}"/>
                 <Setter Property="Height" Value="14"/>
                 <Setter Property="Margin" Value="5,0,5,5"/>
+                <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Theme.Accent}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
             </Style>
         </xctk:BusyIndicator.ProgressBarStyle>
         <DockPanel>
@@ -47,14 +50,14 @@
               SelectedIndex="{Binding CurrentLOD, Mode=TwoWay}" ToolTip="Change the visible LOD" Margin="2,0" FontStretch="UltraCondensed"/>
                         <CheckBox Name="FirstPerson_Checkbox" IsChecked="{Binding FirstPerson}"  Content="FirstPerson"  VerticalAlignment="Center" Margin="2,0"/>
                         <CheckBox Name="Rotating_Checkbox" IsChecked="{Binding Rotating}"  Content="Rotating"  VerticalAlignment="Center" Margin="2,0"/>
-                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
+                        <Separator Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
 
                         <xctk:DropDownButton Content="View options" Margin="0,3">
                             <xctk:DropDownButton.DropDownContent>
                                 <scene3D:SceneControlOptionsControl/>
                             </xctk:DropDownButton.DropDownContent>
                         </xctk:DropDownButton>
-                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
+                        <Separator Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
                         <Button Command="{Binding UModelExportCommand}"  ToolTip="Export with umodel" Margin="2,0"
             sharedUi:Bindings.VisibilityToEnabled="true">
                             <Image Source="/Resources/Images/umodel.ico" Width="16" RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -67,14 +70,14 @@
                 </StackPanel>
             </StatusBar>
             <Grid>
-                <Expander Canvas.ZIndex="3" VerticalAlignment="Top" HorizontalAlignment="Left" ExpandDirection="Down" IsExpanded="False" Background="Transparent" Header="Camera info" Padding="3">
+                <Expander Canvas.ZIndex="3" VerticalAlignment="Top" HorizontalAlignment="Left" ExpandDirection="Down" IsExpanded="False" Background="Transparent" Foreground="Black" Header="Camera info" Padding="3">
                     <StackPanel>
                         <Grid Margin="3,2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40"/>
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="FOV:" Margin="0,0,3,0" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="FOV:" Margin="0,0,3,0" VerticalAlignment="Center" Foreground="Black"/>
                             <xctk:DoubleUpDown Grid.Column="1" Value="{Binding CameraFOV}"
                                                Increment="1"
                                                Minimum="1"
@@ -85,7 +88,7 @@
                                 <ColumnDefinition Width="40"/>
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="ZNear:" Margin="0,0,3,0" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="ZNear:" Margin="0,0,3,0" VerticalAlignment="Center" Foreground="Black"/>
                             <xctk:DoubleUpDown Grid.Column="1" Value="{Binding CameraZNear}"
                                                Increment="0.01"
                                                Maximum="1"
@@ -96,19 +99,19 @@
                                 <ColumnDefinition Width="40"/>
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="ZFar:" Margin="0,0,3,0" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="ZFar:" Margin="0,0,3,0" VerticalAlignment="Center" Foreground="Black"/>
                             <xctk:DoubleUpDown Grid.Column="1" Value="{Binding CameraZFar}"/>
                         </Grid>
                         <StackPanel Orientation="Horizontal">
-                            <RadioButton Content="Degrees" GroupName="UnitType" IsChecked="{Binding UseDegrees}"/>
-                            <RadioButton Content="Radians" GroupName="UnitType"  IsChecked="{Binding UseRadians}" Margin="3,0"/>
-                            <RadioButton Content="Unreal" GroupName="UnitType" IsChecked="{Binding UseUnreal}"/>
+                            <RadioButton Content="Degrees" GroupName="UnitType" IsChecked="{Binding UseDegrees}" Foreground="Black"/>
+                            <RadioButton Content="Radians" GroupName="UnitType"  IsChecked="{Binding UseRadians}" Margin="3,0" Foreground="Black"/>
+                            <RadioButton Content="Unreal" GroupName="UnitType" IsChecked="{Binding UseUnreal}" Foreground="Black"/>
                         </StackPanel>
-                        <TextBlock Text="{Binding CameraX, StringFormat='X: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value"/>
-                        <TextBlock Text="{Binding CameraY, StringFormat='Y: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value"/>
-                        <TextBlock Text="{Binding CameraZ, StringFormat='Z: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value"/>
-                        <TextBlock Text="{Binding CameraPitch, StringFormat='Pitch: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value"/>
-                        <TextBlock Text="{Binding CameraYaw, StringFormat='Yaw: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value"/>
+                        <TextBlock Text="{Binding CameraX, StringFormat='X: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value" Foreground="Black"/>
+                        <TextBlock Text="{Binding CameraY, StringFormat='Y: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value" Foreground="Black"/>
+                        <TextBlock Text="{Binding CameraZ, StringFormat='Z: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value" Foreground="Black"/>
+                        <TextBlock Text="{Binding CameraPitch, StringFormat='Pitch: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value" Foreground="Black"/>
+                        <TextBlock Text="{Binding CameraYaw, StringFormat='Yaw: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value" Foreground="Black"/>
 
                     </StackPanel>
                 </Expander>

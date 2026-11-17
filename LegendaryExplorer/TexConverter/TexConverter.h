@@ -81,6 +81,16 @@ HRESULT EXPORT LoadTextureFromMemory(const void* inputDataBuffer, size_t bufferS
  */
 HRESULT EXPORT FreePixelData(TextureBuffer* textureBuffer);
 
+
+// Opt-in exceptions. Existing loader exports and their behavior remain unchanged.
+// Unknown bits return E_INVALIDARG.
+enum TextureLoadOverrideFlags : uint32_t {
+    TextureLoadOverride_None = 0,
+    TextureLoadOverride_PreserveAllZeroTgaAlpha = 1
+};
+HRESULT EXPORT LoadTextureWithOverrides(const char* filename, TextureBuffer* outputBuffer, uint32_t overrides);
+HRESULT EXPORT LoadTextureFromMemoryWithOverrides(const void* inputBuffer, size_t bufferSize, int imageType, TextureBuffer* outputBuffer, uint32_t overrides);
+
 #ifdef __cplusplus
 }
 #endif

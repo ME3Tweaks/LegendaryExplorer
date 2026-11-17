@@ -21,7 +21,9 @@ namespace LegendaryExplorer.Misc
             LegendaryExplorerCoreLibSettings.Instance.ME3Directory = Settings.Global_ME3Directory;
             LegendaryExplorerCoreLibSettings.Instance.LEDirectory = Settings.Global_LEDirectory;
             LegendaryExplorerCoreLibSettings.Instance.UDKCustomDirectory = Settings.Global_UDKCustomDirectory;
-
+            
+            // We need to remap directories here I think
+            
             Settings.StaticPropertyChanged += LEXSettingChanged;
             LegendaryExplorerCoreLibSettings.Instance.PropertyChanged += CoreLibSettingChanged;
         }

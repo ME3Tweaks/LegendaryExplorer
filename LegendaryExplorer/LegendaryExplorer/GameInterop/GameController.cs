@@ -26,6 +26,7 @@ namespace LegendaryExplorer.GameInterop
             { MEGame.LE1, new LE1InteropTarget() },
             { MEGame.LE2, new LE2InteropTarget() },
             { MEGame.LE3, new LE3InteropTarget() },
+            { MEGame.LMP, new LMPInteropTarget() },
             { MEGame.ME2, new ME2InteropTarget() },
             { MEGame.ME3, new ME3InteropTarget() }
         };
@@ -173,6 +174,7 @@ namespace LegendaryExplorer.GameInterop
                 MEGame.LE1 => LE1InteropTarget.InteropASIVersion,
                 MEGame.LE2 => LE2InteropTarget.InteropASIVersion,
                 MEGame.LE3 => LE3InteropTarget.InteropASIVersion,
+                MEGame.LMP => LMPInteropTarget.InteropASIVersion,
                 _ => throw new ArgumentException("Invalid LE game passed to GetInteropVersion!") // Required default case
             };
         }

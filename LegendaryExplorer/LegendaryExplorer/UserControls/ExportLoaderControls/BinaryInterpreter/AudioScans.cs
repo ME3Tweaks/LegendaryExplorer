@@ -195,7 +195,7 @@ public partial class BinaryInterpreterWPF
         try
         {
             // Is this right for LE3?
-            if (CurrentLoadedExport.FileRef.Game is MEGame.ME3 or MEGame.LE3 || CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PS3)
+            if (CurrentLoadedExport.FileRef.Game.IsGame3() || CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PS3)
             {
                 int count = EndianReader.ToInt32(data, binarystart, CurrentLoadedExport.FileRef.Endian);
                 subnodes.Add(new BinInterpNode { Header = $"0x{binarystart:X4} Count: {count.ToString()}", Offset = binarystart });

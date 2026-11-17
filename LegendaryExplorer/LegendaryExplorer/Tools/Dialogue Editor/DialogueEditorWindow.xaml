@@ -335,12 +335,12 @@
                            ScrollViewer.CanContentScroll="False">
                     <!--Stage Directions ME3 -->
                     <Expander Name="StageDirections_Expander" ExpandDirection="Up" IsExpanded="False"
-                              Background="Orange" Padding="2" Panel.ZIndex="250" DockPanel.Dock="Bottom"
+                              Background="{DynamicResource Theme.Accent.Warm}" Padding="2" Panel.ZIndex="250" DockPanel.Dock="Bottom"
                               Visibility="Collapsed">
                         <Expander.Header>
                             <TextBlock Text="Stage Directions" VerticalAlignment="Center" Margin="0,0,4,0" />
                         </Expander.Header>
-                        <DockPanel Background="White" Margin="0,3,4,3" LastChildFill="True">
+                        <DockPanel Background="{DynamicResource Theme.Background.Panel}" Margin="0,3,4,3" LastChildFill="True">
                             <TextBlock DockPanel.Dock="Top" Text="Stage Directions" Margin="5,5,5,0" FontWeight="Bold"
                                        TextAlignment="Center" />
                             <TextBlock DockPanel.Dock="Top" Text="Add stage directions or notes" Foreground="Gray"
@@ -405,7 +405,7 @@
                                                 DockPanel.Dock="Right">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="Solid_Cube" Width="16" Height="16"
-                                                                 Foreground="DarkBlue" />
+                                                                 Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                             </Button.Content>
                                         </Button>
                                         <TextBlock Name="Convo_UID" Text="{Binding Path=SelectedConv.ExportUID}"
@@ -434,7 +434,7 @@
                                                 Padding="2" ToolTip="Open the Actor's level in Package Editor">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="Solid_Cube" Width="16" Height="16"
-                                                                 Foreground="DarkBlue" />
+                                                                 Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                             </Button.Content>
                                         </Button>
                                         <Button Name="OpenLevelSeqEd_Button" Grid.Column="1"
@@ -442,7 +442,7 @@
                                                 Padding="3" ToolTip="Open the Actor's level in Sequence Editor">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="Solid_ProjectDiagram" Width="16" Height="16"
-                                                                 Foreground="DarkBlue" />
+                                                                 Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                             </Button.Content>
                                         </Button>
                                     </Grid>
@@ -461,7 +461,7 @@
                                             ToolTip="Open this dialogue's sequence">
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Solid_ProjectDiagram" Width="16" Height="16"
-                                                             Foreground="DarkBlue" />
+                                                             Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                         </Button.Content>
                                     </Button>
                                     <TextBlock Text="" FontSize="10" />
@@ -487,7 +487,7 @@
                                             ToolTip="Open In Sound Explorer">
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Solid_VolumeUp" Width="16" Height="16"
-                                                             Foreground="DarkBlue" />
+                                                             Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                         </Button.Content>
                                     </Button>
                                     <TextBlock Text="" FontSize="10" />
@@ -513,7 +513,7 @@
                                             ToolTip="Open Non-speaker's AnimSet in FaceFX Editor">
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Solid_TheaterMasks" Width="16" Height="16"
-                                                             Foreground="DarkBlue" />
+                                                             Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                         </Button.Content>
                                     </Button>
                                     <TextBlock Text="" />
@@ -547,14 +547,14 @@
                                             ToolTip="Add a new script">
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Solid_PlusCircle" Width="16" Height="16"
-                                                             Foreground="DarkBlue" />
+                                                             Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                         </Button.Content>
                                     </Button>
                                     <Button Name="ScriptDeleteButton" Command="{Binding ScriptDeleteCommand}"
                                             Padding="3" Grid.Column="2" Margin="2" ToolTip="Delete selected script">
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Solid_MinusCircle" Width="16" Height="16"
-                                                             Foreground="DarkBlue" />
+                                                             Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                         </Button.Content>
                                     </Button>
                                 </Grid>
@@ -612,7 +612,7 @@
                                             ToolTip="Open this Speaker's Male AnimSet in FaceFX Editor.">
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Solid_TheaterMasks" Width="16" Height="16"
-                                                             Foreground="DarkBlue" />
+                                                             Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                         </Button.Content>
                                     </Button>
                                     <TextBlock Text="" FontSize="10" />
@@ -642,7 +642,7 @@
                                             ToolTip="Open this Speaker's Female AnimSet in FaceFX Editor.">
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Solid_TheaterMasks" Width="16" Height="16"
-                                                             Foreground="DarkBlue" />
+                                                             Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                         </Button.Content>
                                     </Button>
                                     <TextBlock Text="" />
@@ -826,7 +826,7 @@
                                                         ToolTip="Open this line's interpdata in Package editor">
                                                     <Button.Content>
                                                         <fa:ImageAwesome Icon="Solid_Cube" Width="16" Height="16"
-                                                                         Foreground="DarkBlue" />
+                                                                         Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                                     </Button.Content>
                                                 </Button>
                                                 <Button Name="OpenLineSE_Button" Command="{Binding OpenInCommand}"
@@ -834,7 +834,7 @@
                                                         ToolTip="Open this line's sequence">
                                                     <Button.Content>
                                                         <fa:ImageAwesome Icon="Solid_ProjectDiagram" Width="16"
-                                                                         Height="16" Foreground="DarkBlue" />
+                                                                         Height="16" Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                                     </Button.Content>
                                                 </Button>
                                                 <Button Name="OpenLineIE_Button" Command="{Binding OpenInCommand}"
@@ -842,7 +842,7 @@
                                                         DockPanel.Dock="Right" ToolTip="Open this line in interpeditor">
                                                     <Button.Content>
                                                         <fa:ImageAwesome Icon="Solid_SlidersH" Width="16" Height="16"
-                                                                         Foreground="DarkBlue" />
+                                                                         Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                                     </Button.Content>
                                                 </Button>
                                                 <TextBlock
@@ -908,7 +908,7 @@
                                                           SelectedItem="{Binding Path=SelectedDialogueNode.Script }"
                                                           IsSynchronizedWithCurrentItem="False"
                                                           VerticalAlignment="Center"
-                                                          Style="{StaticResource {x:Type ComboBox}}"
+                                                          Style="{DynamicResource {x:Type ComboBox}}"
                                                           IsTextSearchEnabled="True" HorizontalAlignment="Stretch"
                                                           Margin="2" />
                                             </DockPanel>
@@ -924,7 +924,7 @@
                                                       SelectedItem="{Binding Path=SelectedDialogueNode.GUIStyle}"
                                                       VerticalAlignment="Center"
                                                       ToolTip="Determines how the GUI looks. Primarily used in ME1."
-                                                      Style="{StaticResource {x:Type ComboBox}}"
+                                                      Style="{DynamicResource {x:Type ComboBox}}"
                                                       IsTextSearchEnabled="True" />
                                             <Separator />
                                             <TextBlock Text="Entry:" FontSize="12" />
@@ -937,7 +937,7 @@
                                             <ComboBox Name="Node_Combo_ReplyType" MinWidth="80"
                                                       SelectedItem="{Binding Path=SelectedDialogueNode.ReplyType}"
                                                       VerticalAlignment="Center"
-                                                      Style="{StaticResource {x:Type ComboBox}}"
+                                                      Style="{DynamicResource {x:Type ComboBox}}"
                                                       IsTextSearchEnabled="True"
                                                       ToolTip="Autocontinue: the reply moves straight to the reply list.&#x0a;Standard: Dialogue is played as normal.&#x0a;DialogEnd: The conversation is ended."
                                                       Margin="2" />
@@ -976,7 +976,7 @@
                                                             DockPanel.Dock="Right">
                                                         <Button.Content>
                                                             <fa:ImageAwesome Icon="Solid_Cube" Width="16" Height="16"
-                                                                             Foreground="DarkBlue" />
+                                                                             Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                                         </Button.Content>
                                                     </Button>
                                                     <Button Name="Open_WwStreamM_Button" Padding="3"
@@ -986,7 +986,7 @@
                                                             ToolTip="Open In Sound Explorer">
                                                         <Button.Content>
                                                             <fa:ImageAwesome Icon="Solid_VolumeUp" Width="16"
-                                                                             Height="16" Foreground="DarkBlue" />
+                                                                             Height="16" Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                                         </Button.Content>
                                                     </Button>
                                                     <TextBlock
@@ -1005,7 +1005,7 @@
                                                             ToolTip="Open this line in FaceFX Editor">
                                                         <Button.Content>
                                                             <fa:ImageAwesome Icon="Solid_TheaterMasks" Width="16"
-                                                                             Height="16" Foreground="DarkBlue" />
+                                                                             Height="16" Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                                         </Button.Content>
                                                     </Button>
                                                     <TextBlock
@@ -1030,7 +1030,7 @@
                                                             DockPanel.Dock="Right">
                                                         <Button.Content>
                                                             <fa:ImageAwesome Icon="Solid_Cube" Width="16" Height="16"
-                                                                             Foreground="DarkBlue" />
+                                                                             Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                                         </Button.Content>
                                                     </Button>
                                                     <Button Name="Open_WwStreamF_Button" Padding="3"
@@ -1040,7 +1040,7 @@
                                                             ToolTip="Open this stream in Soundplorer">
                                                         <Button.Content>
                                                             <fa:ImageAwesome Icon="Solid_VolumeUp" Width="16"
-                                                                             Height="16" Foreground="DarkBlue" />
+                                                                             Height="16" Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                                         </Button.Content>
                                                     </Button>
                                                     <TextBlock
@@ -1059,7 +1059,7 @@
                                                             ToolTip="Open this line in FaceFX Editor">
                                                         <Button.Content>
                                                             <fa:ImageAwesome Icon="Solid_TheaterMasks" Width="16"
-                                                                             Height="16" Foreground="DarkBlue" />
+                                                                             Height="16" Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                                         </Button.Content>
                                                     </Button>
                                                     <TextBlock
@@ -1087,14 +1087,14 @@
                                             <ColumnDefinition Width="31"></ColumnDefinition>
                                             <ColumnDefinition Width="31"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Background="GhostWhite">Order</Label>
-                                        <Label Grid.Column="1" Background="GhostWhite">Entry Link</Label>
+                                        <Label Grid.Column="0" Background="{DynamicResource Theme.Background.HeaderLabel}">Order</Label>
+                                        <Label Grid.Column="1" Background="{DynamicResource Theme.Background.HeaderLabel}">Entry Link</Label>
                                         <Button Name="StartAddButton" Command="{Binding StartAddCommand}"
                                                 CommandParameter="Add" Padding="3" DockPanel.Dock="Right"
                                                 IsEnabled="True" Grid.Column="2" Margin="2" ToolTip="Add a new start">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="Solid_PlusCircle" Width="16" Height="16"
-                                                                 Foreground="DarkBlue" />
+                                                                 Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                             </Button.Content>
                                         </Button>
                                         <Button Name="StartDeleteButton" Command="{Binding StartDeleteCommand}"
@@ -1102,7 +1102,7 @@
                                                 Margin="2" ToolTip="Delete selected start">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="Solid_MinusCircle" Width="16" Height="16"
-                                                                 Foreground="DarkBlue" />
+                                                                 Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                             </Button.Content>
                                         </Button>
                                         <Button Name="StartUpButton" Command="{Binding StartUpCommand}"
@@ -1111,7 +1111,7 @@
                                                 ToolTip="Move selected start up">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="Solid_ArrowCircleUp" Width="16" Height="16"
-                                                                 Foreground="DarkBlue" />
+                                                                 Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                             </Button.Content>
                                         </Button>
                                         <Button Name="StartDownButton" Command="{Binding StartDownCommand}"
@@ -1120,7 +1120,7 @@
                                                 ToolTip="Move selected start down">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="Solid_ArrowCircleDown" Width="16" Height="16"
-                                                                 Foreground="DarkBlue" />
+                                                                 Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                                             </Button.Content>
                                         </Button>
                                     </Grid>
@@ -1179,13 +1179,13 @@
                             <ColumnDefinition Width="31"></ColumnDefinition>
                             <ColumnDefinition Width="31"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Background="GhostWhite">ID</Label>
-                        <Label Grid.Column="1" Background="GhostWhite">Speaker Tag</Label>
+                        <Label Grid.Column="0" Background="{DynamicResource Theme.Background.HeaderLabel}">ID</Label>
+                        <Label Grid.Column="1" Background="{DynamicResource Theme.Background.HeaderLabel}">Speaker Tag</Label>
                         <Button Name="SpkrUpButton" Command="{Binding SpeakerMoveUpCommand}" CommandParameter="Up"
                                 Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="2" Margin="2">
                             <Button.Content>
                                 <fa:ImageAwesome Icon="Solid_ArrowCircleUp" Width="16" Height="16"
-                                                 Foreground="DarkBlue" />
+                                                 Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                             </Button.Content>
                         </Button>
                         <Button Name="SpkrDownButton" Command="{Binding SpeakerMoveDownCommand}"
@@ -1193,7 +1193,7 @@
                                 Grid.Column="3" Margin="2">
                             <Button.Content>
                                 <fa:ImageAwesome Icon="Solid_ArrowCircleDown" Width="16" Height="16"
-                                                 Foreground="DarkBlue" />
+                                                 Foreground="{DynamicResource Theme.Foreground.IconAccent}" />
                             </Button.Content>
                         </Button>
                     </Grid>
@@ -1302,12 +1302,12 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}"
                                                              Value="true">
-                                                    <Setter Property="Background" Value="Yellow" />
+                                                    <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}" />
                                                     <Setter Property="ToolTip"
                                                             Value="This export has been modified but the file has not yet been saved" />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding IsParsed}" Value="False">
-                                                    <Setter Property="Background" Value="GhostWhite" />
+                                                    <Setter Property="Background" Value="{DynamicResource Theme.Background.HeaderLabel}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -1355,7 +1355,17 @@
                     <TabControl TabStripPlacement="Left" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2"
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}">
                         <TabControl.Resources>
+                            <!-- A Style placed in TabControl.Resources (even unkeyed) is found before the dark
+                                 theme's own implicit TabItem style further up the tree, so it fully shadows that
+                                 style rather than layering on top of it - this local override adding only
+                                 HeaderTemplate/Padding left every other TabItem property (Background, Template,
+                                 selected/hover triggers, etc) falling back to the unstyled native look instead
+                                 of the dark theme. Duplicating Controls.Shared.xaml's TabItem Setters/Template
+                                 here (see that file for the fuller explanation of its own trigger layout) keeps
+                                 the dark styling while still applying the rotated header this tab strip needs. -->
                             <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="Background" Value="{DynamicResource Theme.Background.Panel}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Secondary}"/>
                                 <Setter Property="HeaderTemplate">
                                     <Setter.Value>
                                         <DataTemplate>
@@ -1368,6 +1378,29 @@
                                     </Setter.Value>
                                 </Setter>
                                 <Setter Property="Padding" Value="3" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TabItem">
+                                            <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1,1,0,1" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.Window}"/>
+                                                    <Setter TargetName="Bd" Property="Margin" Value="0,0,-1,0"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+                                                </Trigger>
+                                                <Trigger SourceName="Bd" Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Disabled}"/>
+                                                    <Setter TargetName="Bd" Property="Opacity" Value="0.6"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </TabControl.Resources>
                         <TabItem Header="Properties">
@@ -1379,7 +1412,13 @@
                             <TabControl Name="faceFXEditorTabControl"
                                         SelectionChanged="GenderTabControl_SelectionChanged">
                                 <TabControl.Resources>
+                                    <!-- Same TabControl.Resources shadowing issue as the outer Properties/InterpData/
+                                         FaceFX/Audio tab strip above - duplicate the dark theme's TabItem Setters/
+                                         Template here too rather than leaving this local override with only
+                                         HeaderTemplate/Padding (which falls back to the native unstyled look). -->
                                     <Style TargetType="{x:Type TabItem}">
+                                        <Setter Property="Background" Value="{DynamicResource Theme.Background.Panel}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Secondary}"/>
                                         <Setter Property="HeaderTemplate">
                                             <Setter.Value>
                                                 <DataTemplate>
@@ -1392,6 +1431,29 @@
                                             </Setter.Value>
                                         </Setter>
                                         <Setter Property="Padding" Value="3" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="TabItem">
+                                                    <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1,1,1,0" Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.Window}"/>
+                                                            <Setter TargetName="Bd" Property="Margin" Value="0,0,0,-1"/>
+                                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+                                                        </Trigger>
+                                                        <Trigger SourceName="Bd" Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Disabled}"/>
+                                                            <Setter TargetName="Bd" Property="Opacity" Value="0.6"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
                                     </Style>
                                 </TabControl.Resources>
                                 <TabItem x:Name="FaceFxTab_F" Header="Female">

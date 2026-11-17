@@ -48,6 +48,8 @@ namespace LegendaryExplorerCore.PlotDatabase.Databases
             MEGame.ME3 => "le3.json",
             MEGame.ME2 => "le2.json",
             MEGame.ME1 => "le1.json",
+            // LMP does not use plot database.
+            MEGame.LMP => null,
             MEGame.LE3 => "le3.json",
             MEGame.LE2 => "le2.json",
             MEGame.LE1 => "le1.json",

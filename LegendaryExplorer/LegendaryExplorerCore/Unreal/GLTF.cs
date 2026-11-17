@@ -2282,10 +2282,11 @@ namespace LegendaryExplorerCore.Unreal
                 for (var i = 0; i < skeleton.Count; i++)
                 {
                     var currentBone = skeleton[i];
-                    meshBin.NameIndexMap.Add(currentBone.Name, i);
+                    var boneName = NameReference.FromInstancedString(currentBone.Name);
+                    meshBin.NameIndexMap.Add(boneName, i);
                     meshBin.RefSkeleton[i] = new MeshBone()
                     {
-                        Name = currentBone.Name,
+                        Name = boneName,
                         NumChildren = currentBone.NumChildren,
                         BoneColor = new LegendaryExplorerCore.SharpDX.Color(new Vector4(1, 1, 1, 1)),
                         Flags = 0,
@@ -2535,8 +2536,8 @@ namespace LegendaryExplorerCore.Unreal
                             new IntProperty(yaw.RadiansToUnrealRotationUnits(), "Yaw"),
                             new IntProperty(roll.RadiansToUnrealRotationUnits(), "Roll")
                         ) { Name = "RelativeRotation" },
-                        new NameProperty(socket.Name, "SocketName"),
-                        new NameProperty(socket.Bone, "BoneName")
+                        new NameProperty(NameReference.FromInstancedString(socket.Name), "SocketName"),
+                        new NameProperty(NameReference.FromInstancedString(socket.Bone), "BoneName")
                     };
                     if (Vector3.DistanceSquared(socket.RelativeScale, Vector3.One) > 0.0001)
                     {

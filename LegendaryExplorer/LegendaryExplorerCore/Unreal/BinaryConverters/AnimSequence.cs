@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
@@ -28,6 +29,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public float RateScale;
         public float SequenceLength;
         private MEGame compressedDataSource;
+        private Endian compressedDataEndian = Endian.Little; // Console platforms (WiiU) store keys big endian
         private int[] TrackOffsets;
         private AnimationCompressionFormat rotCompression;
         private AnimationCompressionFormat posCompression;
@@ -56,6 +58,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.IsLoading)
             {
                 compressedDataSource = sc.Game;
+                compressedDataEndian = sc.Pcc.Endian;
                 NumFrames = Export.GetProperty<IntProperty>("NumFrames")?.Value ?? 0;
                 RateScale = Export.GetProperty<FloatProperty>("RateScale")?.Value ?? 1f;
                 SequenceLength = Export.GetProperty<FloatProperty>("SequenceLength")?.Value ?? 0;
@@ -119,7 +122,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 // 12/24/2024 - Nothing to decompress - Mgamerz
                 return;
             }
-            var ms = new MemoryStream(CompressedAnimationData);
+            var ms = new EndianReader(new MemoryStream(CompressedAnimationData)) { Endian = compressedDataEndian };
             RawAnimationData = [];
 
             for (int i = 0; i < Bones.Count; i++)
@@ -454,6 +457,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             CompressedAnimationData = ms.ToArray();
             compressedDataSource = game;
+            compressedDataEndian = Endian.Little;
 
             void PadTo4()
             {

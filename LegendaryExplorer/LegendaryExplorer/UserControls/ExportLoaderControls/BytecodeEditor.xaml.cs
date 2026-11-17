@@ -153,7 +153,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             ScriptFooterBlocks.ClearEx();
             DecompiledScriptBoxTitle = "Decompiled Script";
             MEGame game = Pcc.Game;
-            if (game is MEGame.ME3 or MEGame.LE1 or  MEGame.LE2 or MEGame.LE3 or MEGame.UDK || Pcc.Platform == MEPackage.GamePlatform.PS3)
+            if (game is MEGame.ME3 or MEGame.LE1 or  MEGame.LE2 or MEGame.LE3 or MEGame.LMP or MEGame.UDK || Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 var func = new Function(data, CurrentLoadedExport);
                 func.ParseFunction();

@@ -50,12 +50,14 @@
                             <Border Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Background="Transparent">
                                 <DockPanel>
 
-                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}" FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
+                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}" FontSize="10" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Foreground" Value="{Binding Path=ForegroundColor}"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
-                                                        <Setter Property="Background" Value="Yellow"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}"/>
+                                                        <Setter Property="Foreground" Value="Black"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -63,12 +65,14 @@
                                     </TextBlock>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Width="16" Height="16" Margin="0,0,3,0" Source="{Binding Entry, Converter={StaticResource EntryFileTypeIconPathConverter}}" Visibility="{Binding Entry, Converter={StaticResource EntryFileTypeConverter}}" />
-                                        <TextBlock  Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}" VerticalAlignment="Center">
+                                        <TextBlock  Text="{Binding DisplayName}" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="{x:Type TextBlock}">
+                                                    <Setter Property="Foreground" Value="{Binding Path=ForegroundColor}"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
-                                                            <Setter Property="Background" Value="Yellow"/>
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}"/>
+                                                            <Setter Property="Foreground" Value="Black"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>

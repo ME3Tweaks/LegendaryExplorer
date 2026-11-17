@@ -197,6 +197,13 @@ public class UMap<TKey, TValue> : UMapBase<TKey, TValue, MapKeyFuncs<TKey, TValu
     public UMap(int capacity) : base(capacity){}
 }
 
+public class UReverseMap<TKey, TValue> : UMap<TKey, TValue>
+{
+    public UReverseMap() : base() { }
+    public UReverseMap(int capacity) : base(capacity) { }
+}
+
+
 public class UMultiMap<TKey, TValue> : UMapBase<TKey, TValue, MultiMapKeyFuncs<TKey, TValue>>
 {
     public UMultiMap() : base() { }

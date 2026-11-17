@@ -12,12 +12,12 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: 'LegendaryExplorer\LegendaryExplorer.sln'
+  solution: 'LegendaryExplorer\LegendaryExplorer.slnx'
   buildPlatform: 'x64'
   buildConfiguration: 'WinAzureRelease'
-  appMajorMin: '6.5'
-  appMajor: '6'
-  appMinor: '5'
+  appMajorMin: '7.0'
+  appMajor: '7'
+  appMinor: '0'
   appPatch: '0'
   netVersion: '10'
   disable.coverage.autogenerate: 'true'

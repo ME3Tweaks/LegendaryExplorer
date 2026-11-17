@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2019 Pawel Kolodziejski
  *
  * This program is free software; you can redistribute it and/or
@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers.Binary;
 using System.IO;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Compression;
@@ -165,13 +166,16 @@ namespace LegendaryExplorerCore.Unreal
         {
             int maxBlockSize = type is StorageTypes.extOodle or StorageTypes.pccOodle ? maxBlockSizeOodle : maxBlockSizeOT;
             uint blockTag = stream.ReadUInt32();
-            if (blockTag != textureTag)
+            // Console platforms (WiiU, PS3) store the chunk header big endian
+            bool bigEndian = blockTag == BinaryPrimitives.ReverseEndianness(textureTag);
+            if (blockTag != textureTag && !bigEndian)
                 throw new Exception("Texture magic wrong");
-            int blockSize = stream.ReadInt32();
+            int ReadInt32() => bigEndian ? BinaryPrimitives.ReverseEndianness(stream.ReadInt32()) : stream.ReadInt32();
+            int blockSize = ReadInt32();
             if (blockSize != maxBlockSize)
                 throw new Exception("Texture header broken");
-            int compressedChunkSize = stream.ReadInt32();
-            int uncompressedChunkSize = stream.ReadInt32();
+            int compressedChunkSize = ReadInt32();
+            int uncompressedChunkSize = ReadInt32();
             if (uncompressedChunkSize != uncompressedSize)
                 throw new Exception("Texture header broken");
 
@@ -185,8 +189,8 @@ namespace LegendaryExplorerCore.Unreal
             {
                 var block = new DecompressionChunkBlock
                 {
-                    CompressedSize = stream.ReadUInt32(),
-                    UncompressedSize = stream.ReadInt32(),
+                    CompressedSize = (uint)ReadInt32(),
+                    UncompressedSize = ReadInt32(),
                 };
                 block.DecompressedBuffer = new ArraySegment<byte>(decompressedBuffer, uncompressedOffset, block.UncompressedSize);
                 blocks[b] = block;
@@ -245,8 +249,9 @@ namespace LegendaryExplorerCore.Unreal
                 case StorageTypes.extLZMA:
                     Parallel.ForEach(blocks, static block =>
                     {
-                        if ((uint)LZMA.Decompress(block.CompressedBuffer, block.DecompressedBuffer) != block.UncompressedSize)
-                            throw new Exception("Decompressed data size not expected!");
+                        // LZMA.Decompress returns a status code, not the decompressed size
+                        if (LZMA.Decompress(block.CompressedBuffer, block.DecompressedBuffer) != 0)
+                            throw new Exception("LZMA decompression failed!");
                     });
                     break;
                 default:
@@ -284,8 +289,8 @@ namespace LegendaryExplorerCore.Unreal
                 MEGame.ME3 when isExternal => StorageTypes.extZlib,
                 MEGame.ME3 => StorageTypes.pccZlib,
 
-                MEGame.LE1 or MEGame.LE2 or MEGame.LE3 when isExternal => StorageTypes.extOodle,
-                MEGame.LE1 or MEGame.LE2 or MEGame.LE3 => StorageTypes.pccUnc, // LE game packages are always compressed. Do not compress pcc stored textures
+                MEGame.LE1 or MEGame.LE2 or MEGame.LE3 or MEGame.LMP when isExternal => StorageTypes.extOodle,
+                MEGame.LE1 or MEGame.LE2 or MEGame.LE3 or MEGame.LMP => StorageTypes.pccUnc, // LE game packages are always compressed. Do not compress pcc stored textures
                 
                 MEGame.UDK when isExternal => StorageTypes.extLZO,
                 MEGame.UDK => StorageTypes.pccLZO,

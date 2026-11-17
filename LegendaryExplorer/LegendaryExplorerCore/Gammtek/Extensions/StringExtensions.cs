@@ -16,6 +16,7 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
             if (game == MEGame.LE2) return 5;
             if (game == MEGame.LE3) return 6;
             if (game == MEGame.LELauncher) return 7; // ME3Tweaks Mod Manager uses this to denote LELauncher game
+            if (game == MEGame.LMP) return 8; // ME3Tweaks Mod Manager uses this to denote LMP game
             return 0;
         }
 
@@ -38,6 +39,12 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
             {
                 if (useLEShortName) return "Mass Effect 3 LE";
                 return "Mass Effect 3 (Legendary Edition)";
+            }
+            if (game == MEGame.LMP)
+            {
+                if (useLEShortName) return "Legendary Edition MP";
+                return "Mass Effect Legendary Edition Multiplayer";
+
             }
             if (game == MEGame.LELauncher)
             {

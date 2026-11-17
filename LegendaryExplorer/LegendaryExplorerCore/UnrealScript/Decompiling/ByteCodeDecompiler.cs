@@ -94,6 +94,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             FileLib = lib;
             Usop = usop;
             Game = dataContainer.Export.Game;
+            BigEndian = !dataContainer.Export.FileRef.Endian.IsNative;
             extNativeIndex = (byte)(Game.IsGame3() ? 0x70 : 0x60);
             ReplicatedProperties = replicatedProperties;
         }

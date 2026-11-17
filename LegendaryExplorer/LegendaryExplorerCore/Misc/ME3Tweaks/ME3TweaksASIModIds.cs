@@ -99,6 +99,9 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         public const int LE3_FUNCTION_LOGGER = 85; // 'Function Logger'
         public const int LE3_PNG_SCREENSHOTS = 46; // 'PNG ScreenShots'
 
+        // LMP ==============================================
+        public const int LMP_LEX_INTEROP = 1206; // Same ASI as LE3.
+
 
         /// <summary>
         /// Gets a list of installed ASI update groups (mod ids) and their versions. only works on ASIs built after 01/26/2026

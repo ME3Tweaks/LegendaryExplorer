@@ -249,7 +249,7 @@
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}"
                                                             Value="true">
-                                                <Setter Property="Background" Value="Yellow" />
+                                                <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}" />
                                                 <Setter Property="ToolTip"
                                                         Value="This export has been modified but the file has not yet been saved" />
                                             </DataTrigger>
@@ -305,11 +305,11 @@
                             <LineBreak/>
                             If you have issues with Sequence Editor, please report them to one of the following places:
                             <LineBreak/>
-                            - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.ME3TweaksDiscordInviteURL), Mode=OneTime}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                            - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.ME3TweaksDiscordInviteURL), Mode=OneTime}" Foreground="{DynamicResource Theme.Accent}" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="The ME3Tweaks Discord (Legendary_Explorer channel)"/>
                             </Hyperlink>                                <LineBreak/>
-                            - The issues list on GitHub at 
-                            <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.BugReportURL), Mode=OneTime}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                            - The issues list on GitHub at
+                            <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.BugReportURL), Mode=OneTime}" Foreground="{DynamicResource Theme.Accent}" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="{Binding Path=(misc:AppLinks.BugReportURL), Mode=OneTime}"/>
                             </Hyperlink>
                         </TextBlock>
@@ -325,15 +325,16 @@
                                                         ItemsSource="{Binding Sublinks}">
                                 <StackPanel Orientation="Horizontal">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding DisplayName}"
-                                                    Foreground="{Binding Path=ForegroundColor}">
+                                        <TextBlock Text="{Binding DisplayName}">
                                             <TextBlock.Style>
                                                 <Style TargetType="{x:Type TextBlock}">
+                                                    <Setter Property="Foreground" Value="{Binding Path=ForegroundColor}"/>
                                                     <Style.Triggers>
                                                         <DataTrigger
                                                             Binding="{Binding Path=Entry.EntryHasPendingChanges}"
                                                             Value="true">
-                                                            <Setter Property="Background" Value="Yellow" />
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}" />
+                                                            <Setter Property="Foreground" Value="Black" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -350,13 +351,13 @@
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                                Color="LightBlue" />
+                                                Color="{DynamicResource Theme.Color.Selected}" />
                             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
-                                                Color="Black" />
+                                                Color="{DynamicResource Theme.Color.OnAccent}" />
                             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
-                                                Color="LightBlue" />
+                                                Color="{DynamicResource Theme.Color.Selected}" />
                             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-                                                Color="Black" />
+                                                Color="{DynamicResource Theme.Color.OnAccent}" />
 
                         </TreeView.Resources>
                         <TreeView.ItemContainerStyle>
@@ -390,7 +391,7 @@
                     </sharedUi:WindowsFormsHostEx>
                     <Expander Grid.Column="0" Name="toolBoxExpander" HorizontalAlignment="Left"
                                 IsEnabled="{Binding SelectedSequence, Converter={StaticResource NullEnabledConverter}}"
-                                ExpandDirection="Right" IsExpanded="False" Background="Orange"
+                                ExpandDirection="Right" IsExpanded="False"
                                 sharedUi:Bindings.VisibilityToEnabled="True">
                         <Expander.Header>
                             <TextBlock Text="Sequence Object Toolbox" Foreground="Black" VerticalAlignment="Center"

@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
-
-#if WINDOWS
-using Microsoft.Win32;
-#endif
 
 namespace LegendaryExplorerCore.GameFilesystem
 {
@@ -21,8 +18,6 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <returns>True if a path was found in the registry, false otherwise</returns>
         public static bool LookupDefaultPath()
         {
-#pragma warning disable CA1416
-#if WINDOWS
             RegistryKey biowareKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\BioWare", false);
             RegistryKey leKey;
             if (biowareKey != null)
@@ -48,7 +43,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             RegistryKey steamKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1328670", false);
             if (steamKey != null)
             {
-                string directory = (string) steamKey.GetValue(@"InstallLocation");
+                string directory = (string)steamKey.GetValue(@"InstallLocation");
                 if (!string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory))
                 {
                     LegendaryExplorerCoreLibSettings.Instance.LEDirectory = directory;
@@ -56,10 +51,6 @@ namespace LegendaryExplorerCore.GameFilesystem
                 }
             }
             return false;
-#pragma warning restore CA1416
-#else
-            return false; // NOT IMPLEMENTED ON OTHER PLATFORMS
-#endif
         }
 
         /// <summary>
@@ -99,9 +90,18 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <returns>Path to Launcher folder</returns>
         public static string GetLauncherPath(string rootPathOverride = null)
         {
-            if (rootPathOverride == null) rootPathOverride = LegendaryExplorerCoreLibSettings.Instance.LEDirectory;
-            if (rootPathOverride == null) return null; // There is no usable root path
-            return Path.Combine(rootPathOverride, "Game", "Launcher");
+            // 11/1/2026 - If you're supplying a root path override you already know the path (probably)
+            if (rootPathOverride != null)
+            {
+                return rootPathOverride;
+            }
+
+            var leDirectory = LegendaryExplorerCoreLibSettings.Instance.LEDirectory;
+            if (leDirectory == null)
+            {
+                return null;
+            }
+            return Path.Combine(leDirectory, "Game", "Launcher");
         }
 
         /// <summary>

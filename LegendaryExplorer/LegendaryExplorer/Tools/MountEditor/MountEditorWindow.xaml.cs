@@ -32,7 +32,8 @@ namespace LegendaryExplorer.Tools.MountEditor
             new UIGameID(MEGame.ME2, "Mass Effect 2"),
             new UIGameID(MEGame.ME3, "Mass Effect 3"),
             new UIGameID(MEGame.LE2, "Mass Effect 2 LE"),
-            new UIGameID(MEGame.LE3, "Mass Effect 3 LE")
+            new UIGameID(MEGame.LE3, "Mass Effect 3 LE"),
+            new UIGameID(MEGame.LMP, "Mass Effect LE Multiplayer"),
         };
 
         private UIGameID _selectedGame;

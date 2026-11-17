@@ -66,9 +66,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref LightingGuid);
                 if (sc.IsSaving && sc.Game is MEGame.UDK) // We can't lightmass unless it's UDK so no point changing this unless it's UDK.
                 {
-                    // Ensure LightmassSettings struct is big enough 
-                    var lightmassCount = Surfs.Length > 0 ? Surfs.Max(x => x.iLightmassIndex) : 0; //Will +1
-                    LightmassSettings = new LightmassPrimitiveSettings[lightmassCount]; // Index 1 = 2 items in list
+                    // Ensure LightmassSettings struct is big enough
+                    var lightmassMaxIndex = Surfs.Length > 0 ? Surfs.Max(x => x.iLightmassIndex) : -1;
+                    LightmassSettings = new LightmassPrimitiveSettings[lightmassMaxIndex + 1]; // Index 1 = 2 items in list
                     for (int i = 0; i < LightmassSettings.Length; i++)
                     {
                         LightmassSettings[i] = new LightmassPrimitiveSettings

@@ -133,7 +133,7 @@ public class FGPUSkinVertexFactoryShaderParameters : FVertexFactoryShaderParamet
         sc.SerializeUnmanaged(ref MeshOrigin);
         sc.SerializeUnmanaged(ref MeshExtension);
 
-        if (sc.Game is MEGame.LE3)
+        if (sc.Game.IsLEGame3())
         {
             sc.SerializeUnmanaged(ref WoundEllipse0);
             sc.SerializeUnmanaged(ref WoundEllipse1);

@@ -207,6 +207,36 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters.Shaders
 
         // Appears to be BioWare specific as it is behind licensee check
         public FShaderParameter WrapLightingParameters;
+
+        /// <summary>LE3's cached contiguous-register checks. Loading preserves the serialized values.</summary>
+        public readonly bool HasContiguousPixelScalarParameters => UniformPixelScalarShaderParameters_IsValid != 0;
+        public readonly bool HasContiguousPixelVectorParameters => UniformPixelVectorShaderParameters_IsValid != 0;
+
+        /// <summary>
+        /// Rebuilds the two LE3 validity flags for newly bound parameters. Native 0x7ff74ab37e30
+        /// accepts empty arrays, otherwise requires consecutive expression indices and 16-byte
+        /// registers in one buffer. This must not run implicitly while loading existing shaders.
+        /// </summary>
+        public void RecomputeLE3UniformParameterValidity()
+        {
+            UniformPixelScalarShaderParameters_IsValid = IsContiguous(UniformPixelScalarShaderParameters) ? 1 : 0;
+            UniformPixelVectorShaderParameters_IsValid = IsContiguous(UniformPixelVectorShaderParameters) ? 1 : 0;
+
+            static bool IsContiguous(TUniformParameter<FShaderParameter>[] parameters)
+            {
+                if (parameters == null || parameters.Length == 0) return true;
+                var first = parameters[0];
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    var current = parameters[i];
+                    if (current.Param.NumBytes != 16 || current.Param.BufferIndex != first.Param.BufferIndex ||
+                        (long)current.Index != (long)first.Index + i ||
+                        current.Param.BaseIndex != (long)first.Param.BaseIndex + 16L * i) return false;
+                }
+                return true;
+            }
+        }
+
         public void Serialize(SerializingContainer sc)
         {
             sc.SerializeUnmanaged(ref CameraWorldPosition);
@@ -255,7 +285,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public void SerializeUniformParameters<TParam>(ref TUniformParameter<TParam>[] params1, byte param1TypeId, ref TUniformParameter<TParam>[] params2, byte param2TypeId) where TParam : unmanaged
         {
-            if (Game is MEGame.LE3)
+            if (Game.IsLEGame3())
             {
                 Serialize(ref params1, SerializeUnmanaged);
                 Serialize(ref params2, SerializeUnmanaged);

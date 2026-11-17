@@ -1,0 +1,699 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                    xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+                    xmlns:conv="clr-namespace:Xceed.Wpf.Toolkit.Converters;assembly=DotNetProjects.Wpf.Extended.Toolkit"
+                    xmlns:prim="clr-namespace:Xceed.Wpf.Toolkit.Primitives;assembly=DotNetProjects.Wpf.Extended.Toolkit">
+
+    <!-- Dark-mode-only overrides for the in-repo Xceed toolkit fork (Xceed.Wpf.Toolkit project).
+         Only the xctk controls actually used in the app are covered here (confirmed by grep):
+         AutoSelectTextBox, BusyIndicator, ByteUpDown, CheckComboBox, CheckListBox, ColorPicker,
+         DoubleUpDown, DropDownButton, IntegerUpDown, SingleUpDown, WatermarkComboBox, WatermarkTextBox.
+         These are {x:Type xctk:Control}-keyed Styles, which win over the fork's own Themes/Generic.xaml
+         default style during normal WPF resource lookup once merged into a window's resources - the
+         fork itself is never edited, so light mode is provably unaffected. -->
+
+    <!-- ============================== Simple Setter-level overrides ============================== -->
+
+    <Style TargetType="{x:Type xctk:WatermarkTextBox}">
+        <Setter Property="sharedUi:TextBoxBehavior.TripleClickSelectAll" Value="True"/>
+        <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+    </Style>
+
+    <Style TargetType="{x:Type xctk:AutoSelectTextBox}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+    </Style>
+
+    <!-- WatermarkComboBox needs a full template copy, not a Setter override: its toggle-button chrome
+         is a nested Style/ControlTemplate that hardcodes gradient literals (#FFF0F0F0 etc.) instead of
+         reading the outer control's Background via TemplateBinding - same "StaticResource-in-fork-template"
+         limitation as ColorPicker. -->
+    <Style x:Key="Theme.WatermarkComboBoxToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="ClickMode" Value="Press"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="templateRoot" Background="{DynamicResource Theme.Background.Control}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                        <Border x:Name="splitBorder" BorderBrush="Transparent" BorderThickness="1" HorizontalAlignment="Right" Margin="0" SnapsToDevicePixels="True"
+                                Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
+                            <Path x:Name="Arrow" Data="F1M0,0L2.667,2.66665 5.3334,0 5.3334,-1.78168 2.6667,0.88501 0,-1.78168 0,0z"
+                                  Fill="{DynamicResource Theme.Foreground.Primary}" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
+                        </Border>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                            <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Theme.BorderFocus}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Theme.Background.ControlPressed}"/>
+                            <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Theme.Accent}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Theme.Background.Panel}"/>
+                            <Setter Property="Fill" TargetName="Arrow" Value="{DynamicResource Theme.Foreground.Disabled}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <ControlTemplate x:Key="Theme.WatermarkComboBoxTemplate" TargetType="{x:Type xctk:WatermarkComboBox}">
+        <Grid x:Name="templateRoot" SnapsToDevicePixels="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
+            </Grid.ColumnDefinitions>
+            <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2"
+                   IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                   Margin="1" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
+                <Grid x:Name="DropDown" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{TemplateBinding ActualWidth}" SnapsToDevicePixels="True">
+                    <Border x:Name="DropDownBorder" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1" Background="{DynamicResource Theme.Background.Overlay}">
+                        <ScrollViewer x:Name="DropDownScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </Popup>
+            <ToggleButton x:Name="toggleButton" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                          Background="{TemplateBinding Background}" Grid.ColumnSpan="2"
+                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                          Style="{StaticResource Theme.WatermarkComboBoxToggleButtonStyle}"/>
+            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}"
+                              ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              IsHitTestVisible="False" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            <Border x:Name="Border" Background="{DynamicResource Theme.Background.Control}" Margin="{TemplateBinding BorderThickness}" Visibility="Collapsed">
+                <TextBox x:Name="PART_EditableTextBox" Foreground="{DynamicResource Theme.Foreground.Primary}"
+                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                         IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
+                         Margin="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+                    <TextBox.Template>
+                        <ControlTemplate TargetType="TextBox">
+                            <ScrollViewer x:Name="PART_ContentHost" Background="Transparent" Focusable="False"
+                                          HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </ControlTemplate>
+                    </TextBox.Template>
+                </TextBox>
+            </Border>
+            <ContentPresenter x:Name="PART_WatermarkHost" Content="{TemplateBinding Watermark}" ContentTemplate="{TemplateBinding WatermarkTemplate}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              IsHitTestVisible="False" Margin="{TemplateBinding Padding}" Visibility="Collapsed"/>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="HasItems" Value="False">
+                <Setter Property="Height" TargetName="DropDownBorder" Value="95"/>
+            </Trigger>
+            <Trigger Property="CanContentScroll" SourceName="DropDownScrollViewer" Value="False"/>
+            <Trigger Property="IsEditable" Value="True">
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="Padding" Value="2"/>
+                <Setter Property="Visibility" Value="Visible" TargetName="Border"/>
+                <Setter Property="Visibility" Value="Collapsed" TargetName="contentPresenter"/>
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsKeyboardFocusWithin" Value="False"/>
+                    <Condition Property="Text" Value=""/>
+                </MultiTrigger.Conditions>
+                <Setter Property="Visibility" TargetName="PART_WatermarkHost" Value="Visible"/>
+            </MultiTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type xctk:WatermarkComboBox}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+        <Setter Property="Template" Value="{StaticResource Theme.WatermarkComboBoxTemplate}"/>
+    </Style>
+
+    <!-- StaticResource requires these to be defined earlier in this same dictionary than their first use
+         below (WPF does not allow forward references for StaticResource), hence declared here rather than
+         alongside the rest of the converters further down with the ColorPicker section. -->
+    <BooleanToVisibilityConverter x:Key="Theme.BooleanToVisibilityConverter"/>
+    <xctk:InverseBoolConverter x:Key="Theme.InverseBoolConverter"/>
+
+    <!-- Setter-only isn't enough here either - the dropdown-toggle chrome is drawn by Xceed's own
+         chrome:ButtonChrome (hardcoded gradients, same as DropDownButton above) with a literal
+         Fill="Black" arrow, and both the ToggleButton's Style and the outer template's StaticResource
+         references to it resolve within Xceed's own Generic.xaml document, not reachable from here at
+         all - so a full ControlTemplate copy is required, not just a Style key override. -->
+    <Style TargetType="{x:Type xctk:CheckComboBox}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type xctk:CheckComboBox}">
+                    <Grid x:Name="MainGrid" SnapsToDevicePixels="True">
+                        <Popup x:Name="PART_Popup" AllowsTransparency="True"
+                               IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                               StaysOpen="False" Margin="1" Placement="Bottom">
+                            <Grid MinWidth="{Binding ActualWidth, ElementName=MainGrid}">
+                                <Border x:Name="DropDownBorder" MaxHeight="{Binding MaxDropDownHeight, RelativeSource={RelativeSource TemplatedParent}}"
+                                        BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1"
+                                        Background="{DynamicResource Theme.Background.Overlay}">
+                                    <ScrollViewer x:Name="DropDownScrollViewer">
+                                        <StackPanel>
+                                            <prim:SelectAllSelectorItem x:Name="PART_SelectAllSelectorItem"
+                                                                        Content="{TemplateBinding SelectAllContent}"
+                                                                        Visibility="{Binding IsSelectAllActive, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Theme.BooleanToVisibilityConverter}}"/>
+                                            <ItemsPresenter x:Name="PART_ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
+                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </Border>
+                            </Grid>
+                        </Popup>
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"/>
+                        <ToggleButton x:Name="PART_DropDownButton"
+                                      Content="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                      Focusable="False"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Padding="{TemplateBinding Padding}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      IsHitTestVisible="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Theme.InverseBoolConverter}}">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Grid Background="Transparent">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="20"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="TextBox" Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                 Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type xctk:CheckComboBox}}}"
+                                                 IsReadOnly="True" Focusable="False" IsHitTestVisible="False" Cursor="Arrow" BorderThickness="0" Background="Transparent"
+                                                 Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                 HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                                        <Path x:Name="Arrow" Grid.Column="1" Width="8" Height="4" Data="M0,0 L4,4 L8,0"
+                                              Stroke="{DynamicResource Theme.Foreground.Primary}" StrokeThickness="1.5"
+                                              StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter TargetName="Arrow" Property="Stroke" Value="{DynamicResource Theme.Foreground.Disabled}"/>
+                                        </Trigger>
+                                        <!-- IsHitTestVisible="False" above lets clicks on the displayed value fall through to
+                                             open the dropdown (a read-only TextBox otherwise swallows the click for its own
+                                             text-selection handling, so only the arrow column would respond). Only restore
+                                             hit-testing here, when the box is actually editable and needs real text input. -->
+                                        <DataTrigger Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type xctk:CheckComboBox}}}" Value="True">
+                                            <Setter TargetName="TextBox" Property="IsReadOnly" Value="False"/>
+                                            <Setter TargetName="TextBox" Property="Focusable" Value="True"/>
+                                            <Setter TargetName="TextBox" Property="IsHitTestVisible" Value="True"/>
+                                            <Setter TargetName="TextBox" Property="Cursor" Value="{x:Null}"/>
+                                        </DataTrigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type xctk:CheckListBox}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Background.Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+    </Style>
+
+    <!-- SelectorItem is the base class for the checkbox rows inside CheckComboBox/CheckListBox dropdowns.
+         Its stock Aero2 template hardcodes the mouse-over highlight to a light-blue Aero color (#FFB8E0F3)
+         directly on the row's Border, unreachable via a plain Setter, so a full ControlTemplate copy
+         (otherwise identical to the stock one) is needed just to swap that trigger's colors for themed ones. -->
+    <Style TargetType="{x:Type prim:SelectorItem}">
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="Padding" Value="4,0,0,0"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type prim:SelectorItem}">
+                    <Border x:Name="_background" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <CheckBox IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <CheckBox.Content>
+                                <ContentControl Content="{TemplateBinding Content}"
+                                                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                Foreground="{TemplateBinding Foreground}"/>
+                            </CheckBox.Content>
+                        </CheckBox>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="_background" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                            <Setter TargetName="_background" Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Setter-only overrides don't reach two things baked into the stock template: the toggle chrome is
+         drawn by Xceed's own chrome:ButtonChrome element, whose mouse-over/pressed/checked visuals are
+         painted internally from hardcoded gradients rather than TemplateBinding Background - and the
+         dropdown Popup's Border reads DropDownContentBackground/a hardcoded PopupDarkBorderBrush, not
+         Background/BorderBrush at all. A full ControlTemplate copy (dropping ButtonChrome for a plain
+         themed Border, matching this dictionary's own Button/ToggleButton shape) is required, same as
+         ColorPicker/WatermarkComboBox/BusyIndicator above. -->
+    <Style TargetType="{x:Type xctk:DropDownButton}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="6,1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type xctk:DropDownButton}">
+                    <Grid x:Name="MainGrid" SnapsToDevicePixels="True">
+                        <ToggleButton x:Name="PART_DropDownButton"
+                                      IsChecked="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border x:Name="Bd" Background="{Binding Background, RelativeSource={RelativeSource AncestorType={x:Type xctk:DropDownButton}}}"
+                                            BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType={x:Type xctk:DropDownButton}}}"
+                                            BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType={x:Type xctk:DropDownButton}}}"
+                                            SnapsToDevicePixels="True">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ContentPresenter Grid.Column="0"
+                                                               Margin="{Binding Padding, RelativeSource={RelativeSource AncestorType={x:Type xctk:DropDownButton}}}"
+                                                               Content="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type xctk:DropDownButton}}}"
+                                                               ContentTemplate="{Binding ContentTemplate, RelativeSource={RelativeSource AncestorType={x:Type xctk:DropDownButton}}}"
+                                                               VerticalAlignment="Center" HorizontalAlignment="Center" RecognizesAccessKey="True"/>
+                                            <Path Grid.Column="1" Width="9" Height="5" Margin="4,0,6,0" Data="M0,0 L4,4 L8,0"
+                                                  Stroke="{DynamicResource Theme.Foreground.Primary}" StrokeThickness="1.4"
+                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlPressed}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                        <Popup x:Name="PART_Popup" HorizontalOffset="1" VerticalOffset="1" AllowsTransparency="True" StaysOpen="False"
+                               Placement="{TemplateBinding DropDownPosition}" Focusable="False"
+                               IsOpen="{Binding IsChecked, ElementName=PART_DropDownButton}">
+                            <Border BorderThickness="1" Background="{DynamicResource Theme.Background.Overlay}"
+                                    BorderBrush="{DynamicResource Theme.Border}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                <ScrollViewer x:Name="DropDownScrollViewer" VerticalScrollBarVisibility="Auto">
+                                    <ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding DropDownContent}"/>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Disabled}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Needed by the ProgressBar.Width MultiBinding inside the copied BusyIndicator template below -
+         StaticResource only resolves within this document, so the instance from Xceed's own
+         BusyIndicator/Themes/Generic.xaml isn't reachable from here and must be redeclared. -->
+    <conv:ProgressBarWidthConverter x:Key="ProgressBarWidthConverter"/>
+
+    <!-- The overlay Rectangle alone isn't enough here - the default Generic.xaml template also draws the
+         "Please wait..." message in its own inline Border/Grid with a hardcoded White background and a
+         gradient BorderBrush, neither of which is reachable through a plain Setter (same pattern as
+         ColorPicker/WatermarkComboBox: nested elements with literal colors baked into the template need a
+         full ControlTemplate copy, not just top-level property Setters). ProgressBarStyle is likewise
+         replaced wholesale rather than merged, since TemplateBinding ProgressBarStyle assigns that Style
+         object directly - once it's set to anything, implicit TargetType="ProgressBar" lookup (and thus
+         Controls.Shared.xaml's themed ProgressBar) never runs, so this copy re-adds the same
+         Background/Foreground/BorderBrush by hand.
+
+         Visibility is driven by a plain ControlTemplate.Trigger on IsBusy rather than copying the default
+         template's VisualStateManager/Storyboard machinery (which drives "overlay"/"busycontent" off
+         BusyIndicator.ChangeVisualState() calling VisualStateManager.GoToState by name) - a first pass that
+         copied that machinery verbatim ended up with the overlay Rectangle stuck at its unset default
+         (Visible) instead of being collapsed while idle. Its Fill (Theme.Background.Window) is close enough
+         to the surrounding dark chrome that the stuck overlay was never visually obvious, but Rectangle.Fill
+         still hit-tests regardless of Opacity, so it silently ate every click across the entire window it
+         wraps - symptoms elsewhere were reported as "the treeview stopped responding to selection". A direct
+         Trigger on the real IsBusy dependency property can't have that failure mode (loses the ~100ms
+         DisplayAfter anti-flicker delay, which only ever hid the overlay for near-instant busy periods -
+         not worth the fragility of the state-machine approach). -->
+    <Style TargetType="{x:Type xctk:BusyIndicator}">
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="OverlayStyle">
+            <Setter.Value>
+                <Style TargetType="Rectangle">
+                    <Setter Property="Fill" Value="{DynamicResource Theme.Background.Window}"/>
+                    <Setter Property="Opacity" Value="0.85"/>
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ProgressBarStyle">
+            <Setter.Value>
+                <Style TargetType="ProgressBar">
+                    <Setter Property="IsIndeterminate" Value="True"/>
+                    <Setter Property="Height" Value="15"/>
+                    <Setter Property="Margin" Value="8,0,8,8"/>
+                    <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource Theme.Accent}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type xctk:BusyIndicator}">
+                    <Grid>
+                        <ContentPresenter x:Name="content" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Focusable="False"/>
+                        <Rectangle x:Name="overlay" Style="{TemplateBinding OverlayStyle}" Visibility="Collapsed"/>
+                        <!-- Opacity/IsHitTestVisible, not Visibility="Collapsed" - a Collapsed ContentPresenter
+                             is excluded from layout entirely, so its inline Content (the Border/Grid/ProgressBar
+                             below) never gets measured/realized while idle. The ProgressBar's Width MultiBinding
+                             resolves its two ElementName bindings at that same initial pass; with the content
+                             never realized, "busyContent" isn't found and the binding hands the converter
+                             DependencyProperty.UnsetValue, which its `(double)` cast can't handle -
+                             InvalidCastException on every window open. Opacity keeps the subtree live (measured,
+                             bindings valid) at all times; only its visibility to the user/mouse toggles. -->
+                        <ContentPresenter x:Name="busycontent" Opacity="0" IsHitTestVisible="False">
+                            <ContentPresenter.Content>
+                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Border Background="{DynamicResource Theme.Background.Overlay}" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1" CornerRadius="2">
+                                        <Grid x:Name="_grid" MinWidth="150">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <ContentPresenter x:Name="busyContent" Content="{TemplateBinding BusyContent}" ContentTemplate="{TemplateBinding BusyContentTemplate}" HorizontalAlignment="Center" Margin="8" TextElement.Foreground="{DynamicResource Theme.Foreground.Primary}"/>
+                                            <ProgressBar Grid.Row="1" Style="{TemplateBinding ProgressBarStyle}">
+                                                <ProgressBar.Width>
+                                                    <MultiBinding Converter="{StaticResource ProgressBarWidthConverter}">
+                                                        <Binding Path="ActualWidth" ElementName="busyContent"/>
+                                                        <Binding Path="MinWidth" ElementName="_grid"/>
+                                                    </MultiBinding>
+                                                </ProgressBar.Width>
+                                            </ProgressBar>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </ContentPresenter.Content>
+                        </ContentPresenter>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsBusy" Value="True">
+                            <Setter TargetName="overlay" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="busycontent" Property="Opacity" Value="1"/>
+                            <Setter TargetName="busycontent" Property="IsHitTestVisible" Value="True"/>
+                            <Setter TargetName="content" Property="IsEnabled" Value="False"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type xctk:ByteUpDown}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+    </Style>
+
+    <Style TargetType="{x:Type xctk:DoubleUpDown}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+    </Style>
+
+    <Style TargetType="{x:Type xctk:IntegerUpDown}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+    </Style>
+
+    <Style TargetType="{x:Type xctk:SingleUpDown}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+    </Style>
+
+    <!-- ============================== ColorPicker (full template copy) ==============================
+         The fork's own Generic.xaml hardcodes Background="White" directly on internal elements and
+         references StaticResources local to that same file (ColorPickerDarkBorderBrush, PopupBackgroundBrush,
+         CheckerBrush, DownArrowGeometry from Common.xaml/Glyphs.xaml), which a plain Setter-level Style
+         override can't reach - so this is a full re-implementation of the control's ControlTemplate,
+         simplified (no checkerboard alpha swatch, no chrome-drawn button bevels) but visually complete. -->
+
+    <xctk:ColorToSolidColorBrushConverter x:Key="Theme.ColorToSolidColorBrushConverter"/>
+    <xctk:AdditionConverter x:Key="Theme.AdditionConverter"/>
+    <xctk:ColorModeToTabItemSelectedConverter x:Key="Theme.ColorModeToTabItemSelectedConverter"/>
+
+    <Style x:Key="Theme.ColorDisplayStyle" TargetType="ContentControl">
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Border Background="{DynamicResource Theme.Background.Control}" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1">
+                        <Rectangle Fill="{Binding SelectedColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=xctk:ColorPicker}, Converter={StaticResource Theme.ColorToSolidColorBrushConverter}}"/>
+                    </Border>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.ColorItemContainerStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="ToolTip" Value="{Binding Name}"/>
+        <Setter Property="Padding" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="Bd" BorderThickness="1" Background="Transparent" BorderBrush="Transparent" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Theme.Accent}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Theme.Foreground.Primary}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <DataTemplate x:Key="Theme.ColorItemTemplate">
+        <Border Background="{DynamicResource Theme.Background.Control}" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1" Margin="2">
+            <Rectangle Width="14" Height="14" Fill="{Binding Color, Converter={StaticResource Theme.ColorToSolidColorBrushConverter}}"/>
+        </Border>
+    </DataTemplate>
+
+    <Style x:Key="Theme.ColorListStyle" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="MaxHeight" Value="500"/>
+        <Setter Property="Width" Value="{Binding MaxDropDownWidth, RelativeSource={RelativeSource AncestorType={x:Type xctk:ColorPicker}}, Converter={StaticResource Theme.AdditionConverter}, ConverterParameter=-18}"/>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox}, Converter={StaticResource Theme.AdditionConverter}, ConverterParameter=-4}"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource Theme.ColorItemContainerStyle}"/>
+        <Setter Property="ItemTemplate" Value="{StaticResource Theme.ColorItemTemplate}"/>
+        <Setter Property="SelectionMode" Value="Single"/>
+    </Style>
+
+    <Style x:Key="Theme.ColorPickerToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.ColumnSpan="2" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                            <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                        <Border Grid.Column="1" Width="18"
+                                Visibility="{Binding ShowDropDownButton, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=xctk:ColorPicker}, Converter={StaticResource Theme.BooleanToVisibilityConverter}}"
+                                Background="{DynamicResource Theme.Background.ControlHover}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1,0,0,0">
+                            <Path Width="8" Height="4" Data="M0,0 L4,4 L8,0" Stroke="{DynamicResource Theme.Foreground.Primary}" StrokeThickness="1.4"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <ControlTemplate x:Key="Theme.ColorPickerTabItemTemplate" TargetType="{x:Type xctk:ColorPickerTabItem}">
+        <Border x:Name="mainBorder" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1,1,1,0" Background="{TemplateBinding Background}" Margin="0">
+            <ContentPresenter x:Name="contentPresenter" ContentSource="Header" Focusable="False" Margin="6,3" RecognizesAccessKey="True"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter TargetName="mainBorder" Property="Background" Value="{DynamicResource Theme.Background.Overlay}"/>
+                <Setter TargetName="mainBorder" Property="BorderBrush" Value="{DynamicResource Theme.Accent}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type xctk:ColorPicker}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="ButtonStyle" Value="{StaticResource Theme.ColorPickerToggleButtonStyle}"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="MaxDropDownWidth" Value="350"/>
+        <Setter Property="HeaderBackground" Value="{DynamicResource Theme.Background.Panel}"/>
+        <Setter Property="HeaderForeground" Value="{DynamicResource Theme.Foreground.Secondary}"/>
+        <Setter Property="DropDownBackground" Value="{DynamicResource Theme.Background.Overlay}"/>
+        <Setter Property="TabBackground" Value="{DynamicResource Theme.Background.Panel}"/>
+        <Setter Property="TabForeground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type xctk:ColorPicker}">
+                    <Grid>
+                        <ToggleButton x:Name="PART_ColorPickerToggleButton" IsTabStop="True" MinHeight="22"
+                                      Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Padding="{TemplateBinding Padding}"
+                                      IsChecked="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                      IsHitTestVisible="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Theme.InverseBoolConverter}}"
+                                      Style="{TemplateBinding ButtonStyle}">
+                            <Grid Margin="2">
+                                <ContentControl x:Name="ColorOnly" Style="{StaticResource Theme.ColorDisplayStyle}"/>
+                                <Border x:Name="ColorAndName" Background="{DynamicResource Theme.Background.Control}" Visibility="Hidden">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ContentControl HorizontalAlignment="Left" Width="20" Margin="2,1,4,1" Style="{StaticResource Theme.ColorDisplayStyle}"/>
+                                        <TextBlock Text="{Binding SelectedColorText, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </ToggleButton>
+                        <Popup x:Name="PART_ColorPickerPalettePopup" VerticalAlignment="Bottom"
+                               IsOpen="{Binding ElementName=PART_ColorPickerToggleButton, Path=IsChecked}"
+                               StaysOpen="False" AllowsTransparency="True" Focusable="False"
+                               HorizontalOffset="1" VerticalOffset="1" PopupAnimation="Slide"
+                               Width="{TemplateBinding MaxDropDownWidth}">
+                            <Border BorderThickness="1" Background="{TemplateBinding DropDownBackground}" BorderBrush="{DynamicResource Theme.Border}" Padding="3">
+                                <TabControl x:Name="ColorPickerTabControl" Background="Transparent"
+                                            SelectedIndex="{Binding ColorMode, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Theme.ColorModeToTabItemSelectedConverter}}">
+                                    <xctk:ColorPickerTabItem x:Name="StandardTabItem" Header="{Binding StandardTabHeader, RelativeSource={RelativeSource TemplatedParent}}"
+                                                              Background="{TemplateBinding TabBackground}" Foreground="{TemplateBinding TabForeground}"
+                                                              Template="{StaticResource Theme.ColorPickerTabItemTemplate}">
+                                        <Grid Margin="4">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid Grid.Row="0" Visibility="{TemplateBinding ShowAvailableColors, Converter={StaticResource Theme.BooleanToVisibilityConverter}}">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="{TemplateBinding AvailableColorsHeader}" Background="{TemplateBinding HeaderBackground}"
+                                                               Foreground="{TemplateBinding HeaderForeground}" Padding="2" Margin="0,0,0,1"/>
+                                                    <ListBox x:Name="PART_AvailableColors" Grid.Row="1" ItemsSource="{Binding AvailableColors, RelativeSource={RelativeSource TemplatedParent}}"
+                                                             Style="{StaticResource Theme.ColorListStyle}"/>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid Grid.Row="1" Visibility="{TemplateBinding ShowStandardColors, Converter={StaticResource Theme.BooleanToVisibilityConverter}}">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="{TemplateBinding StandardColorsHeader}" Background="{TemplateBinding HeaderBackground}"
+                                                               Foreground="{TemplateBinding HeaderForeground}" Padding="2" Margin="0,1,0,1"/>
+                                                    <ListBox x:Name="PART_StandardColors" Grid.Row="1" ItemsSource="{Binding StandardColors, RelativeSource={RelativeSource TemplatedParent}}"
+                                                             Style="{StaticResource Theme.ColorListStyle}"/>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid Grid.Row="2" Margin="0,1,0,1" Visibility="{TemplateBinding ShowRecentColors, Converter={StaticResource Theme.BooleanToVisibilityConverter}}">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="22"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="{TemplateBinding RecentColorsHeader}" Background="{TemplateBinding HeaderBackground}"
+                                                               Foreground="{TemplateBinding HeaderForeground}" Padding="2" Margin="0,1,0,1"/>
+                                                    <ListBox x:Name="PART_RecentColors" Grid.Row="1" ItemsSource="{Binding RecentColors, RelativeSource={RelativeSource TemplatedParent}}"
+                                                             Style="{StaticResource Theme.ColorListStyle}"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </xctk:ColorPickerTabItem>
+                                    <xctk:ColorPickerTabItem x:Name="AdvancedTabItem" Header="{Binding AdvancedTabHeader, RelativeSource={RelativeSource TemplatedParent}}"
+                                                              Background="{TemplateBinding TabBackground}" Foreground="{TemplateBinding TabForeground}"
+                                                              Template="{StaticResource Theme.ColorPickerTabItemTemplate}">
+                                        <Grid Width="{Binding MaxDropDownWidth, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Theme.AdditionConverter}, ConverterParameter=-18}">
+                                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
+                                                <xctk:ColorCanvas Background="Transparent" BorderThickness="0"
+                                                                  Foreground="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                  UsingAlphaChannel="{Binding UsingAlphaChannel, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                  SelectedColor="{Binding SelectedColor, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                            </ScrollViewer>
+                                        </Grid>
+                                    </xctk:ColorPickerTabItem>
+                                </TabControl>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="DisplayColorAndName" Value="True">
+                            <Setter TargetName="ColorOnly" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="ColorAndName" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="ShowTabHeaders" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="StandardTabItem"/>
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="AdvancedTabItem"/>
+                        </Trigger>
+                        <Trigger Property="ShowDropDownButton" Value="False">
+                            <Setter Property="BorderThickness" Value="1"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

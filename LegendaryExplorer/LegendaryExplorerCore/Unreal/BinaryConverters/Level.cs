@@ -54,11 +54,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UIndex PylonListStart;
         [UIndexRef("Pylon")]
         public UIndex PylonListEnd;
-        public List<GuidIndexPair> CrossLevelCoverGuidRefs;
+        public UReverseMap<int, Guid> CrossLevelCoverGuidRefs; // Serialization of this is Guid -> Number but that is really not useful for lookup. The number is the index into the CoverLinkRefs array, where the value will be null.
         [UIndexRef("CoverLink")]
         public List<UIndex> CoverLinkRefs;
         public List<CoverIndexPair> CoverIndexPairs;
-        public List<GuidIndexPair> CrossLevelNavGuidRefs;
+        public UReverseMap<int, Guid> CrossLevelNavGuidRefs; // Serialization of this is Guid -> Number but that is really not useful for lookup. The number is the index into the CoverLinkRefs array, where the value will be null.
         [UIndexRef("NavigationPoint")]
         public List<UIndex> NavRefs;
         public List<int> NavRefIndicies;
@@ -130,13 +130,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (sc.Game.IsGame3() || sc.Game == MEGame.UDK) // Gated by licensee version
             {
-                sc.Serialize(ref CrossLevelCoverGuidRefs, sc.Serialize);
+                sc.Serialize(ref CrossLevelCoverGuidRefs, sc.Serialize, sc.Serialize);
                 sc.Serialize(ref CoverLinkRefs, sc.Serialize);
                 sc.Serialize(ref CoverIndexPairs, sc.Serialize);
                 if (sc.Game != MEGame.UDK)
                 {
-                    // BioWare specific
-                    sc.Serialize(ref CrossLevelNavGuidRefs, sc.Serialize);
+                    sc.Serialize(ref CrossLevelNavGuidRefs, sc.Serialize, sc.Serialize);
                     sc.Serialize(ref NavRefs, sc.Serialize);
                     sc.Serialize(ref NavRefIndicies, sc.Serialize);
                 }

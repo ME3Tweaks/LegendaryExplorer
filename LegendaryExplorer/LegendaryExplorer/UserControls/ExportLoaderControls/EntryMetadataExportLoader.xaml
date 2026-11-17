@@ -81,7 +81,8 @@
             <Style x:Name="MetadataTextboxStyle" TargetType="{x:Type TextBox}">
                 <Style.Triggers>
                     <Trigger Property="IsReadOnly" Value="True">
-                        <Setter Property="Background" Value="LightGray" />
+                        <Setter Property="Background" Value="{DynamicResource Theme.Background.InfoBar}" />
+                        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}" />
                     </Trigger>
                 </Style.Triggers>
             </Style>

@@ -29,6 +29,28 @@ namespace LegendaryExplorer.Tools.WwiseEditor
         public bool updating;
 
         /// <summary>
+        /// Maps Wwise bus IDs (FNV-1 hash of the bus's lowercased name) to their design-time name for the
+        /// currently loaded game. Used to label bus nodes in the graph and the bus hierarchy tree.
+        /// </summary>
+        public IReadOnlyDictionary<uint, string> BusNames = new Dictionary<uint, string>();
+
+        /// <summary>
+        /// Actor-mixer-hierarchy bus routing info for the currently loaded bank (which bus ultimately plays each
+        /// node). Null/empty if the bank couldn't be parsed for this.
+        /// </summary>
+        public WwiseBusRouting BusRouting;
+
+        /// <summary>
+        /// Resolves Wwise hash IDs to names found in the current package or loaded by the user. The resolver lives
+        /// for the lifetime of this graph window so supplemental names survive package switches.
+        /// </summary>
+        public WwiseNameResolver NameResolver { get; } = new();
+
+        public void SetPackageNames(IEnumerable<string> names) => NameResolver.SetPackageNames(names);
+
+        public int AddSupplementalNames(IEnumerable<string> names) => NameResolver.AddSupplementalNames(names);
+
+        /// <summary>
         /// Empty Constructor is necessary so that this control can be used as an applet.
         /// </summary>
         public WwiseGraphEditor() : this(DEFAULT_WIDTH, DEFAULT_HEIGHT) { }

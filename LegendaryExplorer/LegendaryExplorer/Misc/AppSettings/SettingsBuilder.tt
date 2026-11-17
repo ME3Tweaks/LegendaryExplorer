@@ -29,7 +29,7 @@ namespace LegendaryExplorer.Misc.AppSettings
         private static readonly Lock settingsSyncObj = new();
 <# // This code runs in the text template:
     // Can't use named tuples it seems
-    string[] MEGame = new[] {"ME1", "ME2", "ME3", "LE1", "LE2", "LE3", "UDK"}; // It's not worth importing LEC
+    string[] MEGame = new[] {"ME1", "ME2", "ME3", "LE1", "LE2", "LE3", "LMP", "UDK"}; // It's not worth importing LEC
     var settingsXml = XDocument.Load(this.Host.ResolvePath("SettingsDefinitions.xml")).Root.Descendants("setting").ToList();
     var settings = settingsXml.SelectMany(x =>
     {

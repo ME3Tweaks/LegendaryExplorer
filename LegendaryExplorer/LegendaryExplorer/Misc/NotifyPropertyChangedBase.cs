@@ -42,6 +42,13 @@ namespace LegendaryExplorer.Misc
     {
         public NotifyPropertyChangedWindowBase()
         {
+            // RegisterWindow only subscribes to events here - it doesn't apply anything yet - so calling it
+            // from this base constructor is fine even though InitializeComponent() (which runs after this
+            // constructor, in the derived class) hasn't executed. It internally waits for SourceInitialized
+            // (required by DarkNet's title-bar theming - too late by Loaded) and Loaded (required for the
+            // WPF resource-dictionary merge, since windows with their own local <Window.Resources> block
+            // would otherwise have an earlier merge silently discarded).
+            Themes.ThemeManager.RegisterWindow(this);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

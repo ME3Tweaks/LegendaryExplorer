@@ -100,15 +100,15 @@ namespace LegendaryExplorerCore.Helpers
 
         public static void WriteGuid(this Stream stream, Guid value)
         {
-            stream.Write(value.AsBytes());
+            stream.Write(value.AsBytes()); 
         }
 
         public static void WriteToFile(this MemoryStream stream, string outfile)
         {
             long oldPos = stream.Position;
             stream.Position = 0;
-            using (FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write))
-                stream.CopyTo(file);
+            using FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write);
+            stream.CopyTo(file);
             stream.Position = oldPos;
         }
 
@@ -116,8 +116,8 @@ namespace LegendaryExplorerCore.Helpers
         {
             long oldPos = stream.Position;
             stream.Position = 0;
-            using (FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write))
-                stream.BaseStream.CopyTo(file);
+            using FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write);
+            stream.BaseStream.CopyTo(file);
             stream.Position = oldPos;
         }
 
@@ -348,7 +348,7 @@ namespace LegendaryExplorerCore.Helpers
             var posStart = stream.Position;
             stream.WriteStringUnicodeNull(str);
             var sizeWritten = stream.Position - posStart;
-            stream.WriteZeros(padLen - (int) sizeWritten);
+            stream.WriteZeros(padLen - (int)sizeWritten);
         }
 
         public static void WriteStringUnicode(this EndianWriter stream, string str)

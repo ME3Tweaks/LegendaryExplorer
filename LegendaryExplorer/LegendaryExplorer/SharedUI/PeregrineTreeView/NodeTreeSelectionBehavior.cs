@@ -121,32 +121,55 @@ namespace LegendaryExplorer.SharedUI.PeregrineTreeView
                 currentParent = newParent;
             }
         }
-        private bool _isCleanedUp;
+        // Dark theme merges extra resource dictionaries into the window on Window.Loaded (see
+        // Misc/Themes/ThemeManager.cs), which appears to make a virtualized TreeView fire a spurious
+        // Unloaded very early during construction - before the window has actually finished loading.
+        // The old code treated Unloaded as a one-time, permanent teardown signal (a latched _isCleanedUp
+        // flag that never got un-set), so that spurious event killed the SelectedItemChanged subscription
+        // for the rest of the TreeView's life - selection still worked internally (TreeView.SelectedItem
+        // updated correctly), but nothing was listening for it any more, so bound SelectedItem/Preview()
+        // never ran. Tracking a simple subscribed/unsubscribed toggle and resubscribing on every Loaded
+        // (not just the first) makes this recover correctly regardless of how many Unloaded/Loaded cycles
+        // happen, while still behaving exactly as before in the normal single Loaded/Unloaded case.
+        private bool _isSubscribed;
 
-        private void Cleanup()
+        private void Subscribe()
         {
-            if (!_isCleanedUp)
-            {
-                _isCleanedUp = true;
-                AssociatedObject.SelectedItemChanged -= OnTreeViewSelectedItemChanged;
-                AssociatedObject.Unloaded -= AssociatedObjectOnUnloaded;
-            }
+            if (_isSubscribed) return;
+            _isSubscribed = true;
+            AssociatedObject.SelectedItemChanged += OnTreeViewSelectedItemChanged;
         }
+
+        private void Unsubscribe()
+        {
+            if (!_isSubscribed) return;
+            _isSubscribed = false;
+            AssociatedObject.SelectedItemChanged -= OnTreeViewSelectedItemChanged;
+        }
+
         protected override void OnAttached()
         {
             base.OnAttached();
+            AssociatedObject.Loaded += AssociatedObjectOnLoaded;
             AssociatedObject.Unloaded += AssociatedObjectOnUnloaded;
-            AssociatedObject.SelectedItemChanged += OnTreeViewSelectedItemChanged;
+            Subscribe();
+        }
+
+        private void AssociatedObjectOnLoaded(object sender, RoutedEventArgs e)
+        {
+            Subscribe();
         }
 
         private void AssociatedObjectOnUnloaded(object sender, RoutedEventArgs e)
         {
-            Cleanup();
+            Unsubscribe();
         }
 
         protected override void OnDetaching()
         {
-            Cleanup();
+            Unsubscribe();
+            AssociatedObject.Loaded -= AssociatedObjectOnLoaded;
+            AssociatedObject.Unloaded -= AssociatedObjectOnUnloaded;
             base.OnDetaching();
         }
 

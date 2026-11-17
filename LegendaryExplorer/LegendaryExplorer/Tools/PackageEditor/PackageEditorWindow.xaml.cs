@@ -18,6 +18,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Misc.Themes;
 using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
@@ -3044,6 +3045,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
             DataContext = this;
             ((FrameworkElement)Resources["EntryContextMenu"]).DataContext = this;
 
+            // LeftSide_ListView is a ListBoxScroll (a ListBox subclass); for reasons not fully understood,
+            // implicit style resolution doesn't pick up the dark ListBox style for it the way it does for
+            // plain <ListBox>/<TreeView> elements elsewhere. Rather than relying on implicit lookup, or the
+            // markup-level `Style="{DynamicResource {x:Type ListBox}}"` approach that was tried and reverted
+            // (it coincided with a WPF-internal crash during resource-dictionary invalidation, cause
+            // unconfirmed), explicitly push the resolved style from code whenever the theme changes.
+            Loaded += (_, _) => ApplyListViewTheme();
+            ThemeManager.ThemeChanged += ListViewTheme_Changed;
+            Closed += (_, _) => ThemeManager.ThemeChanged -= ListViewTheme_Changed;
+
             //map export loaders to their tabs
             ExportLoaders[InterpreterTab_Interpreter] = Interpreter_Tab;
             ExportLoaders[MetadataTab_MetadataEditor] = Metadata_Tab;
@@ -4408,6 +4419,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 AllTreeViewNodesX[0].FlattenTree().ForEach(x => x.RefreshDisplayName());
             }
+        }
+
+        private void ListViewTheme_Changed(object sender, EventArgs e) => ApplyListViewTheme();
+
+        private void ApplyListViewTheme()
+        {
+            LeftSide_ListView.Style = TryFindResource(typeof(ListBox)) as Style;
         }
 
         private void PackageEditorWPF_Closing(object sender, CancelEventArgs e)

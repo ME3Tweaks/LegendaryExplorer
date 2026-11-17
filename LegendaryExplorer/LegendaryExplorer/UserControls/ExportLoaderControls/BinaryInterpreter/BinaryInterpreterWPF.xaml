@@ -37,8 +37,8 @@
                 <Button Name="ToggleHexboxWidth_Button" ToolTip="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click">
                     <fa:ImageAwesome Icon="Solid_Microchip" Height="16" Width="16" Foreground="CornflowerBlue"/>
                 </Button>
-                <Separator Name="EditorSet_Separator_LeftsideArray" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <Separator Name="EditorSet_Separator_LeftsideArray" Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <Separator Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 <Label IsEnabled="False">Array:</Label>
                 <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array"
                         Click="AddArrayElement_Button_Click" 
@@ -50,9 +50,9 @@
                         VerticalAlignment="Center">
                     <fa:FontAwesome Icon="Solid_Minus"/>
                 </Button>
-                <Separator Name="EditorSet_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                <TextBox Width="140" Margin="5,0,0,0" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"/>
-                <ComboBox Margin="5,0,0,0" Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True">
+                <Separator Name="EditorSet_Separator" Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <TextBox Width="140" Margin="5,0,0,0" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{DynamicResource {x:Type TextBox}}"/>
+                <ComboBox Margin="5,0,0,0" Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{DynamicResource {x:Type ComboBox}}" IsTextSearchEnabled="True">
                     <ComboBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel />
@@ -68,13 +68,13 @@
                     </ComboBox.Resources>
                 </ComboBox>
                 <TextBlock Margin="5,0,0,0" Text="Index:" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center"/>
-                <TextBox Margin="5,0,0,0" Width="50" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"/>
-                <Button Name="Set_Button" Content=" Set" ToolTip="Sets the selected property to this value" Click="SetValue_Click" VerticalAlignment="Stretch" Padding="10,0,10,0" Style="{StaticResource {x:Type Button}}"/>
+                <TextBox Margin="5,0,0,0" Width="50" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{DynamicResource {x:Type TextBox}}"/>
+                <Button Name="Set_Button" Content=" Set" ToolTip="Sets the selected property to this value" Click="SetValue_Click" VerticalAlignment="Stretch" Padding="10,0,10,0" Style="{DynamicResource {x:Type Button}}"/>
                 <TextBlock Name="ParsedValue_TextBlock" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
 
                 <StackPanel Orientation="Horizontal" Visibility="{Binding GenericEditorSetVisibility}">
                     <TextBlock Name="GenericParsing_TextBlock" Text="Generic parsing type:" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                    <ComboBox Name="GenericParsing_ComboBox" Height="22" VerticalAlignment="Top" Width="120" SelectionChanged="viewModeComboBox_SelectionChanged" Style="{StaticResource {x:Type ComboBox}}" Margin="5,0,0,0"/>
+                    <ComboBox Name="GenericParsing_ComboBox" Height="22" VerticalAlignment="Top" Width="120" SelectionChanged="viewModeComboBox_SelectionChanged" Style="{DynamicResource {x:Type ComboBox}}" Margin="5,0,0,0"/>
                     <TextBlock Name="ByteShift_Textblock" Text="Byte shift:" VerticalAlignment="Center" Margin="5,0,0,0"/>
                     <xctk:ByteUpDown Name="ByteShift_UpDown" Width="40" VerticalAlignment="Stretch" Margin="5,0,0,0" Value="{Binding ByteShiftUpDownValue}" Minimum="0" Maximum="7" ValueChanged="ByteShift_UpDown_ValueChanged"/>
                 </StackPanel>
@@ -205,7 +205,7 @@
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding HasChanges}" Value="True">
                                         <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="Maroon"/>
-                                        <Setter TargetName="PropertyItem_Container" Property="Background" Value="Yellow"/>
+                                        <Setter TargetName="PropertyItem_Container" Property="Background" Value="{DynamicResource Theme.Background.Modified}"/>
                                     </DataTrigger>
                                 </HierarchicalDataTemplate.Triggers>
                             </HierarchicalDataTemplate>

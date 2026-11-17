@@ -234,6 +234,7 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
             CustomAssets.CustomSequences[MEGame.LE1] = new();
             CustomAssets.CustomSequences[MEGame.LE2] = new();
             CustomAssets.CustomSequences[MEGame.LE3] = new();
+            CustomAssets.CustomSequences[MEGame.LMP] = new();
 
             // Inventory
             foreach (var dir in Settings.CustomAssetDirectories)

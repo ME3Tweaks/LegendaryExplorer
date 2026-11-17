@@ -43,8 +43,7 @@ namespace LegendaryExplorer.Tools.PathfindingNetworkEditor.Nodes
                 }
                 else
                 {
-                    navGuid = level.CrossLevelNavGuidRefs
-                        .FirstOrDefault(x => x.CoverIndexIdx == navRefIdx).Guid;
+                    navGuid = level.CrossLevelNavGuidRefs[navRefIdx];
                 }
             }
 

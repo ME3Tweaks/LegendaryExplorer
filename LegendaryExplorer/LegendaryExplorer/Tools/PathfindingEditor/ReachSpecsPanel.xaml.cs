@@ -250,39 +250,41 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 if (ToExternalNodeChecked || (ParentWindow != null && ParentWindow.ActiveNodes.Contains(destExport)))
                 {
                     var destPoint = PathEdUtils.GetLocation(destExport);
-
                     if (destPoint != null)
                     {
                         var pathlist = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
                         if (pathlist != null)
                         {
-                            foreach (ObjectProperty specref in pathlist)
+                            // Check our existing reachspecs to see if any already go to the target
+                                foreach (ObjectProperty specref in pathlist)
                             {
                                 if (specref.Value != 0) //0 might be there if user manually added item to the list. we should ignore it.
                                 {
                                     ExportEntry spec = CurrentLoadedExport.FileRef.GetUExport(specref.Value);
                                     StructProperty outgoingEndStructProp = spec.GetProperty<StructProperty>("End"); //Embeds END
-                                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.GetProp<ObjectProperty>(PathEdUtils.GetReachSpecEndName(spec)); //END  
+                                    if (outgoingEndStructProp != null)
+                                    {
+                                        ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.GetProp<ObjectProperty>(PathEdUtils.GetReachSpecEndName(spec)); //END  
 
-                                    if (outgoingSpecEndProp.Value != 0)
-                                    {
-                                        if (outgoingSpecEndProp.Value == destIndex)
+                                        if (outgoingSpecEndProp.Value != 0)
                                         {
-                                            return false; //DUPLICATE SPEC
+                                            if (outgoingSpecEndProp.Value == destIndex)
+                                            {
+                                                return false; //DUPLICATE SPEC
+                                            }
                                         }
-                                    }
-                                    else
-                                    {
-                                        //COMPARE GUIDS
-                                        var guid = outgoingEndStructProp.GetProp<StructProperty>("Guid");
-                                        var endGuid = new FGuid(guid);
-                                        if (endGuid == uguid)
+                                        else
                                         {
-                                            return false; //DUPLICATE SPEC
+                                            //COMPARE GUIDS
+                                            var guid = outgoingEndStructProp.GetProp<StructProperty>("Guid");
+                                            var endGuid = new FGuid(guid);
+                                            if (endGuid == uguid)
+                                            {
+                                                return false; //DUPLICATE SPEC
+                                            }
                                         }
                                     }
                                 }
-
                             }
                         }
                         var sourcePoint = PathEdUtils.GetLocation(CurrentLoadedExport);
@@ -318,7 +320,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 {
                     //Parse
                     ExportEntry destExport = CurrentLoadedExport.FileRef.GetUExport(destIndex);
-                    PathEdUtils.CreateReachSpec(CurrentLoadedExport, CreateReturningReachSpec, destExport, (string)CreateReachspecType_ComboBox.SelectedItem, (ReachSpecSize)CreateReachSpecSize_ComboBox.SelectedItem);
+                    var specType = ((string)CreateReachspecType_ComboBox.SelectedItem).Split('.').Last();
+                    PathEdUtils.CreateReachSpec(CurrentLoadedExport, CreateReturningReachSpec, destExport, specType, (ReachSpecSize)CreateReachSpecSize_ComboBox.SelectedItem);
                 }
             }
         }

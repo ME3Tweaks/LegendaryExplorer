@@ -35,17 +35,17 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <DebugSymbols>true</DebugSymbols>
-    <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
+    <Configurations>Debug;Release;WinAzureRelease;WinAzureTest</Configurations>
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   
 
-  <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DebugType>pdbonly</DebugType>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DebugType>embedded</DebugType>
 	<Optimize>true</Optimize>
     <DefineConstants>WINDOWS</DefineConstants>

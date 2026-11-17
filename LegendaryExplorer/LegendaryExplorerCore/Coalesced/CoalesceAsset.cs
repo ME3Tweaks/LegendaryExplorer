@@ -176,7 +176,7 @@ namespace LegendaryExplorerCore.Coalesced
 		public string ToXmlString()
         {
 			var fileId = Path.GetFileNameWithoutExtension(Name);
-			fileId = CoalescedConverter.ProperNames.FirstOrDefault(s => s.Equals(fileId, StringComparison.InvariantCultureIgnoreCase));
+			fileId = CoalescedConverter.ProperNames.FirstOrDefault(s => s.Equals(fileId, StringComparison.InvariantCultureIgnoreCase)) ?? fileId;
 
 			var xDoc = new XDocument();
 

@@ -230,3 +230,5 @@ Release_x64/
 
 # Ignore UnrealDoc generated files
 /BuiltDocs
+/LegendaryExplorer/LegendaryExplorerCore/Libraries/Windows/WwiseAudioPlayer.exp
+/LegendaryExplorer/LegendaryExplorerCore/Libraries/Windows/WwiseAudioPlayer.lib

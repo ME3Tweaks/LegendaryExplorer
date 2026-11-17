@@ -200,7 +200,7 @@ public partial class BinaryInterpreterWPF
                 }
             }
 
-            if (Pcc.Game is MEGame.ME2 or MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3)
+            if (Pcc.Game is MEGame.ME2 or MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3 or MEGame.LMP)
             {
                 ReadVertexFactoryMap();
             }
@@ -411,7 +411,7 @@ public partial class BinaryInterpreterWPF
                         node.Items.Add(FShaderParameter("TextureMatrix"));
                         node.Items.Add(FShaderParameter("TextureMatrix2"));
                     }
-                    else if (CurrentLoadedExport.Game == MEGame.LE3)
+                    else if (CurrentLoadedExport.Game.IsLEGame3())
                     {
                         node.Items.Add(FShaderParameter("TextureMatrixParams[0]"));
                         node.Items.Add(FShaderParameter("TextureMatrixParams[1]"));
@@ -607,7 +607,7 @@ public partial class BinaryInterpreterWPF
                 case "TFilterPixelShader<1>":
                     node.Items.Add(FShaderResourceParameter("FilterTexture"));
                     node.Items.Add(FShaderParameter("SampleWeights"));
-                    if (Pcc.Game is MEGame.LE3)
+                    if (Pcc.Game.IsLEGame3())
                     {
                         node.Items.Add(FShaderParameter("SampleMaskRect"));
                     }
@@ -752,7 +752,7 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderResourceParameter("smpFilmicLUT"));
 
                     // Not present in LE2 - 7ff7c63e15b0
-                    if (CurrentLoadedExport.Game == MEGame.LE3)
+                    if (CurrentLoadedExport.Game.IsLEGame3()    )
                     {
                         node.Items.Add(FShaderParameter("ScreenUVScaleBias"));
                         node.Items.Add(FShaderParameter("HighPrecisionGamma"));
@@ -761,7 +761,7 @@ public partial class BinaryInterpreterWPF
                     break;
                 case "FUberPostProcessVertexShader":
                     node.Items.Add(FShaderParameter("SceneCoordinate1ScaleBias"));
-                    if (Pcc.Game is MEGame.LE3)
+                    if (Pcc.Game.IsLEGame3())
                     {
                         node.Items.Add(FShaderParameter("SceneCoordinate2ScaleBias"));
                         node.Items.Add(FShaderParameter("SceneCoordinate3ScaleBias"));
@@ -1624,7 +1624,7 @@ public partial class BinaryInterpreterWPF
         BinInterpNode FMaterialPixelShaderParameters(string name)
         {
             var super = FMaterialShaderParameters(name, "FMaterialPixelShaderParameters");
-            if (Pcc.Game is MEGame.LE3)
+            if (Pcc.Game.IsLEGame3())
             {
                 super.Items.AddRange(
                 [
@@ -1662,7 +1662,7 @@ public partial class BinaryInterpreterWPF
                 FShaderParameter("ScreenDoorFadeSettings2"),
                 FShaderResourceParameter("ScreenDoorNoiseTexture"),
             ]);
-            if (Pcc.Game is MEGame.LE3)
+            if (Pcc.Game.IsLEGame3())
             {
                 super.Items.AddRange(
                 [
@@ -1689,7 +1689,7 @@ public partial class BinaryInterpreterWPF
         BinInterpNode FMaterialVertexShaderParameters(string name)
         {
             var super = FMaterialShaderParameters(name, "FMaterialVertexShaderParameters");
-            if (Pcc.Game is MEGame.LE3)
+            if (Pcc.Game.IsLEGame3())
             {
                 super.Items.AddRange(
                 [
@@ -1706,7 +1706,7 @@ public partial class BinaryInterpreterWPF
 
         BinInterpNode TUniformParameter(Func<string, BinInterpNode> parameter)
         {
-            if (Pcc.Game is MEGame.LE3)
+            if (Pcc.Game.IsLEGame3())
             {
                 return parameter($"[{bin.ReadInt32()}]");
             }
@@ -1773,7 +1773,7 @@ public partial class BinaryInterpreterWPF
                         FShaderParameter("MeshOrigin"),
                         FShaderParameter("MeshExtension"),
                     ];
-                    if (Pcc.Game is MEGame.LE3)
+                    if (Pcc.Game.IsLEGame3())
                     {
                         gpuSkinParams.AddRange(
                         [
@@ -2204,7 +2204,7 @@ public partial class BinaryInterpreterWPF
             FDOFAndBloomBlendPixelShader();
             node.Items.Add(FColorRemapShaderParameters("MaterialParameters"));
             node.Items.Add(FGammaShaderParameters("GammaParameters"));
-            if (Pcc.Game is MEGame.LE3)
+            if (Pcc.Game.IsLEGame3())
             {
                 node.Items.Add(FShaderResourceParameter("LowResSceneBuffer"));
                 node.Items.Add(FShaderParameter("HalfResMaskRect"));

@@ -228,7 +228,9 @@ namespace LegendaryExplorerCore.Misc
 
         #endregion // Sorting
 
-        private readonly Lock _syncLock = new();
+        // This must stay an object and not a System.Threading.Lock. WPF's EnableCollectionSynchronization receives it as an object
+        // and uses Monitor locking, while lock() on a Lock-typed field uses Lock.EnterScope(). Those don't exclude each other.
+        private readonly object _syncLock = new();
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class. 
         /// </summary> 
@@ -247,6 +249,48 @@ namespace LegendaryExplorerCore.Misc
         /// </summary>
         /// <returns></returns>
         public object GetSyncLock() => _syncLock;
+
+        // Single item changes take the sync lock so WPF doesn't read the collection while it is being modified on another thread
+
+        protected override void InsertItem(int index, T item)
+        {
+            lock (_syncLock)
+            {
+                base.InsertItem(index, item);
+            }
+        }
+
+        protected override void RemoveItem(int index)
+        {
+            lock (_syncLock)
+            {
+                base.RemoveItem(index);
+            }
+        }
+
+        protected override void SetItem(int index, T item)
+        {
+            lock (_syncLock)
+            {
+                base.SetItem(index, item);
+            }
+        }
+
+        protected override void MoveItem(int oldIndex, int newIndex)
+        {
+            lock (_syncLock)
+            {
+                base.MoveItem(oldIndex, newIndex);
+            }
+        }
+
+        protected override void ClearItems()
+        {
+            lock (_syncLock)
+            {
+                base.ClearItems();
+            }
+        }
 
         /// <summary>
         /// Adds the specified item to the collection and raises property change notifications for the 'Any' and 'Count'

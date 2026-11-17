@@ -213,7 +213,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <returns>MemoryStream of TOC created, null if there are no entries or input was invalid</returns>
         public static MemoryStream CreateBasegameTOCForDirectory(string directory, MEGame game)
         {
-            bool isLe2Le3 = game is MEGame.LE2 or MEGame.LE3;
+            bool isLe2Le3 = game is MEGame.LE2 or MEGame.LE3 or MEGame.LMP;
             var files = GetFiles(directory, isLe2Le3);
 
             if (game == MEGame.LE1)
@@ -261,7 +261,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <returns>MemoryStream of TOC created, null if there are no entries or input was invalid</returns>
         public static MemoryStream CreateDLCTOCForDirectory(string directory, MEGame game)
         {
-            bool isLe2Le3 = game is MEGame.LE2 or MEGame.LE3;
+            bool isLe2Le3 = game is MEGame.LE2 or MEGame.LE3 or MEGame.LMP;
             var files = GetFiles(directory, isLe2Le3);
 
             if (files.Count > 0)

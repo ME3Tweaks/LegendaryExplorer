@@ -137,6 +137,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             _classes.Clear();
             _sequenceObjects.Clear();
         }
+
+        internal void prepareForBuild()
+        {
+            Reset();
+            IsLoaded = true;
+        }
     }
 
     public class ME1ObjectInfo : GameObjectInfo
@@ -1948,6 +1954,90 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             _classes["Material"].properties.Add(new KeyValuePair<NameReference, PropertyInfo>("EditorComments", new PropertyInfo(PropertyType.ArrayProperty, "MaterialExpressionComment"))); // Useful for metadata
         }
     }
+
+    public class LMPObjectInfo : GameObjectInfo
+    {
+        public override MEGame Game => MEGame.LMP;
+
+        protected override void AddCustomAndNativeClasses()
+        {
+            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, Game);
+
+            _classes["LightMapTexture2D"] = new ClassInfo
+            {
+                baseClass = "Texture2D",
+                pccPath = @"CookedPCConsole\Engine.pcc"
+            };
+
+            _classes["StaticMesh"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = @"CookedPCConsole\Engine.pcc",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleLineCollision",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleBoxCollision",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("bUsedForInstancing",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ForceDoubleSidedShadowVolumes",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseFullPrecisionUVs",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("BodySetup",
+                        new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
+                    new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LODMaxRange",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                }
+            };
+
+            _classes["FracturedStaticMesh"] = new ClassInfo
+            {
+                baseClass = "StaticMesh",
+                pccPath = @"CookedPCConsole\Engine.pcc",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("LoseChunkOutsideMaterial",
+                        new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("bSpawnPhysicsChunks",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("bCompositeChunksExplodeOnImpact",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ExplosionVelScale",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("FragmentMinHealth",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("FragmentDestroyEffects",
+                        new PropertyInfo(PropertyType.ArrayProperty, "ParticleSystem")),
+                    new KeyValuePair<NameReference, PropertyInfo>("FragmentMaxHealth",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("bAlwaysBreakOffIsolatedIslands",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("DynamicOutsideMaterial",
+                        new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("ChunkLinVel",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ChunkAngVel",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ChunkLinHorizontalScale",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                }
+            };
+
+            // Useful additions
+            _classes["Material"].properties.Add(new KeyValuePair<NameReference, PropertyInfo>("EditorComments", new PropertyInfo(PropertyType.ArrayProperty, "MaterialExpressionComment"))); // Useful for metadata
+        }
+    }
+
 
     public class UDKObjectInfo : GameObjectInfo
     {

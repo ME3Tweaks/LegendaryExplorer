@@ -367,7 +367,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
                         TextureMapMemoryEntry tme = SelectedItem;
                         while (tme.Parent != null)
                             tme = tme.Parent;
-                        BeginScanInternal(new List<TextureMapMemoryEntry>(new[] { tme }), SelectedItem.InstancedFullPath);
+                        BeginScanInternal(new List<TextureMapMemoryEntry>(new[] { tme }), SelectedItem.MemoryFullPath);
                     });
                 }
             }
@@ -404,18 +404,12 @@ namespace LegendaryExplorer.Tools.TextureStudio
             var requiredTopLevelPackageExportName = Path.GetFileNameWithoutExtension(masterTextureExport.FileRef.FilePath);
 
             ExportEntry masterPackageExport = sPackage.Exports.FirstOrDefault(x => x.ClassName == @"Package" && x.InstancedFullPath == requiredTopLevelPackageExportName);
-            TextureMapMemoryEntryWPF masterPackageNode = null;
             if (masterPackageExport == null)
             {
                 // Must be created
                 masterPackageExport = ExportCreator.CreatePackageExport(sPackage, requiredTopLevelPackageExportName);
-                masterPackageNode = new TextureMapMemoryEntryWPF(masterPackageExport);
-                AllRootTreeViewNodes.Add(masterPackageNode);
             }
-            else
-            {
-                masterPackageNode = AllRootTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().FirstOrDefault(x => x.ObjectName == inst.MasterPackageName);
-            }
+            TextureMapMemoryEntryWPF masterPackageNode = FindOrCreateNode(masterPackageExport);
 
             if (sExp.idxLink != masterPackageExport.UIndex && masterPackageNode != null)
             {
@@ -434,6 +428,52 @@ namespace LegendaryExplorer.Tools.TextureStudio
             sExp.idxLink = masterPackageExport.UIndex;
             sExp.ObjectName = masterTextureExport.ObjectName;
 
+        }
+
+        /// <summary>
+        /// Finds the tree node for the given entry by its memory full path, creating it (and its package file root, for non-forced exports) if it doesn't exist
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        private TextureMapMemoryEntryWPF FindOrCreateNode(IEntry entry)
+        {
+            var memoryPath = entry.MemoryFullPath;
+            var existing = FindNodeByMemoryPath(AllRootTreeViewNodes, memoryPath);
+            if (existing != null)
+                return existing;
+
+            var node = new TextureMapMemoryEntryWPF(entry);
+            var lastDot = memoryPath.LastIndexOf('.');
+            if (lastDot < 0)
+            {
+                AllRootTreeViewNodes.Add(node);
+                return node;
+            }
+
+            var parentPath = memoryPath[..lastDot];
+            TextureMapMemoryEntry parentNode = entry.Parent != null ? FindOrCreateNode(entry.Parent) : FindNodeByMemoryPath(AllRootTreeViewNodes, parentPath);
+            if (parentNode == null)
+            {
+                // Package file root of a non-forced export
+                parentNode = new TextureMapMemoryEntryWPF(entry) { ObjectName = parentPath, IsTexture = false };
+                AllRootTreeViewNodes.Add(parentNode);
+            }
+            node.Parent = parentNode;
+            parentNode.Children.Add(node);
+            return node;
+        }
+
+        private static TextureMapMemoryEntryWPF FindNodeByMemoryPath(IEnumerable<TextureMapMemoryEntry> nodes, string memoryPath)
+        {
+            foreach (var n in nodes)
+            {
+                var nodePath = n.MemoryFullPath;
+                if (nodePath.CaseInsensitiveEquals(memoryPath))
+                    return n as TextureMapMemoryEntryWPF;
+                if (memoryPath.StartsWith(nodePath + ".", StringComparison.OrdinalIgnoreCase))
+                    return FindNodeByMemoryPath(n.Children, memoryPath);
+            }
+            return null;
         }
 
         private void RepointME1SlaveInstance(IMEPackage slavePackage, TextureMapPackageEntry inst, ExportEntry masterExport)
@@ -548,7 +588,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
                         if (removedCount > 0)
                         {
-                            Debug.WriteLine($@"Removing empty mips from {pPath} {tex.InstancedFullPath}");
+                            Debug.WriteLine($@"Removing empty mips from {pPath} {tex.MemoryFullPath}");
                             tex.WriteBinary(t2d);
                             tex.WriteProperty(new IntProperty(t2d.Mips.Count, "MipTailBaseIdx"));
                             //package.Save();
@@ -690,14 +730,15 @@ namespace LegendaryExplorer.Tools.TextureStudio
             {
                 ScanCanceled = false;
                 IsBusy = false;
+                ApplyTreeFilter();
 
                 if (nodeToSelect != null && entriesToReload is { Count: 1 })
                 {
-                    var root = AllRootTreeViewNodes.FirstOrDefault(x => x.InstancedFullPath == entriesToReload[0].InstancedFullPath);
+                    var root = AllRootTreeViewNodes.FirstOrDefault(x => x.MemoryFullPath == entriesToReload[0].MemoryFullPath);
                     if (root != null)
                     {
                         // it's gonna be under here
-                        var node = root.GetAllTextureEntries().FirstOrDefault(x => x.InstancedFullPath == nodeToSelect);
+                        var node = root.GetAllTextureEntries().FirstOrDefault(x => x.MemoryFullPath == nodeToSelect);
                         if (node is TextureMapMemoryEntryWPF twpf)
                         {
                             SelectEntry(twpf);
@@ -873,6 +914,23 @@ namespace LegendaryExplorer.Tools.TextureStudio
             }
         }
         #endregion
+
+        private void TreeSearchBox_OnTextChanged(SearchBox sender, string newText)
+        {
+            ApplyTreeFilter();
+        }
+
+        /// <summary>
+        /// Hides tree nodes that don't match the search box, expanding parents of nodes that do
+        /// </summary>
+        private void ApplyTreeFilter()
+        {
+            var searchText = TreeSearchBox.Text?.Trim();
+            foreach (var node in AllRootTreeViewNodes.OfType<TextureMapMemoryEntryWPF>())
+            {
+                node.ApplyFilter(searchText);
+            }
+        }
 
         private void SelectedTreeNodeChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {

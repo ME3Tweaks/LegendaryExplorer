@@ -165,7 +165,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             {
                 Color c = colors.TryGetValue(value, out Color col) ? col : DefaultColors[value];
                 newHighlightingColors[value] = new HighlightingColor { Name = value.ToString(), Foreground = new SimpleHighlightingBrush(c) };
-                newColorBrushes[value] = new SolidColorBrush(c);
+                // Must be frozen: these are static and assigned to DependencyProperties (e.g. TextEditor.Foreground).
+                // An unfrozen Freezable keeps references back to every element it's set on, which roots closed windows.
+                var brush = new SolidColorBrush(c);
+                brush.Freeze();
+                newColorBrushes[value] = brush;
             }
             var newBackgroundBrush = new SolidColorBrush(background);
             newBackgroundBrush.Freeze();

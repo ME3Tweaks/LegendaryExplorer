@@ -5,7 +5,9 @@ using System.Linq;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Diagnostics;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 
@@ -37,14 +39,19 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="dumpUnreferencedObjects">Only ports objects referenced by ObjectReferencer and TheWorld, which will dump unreferenced objects.</param>
         public static IMEPackage ResynthesizePackage(IMEPackage package, PackageCache cache, bool dumpUnreferencedObjects = false)
         {
+            // Keep a reference to the original package: DumpUnreferencedObjects below reassigns `package` to a
+            // reduced intermediate that never carries SeekFreeShaderCache (it isn't reachable from TheWorld or
+            // ObjectReferencer), so the shader cache always needs to be sourced from here, not from `package`.
+            var sourcePackage = package;
             if (dumpUnreferencedObjects)
             {
                 package = DumpUnreferencedObjects(package, cache);
             }
-            var hasDuplicates = package.HasDuplicateObjects();
+            // Same instanced full path AND same class
+            var hasDuplicates = package.HasDuplicateObjects(true);
             if (hasDuplicates)
             {
-                LECLog.Warning("Cannot resynthesisize package: Package has duplicate named objects");
+                LECLog.Warning($"Cannot resynthesisize {package.FileNameNoExtension}: Package has duplicate named objects");
                 return package;
             }
 
@@ -66,24 +73,33 @@ namespace LegendaryExplorerCore.Packages
             // Step 0: Convert imports to exports where necessary.
             foreach (var entry in package.Imports.Where(x => x.ClassName == "Package" && EntryOrdering.HasExportChildren(x)).ToList())
             {
+                var origName = entry.ObjectName;
                 var import = EntryImporter.ResolveImport(entry, cache); // Should we cache here?
+                entry.ObjectName = RESYNTH_TEMP_NAME; // Rename so we can safely re-add under the original name.
+
+                IEntry newEntry;
                 if (import != null)
                 {
-                    var origName = entry.ObjectName;
-                    entry.ObjectName = RESYNTH_TEMP_NAME; // Rename so we can safely re-import.
-
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, import, package, entry.Parent, true,
-                        new RelinkerOptionsPackage(), out var newEntry);
+                        new RelinkerOptionsPackage(), out newEntry);
                     if (newEntry is ImportEntry)
                     {
                         Debugger.Break(); // This should not be an import...
                     }
-                    foreach (var obj in entry.GetChildren())
-                    {
-                        obj.Parent = newEntry;
-                    }
-                    EntryPruner.TrashEntryAndDescendants(entry); // Get rid of the original before we port
                 }
+                else
+                {
+                    // Could not resolve the import to real export data (e.g. source package not loaded/found).
+                    // It still has export children locally (per HasExportChildren above), so stub it out as a
+                    // plain Package export instead of leaving it as an import.
+                    newEntry = ExportCreator.CreatePackageExport(package, origName, entry.Parent);
+                }
+
+                foreach (var obj in entry.GetChildren())
+                {
+                    obj.Parent = newEntry;
+                }
+                EntryPruner.TrashEntryAndDescendants(entry); // Get rid of the original before we port
             }
 
             // Step 1: Port names
@@ -110,15 +126,79 @@ namespace LegendaryExplorerCore.Packages
             }
 
             // Step 3: Create imports and stub out exports
+            // SeekFreeShaderCache is excluded from this walk (see EntryOrdering) and ported separately below,
+            // once newPackage's real material set is completely known.
+            //
+            // sourceToDest is the authoritative source-entry -> destination-entry mapping, keyed by object identity.
+            // The stubbing pass populates it and every later pass (and the relinker, via ResynthRelinkResolver) reads
+            // from it instead of looking the destination up by instanced full path. Path lookups are ambiguous when a
+            // package has several objects that share an instanced full path but differ by class - the lookup
+            // table only keeps one of them - which historically collapsed the objects onto a single export and repointed
+            // every reference to whichever one happened to win (and gave Mgamerz an annurysm on Tropical, Firebase Vancouver)
+            var sourceToDest = new Dictionary<IEntry, IEntry>(ReferenceEqualityComparer.Instance);
+            var relinkResolver = MakeResynthRelinkResolver(package, sourceToDest);
             var ordering = new EntryOrdering(null, package);
-            PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Stubbing);
-            PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Resolving);
-            PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Transferring);
+            PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Stubbing, sourceToDest, relinkResolver);
+            PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Resolving, sourceToDest, relinkResolver);
+            PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Transferring, sourceToDest, relinkResolver);
             newPackage.SetInternalFilepath(package.FilePath);
+
+            // Done as the very last step, against the fully-built package, so the decision reflects reality:
+            // compacting any earlier (e.g. against a package that's still partway through being reconstructed,
+            // which is what this used to do inside DumpUnreferencedObjects) risks judging against an incomplete
+            // material set and wiping shaders that are still genuinely used in the final output.
+            PortAndCompactShaderCache(sourcePackage, newPackage, cache);
 
             //12/24/2025 - Fix bad forced export
             PackageDiags.FixBadForcedExport(package);
             return newPackage;
+        }
+
+        /// <summary>
+        /// Ports SeekFreeShaderCache into the fully-reconstructed destination package, then compacts it against
+        /// the destination's real (final) material set and drops it entirely if nothing survives compaction.
+        /// </summary>
+        private static void PortAndCompactShaderCache(IMEPackage sourcePackage, IMEPackage destPackage, PackageCache cache)
+        {
+            var seekFreeShaderCache = sourcePackage.FindExport("SeekFreeShaderCache");
+            if (seekFreeShaderCache == null)
+                return;
+
+            // Porting the cache is speculative - if it compacts down to nothing we're going to throw it away.
+            // Snapshot the name/import tables first so we can splice out exactly what the port adds if that
+            // happens; otherwise trashing the export leaves its class/name chain (e.g. Engine.ShaderCache) behind
+            // as unreferenced entries, which defeats the point of dumping unreferenced data in the first place.
+            var namesBeforePort = destPackage.Names.ToList();
+            var importsBeforePort = destPackage.Imports.ToList();
+
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
+                seekFreeShaderCache, destPackage, null, true, new RelinkerOptionsPackage() { Cache = cache },
+                out var portedCache);
+
+            // Once it is ported over, compact it against destPackage's real, final material set to remove any
+            // useless data in it.
+            ShaderCacheManipulator.CompactSeekFreeShaderCaches(destPackage);
+
+            // If after compaction it has no shader maps, delete it.
+            var compactedCache = (ExportEntry)portedCache;
+            if (compactedCache.GetBinaryData<ShaderCache>().MaterialShaderMaps.Count == 0)
+            {
+                // Trash first, before touching the name/import tables: TrashEntryAndDescendants needs to read
+                // them (via GetAllDescendants -> RebuildLookupTable) to walk descendants and rename the entry, so
+                // reverting the tables first corrupts that read (the export's own name index would already be
+                // out of range). Trashing a trailing, childless export like this one (it was just ported in dead
+                // last, and SeekFreeShaderCache has no children of its own) also fully removes it from the
+                // package via the cleanup already built into TrashEntries/RemoveTrailingTrash - once that's
+                // happened, everything the port (and trashing itself) added to the tables is genuinely
+                // unreferenced, so it's safe to truncate straight back to their pre-port length.
+                EntryPruner.TrashEntryAndDescendants(compactedCache);
+
+                if (!destPackage.Exports.Contains(compactedCache))
+                {
+                    destPackage.restoreNames(namesBeforePort);
+                    destPackage.restoreImports(importsBeforePort);
+                }
+            }
         }
 
         public static IMEPackage DumpUnreferencedObjects(IMEPackage package, PackageCache cache)
@@ -132,7 +212,7 @@ namespace LegendaryExplorerCore.Packages
             }
 
             var newPackage = MEPackageHandler.CreateMemoryEmptyPackage("RebuildingPackage.pcc", package.Game);
-            
+
             var theWorld = package.FindExport("TheWorld");
             if (theWorld != null)
             {
@@ -148,6 +228,11 @@ namespace LegendaryExplorerCore.Packages
                         out var portedReferencer);
                 }
             }
+
+            // Note: SeekFreeShaderCache is intentionally NOT ported here. It isn't reachable from TheWorld or
+            // ObjectReferencer (nothing references it via a normal UObject property), and deciding what to keep in
+            // it requires the package's real, final material set - so it's ported and compacted once, centrally,
+            // by ResynthesizePackage.PortAndCompactShaderCache after the whole package is built.
 
             CopyPackageHeader(package, newPackage);
 
@@ -170,7 +255,8 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        private static void PortOrdering(EntryOrdering ordering, IMEPackage newPackage, IEntry parent, ESynthesisMode mode, List<ImportEntry> importsToConvert = null)
+        private static void PortOrdering(EntryOrdering ordering, IMEPackage newPackage, IEntry parent, ESynthesisMode mode, Dictionary<IEntry, IEntry> sourceToDest,
+            RelinkerOptionsPackage.CustomRelinkUIndexDelegate relinkResolver)
         {
             IEntry newEntry = null;
             if (ordering.Entry != null)
@@ -181,7 +267,8 @@ namespace LegendaryExplorerCore.Packages
                     {
                         if (ordering.ConvertToExport)
                         {
-                            newEntry = ExportCreator.CreatePackageExport(newPackage, ordering.Entry.ObjectName, parent);
+                            // reuseExisting: false - one stub per source entry. See sourceToDest in ResynthesizePackage.
+                            newEntry = ExportCreator.CreatePackageExport(newPackage, ordering.Entry.ObjectName, parent, reuseExisting: false);
                             (newEntry as ExportEntry).SetForcedExportFlag(true); // Import to export is always a forced export
                         }
                         else
@@ -192,8 +279,10 @@ namespace LegendaryExplorerCore.Packages
                                 ClassName = oImp.ClassName
                             };
                             // Core and Core.Package will probably already be added
-                            // We don't want to re-add them so we see if they exist first
-                            newEntry = newPackage.FindEntry(imp.InstancedFullPath);
+                            // We don't want to re-add them so we see if they exist first.
+                            // The class is part of the match: an entry that merely shares the instanced full path but
+                            // has a different class is a different object, and reusing it would drop this import.
+                            newEntry = newPackage.FindEntry(imp.InstancedFullPath, imp.ClassName);
                             if (newEntry == null)
                             {
                                 newPackage.AddImport(imp);
@@ -203,29 +292,25 @@ namespace LegendaryExplorerCore.Packages
                     }
                     else if (ordering.Entry is ExportEntry oExp)
                     {
-                        newEntry = ExportCreator.CreatePackageExport(newPackage, ordering.Entry.ObjectName, parent);
+                        // reuseExisting: false - one stub per source entry. See sourceToDest in ResynthesizePackage.
+                        newEntry = ExportCreator.CreatePackageExport(newPackage, ordering.Entry.ObjectName, parent, reuseExisting: false);
                         (newEntry as ExportEntry).SetForcedExportFlag(oExp.IsForcedExport); // Match ForcedExport for lookups
                     }
+
+                    sourceToDest[ordering.Entry] = newEntry;
                 }
                 else if (mode == ESynthesisMode.Synth_Resolving)
                 {
                     // Transfer classes and replace data WITHOUT RELINK
                     if (ordering.Entry is ExportEntry oExp && IsClassSubObj(oExp))
                     {
-                        var destExp = newPackage.FindExport(ordering.Entry.InstancedFullPath);
+                        var destExp = (ExportEntry)sourceToDest[oExp];
                         // Update class
-                        if (oExp.Class != null) // Class is not class
-                        {
-                            destExp.Class = destExp.FileRef.FindEntry(oExp.Class.InstancedFullPath);
-                        }
-                        else
-                        {
-                            destExp.Class = null; // Change from Package to Class
-                        }
-                        
+                        destExp.Class = ResolveInDest(oExp.Class, newPackage, sourceToDest); // null Class means Class is class
+
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
                             ordering.Entry, newPackage, destExp, false, // no relink
-                            new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true }, out _);
+                            new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true, CustomRelinkUIndex = relinkResolver }, out _);
                     }
                 }
                 else if (mode == ESynthesisMode.Synth_Transferring)
@@ -233,28 +318,21 @@ namespace LegendaryExplorerCore.Packages
                     // Don't filter out class
                     if (ordering.Entry is ExportEntry oExp)
                     {
-                        var destExp = newPackage.FindExport(oExp.InstancedFullPath);
+                        var destExp = (ExportEntry)sourceToDest[oExp];
 
                         // Update class, archetype, superclass
-                        if (oExp.Class != null) // Class is not class
-                        {
-                            destExp.Class = destExp.FileRef.FindEntry(oExp.Class.InstancedFullPath);
-                        }
-                        else
-                        {
-                            destExp.Class = null; // Change from Package to Class
-                        }
+                        destExp.Class = ResolveInDest(oExp.Class, newPackage, sourceToDest); // null Class means Class is class
 
                         // Superclass
                         if (oExp.SuperClass != null) // SuperClass is not null
                         {
-                            destExp.SuperClass = destExp.FileRef.FindEntry(oExp.SuperClass.InstancedFullPath);
+                            destExp.SuperClass = ResolveInDest(oExp.SuperClass, newPackage, sourceToDest);
                         }
 
                         // Archetype
                         if (oExp.Archetype != null) // Archetype is not null
                         {
-                            destExp.Archetype = destExp.FileRef.FindEntry(oExp.Archetype.InstancedFullPath);
+                            destExp.Archetype = ResolveInDest(oExp.Archetype, newPackage, sourceToDest);
                         }
 
                         destExp.ObjectFlags = oExp.ObjectFlags;
@@ -266,7 +344,7 @@ namespace LegendaryExplorerCore.Packages
                         // Update data
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
                             ordering.Entry, newPackage, destExp, true,
-                            new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true, ImportExportDependencies = false }, out _);
+                            new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true, ImportExportDependencies = false, CustomRelinkUIndex = relinkResolver }, out _);
 
 
                     }
@@ -275,8 +353,47 @@ namespace LegendaryExplorerCore.Packages
 
             foreach (var o in ordering.Children)
             {
-                PortOrdering(o, newPackage, newEntry, mode);
+                PortOrdering(o, newPackage, newEntry, mode, sourceToDest, relinkResolver);
             }
+        }
+
+        /// <summary>
+        /// Returns the destination entry that <paramref name="sourceEntry"/> was stubbed out as, falling back to an
+        /// instanced-full-path lookup for source entries that were never stubbed (e.g. trashed entries excluded from
+        /// the <see cref="EntryOrdering"/> walk). Returns null for a null input, which is meaningful for
+        /// <see cref="ExportEntry.Class"/> (a null class means the object is itself a class).
+        /// </summary>
+        private static IEntry ResolveInDest(IEntry sourceEntry, IMEPackage newPackage, Dictionary<IEntry, IEntry> sourceToDest)
+        {
+            if (sourceEntry == null)
+                return null;
+            if (sourceToDest.TryGetValue(sourceEntry, out var destEntry))
+                return destEntry;
+            return newPackage.FindEntry(sourceEntry.InstancedFullPath, sourceEntry.ClassName) ?? newPackage.FindEntry(sourceEntry.InstancedFullPath);
+        }
+
+        /// <summary>
+        /// Builds a relinker override that resolves references out of <paramref name="sourcePackage"/> through
+        /// <paramref name="sourceToDest"/> by object identity, instead of letting the relinker resolve them by
+        /// instanced full path. Path resolution picks the wrong object when the package holds several objects sharing
+        /// an instanced full path, and resynthesis already knows the exact destination for every source entry.
+        /// References the map doesn't cover fall through to the relinker's normal behavior.
+        /// </summary>
+        private static RelinkerOptionsPackage.CustomRelinkUIndexDelegate MakeResynthRelinkResolver(IMEPackage sourcePackage, Dictionary<IEntry, IEntry> sourceToDest)
+        {
+            return (IMEPackage importingPcc, ExportEntry relinkingExport, ref int uIndex, string propertyName, string prefix, RelinkerOptionsPackage rop, out EntryStringPair result) =>
+            {
+                result = null;
+                if (uIndex == 0 || !ReferenceEquals(importingPcc, sourcePackage))
+                    return false; // Not something this map describes - let the relinker handle it.
+
+                var sourceEntry = importingPcc.GetEntry(uIndex);
+                if (sourceEntry == null || !sourceToDest.TryGetValue(sourceEntry, out var destEntry))
+                    return false;
+
+                uIndex = destEntry.UIndex;
+                return true;
+            };
         }
 
         private static bool IsClassSubObj(ExportEntry oExp)
@@ -316,7 +433,9 @@ namespace LegendaryExplorerCore.Packages
             //ConvertToExport = entry is ImportEntry ientry && HasExportChildren(ientry);
 
             package ??= entry.FileRef;
-            var exports = package.Exports.Where(x => x.Parent == entry && !x.IsTrash()).ToList();
+            // SeekFreeShaderCache is excluded here - ResynthesizePackage ports and compacts it separately, once
+            // the rest of the package (and therefore its real material set) is fully built. See PortAndCompactShaderCache.
+            var exports = package.Exports.Where(x => x.Parent == entry && !x.IsTrash() && x.ObjectName != "SeekFreeShaderCache").ToList();
             var imports = package.Imports.Where(x => x.Parent == entry && !x.IsTrash()).ToList();
 
             exports.Sort(new EntrySorter());

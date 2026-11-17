@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using LegendaryExplorer.Misc;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -32,122 +33,75 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             }
         }
 
-        public static void CreateReachSpec(ExportEntry startNode, bool createTwoWay, ExportEntry destinationNode, string reachSpecClass, ReachSpecSize size, PropertyCollection externalGUIDProperties = null)
+        /// <summary>
+        /// Generates a reach spec export
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="reachSpecClass"></param>
+        /// <returns></returns>
+        private static ExportEntry internalCreateReachSpec(IMEPackage package, string reachSpecClass, PackageCache cache, int start = 0, int end = 0, Guid? endGuid = null, int collisionRadius = 0, int collisionHeight = 0)
         {
-            IMEPackage Pcc = startNode.FileRef;
-            ExportEntry reachSpectoClone = Pcc.Exports.FirstOrDefault(x => x.ClassName == "ReachSpec");
+            var level = package.GetLevel();
+            var spec = package.CreateExport(reachSpecClass, reachSpecClass, level, indexed: true, cache: cache);
+            PropertyCollection props = new PropertyCollection();
+            props.Add(new ObjectProperty(start, "Start"));
+            var navType = PathEdUtils.GetReachSpecEndName(spec); // Nav or Actor
+            props.Add(new StructProperty($"{navType}Reference", [
+                CommonStructs.GuidProp(endGuid ?? Guid.Empty,"Guid"),
+                new ObjectProperty(end, navType) // Actor or Nav
+            ], "End", isImmutable: true));
+            props.Add(new IntProperty(collisionRadius, "CollisionRadius"));
+            props.Add(new IntProperty(collisionHeight, "CollisionHeight"));
+            props.Add(new IntProperty(1, "ReachFlags")); // No idea what these are
+            props.Add(new ByteProperty(4, "PathColorIndex")); // This needs changed or it probably messes up drawing
+            spec.WriteProperties(props);
+            return spec;
+        }
 
+        public static void CreateReachSpec(ExportEntry startNode, bool createTwoWay, ExportEntry destinationNode, string reachSpecClass, ReachSpecSize size, PropertyCollection externalGUIDProperties = null, PackageCache cache = null)
+        {
             if (externalGUIDProperties != null) //EXTERNAL
             {
-                //external node
+                var outgoingSpec = internalCreateReachSpec(startNode.FileRef, reachSpecClass, cache, start: startNode.UIndex, end: 0, collisionRadius: size.SpecRadius, collisionHeight: size.SpecHeight);
 
-                //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
-                if (reachSpectoClone != null)
-                {
-                    ExportEntry outgoingSpec = EntryCloner.CloneEntry(reachSpectoClone);
+                // Patch the End struct's Guid with the supplied external guid properties
+                var properties = outgoingSpec.GetProperties();
+                var endGuid = properties.GetProp<StructProperty>("End").GetProp<StructProperty>("Guid");
+                endGuid.Properties = externalGUIDProperties;
+                outgoingSpec.WriteProperties(properties);
 
-                    IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
-
-                    outgoingSpec.Class = reachSpecClassImp;
-                    outgoingSpec.ObjectName = reachSpecClassImp.ObjectName;
-
-                    var properties = outgoingSpec.GetProperties();
-                    ObjectProperty outgoingSpecStartProp = properties.GetProp<ObjectProperty>("Start"); //START
-                    StructProperty outgoingEndStructProp = properties.GetProp<StructProperty>("End"); //Embeds END
-                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(PathEdUtils.GetReachSpecEndName(outgoingSpec)); //END
-                    outgoingSpecStartProp.Value = startNode.UIndex;
-                    outgoingSpecEndProp.Value = 0;
-                    var endGuid = outgoingEndStructProp.GetProp<StructProperty>("Guid");
-                    endGuid.Properties = externalGUIDProperties; //set the other guid values to our guid values
-
-                    //Add to source node prop
-                    ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                    PathList.Add(new ObjectProperty(outgoingSpec.UIndex));
-                    startNode.WriteProperty(PathList);
-                    outgoingSpec.WriteProperties(properties);
-
-                    //Write Spec Size
-                    PathEdUtils.SetReachSpecSize(outgoingSpec, size.SpecRadius, size.SpecHeight);
-
-                    //Reindex reachspecs.
-                    PathEdUtils.ReindexMatchingObjects(outgoingSpec);
-                }
+                //Add to source node prop
+                ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                PathList.Add(new ObjectProperty(outgoingSpec.UIndex));
+                startNode.WriteProperty(PathList);
             }
             else
             {
-                //Debug.WriteLine("Source Node: " + startNode.Index);
+                var outgoingSpec = internalCreateReachSpec(startNode.FileRef, reachSpecClass, cache, start: startNode.UIndex, end: destinationNode.UIndex, collisionRadius: size.SpecRadius, collisionHeight: size.SpecHeight);
 
-                //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
-                //int outgoingSpec = pcc.ExportCount;
-                //int incomingSpec = pcc.ExportCount + 1;
-
-                if (reachSpectoClone != null)
+                if (reachSpecClass == "Engine.SlotToSlotReachSpec")
                 {
-                    ExportEntry outgoingSpec = EntryCloner.CloneEntry(reachSpectoClone);
-                    ExportEntry incomingSpec = null;
-                    if (createTwoWay)
-                    {
-                        incomingSpec = EntryCloner.CloneEntry(reachSpectoClone);
-                    }
+                    outgoingSpec.WriteProperty(new ByteProperty(1, "SpecDirection")); //We might need to find a way to support this edit
+                }
 
-                    IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
+                //Add to source node prop
+                var PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                PathList.Add(new ObjectProperty(outgoingSpec.UIndex));
+                startNode.WriteProperty(PathList);
 
-                    outgoingSpec.Class = reachSpecClassImp;
-                    outgoingSpec.ObjectName = reachSpecClassImp.ObjectName;
+                if (createTwoWay)
+                {
+                    var incomingSpec = internalCreateReachSpec(startNode.FileRef, reachSpecClass, cache, start: destinationNode.UIndex, end: startNode.UIndex, collisionRadius: size.SpecRadius, collisionHeight: size.SpecHeight);
 
-                    var outgoingSpecProperties = outgoingSpec.GetProperties();
                     if (reachSpecClass == "Engine.SlotToSlotReachSpec")
                     {
-                        outgoingSpecProperties.Add(new ByteProperty(1, "SpecDirection")); //We might need to find a way to support this edit
+                        incomingSpec.WriteProperty(new ByteProperty(2, "SpecDirection"));
                     }
 
-                    //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
-
-                    ObjectProperty outgoingSpecStartProp = outgoingSpecProperties.GetProp<ObjectProperty>("Start"); //START
-                    StructProperty outgoingEndStructProp = outgoingSpecProperties.GetProp<StructProperty>("End"); //Embeds END
-                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(PathEdUtils.GetReachSpecEndName(outgoingSpec)); //END
-                    outgoingSpecStartProp.Value = startNode.UIndex;
-                    outgoingSpecEndProp.Value = destinationNode.UIndex;
-
-                    //Add to source node prop
-                    var PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                    PathList.Add(new ObjectProperty(outgoingSpec.UIndex));
-                    startNode.WriteProperty(PathList);
-
-                    //Write Spec Size
-                    SetReachSpecSize(outgoingSpecProperties, size.SpecRadius, size.SpecHeight);
-                    outgoingSpec.WriteProperties(outgoingSpecProperties);
-
-                    if (createTwoWay)
-                    {
-                        incomingSpec.Class = reachSpecClassImp;
-                        incomingSpec.ObjectName = reachSpecClassImp.ObjectName;
-                        var incomingSpecProperties = incomingSpec.GetProperties();
-                        if (reachSpecClass == "Engine.SlotToSlotReachSpec")
-                        {
-                            incomingSpecProperties.Add(new ByteProperty(2, "SpecDirection"));
-                        }
-
-                        ObjectProperty incomingSpecStartProp = incomingSpecProperties.GetProp<ObjectProperty>("Start"); //START
-                        StructProperty incomingEndStructProp = incomingSpecProperties.GetProp<StructProperty>("End"); //Embeds END
-                        ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>(PathEdUtils.GetReachSpecEndName(incomingSpec)); //END
-
-                        incomingSpecStartProp.Value = destinationNode.UIndex; //Uindex
-                        incomingSpecEndProp.Value = startNode.UIndex;
-
-                        //Add reachspec to destination node's path list (returning)
-                        var DestPathList = destinationNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                        DestPathList.Add(new ObjectProperty(incomingSpec.UIndex));
-                        destinationNode.WriteProperty(DestPathList);
-
-                        //destNode.WriteProperty(DestPathList);
-                        SetReachSpecSize(incomingSpecProperties, size.SpecRadius, size.SpecHeight);
-
-                        incomingSpec.WriteProperties(incomingSpecProperties);
-                    }
-
-                    //Reindex reachspecs.
-                    PathEdUtils.ReindexMatchingObjects(outgoingSpec);
+                    //Add reachspec to destination node's path list (returning)
+                    var DestPathList = destinationNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    DestPathList.Add(new ObjectProperty(incomingSpec.UIndex));
+                    destinationNode.WriteProperty(DestPathList);
                 }
             }
         }
@@ -604,132 +558,132 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
     }
 
     [DebuggerDisplay("ReachSpecSize | {Header} {SpecHeight}x{SpecRadius}")]
-    public class ReachSpecSize : NotifyPropertyChangedBase, IEquatable<ReachSpecSize>
+public class ReachSpecSize : NotifyPropertyChangedBase, IEquatable<ReachSpecSize>
+{
+    public const int MOOK_RADIUS = 34;
+    public const int MOOK_HEIGHT = 90;
+    public const int MINIBOSS_RADIUS = 105;
+    public const int MINIBOSS_HEIGHT = 145;
+    public const int BRUTE_RADIUS = 115;
+    // No height. Just use miniboss for brute
+    public const int BOSS_RADIUS = 140;
+    public const int BOSS_HEIGHT = 195;
+    public const int BANSHEE_RADIUS = 50;
+    public const int BANSHEE_HEIGHT = 125;
+    public const int HARVESTER_RADIUS = 500;
+    public const int HARVESTER_HEIGHT = 500;
+
+    public bool CustomSized;
+
+    public ReachSpecSize()
     {
-        public const int MOOK_RADIUS = 34;
-        public const int MOOK_HEIGHT = 90;
-        public const int MINIBOSS_RADIUS = 105;
-        public const int MINIBOSS_HEIGHT = 145;
-        public const int BRUTE_RADIUS = 115;
-        // No height. Just use miniboss for brute
-        public const int BOSS_RADIUS = 140;
-        public const int BOSS_HEIGHT = 195;
-        public const int BANSHEE_RADIUS = 50;
-        public const int BANSHEE_HEIGHT = 125;
-        public const int HARVESTER_RADIUS = 500;
-        public const int HARVESTER_HEIGHT = 500;
-
-        public bool CustomSized;
-
-        public ReachSpecSize()
-        {
-        }
-
-        public ReachSpecSize(string header, int height, int radius, bool customsized = false)
-        {
-            Header = header;
-            SpecHeight = height;
-            SpecRadius = radius;
-            CustomSized = customsized;
-        }
-
-        private string _header;
-        public string Header
-        {
-            get => _header;
-            set => SetProperty(ref _header, value);
-        }
-
-        private int _specRadius;
-        public int SpecRadius
-        {
-            get => _specRadius;
-            set => SetProperty(ref _specRadius, value);
-        }
-
-        private int _specHeight;
-        public int SpecHeight
-        {
-            get => _specHeight;
-            set => SetProperty(ref _specHeight, value);
-        }
-
-        public bool Equals(ReachSpecSize other)
-        {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return _specRadius == other._specRadius && _specHeight == other._specHeight;
-        }
     }
 
-    public class PathfindingDB_ExportType_EnsuredProperty
+    public ReachSpecSize(string header, int height, int radius, bool customsized = false)
     {
-        public string name { get; set; }
-        public string type { get; set; }
-        public string defaultvalue { get; set; }
+        Header = header;
+        SpecHeight = height;
+        SpecRadius = radius;
+        CustomSized = customsized;
     }
 
-    public class PathfindingDB_ExportType
+    private string _header;
+    public string Header
     {
-        public string nodetypename { get; set; }
-        public string fullclasspath { get; set; }
-        public string name { get; set; }
-        public string cylindercomponentarchetype { get; set; }
-        public bool pathnode { get; set; }
-        public string description { get; set; }
-        public bool usesbtop { get; set; }
-        public bool upgradetomaxpathsize { get; set; }
-        public List<PathfindingDB_ExportType_EnsuredProperty> ensuredproperties { get; set; } = new();
-        public string inboundspectype { get; set; }
+        get => _header;
+        set => SetProperty(ref _header, value);
     }
 
-    public class Point3D
+    private int _specRadius;
+    public int SpecRadius
     {
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float Z { get; set; }
-
-        public Point3D()
-        {
-        }
-
-        public Point3D(float X, float Y, float Z)
-        {
-            this.X = X;
-            this.Y = Y;
-            this.Z = Z;
-        }
-
-        public double getDistanceToOtherPoint(Point3D other)
-        {
-            double deltaX = X - other.X;
-            double deltaY = Y - other.Y;
-            double deltaZ = Z - other.Z;
-
-            return Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-        }
-
-        public Point3D getDelta(Point3D other)
-        {
-            float deltaX = X - other.X;
-            float deltaY = Y - other.Y;
-            float deltaZ = Z - other.Z;
-            return new Point3D(deltaX, deltaY, deltaZ);
-        }
-
-        public override string ToString()
-        {
-            return $"{X},{Y},{Z}";
-        }
-
-        public Point3D applyDelta(Point3D other)
-        {
-            float deltaX = X + other.X;
-            float deltaY = Y + other.Y;
-            float deltaZ = Z + other.Z;
-            return new Point3D(deltaX, deltaY, deltaZ);
-        }
-
-        public static implicit operator Point3D(Vector3 vec) => new Point3D(vec.X, vec.Y, vec.Z);
+        get => _specRadius;
+        set => SetProperty(ref _specRadius, value);
     }
+
+    private int _specHeight;
+    public int SpecHeight
+    {
+        get => _specHeight;
+        set => SetProperty(ref _specHeight, value);
+    }
+
+    public bool Equals(ReachSpecSize other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return _specRadius == other._specRadius && _specHeight == other._specHeight;
+    }
+}
+
+public class PathfindingDB_ExportType_EnsuredProperty
+{
+    public string name { get; set; }
+    public string type { get; set; }
+    public string defaultvalue { get; set; }
+}
+
+public class PathfindingDB_ExportType
+{
+    public string nodetypename { get; set; }
+    public string fullclasspath { get; set; }
+    public string name { get; set; }
+    public string cylindercomponentarchetype { get; set; }
+    public bool pathnode { get; set; }
+    public string description { get; set; }
+    public bool usesbtop { get; set; }
+    public bool upgradetomaxpathsize { get; set; }
+    public List<PathfindingDB_ExportType_EnsuredProperty> ensuredproperties { get; set; } = new();
+    public string inboundspectype { get; set; }
+}
+
+public class Point3D
+{
+    public float X { get; set; }
+    public float Y { get; set; }
+    public float Z { get; set; }
+
+    public Point3D()
+    {
+    }
+
+    public Point3D(float X, float Y, float Z)
+    {
+        this.X = X;
+        this.Y = Y;
+        this.Z = Z;
+    }
+
+    public double getDistanceToOtherPoint(Point3D other)
+    {
+        double deltaX = X - other.X;
+        double deltaY = Y - other.Y;
+        double deltaZ = Z - other.Z;
+
+        return Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+    }
+
+    public Point3D getDelta(Point3D other)
+    {
+        float deltaX = X - other.X;
+        float deltaY = Y - other.Y;
+        float deltaZ = Z - other.Z;
+        return new Point3D(deltaX, deltaY, deltaZ);
+    }
+
+    public override string ToString()
+    {
+        return $"{X},{Y},{Z}";
+    }
+
+    public Point3D applyDelta(Point3D other)
+    {
+        float deltaX = X + other.X;
+        float deltaY = Y + other.Y;
+        float deltaZ = Z + other.Z;
+        return new Point3D(deltaX, deltaY, deltaZ);
+    }
+
+    public static implicit operator Point3D(Vector3 vec) => new Point3D(vec.X, vec.Y, vec.Z);
+}
 }

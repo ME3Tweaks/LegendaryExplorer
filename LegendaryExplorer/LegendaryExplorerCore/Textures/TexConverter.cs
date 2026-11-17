@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LegendaryExplorerCore.Textures
 {
-    public static class TexConverter
+    public static partial class TexConverter
     {
         #region Native Interop
         private const string TEXCONVERTER_DLL_FILENAME = "TexConverter.dll";
