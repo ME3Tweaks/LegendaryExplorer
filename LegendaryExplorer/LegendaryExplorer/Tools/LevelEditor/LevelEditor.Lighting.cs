@@ -119,13 +119,13 @@ public partial class LevelEditor
         LightDiagnosticsStale = true;
     }
 
-    private void EditLightEnvironment_Click(object sender, RoutedEventArgs e)
+    internal void EditLightEnvironment_Click(object sender, RoutedEventArgs e)
     {
         if (!CanEditScene || sender is not FrameworkElement { DataContext: EditableActorLighting { CanEditEnvironment: true } lighting }) return;
         ShowLightEnvironmentProperties(lighting.EditableEnvironment);
     }
 
-    private void CreateLightEnvironment_Click(object sender, RoutedEventArgs e)
+    internal void CreateLightEnvironment_Click(object sender, RoutedEventArgs e)
     {
         if (!CanEditScene || sender is not Button { DataContext: EditableActorLighting { CanCreateEnvironment: true } lighting } button) return;
         try

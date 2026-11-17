@@ -46,7 +46,7 @@ public partial class LevelEditor
         if (!_isApplyingUndoRedo) UndoHistory.Push(action);
         LightDiagnosticsStale = true;
     }
-    private void SplineConnection_Click(object sender, RoutedEventArgs e)
+    internal void SplineConnection_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { DataContext: SplineConnectionItem item, Tag: string operation }) return;
         switch (operation)
@@ -56,9 +56,9 @@ public partial class LevelEditor
             case "Straight": item.Straighten(); break;
         }
     }
-    private void SplineBreakAll_Click(object sender, RoutedEventArgs e) => SelectedSpline?.BreakAllConnections();
-    private void SplineReverseAll_Click(object sender, RoutedEventArgs e) => SelectedSpline?.ReverseWholeSpline();
-    private void SplineMesh_Click(object sender, RoutedEventArgs e)
+    internal void SplineBreakAll_Click(object sender, RoutedEventArgs e) => SelectedSpline?.BreakAllConnections();
+    internal void SplineReverseAll_Click(object sender, RoutedEventArgs e) => SelectedSpline?.ReverseWholeSpline();
+    internal void SplineMesh_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
         UsePick(new AssetPickRequest($"DeformMesh of {point.ActorName}", point.Package, AssetKind.StaticMesh), mesh =>
@@ -85,11 +85,11 @@ public partial class LevelEditor
         MessageBox.Show(this, problem, "DeformMeshMaterials");
         return true;
     }
-    private void SplineClearMesh_Click(object sender, RoutedEventArgs e)
+    internal void SplineClearMesh_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedSpline is { } point) point.SetDeformMesh(null, point.DeformMeshMaterials);
     }
-    private void SplineMaterials_Click(object sender, RoutedEventArgs e)
+    internal void SplineMaterials_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedSpline is not { IsLoft: true } point) return;
         UsePick(SplineMaterialRequest($"Add a DeformMeshMaterials override to {point.ActorName}", point), material =>
@@ -97,11 +97,11 @@ public partial class LevelEditor
             if (!RefuseSplineMaterial(point, material)) point.SetDeformMesh(point.DeformMesh, point.DeformMeshMaterials.Append(material));
         });
     }
-    private void SplineClearMaterials_Click(object sender, RoutedEventArgs e)
+    internal void SplineClearMaterials_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedSpline is { } point) point.SetDeformMesh(point.DeformMesh, []);
     }
-    private void SplineMaterialSlot_Click(object sender, RoutedEventArgs e)
+    internal void SplineMaterialSlot_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { DataContext: SplineMaterialSlot slot, Tag: string operation }) return;
         var values = slot.Point.DeformMeshMaterials.ToList();
@@ -149,7 +149,7 @@ public partial class LevelEditor
     }
 
     //Choose mesh: another static mesh for the component to draw until a commit writes it, as one undo step
-    private void ChooseMesh_Click(object sender, RoutedEventArgs e)
+    internal void ChooseMesh_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { DataContext: StaticMeshComponentProxy mesh } || MeshChangeRefused(mesh)) return;
         // Asked again once it's picked: the picker is modal, so a preview refresh may have begun meanwhile
@@ -160,7 +160,7 @@ public partial class LevelEditor
     }
 
     //Revert: the component draws its own mesh again
-    private void RevertMesh_Click(object sender, RoutedEventArgs e)
+    internal void RevertMesh_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button { DataContext: StaticMeshComponentProxy mesh } && !MeshChangeRefused(mesh)) ChangeMesh(mesh.RevertMesh);
     }
@@ -191,7 +191,7 @@ public partial class LevelEditor
     }
 
     //Choose: another material for a slot of the component's mesh, drawn until a commit writes it, as one undo step. Only one the game draws there
-    private void ChooseMaterial_Click(object sender, RoutedEventArgs e)
+    internal void ChooseMaterial_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { DataContext: MeshMaterialSlot slot } || MaterialChangeRefused(slot.Mesh)) return;
         var mesh = slot.Mesh;
@@ -207,19 +207,19 @@ public partial class LevelEditor
     }
 
     //Revert to default: the slot is drawn with the mesh's own material again
-    private void ClearMaterial_Click(object sender, RoutedEventArgs e)
+    internal void ClearMaterial_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button { DataContext: MeshMaterialSlot slot } && !MaterialChangeRefused(slot.Mesh)) ChangeMaterials(() => slot.Mesh.ClearMaterial(slot.Index));
     }
 
     //Delete: an override past the mesh's slots, which the game never reads
-    private void DeleteExtraMaterial_Click(object sender, RoutedEventArgs e)
+    internal void DeleteExtraMaterial_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button { DataContext: MeshMaterialSlot slot } && !MaterialChangeRefused(slot.Mesh)) ChangeMaterials(() => slot.Mesh.DeleteExtraMaterial(slot.Index));
     }
 
     //Revert materials: the component's own overrides again
-    private void RevertMaterials_Click(object sender, RoutedEventArgs e)
+    internal void RevertMaterials_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button { DataContext: StaticMeshComponentProxy mesh } && !MaterialChangeRefused(mesh)) ChangeMaterials(mesh.RevertMaterials);
     }
@@ -231,10 +231,10 @@ public partial class LevelEditor
     //(by an edit or an undo step) the selected actor may draw another mesh, which other lights reach
     void IActorEditorContext.OnMeshChosen(StaticMeshComponentProxy mesh) => LightDiagnosticsStale = true;
 
-    private void RefreshDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.RefreshFilterCandidates();
-    private void ClearDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.ClearFilter();
+    internal void RefreshDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.RefreshFilterCandidates();
+    internal void ClearDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.ClearFilter();
 
-    private void DecalMaterial_Click(object sender, RoutedEventArgs e)
+    internal void DecalMaterial_Click(object sender, RoutedEventArgs e)
     {
         if (SelectedDecal is not { IsEditable: true } decal) return;
         UsePick(new AssetPickRequest("DecalMaterial", decal.Package, AssetKind.DecalMaterial), material =>

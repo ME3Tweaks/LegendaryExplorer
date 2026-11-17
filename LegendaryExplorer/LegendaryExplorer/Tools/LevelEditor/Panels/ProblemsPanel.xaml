@@ -1,0 +1,93 @@
+<UserControl x:Class="LegendaryExplorer.Tools.LevelEditor.ProblemsPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             xmlns:fa="http://schemas.fontawesome.com/icons/">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="../LevelEditorStyles.xaml"/></ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:BoolEnabledConverter x:Key="BoolEnabledConverter"/>
+            <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <DockPanel Background="{StaticResource EditorPanel}" IsEnabled="{Binding HasAnyFileOpen, Converter={StaticResource BoolEnabledConverter}}">
+        <StackPanel DockPanel.Dock="Top" Margin="8,8,8,0">
+            <DockPanel>
+                <Button DockPanel.Dock="Left" Content="Scan" Command="{Binding ScanLevelCommand}" Padding="12,4" VerticalAlignment="Top"
+                        ToolTip="Look for problems the game would have with the open levels. Lighting and decals are checked as they're shown, uncommitted edits included; the rest as the files have them. Nothing is changed"/>
+                <TextBlock Text="{Binding ScanSummary}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="{StaticResource EditorMuted}"/>
+            </DockPanel>
+            <TextBlock Text="The levels have changed since this scan. Scan again to bring it up to date." TextWrapping="Wrap" Foreground="{StaticResource EditorDirty}" Margin="0,6,0,0"
+                       Visibility="{Binding ScanIsStale, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        </StackPanel>
+        <TextBlock DockPanel.Dock="Bottom" Text="{Binding ScanStatus}" Visibility="{Binding ScanStatus, Converter={StaticResource NullVisibilityConverter}}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="9,7"/>
+        <ListBox ItemsSource="{Binding ProblemsView}" SelectedItem="{Binding SelectedProblem}" Margin="0,8,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True" ScrollViewer.CanContentScroll="True"
+                 AutomationProperties.Name="Problems found by the scan; selecting one selects its actor and shows it">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Padding" Value="6,5"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="GroupItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="GroupItem">
+                                        <Expander Style="{StaticResource OutlinerGroupExpander}" IsExpanded="True" Header="{TemplateBinding Content}" HeaderTemplate="{TemplateBinding ContentTemplate}">
+                                            <ItemsPresenter/>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <Border Background="{StaticResource EditorRaised}" Padding="8,6" Margin="0,5,0,1">
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Right" Text="{Binding ItemCount}" Foreground="{StaticResource EditorMuted}" Margin="8,0,0,0"/>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListBox.GroupStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="19"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <fa:ImageAwesome Width="12" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,2,0,0">
+                            <fa:ImageAwesome.Style>
+                                <Style TargetType="fa:ImageAwesome">
+                                    <Setter Property="Icon" Value="Solid_ExclamationCircle"/>
+                                    <Setter Property="Foreground" Value="{StaticResource EditorProblem}"/>
+                                    <Setter Property="ToolTip" Value="Problem: something breaks in game"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsWarning}" Value="True">
+                                            <Setter Property="Icon" Value="Solid_ExclamationTriangle"/>
+                                            <Setter Property="Foreground" Value="{StaticResource EditorDirty}"/>
+                                            <Setter Property="ToolTip" Value="Warning: it works in game, but not as the level was made to"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </fa:ImageAwesome.Style>
+                        </fa:ImageAwesome>
+                        <StackPanel Grid.Column="1">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Right" Text="{Binding FileName}" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding Subject}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip="{Binding Subject}"/>
+                            </DockPanel>
+                            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

@@ -363,4 +363,32 @@
         </Setter.Value></Setter>
         <Style.Triggers><Trigger Property="Orientation" Value="Horizontal"><Setter Property="Width" Value="Auto"/><Setter Property="Height" Value="12"/></Trigger></Style.Triggers>
     </Style>
+    <Style x:Key="CommitButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Style.Triggers><DataTrigger Binding="{Binding IsDirty}" Value="True"><Setter Property="Background" Value="{StaticResource EditorAccent}"/></DataTrigger></Style.Triggers>
+    </Style>
+    <Style x:Key="OutlinerGroupExpander" TargetType="Expander">
+        <Setter Property="Foreground" Value="{StaticResource EditorText}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Expander">
+                    <StackPanel>
+                        <ToggleButton x:Name="HeaderSite" Style="{StaticResource EditorButtonBase}" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                      HorizontalContentAlignment="Stretch" Padding="0" AutomationProperties.Name="Expand or collapse group">
+                            <DockPanel>
+                                <TextBlock x:Name="Arrow" Text="›" Width="14" TextAlignment="Center" VerticalAlignment="Center"/>
+                                <ContentPresenter ContentSource="Header"/>
+                            </DockPanel>
+                        </ToggleButton>
+                        <ContentPresenter x:Name="GroupItems" ContentSource="Content" Visibility="Collapsed" Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="GroupItems" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Arrow" Property="Text" Value="⌄"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

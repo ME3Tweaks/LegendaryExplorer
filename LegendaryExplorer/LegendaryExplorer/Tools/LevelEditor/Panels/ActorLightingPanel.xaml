@@ -1,0 +1,76 @@
+<UserControl x:Class="LegendaryExplorer.Tools.LevelEditor.ActorLightingPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+             xmlns:fa="http://schemas.fontawesome.com/icons/">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="../LevelEditorStyles.xaml"/></ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Expander Header="Lighting" IsExpanded="True" Padding="10,4,10,10" Visibility="{Binding IsMeshSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+        <StackPanel>
+            <ItemsControl ItemsSource="{Binding SelectedActorLighting}">
+                <ItemsControl.ItemTemplate><DataTemplate>
+                    <StackPanel Margin="0,0,0,12">
+                        <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="IsEnabled" Value="True"/><Style.Triggers><DataTrigger Binding="{Binding IsReadOnly}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
+                        <TextBlock Text="{Binding ActorPropertyName}" FontWeight="SemiBold" Foreground="#81B3DD" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                        <TextBlock Text="{Binding ComponentName, StringFormat='Export: {0}'}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                        <TextBlock Text="{Binding MeshName, StringFormat='Mesh: {0}'}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,3,0,0"/>
+                        <TextBlock Text="Uncommitted" Foreground="{StaticResource EditorDirty}" FontSize="11" Visibility="{Binding HasChanges, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <!-- Light environment editing is disabled for now. To bring it back, uncomment this block; its handlers (EditLightEnvironment_Click, CreateLightEnvironment_Click) are still in the code-behind.
+                        <TextBlock Text="Light environment" Style="{StaticResource EditorSectionLabel}"/>
+                        <ComboBox ItemsSource="{Binding Environments}" SelectedItem="{Binding Environment}" DisplayMemberPath="Name" ToolTip="Choose a LightEnvironment owned by this actor or its archetype, or None for direct lighting. Commit to apply the assignment." AutomationProperties.Name="Light environment">
+                            <ComboBox.ItemContainerStyle><Style TargetType="ComboBoxItem"><Setter Property="IsEnabled" Value="{Binding IsSelectable}"/></Style></ComboBox.ItemContainerStyle>
+                        </ComboBox>
+                        <WrapPanel Margin="0,6,0,0">
+                            <Button Content="Edit properties…" Click="EditLightEnvironment_Click" IsEnabled="{Binding CanEditEnvironment}" Margin="0,0,4,4" ToolTip="Edit this actor's own LightEnvironment component."/>
+                            <Button Content="New dynamic" Click="CreateLightEnvironment_Click" Tag="Dynamic" IsEnabled="{Binding CanCreateEnvironment}" Margin="0,0,4,4" ToolTip="Create and assign a DynamicLightEnvironmentComponent owned by this actor."/>
+                            <Button Content="New Bio" Click="CreateLightEnvironment_Click" Tag="Bio" IsEnabled="{Binding CanCreateEnvironment}" Margin="0,0,0,4" ToolTip="Create and assign a BioDynamicLightEnvironmentComponent owned by this actor."/>
+                        </WrapPanel>
+                        <TextBlock Text="Assignments use Commit and Undo. New components and property edits change the package immediately; save the package to keep them. Inherited or imported environments need a local component to edit." TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11"/>
+                        -->
+                        <TextBlock Text="Lighting channels" Style="{StaticResource EditorSectionLabel}"/>
+                        <ItemsControl ItemsSource="{Binding Channels}">
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate><DataTemplate><CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}" Width="108" Margin="0,0,0,3"/></DataTemplate></ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Light reception" Style="{StaticResource EditorSectionLabel}"/>
+                        <CheckBox Content="Accept lights" IsChecked="{Binding AcceptsLights}" Margin="0,0,0,4" ToolTip="bAcceptsLights: receive direct level lighting."/>
+                        <CheckBox Content="Accept dynamic lights" IsChecked="{Binding AcceptsDynamicLights}" Margin="0,0,0,4" ToolTip="bAcceptsDynamicLights: receive dynamic lights when using direct level lighting."/>
+                        <TextBlock Text="Shadows" Style="{StaticResource EditorSectionLabel}"/>
+                        <CheckBox Content="Cast shadows" IsChecked="{Binding CastShadow}" Margin="0,0,0,4" ToolTip="CastShadow: whether this component casts shadows."/>
+                        <CheckBox Content="Cast dynamic shadows" IsChecked="{Binding CastDynamicShadow}" Margin="0,0,0,4" ToolTip="bCastDynamicShadow: cast shadows at runtime."/>
+                        <CheckBox Content="Use precomputed shadows" IsChecked="{Binding UsePrecomputedShadows}" Margin="0,0,0,4" ToolTip="bUsePrecomputedShadows: use static shadowing. Changing this does not rebuild baked lighting."/>
+                    </StackPanel>
+                </DataTemplate></ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Text="Eligibility follows the selected assignment policy in Preview mode. An eligible light can still be blocked; bake mappings and runtime routing are separate." TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11"/>
+            <TextBlock Text="{Binding LightingRulesNote}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,4,0,0"/>
+            <ItemsControl ItemsSource="{Binding SelectedMeshNotes}" Margin="0,4,0,0">
+                <ItemsControl.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" TextWrapping="Wrap" Foreground="{StaticResource EditorDirty}" FontSize="11" Margin="0,2"/></DataTemplate></ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Text="No level light reaches this Actor." Foreground="{StaticResource EditorMuted}" Margin="0,8,0,0" Visibility="{Binding SelectedMeshLights.Any, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}"/>
+            <ItemsControl ItemsSource="{Binding SelectedMeshLights}" Margin="0,6,0,0">
+                <ItemsControl.ItemTemplate><DataTemplate>
+                    <Button Command="{Binding Data.SelectLightCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding LightActor}" HorizontalContentAlignment="Stretch" Padding="4,3" Margin="0,1" ToolTip="Select this light">
+                        <DockPanel>
+                            <fa:ImageAwesome DockPanel.Dock="Left" Icon="Solid_Lightbulb" Width="10" Margin="0,2,7,0" VerticalAlignment="Top">
+                                <fa:ImageAwesome.Style><Style TargetType="fa:ImageAwesome"><Setter Property="Foreground" Value="{StaticResource EditorMuted}"/><Style.Triggers><DataTrigger Binding="{Binding IsAffecting}" Value="True"><Setter Property="Foreground" Value="#F09E1F"/></DataTrigger></Style.Triggers></Style></fa:ImageAwesome.Style>
+                            </fa:ImageAwesome>
+                            <StackPanel>
+                                <TextBlock TextTrimming="CharacterEllipsis"><Run Text="{Binding LightName, Mode=OneWay}"/><Run Text="{Binding LevelName, Mode=OneWay, StringFormat='  ·  {0}'}" Foreground="{StaticResource EditorMuted}"/></TextBlock>
+                                <TextBlock Text="{Binding Status}" FontSize="11" TextWrapping="Wrap">
+                                    <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Foreground" Value="{StaticResource EditorDirty}"/><Style.Triggers><DataTrigger Binding="{Binding IsAffecting}" Value="True"><Setter Property="Foreground" Value="{StaticResource EditorMuted}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </DockPanel>
+                    </Button>
+                </DataTemplate></ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </Expander>
+</UserControl>
