@@ -56,6 +56,10 @@ public static class ActorCommit
                     .Where(a => skipped?.Contains(a) != true).Distinct().Where(a => BakeInputs.MayRead(a, a.Editor?.PackageCache)).ToList();
                 var unbakedLevels = files.Where(f => f.PendingDeletions.Any(d => BakeInputs.MayRead(d.Actor, d.Actor.Editor?.PackageCache)))
                     .Select(f => f.LevelExport).ToList();
+                // Where the meshes this commit changes or deletes are drawn now, for the levels' texture streaming, before anything is written
+                var streaming = files.Where(f => f.LevelExport is not null).ToDictionary(f => f, f => TextureStreamingUpdate.Begin(f.LevelExport,
+                    committing.Where(a => a.Export?.FileRef == f.Package).SelectMany(a => OwnComponents(a.Export))
+                        .Concat(f.PendingDeletions.SelectMany(d => d.Entries)), CacheOf(f, sources)));
                 // Allocate every draft across the batch before writing any references, regardless of proxy family.
                 foreach (var file in files)
                 {
@@ -73,13 +77,14 @@ public static class ActorCommit
                 }
                 foreach (var file in files) Write(file, skipped, written, created);
                 foreach (var file in files) CollectionMemberUpgrade.Apply(file);
-                // Cooked collision for the meshes and scales the written actors now have, as a save in UE3's editor cooks it
+                // Cooked collision for the meshes and scales the written actors now have, and where they're drawn for texture streaming, as a save in UE3's
+                // editor builds them
                 foreach (var file in files.Where(f => f.LevelExport is not null))
                 {
-                    var owners = written.Where(w => w.File == file).Select(w => w.Actor.Export).Where(e => e is not null).ToHashSet();
-                    if (owners.Count == 0) continue;
-                    var components = file.Package.Exports.Where(e => (owners.Contains(e) || e.Parent is ExportEntry parent && owners.Contains(parent)) && e.IsA("StaticMeshComponent"));
-                    StaticMeshCollisionCache.AddMissing(file.LevelExport, components, written.First(w => w.File == file).Actor.Editor?.PackageCache);
+                    var components = written.Where(w => w.File == file).Select(w => w.Actor.Export).Where(e => e is not null).Distinct().SelectMany(OwnComponents).ToList();
+                    if (components.Count > 0)
+                        StaticMeshCollisionCache.AddMissing(file.LevelExport, components.Where(c => c.IsA("StaticMeshComponent")), CacheOf(file, sources));
+                    streaming[file].Complete(components);
                 }
                 // Include references written by other participants in this commit before approving any deletion.
                 var deletionPlans = PendingActorDeletion.Revalidate(deletions);
@@ -119,6 +124,13 @@ public static class ActorCommit
         //after the files have let go of them, so nothing is told about a disposed view
         foreach (var deletion in deletions) deletion.Accept();
     }
+
+    /// <summary>An actor's export and the components under it (a collection member's export is its component)</summary>
+    private static IEnumerable<ExportEntry> OwnComponents(ExportEntry actor) => actor.GetChildren<ExportEntry>().Prepend(actor);
+
+    /// <summary>The cache a file's actors resolve imports and inherited values with: its editor's, or the commit's if none of its actors has one</summary>
+    private static PackageCache CacheOf(OpenLevelFile file, PackageCache sources) =>
+        file.Actors.Concat(file.PendingCreations).Select(a => a.Editor?.PackageCache).FirstOrDefault(c => c is not null) ?? sources;
 
     private static void Write(OpenLevelFile file, IReadOnlySet<ActorProxy> skipped, List<(OpenLevelFile, ActorProxy)> written, HashSet<ActorProxy> created)
     {
