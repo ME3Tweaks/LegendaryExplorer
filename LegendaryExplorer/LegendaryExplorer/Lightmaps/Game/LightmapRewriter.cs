@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using LegendaryExplorer.Lightmaps.Codec;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -278,7 +279,7 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
     void Repack(List<List<Allocation>> sets, Summary summary)
     {
         using var meshes = new MeshResolver(package);
-        var level = package.Exports.FirstOrDefault(e => e.ClassName == "Level");
+        var level = package.GetLevel();
         var levelBinary = level != null ? ObjectBinary.From<Level>(level) : null;
 
         // One request per lightmap; its original texture set and coordinates are kept for fetching texels.

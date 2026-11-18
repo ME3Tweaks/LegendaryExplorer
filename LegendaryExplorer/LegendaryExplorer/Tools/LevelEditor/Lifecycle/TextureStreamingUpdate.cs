@@ -5,6 +5,7 @@ using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Instance = LegendaryExplorer.Tools.LevelEditor.TextureStreamingInstances.Instance;
 
@@ -54,7 +55,30 @@ public sealed class TextureStreamingUpdate
             if (list.Instances.Length == 0) map.Remove(key.UIndex);
             changed = true;
         }
-        foreach (var group in after.GroupBy(i => KeyFor(package, i.Texture, add: true)))
+        changed |= Add(package, map, after);
+        if (changed) level.WriteBinary(binary);
+    }
+
+    /// <summary>
+    /// Adds the map's instances of <paramref name="textures"/>, new streamed lightmaps a bake has just given the static meshes <paramref name="components"/>, as
+    /// BuildStreamingData lists them
+    /// </summary>
+    public static void AddLighting(ExportEntry level, IEnumerable<ExportEntry> components, IReadOnlySet<ExportEntry> textures, PackageCache cache)
+    {
+        var instances = new TextureStreamingInstances(cache);
+        var added = StaticMeshes(components).SelectMany(c => Of(instances, c, "its new lightmaps have no instances in the map"))
+            .Where(i => i.Lighting && textures.Contains(i.Texture)).ToList();
+        if (added.Count == 0) return;
+        var binary = level.GetBinaryData<Level>();
+        Add(level.FileRef, binary.TextureToInstancesMap, added);
+        level.WriteBinary(binary);
+    }
+
+    /// <summary>Adds <paramref name="instances"/> to the map, and returns whether any were</summary>
+    private static bool Add(IMEPackage package, UMultiMap<int, StreamableTextureInstanceList> map, List<Instance> instances)
+    {
+        bool changed = false;
+        foreach (var group in instances.GroupBy(i => KeyFor(package, i.Texture, add: true)))
         {
             // (one the level can't refer to has no instances: the game streams it as it would any texture that has none)
             if (group.Key is not { } key) continue;
@@ -65,7 +89,7 @@ public sealed class TextureStreamingUpdate
             else list.Instances = [.. others, .. added];
             changed = true;
         }
-        if (changed) level.WriteBinary(binary);
+        return changed;
     }
 
     private static IEnumerable<ExportEntry> StaticMeshes(IEnumerable<ExportEntry> components) => components.Where(c => c.IsA("StaticMeshComponent")).Distinct();

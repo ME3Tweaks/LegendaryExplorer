@@ -277,7 +277,7 @@ public static class LightmassBake
         {
             cancel.ThrowIfCancellationRequested();
             var summary = new LightmapRewriter(package, tfc, ByteEncoding.Gamma22, source, VectorBrightness).RewriteAll(settings.Repack);
-            LightmassMappingAllocator.Write(package, tfc, scene, result.Results, summary);
+            LightmassMappingAllocator.Write(package, tfc, scene, result.Results, summary, cache);
             result.Rewrites[package] = summary;
             log($"{package.FileNameNoExtension}: {LightmassBakeReport.LightmapLine(summary)}");
             var shadows = result.ShadowMaps[package] = new LightmassShadowMapWriter(package, tfc, scene, result.Results).Write(summary.AppliedLightmaps, summary.ShadowOnlyAllocations);
