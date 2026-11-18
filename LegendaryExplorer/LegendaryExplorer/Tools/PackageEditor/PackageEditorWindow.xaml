@@ -166,8 +166,11 @@
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Header="Package file header info" ToolTip="View information stored in package header" Command="{Binding PackageHeaderViewerCommand}"/>
                     <MenuItem Header="LECL Data Editor" ToolTip="Edits metadata stored in this package that is used in mod development tools" Command="{Binding LECLEditorCommand}"/>
+                    <MenuItem Header="Compare with another package (installed)" ToolTip="Compare another version of this package from installed packages in the game folder to see what exports and imports have changed" Command="{Binding CompareToInstalledCommand}"/>
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
                     <MenuItem Header="Compare with unmodded" ToolTip="Compare with the (hopefully) unmodded version of this package to see what exports and imports have changed" Command="{Binding CompareToUnmoddedCommand}"/>
+                    <MenuItem Header="Structural Compare with another package (installed)" Command="{Binding StructuralCompareToInstalledCommand}"
+                              ToolTip="Compare another version of this package from installed packages in the game folder to see what exports and imports have changed. This comparison method tries to match entries based on their paths, not their indexes." />
                     <MenuItem Header="Structural Compare with another package" Command="{Binding StructuralComparePackagesCommand}"
                               ToolTip="Compare another version of this package to see what exports and imports have changed. This comparison method tries to match entries based on their paths, not their indexes." />
                     <MenuItem Header="Structural Compare with unmodded" Command="{Binding StructuralCompareToUnmoddedCommand}"
