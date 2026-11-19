@@ -362,6 +362,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class KCachedPerTriData
     {
         public byte[] CachedPerTriData; //BulkSerialized
+
+        /// <summary>
+        /// Cooks <paramref name="lod"/>, a static mesh's LOD0, for per-triangle rigid-body collision at <paramref name="scale3D"/>, as UE3's
+        /// MakeCachedPerTriMeshDataForStaticMesh does, or returns null if PhysX can't cook it
+        /// </summary>
+        public static KCachedPerTriData Cook(StaticMeshRenderData lod, Vector3 scale3D)
+        {
+            var points = new Vector3[lod.PositionVertexBuffer.VertexData.Length];
+            for (int i = 0; i < points.Length; i++) points[i] = lod.PositionVertexBuffer.VertexData[i] * scale3D * PhysXSDK.UnrealtoPhysXScale;
+            return PhysXCooker.Use(cooker => cooker.TryCookTriangleMesh(points, lod.IndexBuffer, mirrored: scale3D.X * scale3D.Y * scale3D.Z < 0f)) is { } data
+                ? new KCachedPerTriData { CachedPerTriData = data }
+                : null;
+        }
     }
 
     public class FPrecomputedVolumeDistanceField

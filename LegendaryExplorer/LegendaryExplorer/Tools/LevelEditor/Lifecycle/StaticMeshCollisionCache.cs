@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -11,11 +11,11 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 namespace LegendaryExplorer.Tools.LevelEditor;
 
 /// <summary>
-/// A level's cooked static mesh collision (Level.CachedPhysSMDataMap and Store), which UE3's editor builds on save (ULevel::BuildPhysStaticMeshCache): one entry
-/// per mesh with hulls and total scale its components have (UStaticMesh::CookPhysConvexDataForScale). Location and rotation aren't in it, so only a new mesh or
-/// scale needs an entry, and one that nothing uses any more is harmless, so it's left. Without an entry the game cooks the hulls itself at load
-/// (FKAggregateGeom::InstanceNovodexGeom), so an entry saves load time rather than collision. A per-triangle mesh (UseSimpleRigidBodyCollision off) is left
-/// for the game to cook too: LEX can't cook a triangle mesh
+/// A level's cooked static mesh collision, which UE3's editor builds on save (ULevel::BuildPhysStaticMeshCache): one entry per mesh and total scale its components
+/// have (UStaticMesh::CookPhysConvexDataForScale), of its hulls (CachedPhysSMDataMap and Store) or, for a per-triangle mesh (UseSimpleRigidBodyCollision off), of
+/// its LOD0 triangles (CachedPhysPerTriSMDataMap and Store). Location and rotation aren't in it, so only a new mesh or scale needs an entry, and one that nothing
+/// uses any more is harmless, so it's left. Without an entry the game cooks the collision itself at load (FKAggregateGeom::InstanceNovodexGeom,
+/// UStaticMeshComponent::InitComponentRBPhys), so an entry saves load time rather than collision
 /// </summary>
 internal static class StaticMeshCollisionCache
 {
@@ -29,9 +29,20 @@ internal static class StaticMeshCollisionCache
         {
             if (Needed(component, cache) is not { } needed) continue;
             binary ??= level.GetBinaryData<Level>();
-            if (binary.CachedPhysSMDataMap.MultiFind(needed.Mesh).Any(data => IsNearlyZero(data.Scale3D - needed.Scale))) continue;
-            binary.CachedPhysSMDataMap.Add(needed.Mesh, new CachedPhysSMData { Scale3D = needed.Scale, CachedDataIndex = binary.CachedPhysSMDataStore.Count });
-            binary.CachedPhysSMDataStore.Add(new KCachedConvexData { CachedConvexElements = KCachedConvexData.Cook(needed.Hulls, needed.Scale) });
+            var map = needed.Hulls is null ? binary.CachedPhysPerTriSMDataMap : binary.CachedPhysSMDataMap;
+            if (map.MultiFind(needed.Mesh).Any(data => IsNearlyZero(data.Scale3D - needed.Scale))) continue;
+            if (needed.Hulls is not null)
+            {
+                map.Add(needed.Mesh, new CachedPhysSMData { Scale3D = needed.Scale, CachedDataIndex = binary.CachedPhysSMDataStore.Count });
+                binary.CachedPhysSMDataStore.Add(new KCachedConvexData { CachedConvexElements = KCachedConvexData.Cook(needed.Hulls, needed.Scale) });
+            }
+            // (one PhysX can't cook is left for the game, which can't either)
+            else if (needed.PerTriangle.GetBinaryData<StaticMesh>().LODModels is [{ IndexBuffer.Length: >= 3 } lod, ..] && KCachedPerTriData.Cook(lod, needed.Scale) is { } triangles)
+            {
+                map.Add(needed.Mesh, new CachedPhysSMData { Scale3D = needed.Scale, CachedDataIndex = binary.CachedPhysPerTriSMDataStore.Count });
+                binary.CachedPhysPerTriSMDataStore.Add(triangles);
+            }
+            else continue;
             added = true;
         }
         if (!added) return;
@@ -41,10 +52,10 @@ internal static class StaticMeshCollisionCache
     }
 
     /// <summary>
-    /// The mesh (a UIndex of <paramref name="component"/>'s package), total scale and hulls of the entry <paramref name="component"/> is looked up by, or null if it
-    /// has none: no mesh of its own package, or one with no hulls or per-triangle collision
+    /// The mesh (a UIndex of <paramref name="component"/>'s package) and total scale of the entry <paramref name="component"/> is looked up by, with the hulls it's
+    /// cooked from or, for a per-triangle mesh, the mesh; or null if it has none: no mesh of its own package, or one with neither hulls nor per-triangle collision
     /// </summary>
-    private static (int Mesh, Vector3 Scale, StructProperty[] Hulls)? Needed(ExportEntry component, PackageCache cache)
+    private static (int Mesh, Vector3 Scale, StructProperty[] Hulls, ExportEntry PerTriangle)? Needed(ExportEntry component, PackageCache cache)
     {
         // (an archetype's from another package has no mesh here: its object references are left out)
         var properties = component.GetCondensedProperties(cache, resolveImports: true, mergeStructs: true);
@@ -57,9 +68,14 @@ internal static class StaticMeshCollisionCache
         };
         if (mesh is null || mesh.ClassName != "StaticMesh") return null;
         var meshProperties = mesh.GetProperties();
-        if (meshProperties.GetProp<BoolProperty>("UseSimpleRigidBodyCollision")?.Value == false) return null;
-        if (meshProperties.GetProp<ObjectProperty>("BodySetup")?.ResolveToEntry(mesh.FileRef) is not ExportEntry bodySetup
-            || bodySetup.GetProperty<StructProperty>("AggGeom")?.GetProp<ArrayProperty<StructProperty>>("ConvexElems") is not { Count: > 0 } hulls) return null;
+        StructProperty[] hulls = null;
+        bool perTriangle = meshProperties.GetProp<BoolProperty>("UseSimpleRigidBodyCollision")?.Value == false;
+        if (!perTriangle)
+        {
+            if (meshProperties.GetProp<ObjectProperty>("BodySetup")?.ResolveToEntry(mesh.FileRef) is not ExportEntry bodySetup
+                || bodySetup.GetProperty<StructProperty>("AggGeom")?.GetProp<ArrayProperty<StructProperty>>("ConvexElems") is not { Count: > 0 } convexElems) return null;
+            hulls = [.. convexElems];
+        }
         // The scale the game looks it up by (UPrimitiveComponent::GetTransformAndScale): a collection member's owner is its collection, with no scale.
         // Multiplied in the order AActor::BuildPhysStaticMeshCache does
         float scale = properties.GetProp<FloatProperty>("Scale")?.Value ?? 1f, ownerScale = 1f;
@@ -70,7 +86,7 @@ internal static class StaticMeshCollisionCache
             ownerScale = ownerProperties.GetProp<FloatProperty>("DrawScale")?.Value ?? 1f;
             if (ownerProperties.GetProp<StructProperty>("DrawScale3D") is { } drawScale3D) ownerScale3D = CommonStructs.GetVector3(drawScale3D);
         }
-        return (meshProperty.Value, scale * ownerScale * scale3D * ownerScale3D, [.. hulls]);
+        return (meshProperty.Value, scale * ownerScale * scale3D * ownerScale3D, hulls, perTriangle ? mesh : null);
     }
 
     //FVector::IsNearlyZero, as ULevel::FindPhysStaticMeshCachedData matches scales
