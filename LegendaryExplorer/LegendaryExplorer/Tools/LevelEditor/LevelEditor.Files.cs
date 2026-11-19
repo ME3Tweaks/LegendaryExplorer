@@ -153,7 +153,7 @@ public partial class LevelEditor
 
         if (isFirstFile)
         {
-            CenterView();
+            PlaceStartingCamera(levelExport);
         }
 
         if (ignoredClasses.Count > 0)
@@ -201,6 +201,7 @@ public partial class LevelEditor
 
     private void CloseAllFiles()
     {
+        RememberCameraInRecents();
         CancelViewportDrag();
         Game = MEGame.Unknown;
         // Through SelectActor, so that the details panes stop showing (and offering to select) the closed levels' actors
@@ -303,6 +304,7 @@ public partial class LevelEditor
 
     private void CloseFileCore(OpenLevelFile file)
     {
+        if (OpenFiles.Count == 1) RememberCameraInRecents();
         CancelViewportDrag();
         if (SelectedActor is not null && file.Actors.Contains(SelectedActor))
         {

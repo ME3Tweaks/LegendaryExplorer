@@ -65,6 +65,10 @@ public class SceneCamera
         hasSavedPerspectiveState = true;
     }
 
+    /// <summary>The perspective view: in the top view, the one switching back returns to</summary>
+    public (Vector3 Position, float Pitch, float Yaw) PerspectiveView =>
+        IsOrthographic && hasSavedPerspectiveState ? (savedPerspectivePosition, savedPitch, savedYaw) : (Position, Pitch, Yaw);
+
     public void RestorePerspectiveState()
     {
         if (hasSavedPerspectiveState)
