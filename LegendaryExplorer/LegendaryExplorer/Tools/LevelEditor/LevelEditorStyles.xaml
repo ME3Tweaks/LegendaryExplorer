@@ -217,16 +217,63 @@
             </ControlTemplate>
         </Setter.Value></Setter>
     </Style>
-    <!-- Retain Xceed's parsing, keyboard increments, focus and validation. -->
-    <Style TargetType="xctk:SingleUpDown">
+    <!-- Retain Xceed's parsing, keyboard increments, focus and validation. The spinner buttons step by the
+         box's Increment, as the arrow keys and mouse wheel do. -->
+    <Style x:Key="EditorNumericBox" TargetType="xctk:InputBase">
         <Setter Property="Background" Value="{StaticResource EditorInput}"/>
         <Setter Property="Foreground" Value="{StaticResource EditorText}"/>
         <Setter Property="BorderBrush" Value="{StaticResource EditorBorder}"/>
         <Setter Property="Padding" Value="4,3"/>
         <Setter Property="MinHeight" Value="26"/>
-        <Setter Property="ShowButtonSpinner" Value="False"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="TextAlignment" Value="Right"/>
+    </Style>
+    <Style TargetType="xctk:SingleUpDown" BasedOn="{StaticResource EditorNumericBox}"/>
+    <Style TargetType="xctk:IntegerUpDown" BasedOn="{StaticResource EditorNumericBox}"/>
+    <Style x:Key="EditorSpinnerButton" TargetType="RepeatButton">
+        <Setter Property="Foreground" Value="{StaticResource EditorMuted}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Template"><Setter.Value>
+            <ControlTemplate TargetType="RepeatButton">
+                <Border x:Name="Surface" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorHover}"/><Setter Property="Foreground" Value="{StaticResource EditorText}"/></Trigger>
+                    <Trigger Property="IsPressed" Value="True"><Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorAccent}"/></Trigger>
+                    <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value="0.35"/></Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value></Setter>
+    </Style>
+    <!-- The numeric boxes' frame. ButtonSpinner finds and wires PART_IncreaseButton/PART_DecreaseButton by name. -->
+    <Style TargetType="xctk:ButtonSpinner">
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Template"><Setter.Value>
+            <ControlTemplate TargetType="xctk:ButtonSpinner">
+                <Border x:Name="Surface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" SnapsToDevicePixels="True">
+                    <DockPanel>
+                        <Grid x:Name="Spinner" DockPanel.Dock="Right" Width="16">
+                            <Grid.RowDefinitions><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                            <RepeatButton x:Name="PART_IncreaseButton" Style="{StaticResource EditorSpinnerButton}" AutomationProperties.Name="Increase">
+                                <Path Data="M0,4 L3.5,0 L7,4 Z" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RepeatButton}}"/>
+                            </RepeatButton>
+                            <RepeatButton x:Name="PART_DecreaseButton" Grid.Row="1" Style="{StaticResource EditorSpinnerButton}" AutomationProperties.Name="Decrease">
+                                <Path Data="M0,0 L7,0 L3.5,4 Z" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RepeatButton}}"/>
+                            </RepeatButton>
+                        </Grid>
+                        <ContentPresenter Focusable="False" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </DockPanel>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="ShowButtonSpinner" Value="False"><Setter TargetName="Spinner" Property="Visibility" Value="Collapsed"/></Trigger>
+                    <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource EditorAccent}"/></Trigger>
+                    <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value="0.45"/></Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value></Setter>
     </Style>
     <Style TargetType="Separator"><Setter Property="Margin" Value="4"/><Setter Property="Background" Value="{StaticResource EditorBorder}"/></Style>
     <Style x:Key="EditorToolbarSeparator" TargetType="Border"><Setter Property="Width" Value="1"/><Setter Property="Height" Value="22"/><Setter Property="Background" Value="{StaticResource EditorBorder}"/><Setter Property="Margin" Value="8,0"/></Style>

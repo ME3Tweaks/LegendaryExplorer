@@ -20,13 +20,14 @@ public partial class DeletionBlockedDialog : TrackingNotifyPropertyChangedWindow
     public IReadOnlyList<BlockingReferrer> Referrers { get; }
     public IReadOnlyList<string> OtherBlockers { get; }
 
-    public DeletionBlockedDialog(ActorDeletionBlockedException blocked) : base("Deletion Blocked Dialog", false)
+    public DeletionBlockedDialog(ActorDeletionBlockedException blocked) : base("Deletion Blocked Dialog", false, followAppTheme: false)
     {
         Message = $"{blocked.ActorName} can't be deleted:";
         Referrers = blocked.Referrers;
         OtherBlockers = blocked.OtherBlockers;
         DataContext = this;
         InitializeComponent();
+        EditorTitleBar.Apply(this);
     }
 
     /// <summary>

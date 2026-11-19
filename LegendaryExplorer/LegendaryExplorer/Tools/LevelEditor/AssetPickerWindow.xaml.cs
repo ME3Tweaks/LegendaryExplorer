@@ -49,7 +49,7 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
     private AssetReference usable, chosen;
     private bool closed;
 
-    private AssetPickerWindow(AssetPickRequest request, ISet<MEGame> declinedDatabasePrompts, Func<AssetReference, AssetReference> keep) : base("Asset Picker", false)
+    private AssetPickerWindow(AssetPickRequest request, ISet<MEGame> declinedDatabasePrompts, Func<AssetReference, AssetReference> keep) : base("Asset Picker", false, followAppTheme: false)
     {
         this.request = request;
         this.declinedDatabasePrompts = declinedDatabasePrompts;
@@ -63,6 +63,7 @@ public partial class AssetPickerWindow : TrackingNotifyPropertyChangedWindowBase
         Status = $"Listing this file's {Noun(2)}…";
         DataContext = this;
         InitializeComponent();
+        EditorTitleBar.Apply(this);
         PreviewViewer.Context = preview.Context;
         Loaded += (_, _) =>
         {

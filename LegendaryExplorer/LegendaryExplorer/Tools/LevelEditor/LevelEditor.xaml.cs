@@ -33,7 +33,7 @@ using System.Windows.Threading;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
-public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditorContext
+public partial class LevelEditor : TrackingNotifyPropertyChangedWindowBase, IActorEditorContext
 {
     public LevelEditorRenderContext RenderContext { get; }
 
@@ -151,7 +151,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     public LevelEditor() : this(false) { }
 
-    public LevelEditor(bool readOnlyPreview)
+    // Level Editor has its own dark styling (LevelEditorStyles.xaml), which the app theme would override.
+    public LevelEditor(bool readOnlyPreview) : base("Level Editor", true, followAppTheme: false)
     {
         IsBakePreview = readOnlyPreview;
         RenderContext = new LevelEditorRenderContext(readOnlyPreview)
@@ -208,6 +209,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
         LoadCommands();
         InitializeComponent();
+        EditorTitleBar.Apply(this);
         if (IsBakePreview)
         {
             // Reclaim the space reserved for the editor's details and changes panes.

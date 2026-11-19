@@ -8,5 +8,6 @@ public partial class LevelEditorHelpWindow : Window
     public LevelEditorHelpWindow()
     {
         InitializeComponent();
+        EditorTitleBar.Apply(this);
     }
 }

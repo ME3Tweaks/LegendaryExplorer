@@ -98,20 +98,39 @@ namespace LegendaryExplorer.Misc.Themes
         /// </remarks>
         private static void ApplyTitleBarTheme(Window window)
         {
+            if (IsDarkMode)
+            {
+                SetTitleBar(window, Theme.Dark, new ThemeOptions
+                {
+                    TitleBarBackgroundColor = System.Drawing.Color.FromArgb(0xFF, 0x25, 0x25, 0x26),
+                    TitleBarTextColor = System.Drawing.Color.FromArgb(0xFF, 0xDC, 0xDC, 0xDC)
+                });
+            }
+            else
+            {
+                SetTitleBar(window, Theme.Auto, new ThemeOptions());
+            }
+        }
+
+        /// <summary>
+        /// Gives a window that styles itself, rather than following the app theme, a dark title bar in the given
+        /// colours. Must be called before the window's SourceInitialized. Windows 10 ignores the colours and
+        /// draws its own dark title bar; Windows 11 uses them.
+        /// </summary>
+        public static void UseDarkTitleBar(Window window, System.Windows.Media.Color background, System.Windows.Media.Color text)
+        {
+            window.SourceInitialized += (_, _) => SetTitleBar(window, Theme.Dark, new ThemeOptions
+            {
+                TitleBarBackgroundColor = System.Drawing.Color.FromArgb(background.A, background.R, background.G, background.B),
+                TitleBarTextColor = System.Drawing.Color.FromArgb(text.A, text.R, text.G, text.B)
+            });
+        }
+
+        private static void SetTitleBar(Window window, Theme theme, ThemeOptions options)
+        {
             try
             {
-                if (IsDarkMode)
-                {
-                    DarkNet.Instance.SetWindowThemeWpf(window, Theme.Dark, new ThemeOptions
-                    {
-                        TitleBarBackgroundColor = System.Drawing.Color.FromArgb(0xFF, 0x25, 0x25, 0x26),
-                        TitleBarTextColor = System.Drawing.Color.FromArgb(0xFF, 0xDC, 0xDC, 0xDC)
-                    });
-                }
-                else
-                {
-                    DarkNet.Instance.SetWindowThemeWpf(window, Theme.Auto, new ThemeOptions());
-                }
+                DarkNet.Instance.SetWindowThemeWpf(window, theme, options);
             }
             catch (Exception)
             {
