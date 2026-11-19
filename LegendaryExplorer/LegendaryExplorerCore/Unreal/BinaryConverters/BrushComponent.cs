@@ -27,8 +27,32 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        //appears to work, but the resulting data is untested
-        public void RegenCachedPhysBrushData()
+        /// <summary>
+        /// Cooks BrushAggGeom for rigid-body collision at its total scale, as UBrushComponent::BuildPhysBrushData does.
+        /// Verified to produce identical data as BW's cooker.
+        /// </summary>
+        /// <param name="packageCache">For values inherited from archetypes in other packages</param>
+        public void RegenCachedPhysBrushData(PackageCache packageCache = null)
+        {
+            var cooked = CookCachedPhysBrushData(packageCache);
+            // With no hulls, data from before can't be left to mismatch the brush the game cooks instead
+            CachedPhysBrushData.CachedConvexElements = cooked ?? [];
+            if (cooked is null) return;
+            // What every LE1-LE3 blocking volume with cached data has. Volumes that never build rigid-body collision have none or older versions
+            var props = Export.GetProperties();
+            props.AddOrReplaceProp(new IntProperty(CurrentCachedPhysBrushDataVersion, "CachedPhysBrushDataVersion"));
+            Export.WriteProperties(props);
+        }
+
+        /// <summary>The CachedPhysBrushDataVersion of the data <see cref="RegenCachedPhysBrushData"/> cooks, in LE1-LE3</summary>
+        public const int CurrentCachedPhysBrushDataVersion = 34079762;
+
+        /// <summary>
+        /// What <see cref="RegenCachedPhysBrushData"/> would cook for the export as it is now, leaving the binary and the export unchanged. Null if it
+        /// has no hulls to cook; empty if none of them can be cooked (no vertices, or flat)
+        /// </summary>
+        /// <param name="packageCache">For values inherited from archetypes in other packages</param>
+        public KCachedConvexDataElement[] CookCachedPhysBrushData(PackageCache packageCache = null)
         {
             if (Export is null)
             {
@@ -38,42 +62,39 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 throw new Exception("Can only regenerate CachedPhysBrushData for LE games");
             }
-            var props = Export.GetProperties();
-            var convexElemsProp = props.GetProp<StructProperty>("BrushAggGeom")?.GetProp<ArrayProperty<StructProperty>>("ConvexElems");
+            //(its hulls and scale may be its archetype's)
+            var effective = Export.GetCondensedProperties(packageCache, resolveImports: true, mergeStructs: true);
+            var convexElemsProp = effective.GetProp<StructProperty>("BrushAggGeom")?.GetProp<ArrayProperty<StructProperty>>("ConvexElems");
             if (convexElemsProp is null || convexElemsProp.Count is 0)
             {
-                //should this be an error?
-                return;
+                // Nothing to cook: with no cached data, the game builds the hulls and cooks them from the brush at load (UBrushComponent::InitComponentRBPhys),
+                // as it does for the few shipping blocking volumes that have their own brush and no hulls
+                return null;
             }
-            var scale3DProp = props.GetProp<StructProperty>("Scale3D");
-            Vector3 scale = (props.GetProp<FloatProperty>("Scale") ?? 1f) * (scale3DProp is null ? Vector3.One : CommonStructs.GetVector3(scale3DProp));
+            var scale3DProp = effective.GetProp<StructProperty>("Scale3D");
+            Vector3 scale = (effective.GetProp<FloatProperty>("Scale") ?? 1f) * (scale3DProp is null ? Vector3.One : CommonStructs.GetVector3(scale3DProp));
             if (Export.Parent is ExportEntry parent && parent.IsA("Actor"))
             {
-                scale *= ActorUtils.GetActorTotalScale(parent.GetProperties());
+                scale *= ActorUtils.GetActorTotalScale(parent.GetCondensedProperties(packageCache, resolveImports: true, mergeStructs: true));
             }
 
-            using (var cooker = new PhysXCooker())
+            // As MakeCachedConvexDataForAggGeom does, a hull with no vertices is skipped, and one PhysX can't cook (as a flat one) is left out
+            return PhysXCooker.Use(cooker =>
             {
+                var cooked = new List<KCachedConvexDataElement>(convexElemsProp.Count);
                 var verts = new List<Vector3>();
-                CachedPhysBrushData.CachedConvexElements = new KCachedConvexDataElement[convexElemsProp.Count];
-                for (int i = 0; i < convexElemsProp.Count; i++)
+                foreach (var hull in convexElemsProp)
                 {
-                    var vertexDataProp = convexElemsProp[i].GetProp<ArrayProperty<StructProperty>>("VertexData") ?? throw new Exception("Malformed BrushAggGeom");
-                    verts.EnsureCapacity(vertexDataProp.Count);
+                    if (hull.GetProp<ArrayProperty<StructProperty>>("VertexData") is not { Count: > 0 } vertexDataProp) continue;
                     verts.Clear();
                     foreach (StructProperty vertProp in vertexDataProp)
                     {
                         verts.Add(CommonStructs.GetVector3(vertProp) * scale * PhysXSDK.UnrealtoPhysXScale);
                     }
-                    CachedPhysBrushData.CachedConvexElements[i] = new KCachedConvexDataElement
-                    {
-                        ConvexElementData = cooker.GenerateCachedPhysicsData(verts.AsSpan())
-                    };
+                    if (cooker.TryGenerateCachedPhysicsData(verts.AsSpan()) is { } data) cooked.Add(new KCachedConvexDataElement { ConvexElementData = data });
                 }
-            }
-
-            props.AddOrReplaceProp(new IntProperty(Export.Game is MEGame.LE1 ? 33882375 : 34079762, "CachedPhysBrushDataVersion"));
-            Export.WriteProperties(props);
+                return cooked.ToArray();
+            });
         }
     }
 }

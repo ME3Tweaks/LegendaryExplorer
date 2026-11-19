@@ -1594,6 +1594,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
+        /// Attempts to resolve the import through <paramref name="cache"/>, which by default does what the overload with more options does.
+        /// </summary>
+        /// <param name="entry">The import to resolve</param>
+        /// <param name="cache">Package cache that is used to improve performnace by not having to open all packages from disk. A <see cref="TieredPackageCache"/> is preferred.</param>
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache) =>
+            cache is null ? ResolveImport(entry, null, "INT") : cache.ResolveImport(entry);
+
+        /// <summary>
         /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
         /// </summary>
         /// <param name="entry">The import to resolve</param>
@@ -1609,6 +1617,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             Func<ExportEntry, bool> unsafeLoadDelegate = null, string instancedFullPathOverride = null)
         {
             var entryFullPath = instancedFullPathOverride ?? entry.InstancedFullPath;
+            if (IsNativeClassImport(entry, entryFullPath)) return null;
             cache ??= new PackageCache();
             //if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
             //{
@@ -1702,6 +1711,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return FindExportInPackage(package, packagePath, entryFullPath);
             }
         }
+
+        /// <summary>
+        /// Whether an import is of a class defined only in native code, which has no export in any package to find
+        /// </summary>
+        public static bool IsNativeClassImport(ImportEntry entry) => IsNativeClassImport(entry, entry.InstancedFullPath);
+
+        /// <param name="fullPath">The path it's resolved by, which may be an override of its own</param>
+        private static bool IsNativeClassImport(ImportEntry entry, string fullPath) =>
+            entry.ClassName == "Class" && GlobalUnrealObjectInfo.IsAKnownNativeClass(fullPath, entry.Game);
 
         /// <summary>
         /// Finds an export in a package based on its full path. This can change depending on if it's forced export or not.
@@ -1951,6 +1969,28 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         associatedFiles.Add($"{nextfile}{bioFileExt}");
                     }
                     nextfile = bioXNextFileLookup(game, nextfile.ToLower());
+                }
+
+                // LE2's Omega sectors have no separator before the sector number: BioA_OmgHub300_barone
+                // imports from BioP_OmgHub, which is tried after the ordinary parents.
+                string[] fileNameSegments = filenameWithoutExtension.Split('_');
+                if (fileNameSegments.Length >= 2 && fileNameSegments[0].Length == 4)
+                {
+                    string sector = fileNameSegments[1];
+                    if (game == MEGame.LE2 && filenameWithoutExtension[3] is 'a' or 'd' or 's'
+                        && sector.Length == 9 && sector.StartsWith("omghub", StringComparison.Ordinal)
+                        && sector[6..].All(char.IsAsciiDigit))
+                    {
+                        if (includeNonBioPTiers)
+                        {
+                            string hub = $"bio{filenameWithoutExtension[3]}_omghub";
+                            associatedFiles.Add($"{hub}{bioFileExt}");
+                            if (includeLocalizations) associatedFiles.Add($"{hub}_LOC_{localization}{bioFileExt}");
+                        }
+                        associatedFiles.Add($"biop_omghub{bioFileExt}");
+                        if (includeNonBioPTiers && includeLocalizations)
+                            associatedFiles.Add($"biop_omghub_LOC_{localization}{bioFileExt}");
+                    }
                 }
             }
 

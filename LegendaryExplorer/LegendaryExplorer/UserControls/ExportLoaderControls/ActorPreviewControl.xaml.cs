@@ -2,7 +2,9 @@ using LegendaryExplorer.Tools.LevelEditor;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
+using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -105,7 +107,6 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
         }
 
         _controlIsLoaded = true;
-        RenderContext.UpdateScene += OnUpdateScene;
         RenderContext.RenderScene += OnRenderScene;
         if (Parent is TabItem { Parent: TabControl tc })
             tc.SelectionChanged += HostingTabSelectionChanged;
@@ -126,16 +127,11 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
         }
     }
 
-    private void OnUpdateScene(object sender, float deltaTime)
-    {
-        _actor?.UpdateScene(RenderContext, deltaTime);
-    }
-
     private void OnRenderScene(object sender, EventArgs e)
     {
         Span<RenderPass> passes = ShowCollision
-            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Translucent, RenderPass.Collision]
-            : [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Translucent];
+            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Decals, RenderPass.Translucent, RenderPass.Collision]
+            : [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Decals, RenderPass.Translucent];
         foreach (RenderPass pass in passes)
         {
             _actor?.Render(RenderContext, pass);
@@ -147,8 +143,13 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
         RenderContext.DrawUI();
     }
 
+    /// <summary>
+    /// Actor classes the level editor shows, but that have no useful standalone preview (lights are icons; spline lofts need their connected points)
+    /// </summary>
+    private static readonly FrozenSet<string> ExcludedClasses = new[] { "Light", "SplineLoftActor" }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
+
     public override bool CanParse(ExportEntry exportEntry) =>
-        !exportEntry.IsDefaultObject && ActorProxy.CanCreate(exportEntry);
+        !exportEntry.IsDefaultObject && ActorProxy.CanCreate(exportEntry) && !exportEntry.IsA(ExcludedClasses);
 
     public override void LoadExport(ExportEntry exportEntry)
     {
@@ -208,7 +209,6 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
 
     public override void Dispose()
     {
-        RenderContext.UpdateScene -= OnUpdateScene;
         RenderContext.RenderScene -= OnRenderScene;
         _actor?.Dispose();
         _actor = null;

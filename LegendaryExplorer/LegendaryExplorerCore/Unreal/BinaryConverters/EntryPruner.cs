@@ -12,6 +12,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public static class EntryPruner
     {
+        private const UnrealFlags.EObjectFlags FlagsToClearOnTrash =
+                        ( UnrealFlags.EObjectFlags.HasStack
+                        | UnrealFlags.EObjectFlags.ArchetypeObject
+                        | UnrealFlags.EObjectFlags.ClassDefaultObject
+                        //used by LevelEditor
+                        | UnrealFlags.EObjectFlags.MarkedByCooker);
+
         /// <summary>
         /// The list of arrayproperties on BioWorldInfo to enumerate and remove trashed items from
         /// </summary>
@@ -127,9 +134,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 exp.SuperClass = null;
                 exp.indexValue = 0;
                 exp.Class = packageClass;
-                exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.HasStack;
-                exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.ArchetypeObject;
-                exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.ClassDefaultObject;
+                exp.ObjectFlags &= ~FlagsToClearOnTrash;
                 exp.ComponentMap = null;
                 if (trashContainer == null)
                 {

@@ -22,6 +22,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public int LightMapStreamingFlag;
         public List<Texture2DMipInfo> Mips { get; }
         public readonly bool NeverStream;
+        public readonly bool SRGB;
         public readonly ExportEntry Export;
         public string TextureFormat { get; set; }
         public Guid TextureGuid;
@@ -49,6 +50,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             var cache = properties.GetProp<NameProperty>(@"TextureFileCacheName");
 
             NeverStream = properties.GetProp<BoolProperty>(@"NeverStream") ?? false;
+            SRGB = properties.GetProp<BoolProperty>(@"SRGB") ?? true; //UTexture.SRGB defaults to true
             Mips = GetTexture2DMipInfos(export, cache?.Value);
             if (Export.Game != MEGame.ME1)
             {
@@ -274,6 +276,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <exception cref="Exception"></exception>
         /// <exception cref="FileNotFoundException"></exception>
         public static byte[] GetTextureData(MEGame game, byte[] mipData, StorageTypes storageType, bool decompress, int uncompressedSize, int compressedSize, int externalOffset, string textureCacheName, string gamePathToUse = null, List<string> additionalTFCs = null, string packagePathForLocalLookup = null)
+            => GetTextureData(game, mipData, storageType, decompress, uncompressedSize, compressedSize, externalOffset,
+                textureCacheName, gamePathToUse, additionalTFCs, packagePathForLocalLookup, null);
+
+        internal static byte[] GetTextureData(MEGame game, byte[] mipData, StorageTypes storageType, bool decompress, int uncompressedSize, int compressedSize, int externalOffset,
+            string textureCacheName, string gamePathToUse, List<string> additionalTFCs, string packagePathForLocalLookup, TextureDataReadCache readCache)
         {
             bool dataLoaded = false;
             var imagebytes = new byte[decompress ? uncompressedSize : compressedSize];
@@ -305,123 +312,50 @@ namespace LegendaryExplorerCore.Unreal.Classes
             else if (storageType != StorageTypes.empty && ((int)storageType & (int)StorageFlags.externalFile) != 0)
             {
                 // external 
-                string filename = null;
-                List<string> loadedFiles = MELoadedFiles.GetAllGameFiles(gamePathToUse, game, false, true);
-                if (game == MEGame.ME1)
+                string filename = readCache?.FindPath(game, packagePathForLocalLookup, textureCacheName);
+                if (filename is null)
                 {
-                    var fullPath = loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(textureCacheName, StringComparison.InvariantCultureIgnoreCase));
-
-                    if (fullPath != null)
+                    filename = FindTextureArchive(game, textureCacheName, gamePathToUse, additionalTFCs, packagePathForLocalLookup);
+                    if (filename is null)
                     {
-                        filename = fullPath;
+                        imagebytes = ReadTextureFromSFAR(game, textureCacheName, externalOffset, uncompressedSize);
+                        dataLoaded = true;
                     }
-                    else
-                    {
-                        fullPath = AdditionalME1MasterTexturePackages.FirstOrDefault(x => Path.GetFileName(x).Equals(textureCacheName, StringComparison.InvariantCultureIgnoreCase));
-                        filename = fullPath ?? throw new FileNotFoundException(GetLocalizedCouldNotFindME1TexturePackageMessage(textureCacheName));
-                    }
-                }
-                else
-                {
-                    string archive = textureCacheName + @".tfc";
-                    if (packagePathForLocalLookup != null)
-                    {
-                        var localDirectoryTFCPath = Path.Combine(Path.GetDirectoryName(packagePathForLocalLookup), archive);
-                        if (File.Exists(localDirectoryTFCPath))
-                        {
-                            filename = localDirectoryTFCPath;
-                        }
-
-                        if (filename == null && localDirectoryTFCPath.Contains(@"\CookedPCConsole")
-                            && !string.Equals(Path.GetFileName(Path.GetDirectoryName(packagePathForLocalLookup)), "CookedPCConsole", StringComparison.OrdinalIgnoreCase))
-                        {
-                            // Package is in a subfolder of CookedPCConsole - walk up to find the CookedPCConsole parent and try it
-                            var dir = Path.GetDirectoryName(packagePathForLocalLookup);
-                            while (dir != null && !string.Equals(Path.GetFileName(dir), "CookedPCConsole", StringComparison.OrdinalIgnoreCase))
-                            {
-                                dir = Path.GetDirectoryName(dir);
-                            }
-                            if (dir != null)
-                            {
-                                var cookedTFCPath = Path.Combine(dir, archive);
-                                if (File.Exists(cookedTFCPath))
-                                {
-                                    filename = cookedTFCPath;
-                                }
-                            }
-                        }
-                    }
-
-                    if (filename == null && additionalTFCs != null && additionalTFCs.Any(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase)))
-                    {
-                        filename = additionalTFCs.First(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase));
-                    }
-
-                    if (filename == null)
-                    {
-                        //var tfcs = loadedFiles.Where(x => x.EndsWith(@".tfc")).ToList();
-
-                        var fullPath = loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase));
-                        if (fullPath != null)
-                        {
-                            filename = fullPath;
-                        }
-                        else if (game == MEGame.ME3 && textureCacheName.StartsWith(@"Textures_DLC"))
-                        {
-                            // Check SFAR
-                            var dlcName = textureCacheName.Substring(9);
-                            if (!MEDirectories.OfficialDLC(MEGame.ME3).Contains(dlcName) || ME3Directory.DLCPath is null)
-                            {
-                                // Not an official DLC
-                                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
-                            }
-                            var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, game.CookedDirName(), "Default.sfar");
-                            if (!File.Exists(sfarPath))
-                            {
-                                // SFAR not in folder
-                                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
-                            }
-                            var dpackage = new DLCPackage(sfarPath);
-                            var entryId = dpackage.FindFileEntry(archive);
-                            if (entryId < 0)
-                            {
-                                // File not in archive
-                                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
-                            }
-                            // TFC is in this SFAR
-                            imagebytes = dpackage.ReadFromEntry(entryId, externalOffset, uncompressedSize);
-                            dataLoaded = true;
-                        }
-                        else
-                        {
-                            throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
-                        }
-                    }
+                    // Only resolved standalone files are cached.
+                    else readCache?.RememberPath(game, packagePathForLocalLookup, textureCacheName, filename);
                 }
 
-                //exceptions above will prevent filename from being null here
+                //unless the data came from an SFAR, exceptions above will prevent filename from being null here
 
                 if (!dataLoaded) // The data hasn't been extracted yet (sfar fetch)
                 {
                     try
                     {
-                        using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
-                        fs.Seek(externalOffset, SeekOrigin.Begin);
-                        if (storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extOodle or StorageTypes.extLZMA)
+                        void Read(Stream fs)
                         {
-                            if (decompress)
+                            fs.Seek(externalOffset, SeekOrigin.Begin);
+                            if (storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extOodle or StorageTypes.extLZMA)
                             {
-                                TextureCompression.DecompressTexture(imagebytes, fs, storageType, uncompressedSize, compressedSize);
+                                if (decompress)
+                                {
+                                    TextureCompression.DecompressTexture(imagebytes, fs, storageType, uncompressedSize, compressedSize);
+                                }
+                                else
+                                {
+                                    fs.ReadExactly(imagebytes.AsSpan(0, compressedSize));
+                                }
                             }
                             else
                             {
-                                fs.Read(imagebytes, 0, compressedSize);
+                                fs.ReadExactly(imagebytes.AsSpan(0, uncompressedSize));
                             }
                         }
-                        else
+                        if (readCache is null)
                         {
-                            fs.Read(imagebytes, 0, uncompressedSize);
+                            using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+                            Read(fs);
                         }
+                        else readCache.ReadFile(filename, Read);
                     }
                     catch (Exception e)
                     {
@@ -430,6 +364,93 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 }
             }
             return imagebytes;
+        }
+
+        /// <summary>
+        /// Finds the file holding a texture cache's data. Null means there's no such file, though it may be in an SFAR.
+        /// </summary>
+        /// <exception cref="FileNotFoundException">An ME1 texture package wasn't found</exception>
+        private static string FindTextureArchive(MEGame game, string textureCacheName, string gamePathToUse, List<string> additionalTFCs, string packagePathForLocalLookup)
+        {
+            List<string> loadedFiles = MELoadedFiles.GetAllGameFiles(gamePathToUse, game, false, true);
+            if (game == MEGame.ME1)
+            {
+                var fullPath = loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(textureCacheName, StringComparison.InvariantCultureIgnoreCase));
+                fullPath ??= AdditionalME1MasterTexturePackages.FirstOrDefault(x => Path.GetFileName(x).Equals(textureCacheName, StringComparison.InvariantCultureIgnoreCase));
+                return fullPath ?? throw new FileNotFoundException(GetLocalizedCouldNotFindME1TexturePackageMessage(textureCacheName));
+            }
+
+            string archive = textureCacheName + @".tfc";
+
+            if (packagePathForLocalLookup != null)
+            {
+                var localDirectoryTFCPath = Path.Combine(Path.GetDirectoryName(packagePathForLocalLookup), archive);
+                if (File.Exists(localDirectoryTFCPath))
+                {
+                    return localDirectoryTFCPath;
+                }
+
+                if (localDirectoryTFCPath.Contains(@"\CookedPCConsole")
+                    && !string.Equals(Path.GetFileName(Path.GetDirectoryName(packagePathForLocalLookup)), "CookedPCConsole", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Package is in a subfolder of CookedPCConsole - walk up to find the CookedPCConsole parent and try it
+                    var dir = Path.GetDirectoryName(packagePathForLocalLookup);
+                    while (dir != null && !string.Equals(Path.GetFileName(dir), "CookedPCConsole", StringComparison.OrdinalIgnoreCase))
+                    {
+                        dir = Path.GetDirectoryName(dir);
+                    }
+                    if (dir != null)
+                    {
+                        var cookedTFCPath = Path.Combine(dir, archive);
+                        if (File.Exists(cookedTFCPath))
+                        {
+                            return cookedTFCPath;
+                        }
+                    }
+                }
+            }
+
+            if (additionalTFCs != null && additionalTFCs.Any(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                return additionalTFCs.First(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            return loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        /// <summary>
+        /// Reads external texture data from an official ME3 DLC's SFAR.
+        /// </summary>
+        /// <exception cref="FileNotFoundException">No SFAR holds it</exception>
+        private static byte[] ReadTextureFromSFAR(MEGame game, string textureCacheName, int externalOffset, int uncompressedSize)
+        {
+            string archive = textureCacheName + @".tfc";
+            if (game != MEGame.ME3 || !textureCacheName.StartsWith(@"Textures_DLC"))
+            {
+                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
+            }
+            // Check SFAR
+            var dlcName = textureCacheName.Substring(9);
+            if (!MEDirectories.OfficialDLC(MEGame.ME3).Contains(dlcName) || ME3Directory.DLCPath is null)
+            {
+                // Not an official DLC
+                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
+            }
+            var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, game.CookedDirName(), "Default.sfar");
+            if (!File.Exists(sfarPath))
+            {
+                // SFAR not in folder
+                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
+            }
+            var dpackage = new DLCPackage(sfarPath);
+            var entryId = dpackage.FindFileEntry(archive);
+            if (entryId < 0)
+            {
+                // File not in archive
+                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
+            }
+            // TFC is in this SFAR
+            return dpackage.ReadFromEntry(entryId, externalOffset, uncompressedSize);
         }
 
         public static uint GetMipCRC(Texture2DMipInfo mip, string textureFormat, string gamePathToUse = null, List<string> additionalTFCs = null)

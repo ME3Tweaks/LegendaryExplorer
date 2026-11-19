@@ -64,7 +64,7 @@ internal unsafe struct NxStream : IDisposable
     {
         uint pos = @this->ReadPos;
         @this->ReadPos += 1;
-        if (pos > @this->Count)
+        if (@this->ReadPos > @this->Count)
         {
             @this->ReadPos = pos;
             return 0;
@@ -77,7 +77,7 @@ internal unsafe struct NxStream : IDisposable
     {
         uint pos = @this->ReadPos;
         @this->ReadPos += sizeof(ushort);
-        if (pos > @this->Count)
+        if (@this->ReadPos > @this->Count)
         {
             @this->ReadPos = pos;
             return 0;
@@ -90,7 +90,7 @@ internal unsafe struct NxStream : IDisposable
     {
         uint pos = @this->ReadPos;
         @this->ReadPos += sizeof(uint);
-        if (pos > @this->Count)
+        if (@this->ReadPos > @this->Count)
         {
             @this->ReadPos = pos;
             return 0;
@@ -103,7 +103,7 @@ internal unsafe struct NxStream : IDisposable
     {
         uint pos = @this->ReadPos;
         @this->ReadPos += sizeof(float);
-        if (pos > @this->Count)
+        if (@this->ReadPos > @this->Count)
         {
             @this->ReadPos = pos;
             return 0;
@@ -116,7 +116,7 @@ internal unsafe struct NxStream : IDisposable
     {
         uint pos = @this->ReadPos;
         @this->ReadPos += sizeof(double);
-        if (pos > @this->Count)
+        if (@this->ReadPos > @this->Count)
         {
             @this->ReadPos = pos;
             return 0;
@@ -131,6 +131,7 @@ internal unsafe struct NxStream : IDisposable
         if (endPos <= @this->Count)
         {
             Buffer.MemoryCopy(@this->Data + @this->ReadPos, buffer, size, size);
+            @this->ReadPos = endPos;
         }
     }
 

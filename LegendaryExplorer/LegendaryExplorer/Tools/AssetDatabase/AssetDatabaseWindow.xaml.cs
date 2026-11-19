@@ -49,7 +49,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     {
         #region Declarations
         // v9.0: Textures now use .IsTexture() to get more texture class types. Add MaterialInstances to Materials.
-        public const string dbCurrentBuild = "9.0"; //If changes are made that invalidate old databases edit this.
+        // v10.0: Meshes, materials and particle systems record their instanced full path, and materials their class and parent's path, for the Level Editor's asset pickers.
+        public const string dbCurrentBuild = "10.0"; //If changes are made that invalidate old databases edit this.
 
         private int previousView { get; set; }
         private int _currentView;
@@ -326,6 +327,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             InitializeComponent();
         }
 
+        //the game to open on, in place of the last one used
+        private readonly MEGame? openOnGame;
+
+        /// <summary>Opens on <paramref name="game"/>'s database, or on its lack of one</summary>
+        public AssetDatabaseWindow(MEGame game) : this()
+        {
+            openOnGame = game;
+        }
+
         private void LoadCommands()
         {
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
@@ -359,7 +369,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             IsBusy = true;
             BusyBarInd = true;
 
-            if (CurrentDBPath != null && CurrentDBPath.EndsWith("zip") && File.Exists(CurrentDBPath) && CurrentGame != MEGame.Unknown && CurrentGame != MEGame.UDK)
+            if (openOnGame is { } requestedGame)
+            {
+                SwitchGame(requestedGame.ToString());
+            }
+            else if (CurrentDBPath != null && CurrentDBPath.EndsWith("zip") && File.Exists(CurrentDBPath) && CurrentGame != MEGame.Unknown && CurrentGame != MEGame.UDK)
             {
                 SwitchGame(CurrentGame.ToString());
             }

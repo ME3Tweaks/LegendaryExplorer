@@ -7,6 +7,7 @@
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         xmlns:local="clr-namespace:LegendaryExplorer.Tools.LevelEditor"
         xmlns:scene3D="clr-namespace:LegendaryExplorer.Tools.LevelEditor.Scene3D"
+        xmlns:lightmass="clr-namespace:LegendaryExplorer.Lightmaps.Lightmass"
         xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -24,50 +25,30 @@
             <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="LevelEditorStyles.xaml"/></ResourceDictionary.MergedDictionaries>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+            <converters:BoolEnabledConverter x:Key="BoolEnabledConverter"/>
             <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
             <converters:GameToImageIconConverter x:Key="GameToImageIconConverter"/>
             <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
             <local:OutlinerGroupStateConverter x:Key="OutlinerGroupStateConverter"/>
-            <Style x:Key="OutlinerGroupExpander" TargetType="Expander">
-                <Setter Property="Foreground" Value="{StaticResource EditorText}"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Expander">
-                            <StackPanel>
-                                <ToggleButton x:Name="HeaderSite" Style="{StaticResource EditorButtonBase}" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                              HorizontalContentAlignment="Stretch" Padding="0" AutomationProperties.Name="Expand or collapse group">
-                                    <DockPanel>
-                                        <TextBlock x:Name="Arrow" Text="›" Width="14" TextAlignment="Center" VerticalAlignment="Center"/>
-                                        <ContentPresenter ContentSource="Header"/>
-                                    </DockPanel>
-                                </ToggleButton>
-                                <ContentPresenter x:Name="GroupItems" ContentSource="Content" Visibility="Collapsed" Margin="8,0,0,0"/>
-                            </StackPanel>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsExpanded" Value="True">
-                                    <Setter TargetName="GroupItems" Property="Visibility" Value="Visible"/>
-                                    <Setter TargetName="Arrow" Property="Text" Value="⌄"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
             <Style TargetType="fa:ImageAwesome"><Setter Property="Foreground" Value="{StaticResource EditorText}"/></Style>
-            <Style x:Key="CommitButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                <Style.Triggers><DataTrigger Binding="{Binding IsDirty}" Value="True"><Setter Property="Background" Value="{StaticResource EditorAccent}"/></DataTrigger></Style.Triggers>
-            </Style>
             <DataTemplate x:Key="OutlinerLevelHeader">
                 <Border Background="{StaticResource EditorChrome}" Padding="6,4" Margin="0,3,0,1">
                     <DockPanel>
-                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                            <ToggleButton Padding="4" IsChecked="{Binding Name.IsReadOnly, Mode=TwoWay}" ToolTip="Read-only: prevent actor edits" AutomationProperties.Name="Read-only package">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Border IsEnabled="{Binding Name.CanChangeReadOnly}">
+                            <ToggleButton Padding="4" IsEnabled="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}}" IsChecked="{Binding Name.IsReadOnly, Mode=TwoWay}" ToolTipService.ShowOnDisabled="True" AutomationProperties.Name="Read-only package">
+                                <ToggleButton.Style>
+                                    <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                                        <Setter Property="ToolTip" Value="Read-only: prevent actor edits"/>
+                                        <Style.Triggers><DataTrigger Binding="{Binding Name.CanChangeReadOnly}" Value="False"><Setter Property="ToolTip" Value="Read-only is unavailable while the file has new or deleted actors to commit"/></DataTrigger></Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
                                 <Grid Width="11" Height="12">
                                     <fa:ImageAwesome Icon="Solid_Lock" Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}, Converter={StaticResource BoolToVisibilityConverter}}" Foreground="{StaticResource EditorText}"/>
                                     <fa:ImageAwesome Icon="Solid_LockOpen" Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}" Foreground="{StaticResource EditorText}"/>
                                 </Grid>
                             </ToggleButton>
-                            <Button Command="{Binding Data.CommitSingleFileCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding Name}" Style="{StaticResource EditorCompactButton}" ToolTip="Commit this package" AutomationProperties.Name="Commit package"><fa:ImageAwesome Icon="Solid_Check" Width="11" Foreground="{StaticResource EditorText}"/></Button>
+                            </Border>
                             <Button Command="{Binding Data.SaveSingleFileCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding Name}" Style="{StaticResource EditorCompactButton}" ToolTip="Save this package" AutomationProperties.Name="Save package"><fa:ImageAwesome Icon="Regular_Save" Width="11" Foreground="{StaticResource EditorText}"/></Button>
                             <Button Command="{Binding Data.CloseFileCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding Name}" Style="{StaticResource EditorCompactButton}" ToolTip="Close this package" AutomationProperties.Name="Close package"><fa:ImageAwesome Icon="Solid_Times" Width="10" Foreground="{StaticResource EditorText}"/></Button>
                         </StackPanel>
@@ -91,33 +72,36 @@
                     </DockPanel>
                 </Border>
             </DataTemplate>
-            <ContextMenu x:Key="ActorContextMenu">
+            <!--unshared, so the viewport's menu (whose DataContext is set to its actor) is never the one the outliner rows inherit theirs into-->
+            <ContextMenu x:Key="ActorContextMenu" x:Shared="False" Opened="ActorContextMenu_Opened">
+                <MenuItem Header="Delete Actor" Command="{Binding Data.DeleteActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" InputGestureText="Delete" ToolTip="{Binding DeleteRefusal}" ToolTipService.ShowOnDisabled="True"/>
+                <MenuItem Header="Duplicate" Command="{Binding Data.DuplicateActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" ToolTip="{Binding DuplicateRefusal}" ToolTipService.ShowOnDisabled="True"/>
+                <MenuItem Header="Copy" Command="{Binding Data.CopyActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" IsEnabled="{Binding CanCopy, Converter={StaticResource BoolEnabledConverter}}" InputGestureText="Ctrl+C" ToolTip="{Binding CopyRefusal}" ToolTipService.ShowOnDisabled="True"/>
+                <MenuItem Header="Paste" Command="{Binding Data.PasteActorCommand, Source={StaticResource bindingProxy}}" IsEnabled="{Binding Data.CanPaste, Source={StaticResource bindingProxy}, Converter={StaticResource BoolEnabledConverter}}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}}" InputGestureText="Ctrl+V" ToolTip="{Binding Data.PasteRefusal, Source={StaticResource bindingProxy}}" ToolTipService.ShowOnDisabled="True"/>
+                <MenuItem Header="Upgrade to Actor" Command="{Binding Data.UpgradeActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" Visibility="{Binding IsCollectionMember, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="{Binding UpgradeRefusal}" ToolTipService.ShowOnDisabled="True"/>
                 <MenuItem Header="Focus Camera" Command="{Binding Data.FocusSelectedCommand, Source={StaticResource bindingProxy}}" InputGestureText="F"/>
-                <MenuItem Header="Open in Package Editor" Command="{Binding Data.OpenInPackageEditorCommand, Source={StaticResource bindingProxy}}"/>
+                <MenuItem Header="Open in Package Editor" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}" Command="{Binding Data.OpenInPackageEditorCommand, Source={StaticResource bindingProxy}}" ToolTip="{Binding PackageEditorRefusal}" ToolTipService.ShowOnDisabled="True"/>
             </ContextMenu>
             <Style x:Key="ActorRow" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                 <Setter Property="ContextMenu" Value="{StaticResource ActorContextMenu}"/>
-                <Setter Property="ToolTip" Value="{Binding DisplayText}"/>
+                <Setter Property="ToolTip" Value="{Binding CoverageToolTip}"/>
             </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenFileCommand}"/>
-        <KeyBinding Key="O" Modifiers="Control+Shift" Command="{Binding AddFileCommand}"/>
+        <KeyBinding Key="O" Modifiers="Control+Shift" Command="{Binding AddFilesCommand}"/>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveAllCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
         <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
         <KeyBinding Key="Y" Modifiers="Control" Command="{Binding RedoCommand}"/>
-        <KeyBinding Key="F" Command="{Binding FocusSelectedCommand}"/>
-        <KeyBinding Key="L" Command="{Binding ToggleLocalCoordsCommand}"/>
-        <KeyBinding Key="NumPad5" Command="{Binding ToggleOrthoViewCommand}"/>
     </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel Background="{StaticResource EditorChrome}">
-            <Menu DockPanel.Dock="Top" Padding="4,0">
+            <Menu DockPanel.Dock="Top" Padding="4,0" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <MenuItem Header="_File">
                     <MenuItem Header="Open..." Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O"/>
-                    <MenuItem Header="Add File..." Command="{Binding AddFileCommand}" InputGestureText="Ctrl+Shift+O"/>
+                    <MenuItem Header="Add Files..." Command="{Binding AddFilesCommand}" InputGestureText="Ctrl+Shift+O"/>
                     <MenuItem Header="Load Related Levels" Command="{Binding LoadRelatedLevelsCommand}"/>
                     <Separator/>
                     <MenuItem Header="Save All" Command="{Binding SaveAllCommand}" InputGestureText="Ctrl+S"/>
@@ -126,10 +110,10 @@
                     <MenuItem x:Name="Recents_MenuItem" Header="Recent" IsEnabled="False"/>
                 </MenuItem>
                 <MenuItem Header="_Edit">
-                    <MenuItem Header="Undo" Command="{Binding UndoCommand}" InputGestureText="Ctrl+Z"/>
-                    <MenuItem Header="Redo" Command="{Binding RedoCommand}" InputGestureText="Ctrl+Y"/>
+                    <MenuItem Header="Undo" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo, Converter={StaticResource BoolEnabledConverter}}" InputGestureText="Ctrl+Z"/>
+                    <MenuItem Header="Redo" Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo, Converter={StaticResource BoolEnabledConverter}}" InputGestureText="Ctrl+Y"/>
                     <Separator/>
-                    <MenuItem Header="Commit Changes" Command="{Binding CommitChangesCommand}"/>
+                    <MenuItem Header="Commit Changes" Command="{Binding CommitChangesCommand}" IsEnabled="{Binding IsDirty, Converter={StaticResource BoolEnabledConverter}}"/>
                     <MenuItem Header="Reset Uncommitted Changes..." Click="ResetUncommittedChanges_Click" IsEnabled="{Binding IsDirty}"/>
                 </MenuItem>
                 <MenuItem Header="_View">
@@ -139,9 +123,16 @@
                     <Separator/>
                     <MenuItem Header="Open Selected Actor in Package Editor" Command="{Binding OpenInPackageEditorCommand}"/>
                 </MenuItem>
+                <MenuItem Header="_Build" IsEnabled="{Binding CanEditScene}">
+                    <MenuItem Header="Bake Lighting in Lightmass Baker..." Click="OpenInLightmassBaker_Click"
+                              ToolTip="Opens the Lightmass Baker with the open files (read-only ones only cast shadows). It bakes the files as saved on disk."/>
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="Level Editor Help" Click="Help_Click"/>
+                </MenuItem>
             </Menu>
 
-            <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding OpenFiles}" Margin="6,3,6,0">
+            <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding OpenFiles}" Margin="6,3,6,0" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -156,16 +147,16 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <Border DockPanel.Dock="Top" Background="{StaticResource EditorPanel}" Padding="6" Margin="0,0,0,4">
+            <Border DockPanel.Dock="Top" Background="{StaticResource EditorPanel}" Padding="6" Margin="0,0,0,4" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <DockPanel>
-                    <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" Style="{StaticResource CommitButton}" ToolTip="Apply editor transforms to the loaded packages. Use Save All to write them to disk.">
+                    <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" IsEnabled="{Binding IsDirty, Converter={StaticResource BoolEnabledConverter}}" Style="{StaticResource CommitButton}" ToolTip="Apply editor transforms and light settings to the loaded packages. Use Save All to write them to disk.">
                         <StackPanel Orientation="Horizontal"><fa:ImageAwesome Icon="Solid_Check" Width="13" Margin="0,0,7,0" Foreground="{StaticResource EditorText}"/><TextBlock Text="Commit Changes"/></StackPanel>
                     </Button>
                     <WrapPanel VerticalAlignment="Center">
                         <Button Command="{Binding OpenFileCommand}" ToolTip="Open a level (Ctrl+O)"><StackPanel Orientation="Horizontal"><fa:ImageAwesome Icon="Regular_FolderOpen" Width="14" Margin="0,0,7,0" Foreground="{StaticResource EditorText}"/><TextBlock Text="Open"/></StackPanel></Button>
                         <Button Command="{Binding SaveAllCommand}" ToolTip="Save all open packages (Ctrl+S)"><StackPanel Orientation="Horizontal"><fa:ImageAwesome Icon="Regular_Save" Width="14" Margin="0,0,7,0" Foreground="{StaticResource EditorText}"/><TextBlock Text="Save All"/></StackPanel></Button>
-                        <Button x:Name="UndoMenuItem" Command="{Binding UndoCommand}" ToolTip="Undo (Ctrl+Z)" AutomationProperties.Name="Undo"><fa:ImageAwesome Icon="Solid_Undo" Width="14" Foreground="{StaticResource EditorText}"/></Button>
-                        <Button x:Name="RedoMenuItem" Command="{Binding RedoCommand}" ToolTip="Redo (Ctrl+Y)" AutomationProperties.Name="Redo"><fa:ImageAwesome Icon="Solid_Redo" Width="14" Foreground="{StaticResource EditorText}"/></Button>
+                        <Button x:Name="UndoMenuItem" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo, Converter={StaticResource BoolEnabledConverter}}" ToolTip="Undo (Ctrl+Z)" AutomationProperties.Name="Undo"><fa:ImageAwesome Icon="Solid_Undo" Width="14" Foreground="{StaticResource EditorText}"/></Button>
+                        <Button x:Name="RedoMenuItem" Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo, Converter={StaticResource BoolEnabledConverter}}" ToolTip="Redo (Ctrl+Y)" AutomationProperties.Name="Redo"><fa:ImageAwesome Icon="Solid_Redo" Width="14" Foreground="{StaticResource EditorText}"/></Button>
                         <Border Style="{StaticResource EditorToolbarSeparator}"/>
                         <Border Background="{StaticResource EditorInput}" CornerRadius="2" Padding="2">
                             <StackPanel Orientation="Horizontal">
@@ -177,243 +168,195 @@
                         </Border>
                         <Border Style="{StaticResource EditorToolbarSeparator}"/>
                         <ToggleButton Content="Local" IsChecked="{Binding UseLocalCoordsForWidget}" ToolTip="Use local transform axes (L). Off uses world axes."/>
+                        <xctk:DropDownButton Content="Transform settings" Style="{StaticResource EditorDropDownButton}" Margin="4,0,0,0"
+                                             ToolTip="Snapping and numeric increments for all actors" AutomationProperties.Name="Transform settings">
+                            <xctk:DropDownButton.DropDownContent>
+                                <local:TransformSettingsPanel DataContext="{Binding Data, Source={StaticResource bindingProxy}}"/>
+                            </xctk:DropDownButton.DropDownContent>
+                        </xctk:DropDownButton>
                     </WrapPanel>
                 </DockPanel>
             </Border>
 
-            <Border DockPanel.Dock="Bottom" Padding="8,4" BorderBrush="{StaticResource EditorBorder}" BorderThickness="0,1,0,0">
+            <Border DockPanel.Dock="Top" Background="#351519" BorderBrush="#F05252" BorderThickness="0,0,0,2" Padding="20,16" Margin="0,0,0,4"
+                    Visibility="{Binding IsBakePreview, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock Text="BAKED LIGHTING PREVIEW" Foreground="#FF6464" FontSize="30" FontWeight="Bold"
+                           HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
+            </Border>
+
+            <Border DockPanel.Dock="Bottom" Padding="8,4" BorderBrush="{StaticResource EditorBorder}" BorderThickness="0,1,0,0" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right" Text="{Binding CurrentModeName}" Foreground="{StaticResource EditorMuted}" Margin="12,0,0,0"/>
-                    <TextBlock DockPanel.Dock="Right" Text="{Binding SelectedActor.Export.ObjectName.Instanced, TargetNullValue=''}" Foreground="#81B3DD" Margin="12,0"/>
+                    <!--the selected actor, and the file it's in-->
+                    <TextBlock DockPanel.Dock="Right" Foreground="#81B3DD" Margin="12,0" ToolTip="{Binding SelectedActor.OwningFile.FilePath}"><Run Text="{Binding SelectedActor.ActorName, Mode=OneWay, TargetNullValue=''}"/><Run Text="{Binding SelectedActor.OwningFileName, Mode=OneWay, StringFormat=' ({0})', TargetNullValue=''}"/></TextBlock>
                     <sharedToolControls:StatusBarGameIDIndicator DockPanel.Dock="Left" GameType="{Binding Game}" Visibility="{Binding HasAnyFileOpen, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0,-3,8,-3"/>
                     <TextBlock x:Name="StatusBar_LeftMostText" Text="Open a level package to begin" TextTrimming="CharacterEllipsis"/>
                 </DockPanel>
             </Border>
 
             <Grid Margin="4,0,4,4">
-                <Grid.RowDefinitions><RowDefinition Height="*" MinHeight="300"/><RowDefinition Height="5"/><RowDefinition Height="136" MinHeight="75"/></Grid.RowDefinitions>
+                <Grid.RowDefinitions><RowDefinition Height="*" MinHeight="300"/><RowDefinition x:Name="ChangesSplitterRow" Height="5"/><RowDefinition x:Name="ChangesRow" Height="136" MinHeight="75"/></Grid.RowDefinitions>
                 <Grid>
-                    <Grid.ColumnDefinitions><ColumnDefinition Width="280" MinWidth="210"/><ColumnDefinition Width="5"/><ColumnDefinition Width="*" MinWidth="300"/><ColumnDefinition Width="5"/><ColumnDefinition Width="360" MinWidth="340"/></Grid.ColumnDefinitions>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="280" MinWidth="270"/><ColumnDefinition Width="5"/><ColumnDefinition Width="*" MinWidth="300"/><ColumnDefinition x:Name="DetailsSplitterColumn" Width="5"/><ColumnDefinition x:Name="DetailsColumn" Width="360" MinWidth="340"/></Grid.ColumnDefinitions>
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
-                    <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch"/>
+                    <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-                    <DockPanel Grid.Column="0" Background="{StaticResource EditorPanel}">
-                        <Border DockPanel.Dock="Top" Background="{StaticResource EditorChrome}"><Border Style="{StaticResource EditorDockTitle}"><TextBlock Text="World Outliner" FontWeight="SemiBold"/></Border></Border>
-                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,8,8,0">
-                            <TextBlock Text="Group by" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource EditorMuted}"/>
-                            <RadioButton x:Name="GroupByLevelButton" GroupName="OutlinerGrouping" Content="Level" IsChecked="{Binding GroupActorsByLevel}" Padding="10,4" ToolTip="Group actors by their level package"/>
-                            <RadioButton x:Name="GroupByCategoryButton" GroupName="OutlinerGrouping" Content="Category" IsChecked="{Binding GroupActorsByCategory}" Padding="10,4" ToolTip="Group actors by category across all loaded levels"/>
-                        </StackPanel>
-                        <xctk:WatermarkTextBox x:Name="ActorFilter_TextBox" DockPanel.Dock="Top" Watermark="Search actors, tags, or #ID" Margin="8" TextChanged="ActorFilter_TextBox_TextChanged" IsEnabled="{Binding HasAnyFileOpen}" AutomationProperties.Name="Search actors, tags, or export index"/>
-                        <DockPanel DockPanel.Dock="Top" Margin="8,0,8,8">
-                            <Button DockPanel.Dock="Right" Content="Go to" Click="GotoButton_Clicked" IsEnabled="{Binding HasAnyFileOpen}" Padding="8,3" Margin="5,0,0,0"/>
-                            <xctk:WatermarkTextBox x:Name="Goto_TextBox" Watermark="Export index" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding HasAnyFileOpen}" AutomationProperties.Name="Export index"/>
-                        </DockPanel>
-                        <TextBlock DockPanel.Dock="Bottom" Text="{Binding Actors.BindableCount, StringFormat='{}{0} actors loaded'}" Margin="9,7" Foreground="{StaticResource EditorMuted}" FontSize="11"/>
-                        <ListBox x:Name="MeshExportsList" ItemsSource="{Binding ActorsView}" SelectedItem="{Binding SelectedActor}" ItemContainerStyle="{StaticResource ActorRow}"
-                                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True">
-                            <ListBox.GroupStyle>
-                                <GroupStyle>
-                                    <GroupStyle.ContainerStyle>
-                                        <Style TargetType="GroupItem">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="GroupItem">
-                                                        <Expander Style="{StaticResource OutlinerGroupExpander}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
-                                                                  Header="{TemplateBinding Content}" HeaderTemplate="{TemplateBinding ContentTemplate}">
-                                                            <Expander.DataContext>
-                                                                <MultiBinding Converter="{StaticResource OutlinerGroupStateConverter}" Mode="OneWay">
-                                                                    <Binding Path="Content" RelativeSource="{RelativeSource TemplatedParent}"/>
-                                                                    <Binding Path="Data" Source="{StaticResource bindingProxy}"/>
-                                                                </MultiBinding>
-                                                            </Expander.DataContext>
-                                                            <ItemsPresenter/>
-                                                        </Expander>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </GroupStyle.ContainerStyle>
-                                    <GroupStyle.HeaderTemplate>
-                                        <DataTemplate>
-                                            <ContentControl Content="{Binding}" HorizontalContentAlignment="Stretch">
-                                                <ContentControl.Style>
-                                                    <Style TargetType="ContentControl">
-                                                        <Setter Property="ContentTemplate" Value="{StaticResource OutlinerCategoryHeader}"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsBottomLevel}" Value="True">
-                                                                <Setter Property="ContentTemplate" Value="{StaticResource OutlinerLevelHeader}"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </ContentControl.Style>
-                                            </ContentControl>
-                                        </DataTemplate>
-                                    </GroupStyle.HeaderTemplate>
-                                </GroupStyle>
-                            </ListBox.GroupStyle>
-                            <ListBox.ItemTemplate><DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="19"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="12"/></Grid.ColumnDefinitions>
-                                    <fa:ImageAwesome Icon="Solid_Cube" Width="12" Foreground="#CDB374" HorizontalAlignment="Left"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding DisplayText}" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding Export.UIndex}" Margin="8,0,0,0" FontSize="11" Opacity="0.8"/>
-                                    <TextBlock Grid.Column="3" Text="•" Foreground="{StaticResource EditorDirty}" HorizontalAlignment="Right" Visibility="{Binding IsDirty, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="Uncommitted transform"/>
+                    <TabControl Grid.Column="0" Style="{StaticResource EditorDockTabs}" ItemContainerStyle="{StaticResource EditorDockTab}">
+                        <TabItem Header="World Outliner" IsSelected="True">
+                            <DockPanel Background="{StaticResource EditorPanel}">
+                                <DockPanel DockPanel.Dock="Top" Margin="8,8,8,0">
+                                    <Button DockPanel.Dock="Right" Content="Collapse all" Click="CollapseOutlinerGroups_Clicked" IsEnabled="{Binding HasAnyFileOpen}" Padding="5,4" Margin="6,0,0,0" VerticalAlignment="Center" ToolTip="Collapse all outliner categories and level groups"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Group by" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{StaticResource EditorMuted}"/>
+                                        <RadioButton x:Name="GroupByLevelButton" GroupName="OutlinerGrouping" Content="Level" IsChecked="{Binding GroupActorsByLevel}" Padding="6,4" ToolTip="Group actors by their level package"/>
+                                        <RadioButton x:Name="GroupByCategoryButton" GroupName="OutlinerGrouping" Content="Category" IsChecked="{Binding GroupActorsByCategory}" Padding="6,4" ToolTip="Group actors by category across all loaded levels"/>
+                                    </StackPanel>
+                                </DockPanel>
+                                <Grid DockPanel.Dock="Top" Margin="8">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="60"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <xctk:WatermarkTextBox x:Name="ActorFilter_TextBox" Watermark="Search actors" TextChanged="ActorFilter_TextBox_TextChanged" IsEnabled="{Binding HasAnyFileOpen}" AutomationProperties.Name="Search actors, tags, or export index" ToolTip="Search actors, tags, or #ID"/>
+                                    <xctk:WatermarkTextBox x:Name="Goto_TextBox" Grid.Column="1" Watermark="#ID" Margin="5,0,0,0" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding HasAnyFileOpen}" AutomationProperties.Name="Export index" ToolTip="Export index"/>
+                                    <Button Grid.Column="2" Content="Go to" Click="GotoButton_Clicked" IsEnabled="{Binding HasAnyFileOpen}" Padding="8,3" Margin="5,0,0,0"/>
                                 </Grid>
-                            </DataTemplate></ListBox.ItemTemplate>
-                        </ListBox>
-                    </DockPanel>
+                                <TextBlock DockPanel.Dock="Bottom" Text="{Binding Actors.BindableCount, StringFormat='{}{0} actors loaded'}" Margin="9,7" Foreground="{StaticResource EditorMuted}" FontSize="11"/>
+                                <ListBox x:Name="MeshExportsList" ItemsSource="{Binding ActorsView}" SelectedItem="{Binding SelectedActor}" ItemContainerStyle="{StaticResource ActorRow}" IsVisibleChanged="MeshExportsList_IsVisibleChanged"
+                                         VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True">
+                                    <ListBox.GroupStyle>
+                                        <GroupStyle>
+                                            <GroupStyle.ContainerStyle>
+                                                <Style TargetType="GroupItem">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="GroupItem">
+                                                                <Expander Style="{StaticResource OutlinerGroupExpander}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
+                                                                          Header="{TemplateBinding Content}" HeaderTemplate="{TemplateBinding ContentTemplate}">
+                                                                    <Expander.DataContext>
+                                                                        <MultiBinding Converter="{StaticResource OutlinerGroupStateConverter}" Mode="OneWay">
+                                                                            <Binding Path="Content" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                                                            <Binding Path="Data" Source="{StaticResource bindingProxy}"/>
+                                                                        </MultiBinding>
+                                                                    </Expander.DataContext>
+                                                                    <ItemsPresenter/>
+                                                                </Expander>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </GroupStyle.ContainerStyle>
+                                            <GroupStyle.HeaderTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Content="{Binding}" HorizontalContentAlignment="Stretch">
+                                                        <ContentControl.Style>
+                                                            <Style TargetType="ContentControl">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource OutlinerCategoryHeader}"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsBottomLevel}" Value="True">
+                                                                        <Setter Property="ContentTemplate" Value="{StaticResource OutlinerLevelHeader}"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ContentControl.Style>
+                                                    </ContentControl>
+                                                </DataTemplate>
+                                            </GroupStyle.HeaderTemplate>
+                                        </GroupStyle>
+                                    </ListBox.GroupStyle>
+                                    <ListBox.ItemTemplate><DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="19"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="12"/></Grid.ColumnDefinitions>
+                                            <fa:ImageAwesome Width="12" HorizontalAlignment="Left">
+                                                <fa:ImageAwesome.Style><Style TargetType="fa:ImageAwesome"><Setter Property="Icon" Value="Solid_Cube"/><Setter Property="Foreground" Value="#CDB374"/><Style.Triggers><DataTrigger Binding="{Binding Category}" Value="Lights"><Setter Property="Icon" Value="Solid_Lightbulb"/><Setter Property="Foreground" Value="#F0C04F"/></DataTrigger></Style.Triggers></Style></fa:ImageAwesome.Style>
+                                            </fa:ImageAwesome>
+                                            <TextBlock Grid.Column="1" Text="{Binding DisplayText}" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding IndexLabel}" Margin="8,0,0,0" FontSize="11" Opacity="0.8"/>
+                                            <TextBlock Grid.Column="3" Text="•" Foreground="{StaticResource EditorDirty}" HorizontalAlignment="Right" Visibility="{Binding IsDirty, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="Uncommitted change"/>
+                                        </Grid>
+                                    </DataTemplate></ListBox.ItemTemplate>
+                                </ListBox>
+                            </DockPanel>
+                        </TabItem>
+                        <TabItem Header="Place Actors" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <local:PlaceActorsPanel/>
+                        </TabItem>
+                        <TabItem Header="Terrain" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <local:TerrainPanel/>
+                        </TabItem>
+                        <TabItem Header="Problems">
+                            <local:ProblemsPanel/>
+                        </TabItem>
+                    </TabControl>
 
                     <DockPanel Grid.Column="2" Background="{StaticResource EditorPanel}">
                         <Border DockPanel.Dock="Top" Background="{StaticResource EditorChrome}"><Border Style="{StaticResource EditorDockTitle}"><TextBlock Text="Viewport" FontWeight="SemiBold"/></Border></Border>
-                        <Border DockPanel.Dock="Top" Padding="5" Background="{StaticResource EditorPanel}">
+                        <Border DockPanel.Dock="Top" Padding="5" Background="{StaticResource EditorPanel}" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                             <DockPanel>
                                 <Button DockPanel.Dock="Right" Command="{Binding FocusSelectedCommand}" ToolTip="Focus the camera on the selected actor (F)" Padding="7,4" VerticalAlignment="Top"><StackPanel Orientation="Horizontal"><fa:ImageAwesome Icon="Solid_Expand" Width="12" Margin="0,0,6,0" Foreground="{StaticResource EditorText}"/><TextBlock Text="Focus Selected"/></StackPanel></Button>
                                 <WrapPanel>
-                                    <ToggleButton Content="Game Shaders" IsChecked="{Binding UseGameShaders}" Padding="7,4" ToolTip="Use the game's shaders (Legendary Edition only). Unsupported materials use the preview shader."/>
                                     <Menu Background="Transparent">
-                                        <MenuItem x:Name="LightingMenu" Header="{Binding LightingMenuHeader}" Padding="7,4" ToolTip="Choose viewport lighting and isolate baked or dynamic lighting.">
-                                            <MenuItem x:Name="LevelLightingMenuItem" Header="Level lighting" IsChecked="{Binding IsLevelLighting, Mode=OneWay}" Command="{Binding SetLightingModeCommand}" CommandParameter="{x:Static scene3D:ViewportLightingMode.Level}" StaysOpenOnClick="True" ToolTip="Use the level's baked lighting and non-baked lights. Requires game shaders; unsupported materials use preview lighting."/>
-                                            <MenuItem x:Name="PreviewLightingMenuItem" Header="Preview lighting" IsChecked="{Binding IsPreviewLighting, Mode=OneWay}" Command="{Binding SetLightingModeCommand}" CommandParameter="{x:Static scene3D:ViewportLightingMode.Preview}" StaysOpenOnClick="True" ToolTip="Use a neutral preview light, without the level's lights or lightmaps."/>
-                                            <MenuItem x:Name="UnlitMenuItem" Header="Unlit" IsChecked="{Binding IsUnlit, Mode=OneWay}" Command="{Binding SetLightingModeCommand}" CommandParameter="{x:Static scene3D:ViewportLightingMode.Unlit}" StaysOpenOnClick="True" ToolTip="Show material colors without dynamic lighting or lightmaps."/>
+                                        <MenuItem x:Name="LightingMenu" Header="{Binding LightingMenuHeader}" Padding="7,4" ToolTip="Choose viewport lighting and isolate lightmaps or runtime lighting.">
+                                            <MenuItem x:Name="LevelLightingMenuItem" Header="Level lighting" IsChecked="{Binding IsLevelLighting, Mode=OneWay}" Command="{Binding SetLightingModeCommand}" CommandParameter="{x:Static scene3D:ViewportLightingMode.Level}" StaysOpenOnClick="True" ToolTip="Use the level's lightmaps and runtime lighting. Unsupported materials use neutral lighting."/>
+                                            <MenuItem x:Name="PreviewLightingMenuItem" Header="Preview lighting" IsChecked="{Binding IsPreviewLighting, Mode=OneWay}" Command="{Binding SetLightingModeCommand}" CommandParameter="{x:Static scene3D:ViewportLightingMode.Preview}" StaysOpenOnClick="True" ToolTip="Preview direct lighting and approximate shadows from the current level lights and geometry, without sampling existing lightmaps and shadowmaps. Eligibility follows the selected assignment policy. Does not include baked bounced lighting. Unsupported materials use neutral lighting."/>
+                                            <MenuItem Header="Preview / bake assignments">
+                                                <MenuItem Header="Preserve existing assignments" IsChecked="{Binding PreserveAssignments, Mode=OneWay}" Command="{Binding SetAssignmentPolicyCommand}" CommandParameter="{x:Static lightmass:LightAssignmentPolicy.PreserveExistingAssignments}" StaysOpenOnClick="True"/>
+                                                <MenuItem Header="Recompute assignments" IsChecked="{Binding RecomputeAssignments, Mode=OneWay}" Command="{Binding SetAssignmentPolicyCommand}" CommandParameter="{x:Static lightmass:LightAssignmentPolicy.RecomputeAssignments}" StaysOpenOnClick="True"/>
+                                            </MenuItem>
+                                            <MenuItem x:Name="NeutralLightingMenuItem" Header="Neutral lighting" IsChecked="{Binding IsNeutralLighting, Mode=OneWay}" Command="{Binding SetLightingModeCommand}" CommandParameter="{x:Static scene3D:ViewportLightingMode.Neutral}" StaysOpenOnClick="True" ToolTip="Use a neutral light to inspect materials and geometry, independent of the level's lights and lightmaps."/>
+                                            <MenuItem x:Name="UnlitMenuItem" Header="Unlit" IsChecked="{Binding IsUnlit, Mode=OneWay}" Command="{Binding SetLightingModeCommand}" CommandParameter="{x:Static scene3D:ViewportLightingMode.Unlit}" StaysOpenOnClick="True" ToolTip="Show material colors without lighting."/>
                                             <Separator/>
-                                            <MenuItem x:Name="DynamicLightingMenuItem" Header="Dynamic lights" IsCheckable="True" IsChecked="{Binding UseDynamicLighting}" IsEnabled="{Binding CanConfigureLevelLighting}" StaysOpenOnClick="True" ToolTip="Include non-baked light contributions and their precomputed shadows. Lights baked into a lightmap remain part of that lightmap."/>
-                                            <MenuItem x:Name="LightMapsMenuItem" Header="Lightmaps" IsCheckable="True" IsChecked="{Binding UseLightMaps}" IsEnabled="{Binding CanConfigureLevelLighting}" StaysOpenOnClick="True" ToolTip="Include baked texture and vertex lighting. Turn off Dynamic lights to view baked lighting alone."/>
+                                            <MenuItem x:Name="DynamicLightingMenuItem" Header="Runtime lighting" IsCheckable="True" IsChecked="{Binding UseDynamicLighting}" IsEnabled="{Binding IsLevelLighting}" StaysOpenOnClick="True" ToolTip="Include lighting evaluated at runtime, including lights with precomputed shadowmaps. Lights baked into a lightmap remain part of that lightmap."/>
+                                            <MenuItem x:Name="LightMapsMenuItem" Header="Lightmaps" IsCheckable="True" IsChecked="{Binding UseLightMaps}" IsEnabled="{Binding IsLevelLighting}" StaysOpenOnClick="True" ToolTip="Include baked texture and vertex lighting. Turn off Runtime lighting to view lightmaps alone."/>
                                         </MenuItem>
                                     </Menu>
                                     <ToggleButton Content="Top Down" IsChecked="{Binding IsOrthographicView}" Padding="7,4" ToolTip="Toggle top-down orthographic view (Numpad 5)"/>
+                                    <StackPanel Orientation="Horizontal" Margin="6,0,0,0" Visibility="{Binding IsOrthographicView, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                ToolTip="Hide everything above this height, to see beneath a level's ceilings. Starts at the camera's height when Top Down is turned on.">
+                                        <TextBlock Text="Clip height" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <xctk:SingleUpDown Width="90" Value="{Binding TopDownClipHeight}" Increment="100" FormatString="F0" VerticalAlignment="Center" AutomationProperties.Name="Top-down clip height"/>
+                                    </StackPanel>
                                     <Menu Background="Transparent">
                                         <MenuItem Header="Show ▾" Padding="7,4">
                                             <MenuItem Header="Collision" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowCollision}"/>
                                             <MenuItem Header="Hidden Actors" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowHidden}"/>
+                                            <MenuItem Header="Selected Light's Reach" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowLightReach}" ToolTip="Tint and outline the meshes the selected light is eligible to light"/>
                                         </MenuItem>
                                     </Menu>
+                                    <StackPanel Orientation="Horizontal" Margin="8,0,0,0" ToolTip="How fast the camera flies, in units per second, with W A S D Q E. The scroll wheel and left or middle dragging scale with it. Hold Shift with the keys or the wheel to go ten times faster.">
+                                        <TextBlock Text="Camera speed" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <xctk:SingleUpDown Width="80" Value="{Binding CameraSpeed}" Minimum="1" DefaultValue="500" DisplayDefaultValueOnEmptyText="True" Increment="250" FormatString="F0" VerticalAlignment="Center" AutomationProperties.Name="Camera speed"/>
+                                    </StackPanel>
                                 </WrapPanel>
                             </DockPanel>
                         </Border>
                         <Grid>
                             <scene3D:SceneRenderControl x:Name="SceneViewer"/>
-                            <Border Background="{StaticResource EditorInput}" Visibility="{Binding HasAnyFileOpen, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <StackPanel Margin="24" VerticalAlignment="Center">
-                                        <TextBlock Text="Level Editor" FontSize="24" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <TextBlock Text="Open a level package or drop one here to start editing." Foreground="{StaticResource EditorMuted}" TextWrapping="Wrap" Margin="0,0,0,16"/>
-                                        <Button Content="Open Level…" Command="{Binding OpenFileCommand}" HorizontalAlignment="Left" Background="{StaticResource EditorAccent}" Padding="16,8"/>
-                                        <TextBlock Text="Recent level sets" Margin="0,24,0,8" FontWeight="SemiBold" Visibility="{Binding RecentSets.Any, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                        <ItemsControl ItemsSource="{Binding RecentSets}"><ItemsControl.ItemTemplate><DataTemplate>
-                                            <Button Command="{Binding Data.OpenRecentSetCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" ToolTip="{Binding TooltipText}" HorizontalContentAlignment="Left" Margin="0,2" Padding="7">
-                                                <DockPanel><Image DockPanel.Dock="Left" Source="{Binding Game, Converter={StaticResource GameToImageIconConverter}}" Height="16" Width="16" Margin="0,0,8,0"/><TextBlock Text="{Binding DisplayName}" TextWrapping="Wrap"/></DockPanel>
-                                            </Button>
-                                        </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
-                                        <TextBlock Margin="0,24,0,0" Foreground="{StaticResource EditorMuted}" TextWrapping="Wrap">Some actor types cannot be displayed. See rendering notes below after loading a level.</TextBlock>
-                                        <TextBlock Margin="0,10,0,0" TextWrapping="Wrap"><Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.ME3TweaksDiscordInviteURL), Mode=OneTime}" Foreground="#81B3DD" misc:HyperlinkExtensions.IsExternal="True">ME3Tweaks Discord</Hyperlink><Run Text="  ·  "/><Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.BugReportURL), Mode=OneTime}" Foreground="#81B3DD" misc:HyperlinkExtensions.IsExternal="True">Report an issue</Hyperlink></TextBlock>
-                                    </StackPanel>
-                                </ScrollViewer>
-                            </Border>
+                            <local:WelcomePanel Visibility="{Binding HasAnyFileOpen, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}"/>
                         </Grid>
                     </DockPanel>
 
-                    <DockPanel Grid.Column="4" Background="{StaticResource EditorPanel}">
+                    <DockPanel Grid.Column="4" Background="{StaticResource EditorPanel}" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                         <Border DockPanel.Dock="Top" Background="{StaticResource EditorChrome}"><Border Style="{StaticResource EditorDockTitle}"><TextBlock Text="Details" FontWeight="SemiBold"/></Border></Border>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel>
                                 <StackPanel Margin="10,10,10,12">
-                                    <Border Background="{StaticResource EditorInput}" BorderBrush="{StaticResource EditorBorder}" BorderThickness="1" Padding="8,6" CornerRadius="2"><TextBlock Text="{Binding SelectedActor.Export.ObjectName.Instanced, TargetNullValue='Select an actor'}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/></Border>
+                                    <Border Background="{StaticResource EditorInput}" BorderBrush="{StaticResource EditorBorder}" BorderThickness="1" Padding="8,6" CornerRadius="2"><TextBlock Text="{Binding SelectedActor.ActorName, TargetNullValue='Select an actor'}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/></Border>
                                     <TextBlock Text="{Binding SelectedActor.DisplayText}" Foreground="#81B3DD" FontSize="11" Margin="0,7,0,0" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding SelectedActor.Export.UIndex, StringFormat='Export {0}'}" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,3,0,0"/>
+                                    <TextBlock Text="{Binding SelectedActor.ExportLabel}" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,3,0,0"/>
+                                    <TextBlock Text="{Binding SelectedActor.CoverageLabel}" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                                    <TextBlock Text="{Binding SelectedActor.CoverageReason}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,3,0,0"/>
                                     <TextBlock Text="Read-only package" Foreground="{StaticResource EditorDirty}" Margin="0,6,0,0" Visibility="{Binding SelectedActor.OwningFile.IsReadOnly, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}"/>
                                 </StackPanel>
-                                <Expander Header="Transform" IsExpanded="True" Padding="10,0,10,10">
-                                    <StackPanel DataContext="{Binding SelectedActor}">
-                                        <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="IsEnabled" Value="True"/><Style.Triggers><DataTrigger Binding="{Binding}" Value="{x:Null}"><Setter Property="IsEnabled" Value="False"/></DataTrigger><DataTrigger Binding="{Binding OwningFile.IsReadOnly}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
-                                        <TextBlock Text="Position · world units" Style="{StaticResource EditorSectionLabel}"/>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/></Grid.ColumnDefinitions>
-                                            <DockPanel><TextBlock Text="X" Background="{StaticResource EditorX}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="xPosUpDown" Value="{Binding XPos}" Increment="{Binding PosIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Position X"/></DockPanel>
-                                            <DockPanel Grid.Column="2"><TextBlock Text="Y" Background="{StaticResource EditorY}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="yPosUpDown" Value="{Binding YPos}" Increment="{Binding PosIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Position Y"/></DockPanel>
-                                            <DockPanel Grid.Column="4"><TextBlock Text="Z" Background="{StaticResource EditorZ}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="zPosUpDown" Value="{Binding ZPos}" Increment="{Binding PosIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Position Z"/></DockPanel>
-                                        </Grid>
-                                        <TextBlock Text="Rotation · degrees" Style="{StaticResource EditorSectionLabel}"/>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/></Grid.ColumnDefinitions>
-                                            <DockPanel ToolTip="Roll (X)"><TextBlock Text="X" Background="{StaticResource EditorX}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="rollUpDown" Value="{Binding RollDegrees}" Increment="{Binding RotIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F2" AutomationProperties.Name="Roll degrees"/></DockPanel>
-                                            <DockPanel Grid.Column="2" ToolTip="Pitch (Y)"><TextBlock Text="Y" Background="{StaticResource EditorY}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="pitchUpDown" Value="{Binding PitchDegrees}" Increment="{Binding RotIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F2" AutomationProperties.Name="Pitch degrees"/></DockPanel>
-                                            <DockPanel Grid.Column="4" ToolTip="Yaw (Z)"><TextBlock Text="Z" Background="{StaticResource EditorZ}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="yawUpDown" Value="{Binding YawDegrees}" Increment="{Binding RotIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F2" AutomationProperties.Name="Yaw degrees"/></DockPanel>
-                                        </Grid>
-                                        <TextBlock Text="Scale · per axis" Style="{StaticResource EditorSectionLabel}"/>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/></Grid.ColumnDefinitions>
-                                            <DockPanel><TextBlock Text="X" Background="{StaticResource EditorX}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="xScaleUpDown" Value="{Binding XScale}" Increment="{Binding ScaleIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Scale X"/></DockPanel>
-                                            <DockPanel Grid.Column="2"><TextBlock Text="Y" Background="{StaticResource EditorY}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="yScaleUpDown" Value="{Binding YScale}" Increment="{Binding ScaleIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Scale Y"/></DockPanel>
-                                            <DockPanel Grid.Column="4"><TextBlock Text="Z" Background="{StaticResource EditorZ}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown x:Name="zScaleUpDown" Value="{Binding ZScale}" Increment="{Binding ScaleIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Scale Z"/></DockPanel>
-                                        </Grid>
-                                        <DockPanel Margin="0,10,0,0"><TextBlock Text="Uniform scale" VerticalAlignment="Center"/><xctk:SingleUpDown x:Name="scaleUpDown" Width="108" HorizontalAlignment="Right" Value="{Binding DrawScale}" Increment="{Binding ScaleIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Uniform scale"/></DockPanel>
-                                    </StackPanel>
-                                </Expander>
-                                <Expander Header="Snapping" IsExpanded="True" Padding="10,7,10,10">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="112"/><ColumnDefinition Width="37"/></Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions><RowDefinition Height="32"/><RowDefinition Height="32"/><RowDefinition Height="32"/></Grid.RowDefinitions>
-                                        <CheckBox Content="Translation" IsChecked="{Binding TranslateSnapEnabled}"/>
-                                        <xctk:SingleUpDown Grid.Column="1" Value="{Binding TranslateSnapValue}" Minimum="0.001" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Translation snap interval"/>
-                                        <TextBlock Grid.Column="2" Text="units" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{StaticResource EditorMuted}"/>
-                                        <CheckBox Grid.Row="1" Content="Rotation" IsChecked="{Binding RotateSnapEnabled}"/>
-                                        <xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding RotateSnapValue}" Minimum="0.1" Maximum="180" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Rotation snap interval"/>
-                                        <TextBlock Grid.Row="1" Grid.Column="2" Text="°" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{StaticResource EditorMuted}"/>
-                                        <CheckBox Grid.Row="2" Content="Scale" IsChecked="{Binding ScaleSnapEnabled}"/>
-                                        <xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding ScaleSnapValue}" Minimum="0.01" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Scale snap interval"/>
-                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="%" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{StaticResource EditorMuted}"/>
-                                    </Grid>
-                                </Expander>
-                                <Expander Header="Numeric increments" Padding="10,7,10,10" ToolTip="Step used by the arrow keys in transform fields.">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="112"/></Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions><RowDefinition Height="32"/><RowDefinition Height="32"/><RowDefinition Height="32"/></Grid.RowDefinitions>
-                                        <TextBlock Text="Position" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Column="1" Value="{Binding PosIncrement}" Minimum="0" FormatString="F3" AutomationProperties.Name="Position numeric increment"/>
-                                        <TextBlock Grid.Row="1" Text="Rotation" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding RotIncrement}" Minimum="0" FormatString="F2" AutomationProperties.Name="Rotation numeric increment"/>
-                                        <TextBlock Grid.Row="2" Text="Scale" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding ScaleIncrement}" Minimum="0" FormatString="F3" AutomationProperties.Name="Scale numeric increment"/>
-                                    </Grid>
-                                </Expander>
+                                <local:TransformPanel/>
+                                <local:MeshPanel/>
+                                <local:DecalPanel/>
+                                <local:SplinePanel/>
+                                <local:LightPanel/>
+                                <local:ActorLightingPanel/>
                             </StackPanel>
                         </ScrollViewer>
                     </DockPanel>
                 </Grid>
-                <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" ResizeDirection="Rows"/>
-                <DockPanel Grid.Row="2" Background="{StaticResource EditorPanel}">
-                    <DockPanel DockPanel.Dock="Top" Background="{StaticResource EditorChrome}">
-                        <Button DockPanel.Dock="Right" Command="{Binding SaveAllCommand}" Content="Save All" Padding="10,5"/>
-                        <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" Content="Commit Changes" Padding="10,5" Style="{StaticResource CommitButton}"/>
-                        <Border Style="{StaticResource EditorDockTitle}"><StackPanel Orientation="Horizontal"><TextBlock Text="Changes" FontWeight="SemiBold"/><TextBlock Text="{Binding PendingChangesView.Count, StringFormat=' ({0})'}" Foreground="{StaticResource EditorMuted}"/></StackPanel></Border>
-                    </DockPanel>
-                    <TextBlock DockPanel.Dock="Top" Text="Commit applies transforms to loaded packages. Save writes packages to disk." Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="10,6,10,3"/>
-                    <Expander DockPanel.Dock="Bottom" Header="Rendering notes" IsExpanded="False" Margin="0" Padding="10,4">
-                        <Expander.Style>
-                            <Style TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding TextBelowActors}" Value="{x:Null}"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
-                                    <DataTrigger Binding="{Binding TextBelowActors}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Expander.Style>
-                        <ScrollViewer MaxHeight="70" VerticalScrollBarVisibility="Auto"><TextBlock Text="{Binding TextBelowActors}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11"/></ScrollViewer>
-                    </Expander>
-                    <Grid>
-                        <TextBlock Text="No uncommitted transforms." Foreground="{StaticResource EditorMuted}" Margin="10,6" Visibility="{Binding PendingChangesView.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        <ListBox ItemsSource="{Binding PendingChangesView}" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" Visibility="{Binding PendingChangesView.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}">
-                            <ListBox.ItemTemplate><DataTemplate>
-                                <Button Command="{Binding Data.SelectChangedActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" HorizontalContentAlignment="Stretch" Padding="3,0" ToolTip="Select and frame this changed actor">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions><ColumnDefinition Width="55"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="240"/></Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Export.UIndex}" Foreground="{StaticResource EditorDirty}"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding Export.ObjectName.Instanced}" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Grid.Column="2" Text="{Binding OwningFileName}" TextTrimming="CharacterEllipsis" Foreground="{StaticResource EditorMuted}"/>
-                                        <TextBlock Grid.Column="3" HorizontalAlignment="Right" Foreground="{StaticResource EditorMuted}"><Run Text="X "/><Run Text="{Binding XPos, StringFormat=F1}"/><Run Text="  Y "/><Run Text="{Binding YPos, StringFormat=F1}"/><Run Text="  Z "/><Run Text="{Binding ZPos, StringFormat=F1}"/></TextBlock>
-                                    </Grid>
-                                </Button>
-                            </DataTemplate></ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                </DockPanel>
+                <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" ResizeDirection="Rows" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <local:ChangesPanel Grid.Row="2" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}"/>
             </Grid>
         </DockPanel>
     </xctk:BusyIndicator>

@@ -752,6 +752,7 @@ namespace LegendaryExplorerCore.Packages
         private static MemoryStream saveUncompressed(MEPackage mePackage, bool isSaveAs, bool includeAdditionalPackageToCook = true, bool includeDependencyTable = true)
         {
             if (mePackage.Platform != GamePlatform.PC) throw new Exception("Cannot save packages for platforms other than PC");
+            mePackage.ThrowIfInEditScope();
             var sourceIsCompressed = mePackage.IsCompressed;
             mePackage.Flags &= ~EPackageFlags.Compressed;
 
@@ -900,6 +901,7 @@ namespace LegendaryExplorerCore.Packages
         private static MemoryStream saveCompressed(MEPackage package, bool isSaveAs, bool includeAdditionalPackageToCook = true, bool includeDependencyTable = true)
         {
             if (package.Platform != GamePlatform.PC) throw new Exception("Cannot save packages for platforms other than PC");
+            package.ThrowIfInEditScope();
             var sourceIsCompressed = package.IsCompressed;
             try
             {

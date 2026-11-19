@@ -1,0 +1,129 @@
+using System;
+using System.Linq;
+using System.Numerics;
+using LegendaryExplorer.Lightmaps.Game;
+using LegendaryExplorer.Lightmaps.Lightmass;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+
+namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
+
+/// <summary>Effective receiver settings. Output mappings and runtime rendering are separate from eligibility.</summary>
+/// <param name="UsesLightEnvironment">Lit by a light environment, which excludes level lights except LE1's bypass lights</param>
+/// <param name="ForceDirectLightMap">bForceDirectLightMap: static lights' direct lighting goes in the lightmap whatever their UseDirectLightMap</param>
+public readonly record struct LightPrimitiveSettings(LightingChannels Channels, string LevelName,
+    bool AcceptsLights = true, bool AcceptsDynamicLights = true, bool SelfContainedLighting = false, bool UsesLightEnvironment = false,
+    bool ForceDirectLightMap = false);
+
+public static class LightAssignment
+{
+    internal static bool HasStaticShadowing(ExportEntry component, PropertyCollection props, StaticMeshComponent binary, string ownerClass = null) =>
+        props.GetProp<BoolProperty>("bUsePrecomputedShadows")?.Value
+        ?? ((ownerClass ?? component.Parent?.ClassName) is "StaticMeshActor" or "StaticMeshCollectionActor"
+            || binary.LODData.Any(l => l.LightMap is { LightMapType: not ELightMapType.LMT_None } || l.ShadowMaps.Length > 0 || l.ShadowVertexBuffers.Length > 0));
+
+    /// <summary>
+    /// Whether a bake builds static lighting for a static or spline mesh component: it has static shadowing and accepts lights
+    /// (UStaticMeshComponent::GetStaticLightingInfo). Such a primitive is lit by the bake and casts its static shadows, whether or not a light environment
+    /// lights it at runtime
+    /// </summary>
+    /// <param name="ownerClass">The class of the actor it's a component of, if it isn't the component's outer: a stand-in has none</param>
+    public static bool TakesPartInStaticLighting(ExportEntry component, PropertyCollection props, StaticMeshComponent binary, string ownerClass = null) =>
+        HasStaticShadowing(component, props, binary, ownerClass) && AcceptsLights(props);
+
+    /// <summary>bAcceptsLights. Component archetypes set it; only an explicit false is trusted, in case the archetype chain couldn't be resolved</summary>
+    public static bool AcceptsLights(PropertyCollection props) => props.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false };
+
+    /// <summary>Shared spatial/settings checks. Occlusion is evaluated by the renderer or Lightmass afterwards.</summary>
+    public static LightEligibility Evaluate(SceneLight light, BoxSphereBounds bounds, LightPrimitiveSettings primitive,
+        bool compareChannels = true, bool honorSelfContained = false)
+    {
+        if (!primitive.AcceptsLights) return LightEligibility.LightsNotAccepted;
+        if (light.HasLightEnvironment) return LightEligibility.BelongsToLightEnvironment;
+        if (primitive.UsesLightEnvironment && !light.BypassesLightEnvironments) return LightEligibility.LitByLightEnvironment;
+        if (!light.AffectsBounds(bounds)) return LightEligibility.OutOfRange;
+        if (light.GetVolumeExclusion(bounds) is var volume and not LightEligibility.Affects) return volume;
+        if (compareChannels && !light.LightingChannels.OverlapsWith(primitive.Channels)) return LightEligibility.LightingChannels;
+        if (!primitive.AcceptsDynamicLights && !light.HasStaticShadowing) return LightEligibility.DynamicLightsNotAccepted;
+        return EvaluateLevel(light, primitive.LevelName, primitive.SelfContainedLighting, honorSelfContained);
+    }
+
+    /// <summary>LE1 tests the source package's self-contained flag; later games keep the existing policy</summary>
+    internal static LightEligibility EvaluateLevel(SceneLight light, string levelName, bool receiverSelfContained, bool honorSelfContained = true)
+    {
+        bool sameLevel = string.Equals(light.LevelName, levelName, StringComparison.OrdinalIgnoreCase);
+        bool selfContained = light.Export.Game is MEGame.LE1
+            ? light.Export.FileRef.Flags.Has(UnrealFlags.EPackageFlags.SelfContainedLighting)
+            : receiverSelfContained;
+        if (honorSelfContained && selfContained && light.HasStaticShadowing && !sameLevel) return LightEligibility.SelfContainedLighting;
+        if (light.OnlyAffectSameAndSpecifiedLevels && !sameLevel && !IsOtherLevelToAffect(light, levelName)) return LightEligibility.OtherLevel;
+        return LightEligibility.Affects;
+    }
+
+    /// <summary>
+    /// LE1 matches each OtherLevelsToAffect entry as a case-insensitive prefix of level names (RVA 0xcd59e0), so "BIOA_NOR10_03"
+    /// covers BIOA_NOR10_03_DSG. Later games match names exactly.
+    /// </summary>
+    private static bool IsOtherLevelToAffect(SceneLight light, string levelName) =>
+        light.Export.Game is MEGame.LE1
+            ? light.OtherLevelsToAffect.Any(prefix => levelName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            : light.OtherLevelsToAffect.Contains(levelName);
+
+    /// <summary>Historical eligibility, independent of the bake's direct/shadow output routing.</summary>
+    public static LightEligibility EvaluateHistory(SceneLight light, LightAssignmentPolicy policy, bool known,
+        PrimitiveLightAssignments source)
+    {
+        if (policy == LightAssignmentPolicy.RecomputeAssignments || !known || !source.HasSourceRecord || !light.HasStaticShadowing)
+            return LightEligibility.Affects;
+        bool assigned = light.IsDominant || !light.HasStaticLighting
+            ? source.Shadows.Contains(light.LightGuid)
+            : source.Lightmaps.Contains(light.LightmapGuid) || source.Shadows.Contains(light.LightGuid);
+        return assigned ? LightEligibility.Affects : LightEligibility.PreservedAssignment;
+    }
+
+    /// <summary>
+    /// Whether a static light's direct lighting goes in a primitive's lightmap rather than a shadow map. LE1's and LE2's bakes follow
+    /// ULightComponent::UseStaticLighting for point, spot and directional lights; sky lights can't be shadow-mapped, so their lightmaps hold
+    /// static sky lighting whatever UseDirectLightMap says. LE3's lightmaps hold every static light's direct lighting.
+    /// </summary>
+    public static bool BakesDirectLighting(SceneLight light, bool forceDirectLightMap) =>
+        light.HasStaticLighting && (light.Export.Game is MEGame.LE3 || light.Type is SceneLightType.Sky || light.UseDirectLightMap || forceDirectLightMap
+            || !light.HasStaticShadowing);
+
+    /// <summary>
+    /// Whether the bake gives the light a shadow-only entry, for the primitives that get it through shadow maps: lights with static shadowing but no
+    /// static lighting (toggleable lights), static lights that don't use direct lightmaps, and when preserving assignments, static lights BioWare
+    /// shadow-mapped on some primitives. Dominant lights get their shadow maps from their main entry. A light that casts no static shadows has none
+    /// to map, and sky lights can't be shadow-mapped.
+    /// </summary>
+    /// <param name="vanillaShadowMapped">Whether some shadow map in the levels is for the light</param>
+    public static bool HasShadowMapEntry(SceneLight light, LightAssignmentPolicy policy, bool vanillaShadowMapped, bool hasShadowOnlyReceivers = false) =>
+        !light.IsDominant && light.Type != SceneLightType.Sky && light.HasStaticShadowing && light.CastsStaticShadows
+        && (!BakesDirectLighting(light, forceDirectLightMap: false) || hasShadowOnlyReceivers
+            || policy == LightAssignmentPolicy.PreserveExistingAssignments && vanillaShadowMapped);
+
+    /// <summary>Keep BioWare's per-receiver direct/shadow split. New assignments choose exactly one direct contribution.</summary>
+    /// <param name="forceDirectLightMap">The primitive's bForceDirectLightMap (<see cref="BakesDirectLighting"/>)</param>
+    public static bool RoutesToBake(SceneLight light, bool shadowOnly, LightAssignmentPolicy policy, bool known,
+        PrimitiveLightAssignments source, bool shadowOnlyReceiver = false, bool forceDirectLightMap = false)
+    {
+        if (!light.HasStaticShadowing && !light.HasStaticLighting) return false;
+        // No compatible lightmap shader exists on a shadow-only receiver. Solve its shadows without baking a direct contribution.
+        // Historical eligibility is still checked separately by EvaluateHistory.
+        if (shadowOnlyReceiver)
+            return light.Type != SceneLightType.Sky && light.HasStaticShadowing && light.CastsStaticShadows
+                && (light.IsDominant ? !shadowOnly : shadowOnly);
+        if (policy == LightAssignmentPolicy.PreserveExistingAssignments && known && source.HasSourceRecord)
+        {
+            bool mapped = source.Shadows.Contains(light.LightGuid);
+            if (light.IsDominant) return !shadowOnly && mapped;
+            // EvaluateHistory counts a shadow-mapped static light as assigned. Without a shadow-only entry to carry it, its light goes in the lightmap.
+            bool direct = light.HasStaticLighting && (source.Lightmaps.Contains(light.LightmapGuid)
+                || mapped && !HasShadowMapEntry(light, policy, vanillaShadowMapped: true));
+            return shadowOnly ? !direct && mapped : direct;
+        }
+        if (light.IsDominant) return !shadowOnly; // Lightmass exports bounce plus a shadow map, never baked direct.
+        return shadowOnly != BakesDirectLighting(light, forceDirectLightMap);
+    }
+}

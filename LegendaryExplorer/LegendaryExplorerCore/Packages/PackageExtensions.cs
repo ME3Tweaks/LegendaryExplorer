@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using CommunityToolkit.HighPerformance;
 using LegendaryExplorerCore.GameFilesystem;
@@ -138,7 +139,10 @@ namespace LegendaryExplorerCore.Packages
                         level.Actors.Add(actor.UIndex);
                     }
                 }
-                levelExport.WriteBinary(level);
+                if (added)
+                {
+                    levelExport.WriteBinary(level);
+                }
             }
 
             return added;
@@ -857,130 +861,171 @@ namespace LegendaryExplorerCore.Packages
             return entry.FileRef.Tree.FlattenTreeOf(entry, false);
         }
 
-        public static Dictionary<IEntry, List<string>> GetEntriesThatReferenceThisOne(this IEntry baseEntry)
+        public static Dictionary<IEntry, List<string>> GetEntriesThatReferenceThisOne(this IEntry baseEntry) =>
+            new[] { baseEntry }.GetEntriesThatReferenceThese()[baseEntry];
+
+        /// <summary>
+        /// <see cref="GetEntriesThatReferenceThisOne"/> for each of several entries in one package, from one pass over its exports
+        /// </summary>
+        /// <returns>For each entry, the entries that reference it and where</returns>
+        public static Dictionary<IEntry, Dictionary<IEntry, List<string>>> GetEntriesThatReferenceThese(this IReadOnlyCollection<IEntry> baseEntries)
         {
-            var result = new Dictionary<IEntry, List<string>>();
-            int baseUIndex = baseEntry.UIndex;
-            foreach (ExportEntry exp in baseEntry.FileRef.Exports)
+            var results = new Dictionary<IEntry, Dictionary<IEntry, List<string>>>();
+            var targets = new Dictionary<int, (IEntry Entry, Dictionary<IEntry, List<string>> Result)>();
+            IMEPackage pcc = null;
+            foreach (IEntry baseEntry in baseEntries)
             {
+                pcc ??= baseEntry.FileRef;
+                if (baseEntry.FileRef != pcc) throw new ArgumentException("The entries must all be in the same package.", nameof(baseEntries));
+                if (results.ContainsKey(baseEntry)) continue;
+                var result = new Dictionary<IEntry, List<string>>();
+                results.Add(baseEntry, result);
+                targets.Add(baseEntry.UIndex, (baseEntry, result));
+            }
+            if (pcc is null) return results;
+            //made once, for every export
+            ExportEntry exp = null;
+            Func<int, bool> isTarget = targets.ContainsKey;
+            Action<int, string> add = (uIndex, field) =>
+            {
+                var target = targets[uIndex];
+                //an entry's references to itself aren't counted
+                if (target.Entry != exp) target.Result.AddToListAt(exp, field);
+            };
+            foreach (ExportEntry export in pcc.Exports)
+            {
+                exp = export;
                 try
                 {
-                    if (exp == baseEntry)
-                    {
-                        continue;
-                    }
-                    //find header references
-                    if (exp.Archetype == baseEntry)
-                    {
-                        result.AddToListAt(exp, "Header: Archetype");
-                    }
-                    if (exp.Class == baseEntry)
-                    {
-                        result.AddToListAt(exp, "Header: Class");
-                    }
-                    if (exp.SuperClass == baseEntry)
-                    {
-                        result.AddToListAt(exp, "Header: SuperClass");
-                    }
-                    if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => kvp.Value + 1 == baseUIndex))
-                    {
-                        result.AddToListAt(exp, "Header: ComponentMap");
-                    }
-
-                    //find stack references
-                    if (exp.HasStack)
-                    {
-                        if (baseUIndex == EndianReader.ToInt32(exp.DataReadOnly, 0, exp.FileRef.Endian) || baseUIndex == EndianReader.ToInt32(exp.DataReadOnly, 4, exp.FileRef.Endian))
-                        {
-                            result.AddToListAt(exp, "Stack");
-                        }
-                    }
-                    else if (exp.TemplateOwnerClassIdx is var toci and >= 0 && baseUIndex == EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian))
-                    {
-                        result.AddToListAt(exp, $"TemplateOwnerClass (Data offset 0x{toci:X})");
-                    }
-
-                    //find property references
-                    findPropertyReferences(exp.GetProperties(), exp, "Property:");
-
-                    //find binary references
-                    if (!exp.IsDefaultObject
-                        && exp.ClassName != "AnimSequence" //has no UIndexes, and is expensive to deserialize
-                        && ObjectBinary.From(exp) is ObjectBinary objBin)
-                    {
-                        objBin.ForEachUIndex(exp.FileRef.Game, new ReferenceFinder(baseUIndex, exp, result));
-                    }
+                    FindReferences(exp, null, null, isTarget, add);
                 }
                 catch (Exception e) when (!LegendaryExplorerCoreLib.IsDebug)
                 {
-                    result.AddToListAt(exp, $"Exception occurred while reading this export: {e.Message}");
+                    foreach (var (entry, result) in targets.Values)
+                    {
+                        if (exp != entry) result.AddToListAt(exp, $"Exception occurred while reading this export: {e.Message}");
+                    }
+                }
+            }
+            return results;
+        }
+
+        /// <summary>
+        /// Whether <paramref name="export"/> would refer to any of <paramref name="uIndexes"/> if its properties and binary were
+        /// <paramref name="properties"/> and <paramref name="binary"/> (null for its current ones), its header as it is: whether an edit of it
+        /// leaves such a reference, before the edit is made. Found as <see cref="GetEntriesThatReferenceThese"/> finds references
+        /// </summary>
+        public static bool WouldReferenceAny(this ExportEntry export, IReadOnlySet<int> uIndexes, PropertyCollection properties = null, ObjectBinary binary = null)
+        {
+            bool found = false;
+            FindReferences(export, properties, binary, uIndexes.Contains, (_, _) => found = true);
+            return found;
+        }
+
+        //the binary an export's references are read from: none for a class default or an AnimSequence (which has no UIndexes, and is expensive to deserialize)
+        private static ObjectBinary ReferenceBinary(ExportEntry exp) =>
+            !exp.IsDefaultObject && exp.ClassName != "AnimSequence" ? ObjectBinary.From(exp) : null;
+
+        /// <summary>
+        /// Calls <paramref name="add"/> with each reference in <paramref name="exp"/>'s header and stack, <paramref name="props"/> and <paramref name="binary"/>
+        /// (null for the export's own, which are read after its header and stack, so that their references are found even if those can't be read)
+        /// to a UIndex that <paramref name="isTarget"/>, and where it is. (Only a target's location is formatted: almost no references are to one)
+        /// </summary>
+        private static void FindReferences(ExportEntry exp, PropertyCollection props, ObjectBinary binary, Func<int, bool> isTarget, Action<int, string> add)
+        {
+            //find header references
+            if (exp.Archetype is not null) Add(exp.Archetype.UIndex, "Header: Archetype");
+            if (exp.Class is not null) Add(exp.Class.UIndex, "Header: Class");
+            if (exp.SuperClass is not null) Add(exp.SuperClass.UIndex, "Header: SuperClass");
+            if (exp.HasComponentMap)
+            {
+                foreach (int componentIndex in exp.ComponentMap.Values.Select(value => value + 1).Distinct())
+                {
+                    Add(componentIndex, "Header: ComponentMap");
                 }
             }
 
-            return result;
-
-            void findPropertyReferences(PropertyCollection props, ExportEntry exp, string prefix = "")
+            //find stack references
+            if (exp.HasStack)
             {
-                foreach (Property prop in props)
+                int node = EndianReader.ToInt32(exp.DataReadOnly, 0, exp.FileRef.Endian);
+                int stateNode = EndianReader.ToInt32(exp.DataReadOnly, 4, exp.FileRef.Endian);
+                Add(node, "Stack");
+                if (stateNode != node) Add(stateNode, "Stack");
+            }
+            else if (exp.TemplateOwnerClassIdx is var toci and >= 0 && EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian) is var ownerClass
+                     && isTarget(ownerClass))
+            {
+                add(ownerClass, $"TemplateOwnerClass (Data offset 0x{toci:X})");
+            }
+
+            //find property references
+            //(the structs and struct array elements a property is in, outermost first, which are formatted only for a reference to a target)
+            List<(NameReference Name, int Index)> outers = null;
+            findPropertyReferences(props ?? exp.GetProperties());
+
+            //find binary references
+            (binary ?? ReferenceBinary(exp))?.ForEachUIndex(exp.FileRef.Game, new ReferenceFinder(isTarget, add));
+
+            void Add(int uIndex, string field)
+            {
+                if (isTarget(uIndex)) add(uIndex, field);
+            }
+
+            string Location(NameReference name, int index = -1)
+            {
+                var location = new StringBuilder("Property:");
+                foreach (var (outer, outerIndex) in outers ?? []) Append(outer, outerIndex).Append(':');
+                return Append(name, index).ToString();
+
+                StringBuilder Append(NameReference part, int partIndex) =>
+                    partIndex < 0 ? location.Append(' ').Append(part) : location.Append(' ').Append(part).Append('[').Append(partIndex).Append(']');
+            }
+
+            void findPropertyReferences(PropertyCollection properties)
+            {
+                foreach (Property prop in properties)
                 {
                     switch (prop)
                     {
-                        case ObjectProperty objectProperty:
-                            if (objectProperty.Value == baseUIndex)
-                            {
-                                result.AddToListAt(exp, $"{prefix} {objectProperty.Name}");
-                            }
+                        case ObjectProperty objectProperty when isTarget(objectProperty.Value):
+                            add(objectProperty.Value, Location(objectProperty.Name));
                             break;
-                        case DelegateProperty delegateProperty:
-                            if (delegateProperty.Value.ContainingObjectUIndex == baseUIndex)
-                            {
-                                result.AddToListAt(exp, $"{prefix} {delegateProperty.Name}");
-                            }
+                        case DelegateProperty delegateProperty when isTarget(delegateProperty.Value.ContainingObjectUIndex):
+                            add(delegateProperty.Value.ContainingObjectUIndex, Location(delegateProperty.Name));
                             break;
                         case StructProperty structProperty:
-                            findPropertyReferences(structProperty.Properties, exp, $"{prefix} {structProperty.Name}:");
+                            Within(structProperty.Name, -1, structProperty.Properties);
                             break;
                         case ArrayProperty<ObjectProperty> arrayProperty:
                             for (int i = 0; i < arrayProperty.Count; i++)
                             {
-                                ObjectProperty objProp = arrayProperty[i];
-                                if (objProp.Value == baseUIndex)
-                                {
-                                    result.AddToListAt(exp, $"{prefix} {arrayProperty.Name}[{i}]");
-                                }
+                                if (isTarget(arrayProperty[i].Value)) add(arrayProperty[i].Value, Location(arrayProperty.Name, i));
                             }
                             break;
                         case ArrayProperty<StructProperty> arrayProperty:
                             for (int i = 0; i < arrayProperty.Count; i++)
                             {
-                                StructProperty structProp = arrayProperty[i];
-                                findPropertyReferences(structProp.Properties, exp, $"{prefix} {arrayProperty.Name}[{i}]:");
+                                Within(arrayProperty.Name, i, arrayProperty[i].Properties);
                             }
                             break;
                     }
                 }
             }
+
+            void Within(NameReference name, int index, PropertyCollection properties)
+            {
+                (outers ??= []).Add((name, index));
+                findPropertyReferences(properties);
+                outers.RemoveAt(outers.Count - 1);
+            }
         }
 
-        private readonly struct ReferenceFinder : IUIndexAction
+        private readonly struct ReferenceFinder(Func<int, bool> isTarget, Action<int, string> add) : IUIndexAction
         {
-            private readonly int UIndexToFind;
-            private readonly ExportEntry CurrentExport;
-            private readonly Dictionary<IEntry, List<string>> ResultDict;
-
-            public ReferenceFinder(int uIndexToFind, ExportEntry currentExport, Dictionary<IEntry, List<string>> resultDict)
-            {
-                UIndexToFind = uIndexToFind;
-                CurrentExport = currentExport;
-                ResultDict = resultDict;
-            }
-
             public void Invoke(ref int uIndex, string propName)
             {
-                if (uIndex == UIndexToFind)
-                {
-                    ResultDict.AddToListAt(CurrentExport, $"(Binary prop: {propName})");
-                }
+                if (isTarget(uIndex)) add(uIndex, $"(Binary prop: {propName})");
             }
         }
 

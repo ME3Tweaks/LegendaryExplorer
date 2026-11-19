@@ -9,9 +9,11 @@ namespace LegendaryExplorerCore.Unreal
     public static class ActorUtils
     {
         //actor must be an Actor
-        public static Matrix4x4 GetLocalToWorld(ExportEntry actor)
+        public static Matrix4x4 GetLocalToWorld(ExportEntry actor) => GetLocalToWorld(actor.GetProperties());
+
+        /// <summary>The transform an actor's properties give it. Pass properties merged with the class defaults for classes that scale by default (Terrain)</summary>
+        public static Matrix4x4 GetLocalToWorld(PropertyCollection props)
         {
-            PropertyCollection props = actor.GetProperties();
             var rotationProp = props.GetProp<StructProperty>("Rotation");
             var locationsProp = props.GetProp<StructProperty>("location");
             var drawScale3DProp = props.GetProp<StructProperty>("DrawScale3D");

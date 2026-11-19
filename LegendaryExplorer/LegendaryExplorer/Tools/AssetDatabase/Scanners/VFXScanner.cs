@@ -56,7 +56,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                         vfxtype = ParticleSysRecord.VFXClass.RvrClientEffect;
                     }
 
-                    var NewPS = new ParticleSysRecord(e.ObjectNameInstanced, parent, e.IsDlc, e.IsMod, EmCnt, vfxtype);
+                    var NewPS = new ParticleSysRecord(e.ObjectNameInstanced, parent, e.IsDlc, e.IsMod, EmCnt, vfxtype) { InstancedFullPath = e.Export.InstancedFullPath };
                     NewPS.Usages.Add(particleSysUsage);
                     if (!db.GeneratedPS.TryAdd(e.AssetKey, NewPS))
                     {

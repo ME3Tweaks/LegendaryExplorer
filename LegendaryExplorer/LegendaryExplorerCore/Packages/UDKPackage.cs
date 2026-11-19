@@ -301,6 +301,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public MemoryStream SaveToStream(bool compress, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true)
         {
+            ThrowIfInEditScope();
             if (exports.Any(exp => exp.ClassName == "Level"))
             {
                 Flags |= EPackageFlags.Map;

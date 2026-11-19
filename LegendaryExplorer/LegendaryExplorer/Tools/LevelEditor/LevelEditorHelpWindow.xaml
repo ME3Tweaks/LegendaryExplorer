@@ -1,0 +1,141 @@
+<Window x:Class="LegendaryExplorer.Tools.LevelEditor.LevelEditorHelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+        Icon="pack://application:,,,/Tools/Icons/16x16/LiveLevelEditor_Icon_16.ico"
+        Title="Level Editor Help" Width="760" Height="800" MinWidth="420" MinHeight="300"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Background="{DynamicResource EditorChrome}" Foreground="{DynamicResource EditorText}"
+        FontFamily="Segoe UI" FontSize="13" UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="LevelEditorStyles.xaml"/></ResourceDictionary.MergedDictionaries>
+            <Style x:Key="HelpHeading" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Margin" Value="0,18,0,6"/>
+            </Style>
+            <Style x:Key="HelpBody" TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="LineHeight" Value="20"/>
+                <Setter Property="Margin" Value="0,0,0,10"/>
+            </Style>
+            <!--the app theme's link colour is too dark for this window's background-->
+            <Style TargetType="Hyperlink">
+                <Setter Property="Foreground" Value="#6CB4EE"/>
+                <Setter Property="misc:HyperlinkExtensions.IsExternal" Value="True"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+        <StackPanel Margin="20,2,20,14" MaxWidth="760">
+            <TextBlock Style="{StaticResource HelpHeading}" Text="Core Concepts"/>
+            <TextBlock Style="{StaticResource HelpBody}">
+                The Level Editor was made for editing Legendary Edition level files. It's incomplete, and likely has many bugs.
+                If you encounter a bug, or need a feature it doesn't have yet,
+                <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/issues">make an issue on GitHub</Hyperlink>,
+                or report it in the #legendary_explorer channel on the
+                <Hyperlink NavigateUri="https://discord.gg/me3tweaks-384874253448642570">ME3Tweaks Discord server</Hyperlink>.
+                (It can be easier to discuss your issue or request there, though if we can't get to it right away, we may ask you to make a GitHub issue anyway.)
+            </TextBlock>
+            <TextBlock Style="{StaticResource HelpBody}">
+                Mass Effect levels are split across multiple .pcc files. Level Editor can open multiple level files at once, so that you can see and edit the whole level.
+                In the File menu, "Load Related Levels" will show you all the files LEX thinks are part of the same level, allowing you to open as many of them as you please.
+                The heuristic is not perfect, so you may also open additional files with "Add Files".
+                More files loaded at once will give you a more complete view of the level, but too many will tank performance.
+                Individual files may be set to read-only in the World Outliner, to help ensure you only edit the file(s) you intend.
+            </TextBlock>
+            <TextBlock Style="{StaticResource HelpBody}">
+                The other core concept of Level Editor, which makes it different from the other LEX tools you may be used to, is the distinction between committed and uncommitted changes.
+                When you make an edit in Level Editor, that edit is local to Level Editor. And while it is local, you can use undo and redo.
+                Once you're satisfied with the edits you've made, click the "Commit Changes" button, and all edits you have made will be written to the in-memory files,
+                and will be visible to any other LEX tool that has those files open. Saving the file to disk is a <Italic>separate</Italic> action.
+                Once committed though, the undo history is cleared.
+                It is inadvisable to attempt to edit a level's actors in, say, Package Editor, while that level has uncommitted changes in Level Editor.
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource HelpHeading}" Text="Camera Control"/>
+            <TextBlock Style="{StaticResource HelpBody}">
+                WASD for forward/backward and side to side. QE for up and down. Right-click drag for orbital panning.
+                Left-click drag left/right to rotate about the Z axis and up/down to move along the XY plane.
+                Camera speed can be edited in the Viewport toolbar, and holding shift while moving will increase that speed by 10x.
+                In the toolbar, you may also select Top Down mode, which shows an orthographic projection of the level.
+                Clip height controls the Z-axis height below which the level will be drawn in that mode, so that you may see above and below ceilings.
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource HelpHeading}" Text="Actor Visibility"/>
+            <TextBlock Style="{StaticResource HelpBody}">
+                In the World Outliner, when sorting by Groups, you may toggle the visibility of actors in each group on or off. Note that some groups are hidden by default!
+                Also hidden by default are any actors that are marked hidden in their properties.
+                To show these actors, you must toggle hidden actors visible in the viewport toolbar's Show menu.
+                Irrespective of their group visibility or hidden status, actors will always be visible while selected.
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource HelpHeading}" Text="Actor Transform"/>
+            <TextBlock Style="{StaticResource HelpBody}">
+                Editing the position, rotation and scale of actors is fairly self explanatory: use the transform gizmo that appears when an actor is selected via the outliner, or when clicking on it.
+                If the gizmo doesn't seem to show up, pan the camera around, as sometimes meshes have an offset from their origin.
+                Switch between Move, Rotate, Scale, and Uniform Scaling in the toolbar.
+                You can also choose whether the gizmo operates in the actor's local coordinates, or in world coordinates.
+                You can also change the Transform settings: whether snapping is used and what the increments are,
+                and what the increments are when you use the arrow keys in the Transform text boxes in the details pane.
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource HelpHeading}" Text="New Actor Placement"/>
+            <TextBlock Style="{StaticResource HelpBody}">
+                Next to the World Outliner tab is the Place Actors tab. This allows you to select one of the currently open files and place new actors in it.
+                Click the actor type you want to place, select an asset in the asset browser that comes up if applicable (e.g. a mesh for a StaticMeshActor),
+                then click in the viewport where you want the actor to be placed.
+                The list of placeable actors is limited at the moment, as each placeable type must have code written specifically for it.
+                If there is a type of actor you want to be able to place, please request it!
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource HelpHeading}" Text="Actor Cloning"/>
+            <TextBlock Style="{StaticResource HelpBody}">
+                There are two subtly different ways to clone an actor. Duplication creates a same-file copy of an actor, and preserves any static lighting on it, if it has any.
+                You may duplicate an actor through the right-click menu, or by holding down Alt and dragging the translation gizmo.
+                The other way is copy+paste, either via the right-click menu or Ctrl+C and Ctrl+V.
+                This does <Italic>not</Italic> preserve static lighting, and places the actor in the file currently selected in the Place Actors tab.
+                You may also paste the actor into a completely different Level Editor window, as the actor clipboard is process-wide.
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource HelpHeading}" Text="Lighting Modes"/>
+            <TextBlock Style="{StaticResource HelpBody}">
+                In the viewport toolbar, you may select which lighting mode you wish to view.
+                Level lighting shows you what the level will look like in-game, using the baked static lighting and shadows, and dynamic lights and shadows.
+                Preview lighting ignores all baked lighting and shadows, rendering everything dynamically, and is for approximating what a new lighting bake would create.
+                It is only an approximation, as it does not include the bounced lighting a bake will create.
+                Unlit is without any lighting, and Neutral lighting is like Unlit but with a fake sunlight so as to make objects stand out from each other a bit more.
+            </TextBlock>
+            <TextBlock Style="{StaticResource HelpBody}">
+                Preview is very slow, and Unlit/Neutral is very fast.
+                I would recommend Level lighting for most editing purposes, falling back to Neutral in large levels where you need more fps.
+                Preview should only be used when working on lighting in preparation for a new bake.
+                Do note that both Level and Preview may be inaccurate if you don't have all the files that make up a level loaded at once,
+                as lights from a file that isn't loaded won't be shown, and shadows won't be cast by actors that aren't loaded.
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource HelpHeading}" Text="Editing Lighting"/>
+            <TextBlock Style="{StaticResource HelpBody}">
+                When placing a new actor, or moving an existing one, it may not be lit in the way you'd expect.
+                Lighting in Mass Effect uses a large number of channels, and lights will only affect actors they share a channel with.
+                You can change which channels a light or a lit actor uses in the details tab.
+                To see which actors a light actually affects, turn on Selected Light's Reach in the viewport toolbar's Show menu.
+                To see which lights are lighting a lit actor, check its lighting section in the details tab.
+                This also lists lights that are within range but are not affecting it, and says why (mostly for not sharing a lighting channel).
+                You can also change whether it casts shadows, accepts dynamic lighting, etc.
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource HelpHeading}" Text="Baking Lighting"/>
+            <TextBlock Style="{StaticResource HelpBody}">
+                If you've built a new level, or made substantial changes to an existing one, you will probably wish to bake lighting for it,
+                as using only dynamic lighting looks worse and causes poor fps.
+                To do so, open the Build menu and select Bake Lighting in Lightmass Baker.
+                There you can choose which files will contribute to the bake, and which subset of those you want to save lighting to.
+                You must have the final build of UDK (February 2015) installed to use the Lightmass Baker.
+                <Hyperlink NavigateUri="https://www.moddb.com/engines/unreal-development-kit/downloads/february-2015-unreal-development-kit-udk">It may be downloaded from ModDB</Hyperlink>.
+            </TextBlock>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

@@ -20,6 +20,11 @@ namespace LegendaryExplorer.Libraries
         [LibraryImport("user32.dll")]
         public static partial IntPtr GetForegroundWindow();
 
+        /// <returns>Whether it was disabled before</returns>
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool EnableWindow(IntPtr hWnd, [MarshalAs(UnmanagedType.Bool)] bool bEnable);
+
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool SetForegroundWindow(IntPtr hWnd);
@@ -76,5 +81,12 @@ namespace LegendaryExplorer.Libraries
         [LibraryImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool CloseHandle(IntPtr hObject);
+
+        [LibraryImport("dwmapi.dll")]
+        public static partial int DwmFlush();
+
+        /// <returns>A shared cursor, which mustn't be destroyed, or zero if there's none</returns>
+        [LibraryImport("user32.dll", EntryPoint = "LoadCursorW")]
+        public static partial IntPtr LoadCursor(IntPtr hInstance, nint cursorName);
     }
 }
