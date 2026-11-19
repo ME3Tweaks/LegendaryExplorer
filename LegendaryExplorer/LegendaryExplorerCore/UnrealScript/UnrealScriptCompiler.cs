@@ -280,13 +280,20 @@ namespace LegendaryExplorerCore.UnrealScript
         /// <returns>A message log containing any errors or warnings from compilation.</returns>
         public static MessageLog CompileT3D(string src, IMEPackage pcc, IEntry parentEntry, UnrealScriptOptionsPackage usop)
         {
+            using var lib = new FileLib(pcc);
+            return CompileT3D(src, pcc, parentEntry, usop, lib);
+        }
+
+        // Bulk imports into graph-only packages share one initialized library of game classes.
+        internal static MessageLog CompileT3D(string src, IMEPackage pcc, IEntry parentEntry,
+            UnrealScriptOptionsPackage usop, FileLib lib)
+        {
             var log = new MessageLog();
             TokenStream tokens = Lexer.Lex(src, log);
             if (log.HasLexErrors)
             {
                 return log;
             }
-            var lib = new FileLib(pcc);
             if (!lib.Initialize(usop))
             {
                 return lib.InitializationLog;

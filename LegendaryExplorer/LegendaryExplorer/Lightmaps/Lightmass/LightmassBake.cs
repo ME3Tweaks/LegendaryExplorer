@@ -26,6 +26,8 @@ public sealed class LightmassBakeSettings
     /// <summary>Original path of the cache copied into TfcDirectory for a preview.</summary>
     internal string CopiedCacheSource;
     public string TfcName = "Textures_DLC_MOD_LEXLightmaps";
+    /// <summary>The format of the colour atlases the bake writes.</summary>
+    public LightmapTextureFormat TextureFormat = LightmapTextureFormats.Default;
     /// <summary>
     /// Atlases get new allocations (AtlasPacker) instead of keeping the original layout. Not offered in the Lightmass Baker: it trashes and
     /// replaces the atlases, which is for testing the rewriter's write path.
@@ -276,8 +278,8 @@ public static class LightmassBake
         foreach (var package in packages)
         {
             cancel.ThrowIfCancellationRequested();
-            var summary = new LightmapRewriter(package, tfc, ByteEncoding.Gamma22, source, VectorBrightness).RewriteAll(settings.Repack);
-            LightmassMappingAllocator.Write(package, tfc, scene, result.Results, summary, cache);
+            var summary = new LightmapRewriter(package, tfc, ByteEncoding.Gamma22, source, VectorBrightness, settings.TextureFormat).RewriteAll(settings.Repack);
+            LightmassMappingAllocator.Write(package, tfc, scene, result.Results, summary, cache, settings.TextureFormat);
             result.Rewrites[package] = summary;
             log($"{package.FileNameNoExtension}: {LightmassBakeReport.LightmapLine(summary)}");
             var shadows = result.ShadowMaps[package] = new LightmassShadowMapWriter(package, tfc, scene, result.Results).Write(summary.AppliedLightmaps, summary.ShadowOnlyAllocations);

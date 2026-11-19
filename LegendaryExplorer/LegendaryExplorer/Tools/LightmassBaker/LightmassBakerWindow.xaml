@@ -68,29 +68,34 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Quality" VerticalAlignment="Center" Margin="0,0,10,6"/>
                 <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Qualities}" SelectedItem="{Binding Quality}" Margin="0,0,6,6" HorizontalAlignment="Left" MinWidth="160"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Save to" VerticalAlignment="Center" Margin="0,0,10,6"/>
-                <DockPanel Grid.Row="1" Grid.Column="1" Margin="0,0,6,6">
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Lightmap format" VerticalAlignment="Center" Margin="0,0,10,6"/>
+                <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding TextureFormats}" SelectedValue="{Binding TextureFormat}" SelectedValuePath="Key" DisplayMemberPath="Value" Margin="0,0,6,6" HorizontalAlignment="Left" MinWidth="160"
+                          ToolTip="Compression of the lightmap textures the bake writes; the ones it leaves alone keep theirs. BC7 avoids the banding DXT1 shows in smooth gradients, at twice the size. The game's own lightmaps are DXT1."/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Save to" VerticalAlignment="Center" Margin="0,0,10,6"/>
+                <DockPanel Grid.Row="2" Grid.Column="1" Margin="0,0,6,6">
                     <CheckBox DockPanel.Dock="Left" Content="The original files" IsChecked="{Binding SaveInPlace}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <TextBox Text="{Binding OutputDirectory, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SaveToFolder}"
                              ToolTip="The folder the baked files are saved to, under their own names."/>
                 </DockPanel>
-                <Button Grid.Row="1" Grid.Column="2" Content="Browse..." Click="BrowseOutput_Click" IsEnabled="{Binding SaveToFolder}" Padding="8,2" Margin="0,0,0,6"/>
+                <Button Grid.Row="2" Grid.Column="2" Content="Browse..." Click="BrowseOutput_Click" IsEnabled="{Binding SaveToFolder}" Padding="8,2" Margin="0,0,0,6"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Texture cache" VerticalAlignment="Center" Margin="0,0,10,6"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TfcName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,6,6"
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Texture cache" VerticalAlignment="Center" Margin="0,0,10,6"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding TfcName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,6,6"
                          ToolTip="Name of the texture file cache (TFC) for the streamed lightmap textures. For a DLC mod, Textures_DLC_MOD_YourMod. The cache is saved beside the baked files. An existing cache of this name is added to, not replaced."/>
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="UDK Binaries" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding UdkBinaries, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,6,0"
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="UDK Binaries" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding UdkBinaries, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,6,0"
                          ToolTip="UDK's Binaries folder. Requires SwarmAgent.exe version 1.7.6517, included with the February 2015 UDK."/>
-                <Button Grid.Row="3" Grid.Column="2" Content="Browse..." Click="BrowseUdk_Click" Padding="8,2"/>
+                <Button Grid.Row="4" Grid.Column="2" Content="Browse..." Click="BrowseUdk_Click" Padding="8,2"/>
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Assignments" VerticalAlignment="Center" Margin="0,6,10,0"/>
-                <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding AssignmentPolicies}" SelectedValue="{Binding AssignmentPolicy}" SelectedValuePath="Key" DisplayMemberPath="Value" Margin="0,6,6,0" HorizontalAlignment="Left" MinWidth="160"
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Assignments" VerticalAlignment="Center" Margin="0,6,10,0"/>
+                <ComboBox Grid.Row="5" Grid.Column="1" ItemsSource="{Binding AssignmentPolicies}" SelectedValue="{Binding AssignmentPolicy}" SelectedValuePath="Key" DisplayMemberPath="Value" Margin="0,6,6,0" HorizontalAlignment="Left" MinWidth="160"
                           ToolTip="Preserve existing assignments keeps historical restrictions. Recompute assignments uses current settings and geometry. Both allocate missing mappings where supported."/>
             </Grid>
 

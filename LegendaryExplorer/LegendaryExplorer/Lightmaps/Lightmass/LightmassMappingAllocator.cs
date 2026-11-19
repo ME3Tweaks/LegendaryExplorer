@@ -119,8 +119,9 @@ public static class LightmassMappingAllocator
 
     /// <param name="tfc">Where new static mesh lightmaps stream from; null stores every new lightmap in the package</param>
     /// <param name="cache">Resolves the components' meshes and materials for the level's texture streaming map</param>
+    /// <param name="format">The new atlases' format</param>
     public static void Write(IMEPackage package, TfcWriter tfc, LightmassScene scene,
-        IReadOnlyDictionary<Guid, LightmassMappingResult> results, LightmapRewriter.Summary summary, PackageCache cache)
+        IReadOnlyDictionary<Guid, LightmassMappingResult> results, LightmapRewriter.Summary summary, PackageCache cache, LightmapTextureFormat format)
     {
         var candidates = scene.Mappings.Where(m => m.AllocateLightmap && m.Targets.Any(t => t.Owner.FileRef == package)).ToArray();
         var mappings = candidates.Where(m => results.TryGetValue(m.Guid, out var r) && IsComplete(m, r)).ToArray();
@@ -222,7 +223,7 @@ public static class LightmassMappingAllocator
                 maps[mapping] = new LightMap_2D { LightMapType = ELightMapType.LMT_2D, LightGuids = Guids(result),
                     ScaleVector1 = scales[0], ScaleVector2 = scales[1], ScaleVector3 = simpleScale, CoordinateScale = scale, CoordinateBias = bias };
             }
-            var textures = tops.Select(top => WriteTexture(package, top, atlas.Streamed ? tfc : null)).ToArray();
+            var textures = tops.Select(top => WriteTexture(package, top, atlas.Streamed ? tfc : null, format.PixelFormat())).ToArray();
             foreach (var (mapping, map) in maps)
             {
                 (map.Texture1, map.Texture2) = (textures[0].UIndex, textures[1].UIndex);
@@ -266,7 +267,7 @@ public static class LightmassMappingAllocator
     }
 
     /// <param name="tfc">The cache to stream the texture from, or null to store it in the package</param>
-    static ExportEntry WriteTexture(IMEPackage package, MipLevel top, TfcWriter tfc)
+    static ExportEntry WriteTexture(IMEPackage package, MipLevel top, TfcWriter tfc, string format)
     {
         var properties = new PropertyCollection { new EnumProperty("TEXTUREGROUP_Lightmap", "TextureGroup", package.Game, "LODGroup") };
         if (tfc == null) properties.Add(new BoolProperty(true, "NeverStream"));
@@ -277,7 +278,7 @@ public static class LightmassMappingAllocator
         };
         package.AddExport(export);
         var mips = MipChain.BuildDilated(top, MipAveraging.Linear);
-        LightmapTextureWriter.Write(export, "PF_DXT1", top.Width, top.Height, LightmapTextureWriter.Encode(mips, "PF_DXT1"), tfc, true);
+        LightmapTextureWriter.Write(export, format, top.Width, top.Height, LightmapTextureWriter.Encode(mips, format), tfc, true);
         return export;
     }
 }

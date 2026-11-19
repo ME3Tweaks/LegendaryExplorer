@@ -13,7 +13,7 @@ namespace LegendaryExplorer.Lightmaps.Game;
 
 /// <summary>
 /// Re-encodes a level's static/spline-mesh lightmap atlases through this tool's codecs (per-allocation scales/ranges,
-/// gamma bytes, dilated mip chains, DXT1, a mod TFC) and patches the components.
+/// gamma bytes, dilated mip chains, DXT1 or BC7, a mod TFC) and patches the components.
 ///
 /// In place: same layout, same texture exports. Repack: every allocation is placed anew by AtlasPacker, new
 /// LightMapTexture2D exports are cloned from existing ones, components are pointed at them, the level's texture
@@ -24,15 +24,17 @@ namespace LegendaryExplorer.Lightmaps.Game;
 /// element sharing it is updated. Terrain lightmaps are unpadded too (odd sizes). Atlases with an allocation that follows
 /// neither convention are left untouched.
 /// </summary>
-public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEncoding textureEncoding, ILightingSource bake = null, float vectorBrightness = 1f)
+/// <param name="colourFormat">The format of the colour atlases it writes; null keeps each atlas's own. The LMT_4 direction atlas always keeps its own.</param>
+public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEncoding textureEncoding, ILightingSource bake = null, float vectorBrightness = 1f,
+    LightmapTextureFormat? colourFormat = null)
 {
     public sealed class Summary
     {
         public int TextureSets, Textures, Allocations, SharedLightmaps, SkippedSets, NewAtlases, TrashedTextures;
         /// <summary>Atlases left as they were because the bake has nothing for any of their allocations.</summary>
         public int UnbakedSets;
-        /// <summary>DXT1 loss on the written colour atlases: squared byte error summed over mapped top-mip texel channels, and the count.</summary>
-        public double DxtSquaredError; public long DxtSamples;
+        /// <summary>Block compression (DXT1 or BC7) loss on the written colour atlases: squared byte error summed over mapped top-mip texel channels, and the count.</summary>
+        public double CompressionSquaredError; public long CompressionSamples;
         public List<string> Notes = [];
         /// <summary>Per-vertex lightmaps (LMT_1D, LMT_3) written from the bake, and those whose sample count isn't the mesh's vertex count.</summary>
         public int VertexLightmaps, VertexCountMismatches;
@@ -72,7 +74,7 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
                 summary.Notes.Add($"{Read(TextureKey(list[0].LightMap)).Export.ObjectName.Instanced}: an allocation follows neither convention; left untouched");
                 continue;
             }
-            // Re-encoding an atlas the bake doesn't touch would only add DXT1 loss (and, streamed, another copy in the TFC).
+            // Re-encoding an atlas the bake doesn't touch would only add compression loss (and, streamed, another copy in the TFC).
             if (bake != null && !allocations.Any(a => Baked(a.Refs[0]) != null)) { summary.UnbakedSets++; continue; }
             eligible.Add(allocations);
         }
@@ -189,8 +191,8 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
                         (live.ScaleVector1, live.ScaleVector2) = (s1, s2);
                     }
                 }
-                WriteTexture(nac.Export, nac.Format, nacTop, MipAveraging.Linear, null, summary);
-                WriteTexture(dmc.Export, dmc.Format, dmcTop, MipAveraging.Linear, null, summary);
+                WriteTexture(nac.Export, ColourFormat(nac.Format), nacTop, MipAveraging.Linear, null, summary);
+                WriteTexture(dmc.Export, ColourFormat(dmc.Format), dmcTop, MipAveraging.Linear, null, summary);
                 break;
             }
             case LightMap_4or6 { LightMapType: ELightMapType.LMT_4 } first:
@@ -218,7 +220,7 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
                         Set(ref live.unkFloats2, dRange.Scale, dRange.Bias);
                     }
                 }
-                WriteTexture(colour.Export, colour.Format, colourTop, MipAveraging.Linear, null, summary);
+                WriteTexture(colour.Export, ColourFormat(colour.Format), colourTop, MipAveraging.Linear, null, summary);
                 WriteTexture(dir.Export, dir.Format, dirTop, MipAveraging.Bytes, false, summary);
                 break;
             }
@@ -238,7 +240,7 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
                         Set(ref live.unkFloats1, range.Scale, range.Bias);
                     }
                 }
-                WriteTexture(colour.Export, colour.Format, top, MipAveraging.Linear, null, summary);
+                WriteTexture(colour.Export, ColourFormat(colour.Format), top, MipAveraging.Linear, null, summary);
                 break;
             }
         }
@@ -396,7 +398,7 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
                 if (baked != null) RecordAppliedLightmap(r, src.Refs[0], summary);
             }
         }
-        var format = Read(template.Texture1).Format;
+        var format = ColourFormat(Read(template.Texture1).Format);
         WriteTexture(nacExport, format, nacTop, MipAveraging.Linear, null, summary, atlas.Streamed);
         WriteTexture(dmcExport, format, dmcTop, MipAveraging.Linear, null, summary, atlas.Streamed);
         return [nacExport.UIndex, dmcExport.UIndex];
@@ -431,7 +433,7 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
                 if (baked != null) RecordAppliedLightmap(r, src.Refs[0], summary);
             }
         }
-        WriteTexture(colourExport, Read(template.Texture1).Format, colourTop, MipAveraging.Linear, null, summary, atlas.Streamed);
+        WriteTexture(colourExport, ColourFormat(Read(template.Texture1).Format), colourTop, MipAveraging.Linear, null, summary, atlas.Streamed);
         WriteTexture(dirExport, Read(template.Texture2).Format, dirTop, MipAveraging.Bytes, false, summary, atlas.Streamed);
         return [colourExport.UIndex, dirExport.UIndex];
     }
@@ -459,7 +461,7 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
                 if (baked != null) RecordAppliedLightmap(r, src.Refs[0], summary);
             }
         }
-        WriteTexture(export, Read(template.Texture1).Format, top, MipAveraging.Linear, null, summary, atlas.Streamed);
+        WriteTexture(export, ColourFormat(Read(template.Texture1).Format), top, MipAveraging.Linear, null, summary, atlas.Streamed);
         return [export.UIndex];
     }
 
@@ -652,19 +654,22 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
         return range;
     }
 
+    /// <summary>The format a colour atlas is written in: the bake's choice, or else its own.</summary>
+    string ColourFormat(string existing) => colourFormat?.PixelFormat() ?? existing;
+
     /// <param name="streamed">Whether the texture goes to the mod TFC; null keeps the export's current storage.</param>
     void WriteTexture(ExportEntry export, string format, MipLevel top, MipAveraging averaging, bool? srgb, Summary summary, bool? streamed = null)
     {
         var levels = MipChain.BuildDilated(top, averaging, minSize: MipChain.MinMipSize(format));
         var encoded = LightmapTextureWriter.Encode(levels, format);
-        if (format == "PF_DXT1")
+        if (format is "PF_DXT1" or "PF_BC7")
         {
-            var decoded = Dxt1.Decode(encoded[0], top.Width, top.Height);
+            var decoded = PackageLightmaps.DecodeRgb(encoded[0], format, top.Width, top.Height);
             for (int i = 0; i < top.Coverage.Length; i++)
             {
                 if (top.Coverage[i] == 0) continue;
-                for (int c = 0; c < 3; c++) { double d = decoded[i * 3 + c] - levels[0].Rgb[i * 3 + c]; summary.DxtSquaredError += d * d; }
-                summary.DxtSamples += 3;
+                for (int c = 0; c < 3; c++) { double d = decoded[i * 3 + c] - levels[0].Rgb[i * 3 + c]; summary.CompressionSquaredError += d * d; }
+                summary.CompressionSamples += 3;
             }
         }
         bool toTfc = streamed ?? (export.GetProperty<NameProperty>("TextureFileCacheName") is { } n && n.Value.Name != "None");

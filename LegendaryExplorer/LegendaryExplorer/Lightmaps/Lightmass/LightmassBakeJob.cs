@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using LegendaryExplorer.Lightmaps.Game;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -43,6 +44,10 @@ public sealed class LightmassBakeJob
 
     /// <summary>Uses the Lightmass settings BioWare changed for ME3 (<see cref="LightmassIni.ApplyBioWareOverrides"/>) instead of UDK's stock ones.</summary>
     public bool BioWareLightmassSettings { get; set; } = true;
+
+    /// <summary>The format of the baked colour atlases. Jobs saved before it existed get the default too.</summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public LightmapTextureFormat TextureFormat { get; set; } = LightmapTextureFormats.Default;
 
     /// <summary>Name of the texture file cache the streamed lightmap textures go in. An existing cache of that name is added to.</summary>
     public string TfcName { get; set; } = "Textures_DLC_MOD_LEXLightmaps";
@@ -91,6 +96,7 @@ public sealed class LightmassBakeJob
     {
         var problems = new List<string>();
         if (!Enum.IsDefined(AssignmentPolicy)) problems.Add("Unknown light assignment policy.");
+        if (!Enum.IsDefined(TextureFormat)) problems.Add("Unknown lightmap texture format.");
         if (ResolvedUdkBinaries is not { } udk)
             problems.Add($"Choose UDK's Binaries folder: SwarmAgent.exe version {RequiredSwarmVersion} is required (February 2015 UDK).");
         else
@@ -220,6 +226,7 @@ public sealed class LightmassBakeJob
                 Quality = Quality,
                 BioWareLightmassSettings = BioWareLightmassSettings,
                 TfcName = TfcName,
+                TextureFormat = TextureFormat,
                 TfcDirectory = preview.TemporaryDirectory,
                 CopiedCacheSource = preview.CopiedCacheSource,
                 Scene = new LightmassSceneOptions { ContextOnly = contextOnly, AssignmentPolicy = AssignmentPolicy },
