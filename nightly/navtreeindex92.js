@@ -1,5 +1,17 @@
 var NAVTREEINDEX92 =
 {
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching.html":[1,0,1,7,8,1],
+"namespace_legendary_explorer_core_1_1_helpers.html":[1,0,1,8],
+"namespace_legendary_explorer_core_1_1_helpers.html#a130331a7d30f1d78175bf438bc113f97":[1,0,1,8,23],
+"namespace_legendary_explorer_core_1_1_helpers.html#a130331a7d30f1d78175bf438bc113f97a3cab03c00dbd11bc3569afa0748013f0":[1,0,1,8,23,2],
+"namespace_legendary_explorer_core_1_1_helpers.html#a130331a7d30f1d78175bf438bc113f97a4a3b76ab214699973b85cc072788ff7d":[1,0,1,8,23,3],
+"namespace_legendary_explorer_core_1_1_helpers.html#a130331a7d30f1d78175bf438bc113f97a5b0a8637935072d1ec30e60bb2cae1e6":[1,0,1,8,23,1],
+"namespace_legendary_explorer_core_1_1_helpers.html#a130331a7d30f1d78175bf438bc113f97a6da89265a9a8b0b28eb4946bb2ec0c6d":[1,0,1,8,23,0],
+"namespace_legendary_explorer_core_1_1_helpers.html#a130331a7d30f1d78175bf438bc113f97ab4080bdf74febf04d578ff105cce9d3f":[1,0,1,8,23,4],
+"namespace_legendary_explorer_core_1_1_helpers.html#a38b01196fef2f99ad8aa4dc97cc802e1":[1,0,1,8,24],
+"namespace_legendary_explorer_core_1_1_kismet.html":[1,0,1,9],
+"namespace_legendary_explorer_core_1_1_localization.html":[1,0,1,10],
+"namespace_legendary_explorer_core_1_1_m_e1.html":[1,0,1,12],
 "namespace_legendary_explorer_core_1_1_m_e1_1_1_unreal.html":[1,0,1,12,0],
 "namespace_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode.html":[1,0,1,12,0,0],
 "namespace_legendary_explorer_core_1_1_matinee.html":[1,0,1,11],
@@ -237,17 +249,5 @@ var NAVTREEINDEX92 =
 "namespace_legendary_explorer_core_1_1_textures.html#a4c580cf3117f791736a04fe66d019dd5":[1,0,1,22,20],
 "namespace_legendary_explorer_core_1_1_textures.html#a4c580cf3117f791736a04fe66d019dd5a62eeb7a01f1be344aab281b6ba512172":[1,0,1,22,20,1],
 "namespace_legendary_explorer_core_1_1_textures.html#a4c580cf3117f791736a04fe66d019dd5a6adf97f83acf6453d4a6a4b1070f3754":[1,0,1,22,20,0],
-"namespace_legendary_explorer_core_1_1_textures.html#aae26289e1e1831e9b275e18900b553d6":[1,0,1,22,19],
-"namespace_legendary_explorer_core_1_1_textures.html#aae26289e1e1831e9b275e18900b553d6a3cfce651e667ab85486dd42a8185f98a":[1,0,1,22,19,0],
-"namespace_legendary_explorer_core_1_1_textures.html#aae26289e1e1831e9b275e18900b553d6a4f7171cd515d80506104b31c05977294":[1,0,1,22,19,1],
-"namespace_legendary_explorer_core_1_1_textures_1_1_codecs.html":[1,0,1,22,0],
-"namespace_legendary_explorer_core_1_1_textures_1_1_studio.html":[1,0,1,22,1],
-"namespace_legendary_explorer_core_1_1_u_d_k.html":[1,0,1,24],
-"namespace_legendary_explorer_core_1_1_unreal.html":[1,0,1,25],
-"namespace_legendary_explorer_core_1_1_unreal.html#a0049d78fe44f6c159dd383f92fbed01c":[1,0,1,25,273],
-"namespace_legendary_explorer_core_1_1_unreal.html#a0049d78fe44f6c159dd383f92fbed01ca869474a422e26b3bc2ba303d3ace5746":[1,0,1,25,273,2],
-"namespace_legendary_explorer_core_1_1_unreal.html#a0049d78fe44f6c159dd383f92fbed01cac0620529ec5cfe30dbf2aa84ef216674":[1,0,1,25,273,1],
-"namespace_legendary_explorer_core_1_1_unreal.html#a0049d78fe44f6c159dd383f92fbed01cad5dc4929ceee27accca4747100672a32":[1,0,1,25,273,0],
-"namespace_legendary_explorer_core_1_1_unreal.html#a00abd6bab33de47e5a628442b0c3a342":[1,0,1,25,654],
-"namespace_legendary_explorer_core_1_1_unreal.html#a00abd6bab33de47e5a628442b0c3a342a2ed39b17c9747208a4ee3b8cf27cfaf6":[1,0,1,25,654,1]
+"namespace_legendary_explorer_core_1_1_textures.html#aae26289e1e1831e9b275e18900b553d6":[1,0,1,22,19]
 };

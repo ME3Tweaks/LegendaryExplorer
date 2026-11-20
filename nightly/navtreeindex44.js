@@ -109,6 +109,8 @@ var NAVTREEINDEX44 =
 "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_tools.html#aab2619431ed564abfc97d62956907a32":[2,0,0,22,16,1],
 "class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html":[1,0,1,22,6],
 "class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html":[2,0,0,22,6],
+"class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a56483ba4adc6850db6328935d82bbee4":[1,0,1,22,6,3],
+"class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a56483ba4adc6850db6328935d82bbee4":[2,0,0,22,6,3],
 "class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a57c89ca96294dcd014e918f87d10ab80":[1,0,1,22,6,0],
 "class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a57c89ca96294dcd014e918f87d10ab80":[2,0,0,22,6,0],
 "class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a57c89ca96294dcd014e918f87d10ab80a01aa628941c3b48fea869c081e0611a3":[1,0,1,22,6,0,36],
@@ -247,7 +249,5 @@ var NAVTREEINDEX44 =
 "class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a57c89ca96294dcd014e918f87d10ab80a9330163522c11f1879d051de71aaf4cc":[2,0,0,22,6,0,35],
 "class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a57c89ca96294dcd014e918f87d10ab80a939fd457c7554c01a0bc0554a17f707a":[1,0,1,22,6,0,81],
 "class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a57c89ca96294dcd014e918f87d10ab80a939fd457c7554c01a0bc0554a17f707a":[2,0,0,22,6,0,81],
-"class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a57c89ca96294dcd014e918f87d10ab80a975af572611f4a2c469fa6ad3da63cb0":[1,0,1,22,6,0,70],
-"class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a57c89ca96294dcd014e918f87d10ab80a975af572611f4a2c469fa6ad3da63cb0":[2,0,0,22,6,0,70],
-"class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a57c89ca96294dcd014e918f87d10ab80a982eb881704fafe1440b0ba720a349b7":[1,0,1,22,6,0,23]
+"class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a57c89ca96294dcd014e918f87d10ab80a975af572611f4a2c469fa6ad3da63cb0":[1,0,1,22,6,0,70]
 };

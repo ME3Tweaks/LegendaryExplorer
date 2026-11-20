@@ -1,5 +1,9 @@
 var NAVTREEINDEX61 =
 {
+"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html":[2,0,0,25,1,0,137],
+"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html#a1be676ba91d96ea226951e79ba8fb8d6":[1,0,1,25,1,0,137,4],
+"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html#a1be676ba91d96ea226951e79ba8fb8d6":[2,0,0,25,1,0,137,4],
+"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html#a3ea06eaff5f1a9724a59881ed6a6ccf1":[1,0,1,25,1,0,137,2],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html#a3ea06eaff5f1a9724a59881ed6a6ccf1":[2,0,0,25,1,0,137,2],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html#aa17a2a02e665c4c07a5a6b4d9f9185d0":[1,0,1,25,1,0,137,1],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html#aa17a2a02e665c4c07a5a6b4d9f9185d0":[2,0,0,25,1,0,137,1],
@@ -245,9 +249,5 @@ var NAVTREEINDEX61 =
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_shadow_projection_pixel_shader.html#ae559a39a0ced1593c71d9aa44ce88505":[2,0,0,25,1,0,159,4],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_unparsed_shader.html":[1,0,1,25,1,0,161],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_unparsed_shader.html":[2,0,0,25,1,0,161],
-"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_unparsed_shader.html#a04f507b80da79e61931140d65a0d6843":[1,0,1,25,1,0,161,3],
-"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_unparsed_shader.html#a04f507b80da79e61931140d65a0d6843":[2,0,0,25,1,0,161,3],
-"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_unparsed_shader.html#a0cb4c0b2d0fed9dd100267d82c027b1b":[1,0,1,25,1,0,161,1],
-"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_unparsed_shader.html#a0cb4c0b2d0fed9dd100267d82c027b1b":[2,0,0,25,1,0,161,1],
-"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_unparsed_shader.html#a5039e2e55362070b472c4007ceca49d5":[1,0,1,25,1,0,161,2]
+"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_unparsed_shader.html#a04f507b80da79e61931140d65a0d6843":[1,0,1,25,1,0,161,3]
 };

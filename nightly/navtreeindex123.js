@@ -1,5 +1,17 @@
 var NAVTREEINDEX123 =
 {
+"struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#aecdb420f8b785a25ded6883616d1515d":[2,0,0,25,29,18],
+"struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#af88bee56705dff4d7fae93cb2a8f28b3":[1,0,1,25,29,23],
+"struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#af88bee56705dff4d7fae93cb2a8f28b3":[2,0,0,25,29,23],
+"struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html":[1,0,1,25,36,2],
+"struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html":[2,0,0,25,36,2],
+"struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a1bebf7b0a96243aec7e1816b71e12e6b":[1,0,1,25,36,2,2],
+"struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a1bebf7b0a96243aec7e1816b71e12e6b":[2,0,0,25,36,2,2],
+"struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a5b3361559df2d9c778915c7cf2c7e2f7":[1,0,1,25,36,2,4],
+"struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a5b3361559df2d9c778915c7cf2c7e2f7":[2,0,0,25,36,2,4],
+"struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a695f250f0b4e9598fbcb3dbc10e6baef":[1,0,1,25,36,2,5],
+"struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a695f250f0b4e9598fbcb3dbc10e6baef":[2,0,0,25,36,2,5],
+"struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a7b9dc61cdd93844e01898bd969cc68cc":[1,0,1,25,36,2,3],
 "struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a7b9dc61cdd93844e01898bd969cc68cc":[2,0,0,25,36,2,3],
 "struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a7c57ea0b66abae9c99e59f28873bdfad":[1,0,1,25,36,2,6],
 "struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a7c57ea0b66abae9c99e59f28873bdfad":[2,0,0,25,36,2,6],

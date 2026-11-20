@@ -274,7 +274,7 @@ Public Types</h2></td></tr>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aae8a1fb6818804fdd9a3156d765c79c3" id="r_aae8a1fb6818804fdd9a3156d765c79c3"><td class="memItemLeft">static <a class="el" href="#a57c89ca96294dcd014e918f87d10ab80">DXGIFormat</a>&#160;</td><td class="memItemRight"><a class="el" href="#aae8a1fb6818804fdd9a3156d765c79c3">GetDXGIFormatForPixelFormat</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> pixelFormat)</td></tr>
 <tr class="memitem:ad6acdd16c3c42d6793556b39c6b96cba" id="r_ad6acdd16c3c42d6793556b39c6b96cba"><td class="memItemLeft">static <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a>&#160;</td><td class="memItemRight"><a class="el" href="#ad6acdd16c3c42d6793556b39c6b96cba">GetPixelFormatForDXGIFormat</a> (<a class="el" href="#a57c89ca96294dcd014e918f87d10ab80">DXGIFormat</a> format)</td></tr>
-<tr class="memitem:ad60191e3a355078f87a2ba71caf20971" id="r_ad60191e3a355078f87a2ba71caf20971"><td class="memItemLeft">static unsafe byte[]&#160;</td><td class="memItemRight"><a class="el" href="#ad60191e3a355078f87a2ba71caf20971">ConvertTexture</a> (byte[] pixelData, uint width, uint height, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> inputFormat, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> outputFormat)</td></tr>
+<tr class="memitem:a56483ba4adc6850db6328935d82bbee4" id="r_a56483ba4adc6850db6328935d82bbee4"><td class="memItemLeft">static unsafe byte[]&#160;</td><td class="memItemRight"><a class="el" href="#a56483ba4adc6850db6328935d82bbee4">ConvertTexture</a> (byte[] pixelData, uint width, uint height, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> inputFormat, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> outputFormat, bool uniformWeighting=false)</td></tr>
 <tr class="memitem:a7bbc1fd79f821e6fd3f5f6b9d5a885dc" id="r_a7bbc1fd79f821e6fd3f5f6b9d5a885dc"><td class="memItemLeft">static unsafe void&#160;</td><td class="memItemRight"><a class="el" href="#a7bbc1fd79f821e6fd3f5f6b9d5a885dc">SaveTexture</a> (byte[] pixelData, uint width, uint height, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> pixelFormat, string filename)</td></tr>
 <tr class="memitem:a94e34120f2b776ea824631a9a944bd01" id="r_a94e34120f2b776ea824631a9a944bd01"><td class="memItemLeft">static unsafe byte[]&#160;</td><td class="memItemRight"><a class="el" href="#a94e34120f2b776ea824631a9a944bd01">LoadTexture</a> (string filename, out uint width, out uint height, ref <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> pixelFormat)</td></tr>
 <tr class="memitem:a7c64e0e09200be6415baa4f53cfbc2cc" id="r_a7c64e0e09200be6415baa4f53cfbc2cc"><td class="memItemLeft">static unsafe byte[]&#160;</td><td class="memItemRight"><a class="el" href="#a7c64e0e09200be6415baa4f53cfbc2cc">LoadTextureFromMemory</a> (ReadOnlySpan&lt; byte &gt; buffer, int imageType, out uint width, out uint height, ref <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> pixelFormat)</td></tr>
@@ -471,8 +471,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ad60191e3a355078f87a2ba71caf20971" name="ad60191e3a355078f87a2ba71caf20971"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad60191e3a355078f87a2ba71caf20971">&#9670;&#160;</a></span>ConvertTexture()</h2>
+<a id="a56483ba4adc6850db6328935d82bbee4" name="a56483ba4adc6850db6328935d82bbee4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56483ba4adc6850db6328935d82bbee4">&#9670;&#160;</a></span>ConvertTexture()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -503,7 +503,12 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a></td>          <td class="paramname"><span class="paramname"><em>outputFormat</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a></td>          <td class="paramname"><span class="paramname"><em>outputFormat</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>uniformWeighting</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -512,6 +517,12 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uniformWeighting</td><td>Weight every channel's error equally when compressing to DXT1/DXT3/DXT5, for textures that hold data rather than colour. By default their error is weighted by luminance, so blue counts for about a tenth of green.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

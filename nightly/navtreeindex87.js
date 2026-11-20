@@ -1,5 +1,17 @@
 var NAVTREEINDEX87 =
 {
+"class_sound_event_sound_tracks_four.html#a497ddf1f8fe8b40b95f767e6616533ff":[2,0,23,1],
+"class_sound_event_sound_tracks_four.html#a6e5b169b0d32f886a9a69d365eb5398f":[2,0,23,3],
+"class_sound_event_sound_tracks_four.html#a9cd336e653bf97de707c6dc9b908ce4d":[2,0,23,0],
+"class_sound_event_sound_tracks_four.html#a9e76327546bc5d9cc5cdad9d2276a1c7":[2,0,23,2],
+"class_sound_event_sound_tracks_four.html#afeef901f5dee93a5e82912b413c838e0":[2,0,23,4],
+"class_system_1_1_text_1_1_regular_expressions_1_1_generated_1_1_blender_name_suffix_regex__5.html":[1,0,2,0,0,0,5],
+"class_system_1_1_text_1_1_regular_expressions_1_1_generated_1_1_blender_name_suffix_regex__5.html":[2,0,1,0,0,0,5],
+"class_system_1_1_text_1_1_regular_expressions_1_1_generated_1_1_delegate_prop_regex__3.html":[1,0,2,0,0,0,3],
+"class_system_1_1_text_1_1_regular_expressions_1_1_generated_1_1_delegate_prop_regex__3.html":[2,0,1,0,0,0,3],
+"class_system_1_1_text_1_1_regular_expressions_1_1_generated_1_1_l_o_c_file_regex__2.html":[1,0,2,0,0,0,2],
+"class_system_1_1_text_1_1_regular_expressions_1_1_generated_1_1_l_o_c_file_regex__2.html":[2,0,1,0,0,0,2],
+"class_system_1_1_text_1_1_regular_expressions_1_1_generated_1_1_object_literal_regex__6.html":[1,0,2,0,0,0,6],
 "class_system_1_1_text_1_1_regular_expressions_1_1_generated_1_1_object_literal_regex__6.html":[2,0,1,0,0,0,6],
 "class_system_1_1_text_1_1_regular_expressions_1_1_generated_1_1_special_characters_pattern__1.html":[1,0,2,0,0,0,1],
 "class_system_1_1_text_1_1_regular_expressions_1_1_generated_1_1_special_characters_pattern__1.html":[2,0,1,0,0,0,1],
@@ -237,17 +249,5 @@ var NAVTREEINDEX87 =
 "functions_z.html":[2,2,0,26],
 "globals.html":[3,1,0],
 "globals_defs.html":[3,1,4],
-"globals_func.html":[3,1,1],
-"globals_type.html":[3,1,3],
-"globals_vars.html":[3,1,2],
-"hierarchy.html":[2,1],
-"index.html":[],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html":[1,0,1,7,0,0,6],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html":[2,0,0,7,0,0,6],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a02dcfce775ff447cfd03f494e8c7e086":[1,0,1,7,0,0,6,8],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a02dcfce775ff447cfd03f494e8c7e086":[2,0,0,7,0,0,6,8],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a10f057e3c281101f5c91958cc69441fe":[1,0,1,7,0,0,6,1],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a10f057e3c281101f5c91958cc69441fe":[2,0,0,7,0,0,6,1],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a1d67a017ef87f8aa8b9fad25855c885c":[1,0,1,7,0,0,6,3],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a1d67a017ef87f8aa8b9fad25855c885c":[2,0,0,7,0,0,6,3]
+"globals_func.html":[3,1,1]
 };

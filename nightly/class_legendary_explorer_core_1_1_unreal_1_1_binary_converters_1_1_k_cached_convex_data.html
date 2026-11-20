@@ -116,10 +116,47 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_legendar
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a1628e34eca8353bbf98ea9ab9849ef15" id="r_a1628e34eca8353bbf98ea9ab9849ef15"><td class="memItemLeft">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data_element.html">KCachedConvexDataElement</a>[]&#160;</td><td class="memItemRight"><a class="el" href="#a1628e34eca8353bbf98ea9ab9849ef15">Cook</a> (IEnumerable&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_struct_property.html">StructProperty</a> &gt; convexElems, <a class="el" href="_static_mesh_8cs.html#a922227c9abfa5db280320c37d74a647d">Vector3</a> scale3D)</td></tr>
+<tr class="memdesc:a1628e34eca8353bbf98ea9ab9849ef15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cooks <em>convexElems</em>  (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_phys_x_1_1_k_convex_elem.html">KConvexElem</a> structs) for rigid-body collision at <em>scale3D</em> , as UE3's MakeCachedConvexDataForAggGeom does: a hull with no vertices is skipped, and one <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_1_1_phys_x.html">PhysX</a> can't cook (as a flat one) is left out. Matches the cooked data of every shipping LE1-LE3 volume and static mesh.  <br /></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a1afeeadbbb0e74199c3c33a38c5bfd07" id="r_a1afeeadbbb0e74199c3c33a38c5bfd07"><td class="memItemLeft"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data_element.html">KCachedConvexDataElement</a>[]&#160;</td><td class="memItemRight"><a class="el" href="#a1afeeadbbb0e74199c3c33a38c5bfd07">CachedConvexElements</a></td></tr>
 </table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="a1628e34eca8353bbf98ea9ab9849ef15" name="a1628e34eca8353bbf98ea9ab9849ef15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1628e34eca8353bbf98ea9ab9849ef15">&#9670;&#160;</a></span>Cook()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data_element.html">KCachedConvexDataElement</a>[] LegendaryExplorerCore.Unreal.BinaryConverters.KCachedConvexData.Cook </td>
+          <td>(</td>
+          <td class="paramtype">IEnumerable&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_struct_property.html">StructProperty</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>convexElems</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_static_mesh_8cs.html#a922227c9abfa5db280320c37d74a647d">Vector3</a></td>          <td class="paramname"><span class="paramname"><em>scale3D</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Cooks <em>convexElems</em>  (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_phys_x_1_1_k_convex_elem.html">KConvexElem</a> structs) for rigid-body collision at <em>scale3D</em> , as UE3's MakeCachedConvexDataForAggGeom does: a hull with no vertices is skipped, and one <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_1_1_phys_x.html">PhysX</a> can't cook (as a flat one) is left out. Matches the cooked data of every shipping LE1-LE3 volume and static mesh. </p>
+
+</div>
+</div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
 <a id="a1afeeadbbb0e74199c3c33a38c5bfd07" name="a1afeeadbbb0e74199c3c33a38c5bfd07"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1afeeadbbb0e74199c3c33a38c5bfd07">&#9670;&#160;</a></span>CachedConvexElements</h2>

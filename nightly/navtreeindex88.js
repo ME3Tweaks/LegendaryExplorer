@@ -1,5 +1,17 @@
 var NAVTREEINDEX88 =
 {
+"globals_type.html":[3,1,3],
+"globals_vars.html":[3,1,2],
+"hierarchy.html":[2,1],
+"index.html":[],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html":[1,0,1,7,0,0,6],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html":[2,0,0,7,0,0,6],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a02dcfce775ff447cfd03f494e8c7e086":[1,0,1,7,0,0,6,8],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a02dcfce775ff447cfd03f494e8c7e086":[2,0,0,7,0,0,6,8],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a10f057e3c281101f5c91958cc69441fe":[1,0,1,7,0,0,6,1],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a10f057e3c281101f5c91958cc69441fe":[2,0,0,7,0,0,6,1],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a1d67a017ef87f8aa8b9fad25855c885c":[1,0,1,7,0,0,6,3],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a1d67a017ef87f8aa8b9fad25855c885c":[2,0,0,7,0,0,6,3],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a2e2843eae304f0715bf5c47dea21ae32":[1,0,1,7,0,0,6,5],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a2e2843eae304f0715bf5c47dea21ae32":[2,0,0,7,0,0,6,5],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue-1-g.html#a5b1bc81c68ac79205da3c348eab70768":[1,0,1,7,0,0,6,4],
@@ -237,17 +249,5 @@ var NAVTREEINDEX88 =
 "interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_file_path.html#a7577e4b1dc5211929b611a6d6608a550":[1,0,1,7,7,6,4],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_file_path.html#a7577e4b1dc5211929b611a6d6608a550":[2,0,0,7,7,6,4],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_path.html":[1,0,1,7,7,7],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_path.html":[2,0,0,7,7,7],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_path.html#a2732de2302394480ed448d4b998b0de7":[1,0,1,7,7,7,0],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_path.html#a2732de2302394480ed448d4b998b0de7":[2,0,0,7,7,7,0],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_path.html#a9c2ec2b2f66aab3443720fa58ab95bb5":[1,0,1,7,7,7,3],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_path.html#a9c2ec2b2f66aab3443720fa58ab95bb5":[2,0,0,7,7,7,3],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_path.html#ab2968f78330a0977984a747285f551b6":[1,0,1,7,7,7,2],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_path.html#ab2968f78330a0977984a747285f551b6":[2,0,0,7,7,7,2],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_path.html#afa0446d80f3e7b4a357fa4504cf80633":[1,0,1,7,7,7,1],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_path.html#afa0446d80f3e7b4a357fa4504cf80633":[2,0,0,7,7,7,1],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_file_path.html":[1,0,1,7,7,8],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_file_path.html":[2,0,0,7,7,8],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_file_path.html#a00463477bd7fe676cbfb10960edbb706":[1,0,1,7,7,8,2],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_file_path.html#a00463477bd7fe676cbfb10960edbb706":[2,0,0,7,7,8,2]
+"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_environment_variable_path.html":[2,0,0,7,7,7]
 };
