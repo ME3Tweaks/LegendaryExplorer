@@ -10,6 +10,7 @@ using SharpDX.DXGI;
 using SharpDX.Mathematics.Interop;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -174,14 +175,15 @@ public partial class MeshRenderContext
 
     /// <summary>
     /// The persistent level that streams in <paramref name="level"/>: BioWare names it BioP_{map}, for the levels named Bio?_{map}_..., and its WorldInfo's
-    /// StreamingLevels lists them. Null if it can't be found, or <paramref name="level"/> is a persistent level
+    /// StreamingLevels lists them. It's looked for beside <paramref name="level"/> first (see <see cref="RelatedLevelFiles"/>).
+    /// Null if it can't be found, or <paramref name="level"/> is a persistent level
     /// </summary>
     private IMEPackage FindPersistentLevel(IMEPackage level)
     {
         string levelName = level.FileNameNoExtension;
         string[] nameParts = levelName.Split('_');
         if (levelName.StartsWith("BioP_", StringComparison.OrdinalIgnoreCase) || nameParts.Length < 2
-            || !MELoadedFiles.GetFilesLoadedInGame(level.Game).TryGetValue($"BioP_{nameParts[1]}.pcc", out string persistentPath)
+            || RelatedLevelFiles.Find($"BioP_{nameParts[1]}.pcc", Path.GetDirectoryName(level.FilePath), level.Game) is not { } persistentPath
             || PackageCache.GetCachedPackage(persistentPath) is not { } persistent)
         {
             return null;

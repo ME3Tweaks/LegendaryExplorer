@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using LegendaryExplorer.Lightmaps.Game;
+using LegendaryExplorer.Tools.LevelEditor;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -168,14 +169,11 @@ public sealed class LightmassBakeJob
     {
         using var package = MEPackageHandler.OpenMEPackage(persistentPath, forceLoadFromDisk: true);
         string folder = Path.GetDirectoryName(persistentPath);
-        var loaded = MELoadedFiles.GetFilesLoadedInGame(package.Game);
         var result = new List<string>();
         foreach (var export in package.Exports.Where(e => e.ClassName.StartsWith("LevelStreaming")))
         {
             if (export.GetProperty<NameProperty>("PackageName")?.Value.Instanced is not { Length: > 0 } name) continue;
-            string fileName = name + ".pcc";
-            string local = Path.Combine(folder, fileName);
-            string path = File.Exists(local) ? local : loaded.TryGetValue(fileName, out var p) ? p : null;
+            string path = RelatedLevelFiles.Find(name + ".pcc", folder, package.Game);
             if (path != null && !result.Contains(path, StringComparer.OrdinalIgnoreCase)) result.Add(path);
         }
         return result;

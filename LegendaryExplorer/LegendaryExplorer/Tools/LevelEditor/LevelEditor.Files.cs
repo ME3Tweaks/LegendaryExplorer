@@ -396,7 +396,7 @@ public partial class LevelEditor
             List<(string filename, string path)> candidates = [];
             var regex = new Regex($"^Bio[PDA]_{realLevelIdent}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             var openFilePaths = OpenFiles.Select(f => Path.GetFileName(f.FilePath)).ToHashSet(StringComparer.OrdinalIgnoreCase);
-            foreach ((string filename, string path) in MELoadedFiles.GetFilesLoadedInGame(game))
+            foreach ((string filename, string path) in RelatedLevelFiles.All(Path.GetDirectoryName(firstFile.FilePath), game))
             {
                 if (regex.IsMatch(filename) && !filename.Contains("_LOC_", StringComparison.OrdinalIgnoreCase) && !openFilePaths.Contains(filename))
                 {
