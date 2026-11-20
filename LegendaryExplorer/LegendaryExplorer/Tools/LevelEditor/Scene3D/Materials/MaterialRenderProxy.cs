@@ -200,6 +200,11 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     private readonly List<string> Uniform2DTextureExpressions = [];
     public Dictionary<string, PreviewTextureCache.TextureEntry> TextureMap;
     private MaterialShaderMap ShaderMap;
+    /// <summary>
+    /// Which of the shader map's pixel vector uniforms is UE3's SelectionColor parameter (see <see cref="MeshRenderContext.SelectionColor"/>); -1 if it has
+    /// none. Every shipping shader map has it, except one broken LE1 terrain map
+    /// </summary>
+    internal int SelectionColorIndex { get; private set; } = -1;
     private uint CachedPixelFrameNumber = uint.MaxValue;
     private uint CachedVertexFrameNumber = uint.MaxValue;
     private readonly List<Vector4> CachedVertexScalarParameters = [];
@@ -524,6 +529,8 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
                 : HasUndisplacedVertices ? [] : [ShadowDepthVertexShaderType];
             (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat.Package, mat.Id, Context.GetSeekFreeShaderCache,
                 vertexFactoryShaders: true, [.. GetShaderTypeNames(LightMapType), .. shadowShaderTypes], VertexFactoryType);
+            SelectionColorIndex = Array.FindIndex(ShaderMap?.UniformPixelVectorExpressions ?? [],
+                expression => expression is MaterialUniformExpressionVectorParameter { ParameterName.Instanced: "SelectionColor" });
             ShadowDepthVertexShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == ShadowDepthVertexShaderType);
             ShadowDepthPixelShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == ShadowDepthPixelShaderType);
 
@@ -543,6 +550,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         catch (Exception e)
         {
             ShaderMap = null;
+            SelectionColorIndex = -1;
             UnrealVertexShader = null;
             UnrealPixelShader = null;
             gameShaderError = $"Failed to load shaders for {mat.Name}: {e.Message}";

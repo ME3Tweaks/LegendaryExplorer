@@ -67,6 +67,7 @@
 
   <!-- Level Editor specific settings -->
   <setting name="LevelEditor_CameraSpeed" type="int" defaultvalue="500"/>
+  <setting name="LevelEditor_ShowSelectionOutline" type="bool" defaultvalue="false"/>
 
   <!-- AssetDB specific settings-->
   <setting name="AssetDB_DefaultGame" type="string" defaultvalue=""/>

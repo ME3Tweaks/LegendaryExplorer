@@ -279,6 +279,7 @@ public partial class LevelEditor : TrackingNotifyPropertyChangedWindowBase, IAct
         if (UseFrustumCulling) viewFrustum.Update(RenderContext.Camera.ViewProjectionMatrix, depthClipEnabled: false);
         RenderContext.CullingFrustum = UseFrustumCulling ? viewFrustum : null;
         RenderContext.ShowHidden = ShowHidden;
+        RenderContext.OutlinedHitID = ShowSelectionOutline && selectedActor is not null ? selectedActor.HitID : -1;
         visibleActors.Clear();
         foreach (ActorProxy actor in RenderContext.DrawList_3D)
         {
@@ -1090,6 +1091,18 @@ public partial class LevelEditor : TrackingNotifyPropertyChangedWindowBase, IAct
 
     private string _currentModeName = "Translate";
     public string CurrentModeName { get => _currentModeName; set => SetProperty(ref _currentModeName, value); }
+
+    /// <summary>Outline the selected actor in the viewport, kept between sessions</summary>
+    public bool ShowSelectionOutline
+    {
+        get => Settings.LevelEditor_ShowSelectionOutline;
+        set
+        {
+            if (Settings.LevelEditor_ShowSelectionOutline == value) return;
+            Settings.LevelEditor_ShowSelectionOutline = value;
+            OnPropertyChanged();
+        }
+    }
 
     /// <summary>Units per second the camera flies at, kept between sessions</summary>
     public float CameraSpeed

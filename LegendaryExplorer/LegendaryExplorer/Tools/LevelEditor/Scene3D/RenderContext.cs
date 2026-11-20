@@ -50,6 +50,10 @@ public abstract class RenderContext
 
         //level editor flags
         /// <summary>
+        /// Primitives are drawn over the scene (the transform widget and gizmos). Their hit test pixels are marked, so the selection outline isn't drawn around them
+        /// </summary>
+        Overlay = 1 << 25,
+        /// <summary>
         /// Primitives are textured sprites, tinted by their vertex color. Transparent texels are discarded
         /// </summary>
         Sprite = 1 << 26,
@@ -81,7 +85,13 @@ public abstract class RenderContext
         Device = new Device(DriverType.Hardware, deviceFlags);
         ImmediateContext = Device.ImmediateContext;
 
-        var alphaBlendDesc = new BlendStateDescription();
+        //the hit test target (if bound) is overwritten: its alpha marks overlay pixels (see ShaderFlags.Overlay), so it isn't a blend factor
+        var alphaBlendDesc = new BlendStateDescription { IndependentBlendEnable = true };
+        alphaBlendDesc.RenderTarget[1] = new RenderTargetBlendDescription
+        {
+            RenderTargetWriteMask = ColorWriteMaskFlags.All,
+            IsBlendEnabled = false
+        };
         alphaBlendDesc.RenderTarget[0] = new RenderTargetBlendDescription
         {
             RenderTargetWriteMask = ColorWriteMaskFlags.All, 

@@ -539,9 +539,11 @@ internal static class ShaderParameterSetters
         {
             WriteScalarUniform(buffer, scalarParam, scalarParamValues);
         }
+        //the cached values are the material's, shared by everything drawn with it, so a selected mesh's SelectionColor is set per draw
+        int selectionColorIndex = (context.RenderFlags & MeshRenderContext.SelectionTintFlags) != 0 ? mat.SelectionColorIndex : -1;
         foreach (TUniformParameter<FShaderParameter> vectorParam in p.UniformPixelVectorShaderParameters)
         {
-            buffer.WriteVal(vectorParam.Param, vectorParamValues[vectorParam.Index]);
+            buffer.WriteVal(vectorParam.Param, vectorParam.Index == selectionColorIndex ? context.SelectionColor : vectorParamValues[vectorParam.Index]);
         }
         foreach (TUniformParameter<FShaderResourceParameter> texParam in p.UniformPixel2DShaderResourceParameters)
         {

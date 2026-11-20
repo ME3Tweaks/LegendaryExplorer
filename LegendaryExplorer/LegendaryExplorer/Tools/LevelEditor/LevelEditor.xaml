@@ -318,6 +318,7 @@
                                         <MenuItem Header="Show ▾" Padding="7,4">
                                             <MenuItem Header="Collision" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowCollision}"/>
                                             <MenuItem Header="Hidden Actors" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowHidden}"/>
+                                            <MenuItem Header="Selection Outline" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowSelectionOutline}" ToolTip="Outline the selected actor, as well as tinting it"/>
                                             <MenuItem Header="Selected Light's Reach" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowLightReach}" ToolTip="Tint and outline the meshes the selected light is eligible to light"/>
                                         </MenuItem>
                                     </Menu>

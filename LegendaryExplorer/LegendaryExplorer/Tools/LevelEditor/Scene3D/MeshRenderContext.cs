@@ -55,6 +55,24 @@ public partial class MeshRenderContext : RenderContext
     /// </summary>
     public ShaderFlags RenderFlags = ShaderFlags.EnableRedChannel | ShaderFlags.EnableGreenChannel | ShaderFlags.EnableBlueChannel | ShaderFlags.EnableAlphaChannel;
 
+    /// <summary>The flags that tint what's drawn, which <see cref="SelectionColor"/> follows</summary>
+    public const ShaderFlags SelectionTintFlags = ShaderFlags.Selected | ShaderFlags.Highlighted;
+    //UE3's DefaultSelectedMaterialColor (BaseEngine.ini)
+    private static readonly Vector4 SelectedMaterialColor = new(0.04f, 0.02f, 0.24f, 1);
+    //LevelEditorRenderContext.HighlightColor, linear, at 35%
+    private static readonly Vector4 HighlightedMaterialColor = new(0.35f, 0.122f, 0.0033f, 1);
+
+    /// <summary>
+    /// UE3's SelectionColor material parameter for what's being drawn: every game material adds it to its emissive and takes it off its diffuse
+    /// (FMaterialResource::CompileProperty), so it shows on dark surfaces and in every light pass. LevelEditorShader.hlsl's SelectionColor() matches it
+    /// </summary>
+    public Vector4 SelectionColor => (RenderFlags & ShaderFlags.Selected) != 0 ? SelectedMaterialColor
+        : (RenderFlags & ShaderFlags.Highlighted) != 0 ? HighlightedMaterialColor
+        : Vector4.Zero;
+
+    /// <summary>The hit proxy ID whose pixels the resolve outlines; -1 for none</summary>
+    public int OutlinedHitID { get; set; } = -1;
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct WorldConstants
     {
@@ -363,8 +381,16 @@ public partial class MeshRenderContext : RenderContext
         base.Render();
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    private struct ResolveConstants
+    {
+        public int OutlinedHitID;
+        private readonly int Padding0, Padding1, Padding2;
+    }
+
     /// <summary>
-    /// Resolves the multisampled linear scene color into the gamma-encoded backbuffer, and copies the hit proxy IDs into <see cref="HitBuffer"/>
+    /// Resolves the multisampled linear scene color into the gamma-encoded backbuffer, outlining <see cref="OutlinedHitID"/>'s pixels, and copies the hit proxy
+    /// IDs into <see cref="HitBuffer"/>
     /// </summary>
     private void ResolveSceneColor()
     {
@@ -377,6 +403,9 @@ public partial class MeshRenderContext : RenderContext
         ImmediateContext.PixelShader.Set(ResolvePixelShader);
         ImmediateContext.PixelShader.SetShaderResource(0, SceneColorResourceView);
         ImmediateContext.PixelShader.SetShaderResource(1, HitBufferMSResourceView);
+        var constants = new ResolveConstants { OutlinedHitID = OutlinedHitID };
+        ImmediateContext.UpdateSubresource(ref constants, ResolveConstantBuffer);
+        ImmediateContext.PixelShader.SetConstantBuffer(RESOLVE_CONSTANT_BUFFER_SLOT, ResolveConstantBuffer);
 
         ImmediateContext.Draw(3, 0);
 
