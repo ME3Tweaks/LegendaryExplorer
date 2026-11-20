@@ -232,6 +232,10 @@ public partial class MeshRenderContext : RenderContext
             FPS = MathF.Round(frameDelta / fpsDelta);
         }
 
+        if (!Camera.FirstPerson || Camera.IsOrthographic)
+        {
+            CameraVelocity = Vector3.Zero;
+        }
         if (Camera.IsOrthographic)
         {
             float panSpeed = Camera.OrthoWidth * 0.5f;
@@ -256,30 +260,23 @@ public partial class MeshRenderContext : RenderContext
         }
         else if (Camera.FirstPerson)
         {
-            float distance = timestep * CameraSpeed * (PressedKeys.HasFlag(KeyStates.Shift) ? FastCameraMultiplier : 1);
-            if (PressedKeys.HasFlag(KeyStates.W))
+            Vector3 direction = Vector3.Zero;
+            if (PressedKeys.HasFlag(KeyStates.W)) direction += Camera.CameraForward;
+            if (PressedKeys.HasFlag(KeyStates.S)) direction -= Camera.CameraForward;
+            if (PressedKeys.HasFlag(KeyStates.A)) direction -= Camera.CameraRight;
+            if (PressedKeys.HasFlag(KeyStates.D)) direction += Camera.CameraRight;
+            if (PressedKeys.HasFlag(KeyStates.Q)) direction -= Vector3.UnitZ;
+            if (PressedKeys.HasFlag(KeyStates.E)) direction += Vector3.UnitZ;
+            Vector3 target = direction * (CameraSpeed * (PressedKeys.HasFlag(KeyStates.Shift) ? FastCameraMultiplier : 1));
+
+            //UE3 steps dv/dt = Damping * (target - v) once a frame; this is its exact solution, so the easing doesn't depend on the frame rate
+            float decay = MathF.Exp(-CameraVelocityDamping * timestep);
+            Vector3 lag = CameraVelocity - target;
+            Camera.Position += target * timestep + lag * ((1 - decay) / CameraVelocityDamping);
+            CameraVelocity = target + lag * decay;
+            if (CameraVelocity.LengthSquared() < 1e-4f)
             {
-                Camera.Position += Camera.CameraForward * distance;
-            }
-            if (PressedKeys.HasFlag(KeyStates.S))
-            {
-                Camera.Position -= Camera.CameraForward * distance;
-            }
-            if (PressedKeys.HasFlag(KeyStates.A))
-            {
-                Camera.Position -= Camera.CameraRight * distance;
-            }
-            if (PressedKeys.HasFlag(KeyStates.D))
-            {
-                Camera.Position += Camera.CameraRight * distance;
-            }
-            if (PressedKeys.HasFlag(KeyStates.Q))
-            {
-                Camera.Position -= Vector3.UnitZ * distance;
-            }
-            if (PressedKeys.HasFlag(KeyStates.E))
-            {
-                Camera.Position += Vector3.UnitZ * distance;
+                CameraVelocity = Vector3.Zero;
             }
         }
 
