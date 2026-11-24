@@ -25,7 +25,7 @@ public static class LightmassMappingAllocator
     {
         int resolution = component.GetProp<BoolProperty>("bOverrideLightMapRes") is { Value: true }
             ? component.GetProp<IntProperty>("OverriddenLightMapRes")?.Value ?? 0
-            : mesh.GetProp<IntProperty>("LightMapResolution")?.Value ?? (game is MEGame.LE3 ? 32 : 0);
+            : mesh.GetProp<IntProperty>("LightMapResolution")?.Value ?? (game.IsLEGame3() ? 32 : 0);
         if (resolution <= 0 || !hasUv) return (0, 0);
         int size = Math.Clamp(resolution >> Math.Min(lod, 10), 4, 2048);
         size = (size + 3) & ~3;
@@ -39,7 +39,7 @@ public static class LightmassMappingAllocator
     /// </summary>
     /// <param name="directLights">The lights whose direct lighting the result holds</param>
     public static bool KeepsNewLightmap(MEGame game, LightmassMapping mapping, IReadOnlyCollection<Guid> directLights) =>
-        game is MEGame.LE3 || mapping is not LightmassInstance instance || directLights.Count > 0 || instance.RelevantLights.Any(l => l.IndirectOnly);
+        game.IsLEGame3() || mapping is not LightmassInstance instance || directLights.Count > 0 || instance.RelevantLights.Any(l => l.IndirectOnly);
 
     public static bool IsComplete(LightmassMapping mapping, LightmassMappingResult result)
     {

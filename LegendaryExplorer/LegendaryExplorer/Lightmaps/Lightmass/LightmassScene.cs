@@ -733,7 +733,7 @@ public sealed class LightmassSceneBuilder : IDisposable
     /// <param name="relevantLights">Those whose radius reaches the primitive (<see cref="ReachesBox"/>): UE3's sphere test admits lights that light none of it,
     /// which the vanilla bakes leave out</param>
     public static bool NeedsNewLightmap(MEGame game, IEnumerable<LightmassLight> relevantLights) =>
-        game is MEGame.LE3 || relevantLights.Any(l => !l.ShadowOnly && !l.Light.IsDominant);
+        game.IsLEGame3() || relevantLights.Any(l => !l.ShadowOnly && !l.Light.IsDominant);
 
     /// <summary>
     /// Whether a primitive without a lightmap gets a new mapping to solve. Without a lightmap it still needs an output for its shadow maps:

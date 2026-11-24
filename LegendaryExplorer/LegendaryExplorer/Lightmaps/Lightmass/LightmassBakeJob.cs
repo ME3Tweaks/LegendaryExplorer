@@ -242,8 +242,8 @@ public sealed class LightmassBakeJob
 
     public static void ValidateGame(MEGame game, MEGame sceneGame)
     {
-        if (game is not (MEGame.LE1 or MEGame.LE2 or MEGame.LE3))
-            throw new NotSupportedException($"{game} levels cannot be baked; choose LE1, LE2 or LE3 levels.");
+        if (!game.IsLEGame())
+            throw new NotSupportedException($"{game} levels cannot be baked; choose Legendary Edition levels.");
         if (game != sceneGame) throw new NotSupportedException($"A bake cannot mix {sceneGame} and {game} packages.");
     }
 

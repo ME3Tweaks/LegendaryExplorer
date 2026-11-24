@@ -81,7 +81,7 @@ public static class LightmassBake
         string lightmassExe = Path.Combine(win64, "UnrealLightmass.exe");
         if (!File.Exists(lightmassExe)) throw new FileNotFoundException("UnrealLightmass.exe wasn't found in the UDK's Binaries\\Win64 folder", lightmassExe);
         var ini = DuplicatingIni.LoadIni(Path.Combine(settings.UdkBinaries, "..", "Engine", "Config", "BaseLightmass.ini"));
-        if (settings.BioWareLightmassSettings && levels.Count > 0 && levels[0].Game == MEGame.LE3) ini.ApplyBioWareOverrides();
+        if (settings.BioWareLightmassSettings && levels.Count > 0 && levels[0].Game.IsLEGame3()) ini.ApplyBioWareOverrides();
 
         var timer = Stopwatch.StartNew();
         log("Gathering the scene...");
