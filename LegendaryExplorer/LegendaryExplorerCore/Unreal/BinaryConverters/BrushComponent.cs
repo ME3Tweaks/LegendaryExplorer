@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
-using LegendaryExplorerCore.Unreal.PhysX;
-using CommunityToolkit.HighPerformance;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -78,23 +76,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 scale *= ActorUtils.GetActorTotalScale(parent.GetCondensedProperties(packageCache, resolveImports: true, mergeStructs: true));
             }
 
-            // As MakeCachedConvexDataForAggGeom does, a hull with no vertices is skipped, and one PhysX can't cook (as a flat one) is left out
-            return PhysXCooker.Use(cooker =>
-            {
-                var cooked = new List<KCachedConvexDataElement>(convexElemsProp.Count);
-                var verts = new List<Vector3>();
-                foreach (var hull in convexElemsProp)
-                {
-                    if (hull.GetProp<ArrayProperty<StructProperty>>("VertexData") is not { Count: > 0 } vertexDataProp) continue;
-                    verts.Clear();
-                    foreach (StructProperty vertProp in vertexDataProp)
-                    {
-                        verts.Add(CommonStructs.GetVector3(vertProp) * scale * PhysXSDK.UnrealtoPhysXScale);
-                    }
-                    if (cooker.TryGenerateCachedPhysicsData(verts.AsSpan()) is { } data) cooked.Add(new KCachedConvexDataElement { ConvexElementData = data });
-                }
-                return cooked.ToArray();
-            });
+            return KCachedConvexData.Cook(convexElemsProp, scale);
         }
     }
 }

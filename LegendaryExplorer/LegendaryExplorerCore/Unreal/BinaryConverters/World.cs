@@ -10,12 +10,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public sealed partial class World : ObjectBinary
     {
         [UIndexRef("Level")]
-        private UIndex PersistentLevel;
+        public UIndex PersistentLevel;
         [UIndexRef("FaceFXAnimSet")]
-        private UIndex PersistentFaceFXAnimSet; //ME3/LE
-        private Fixed4<LevelViewportInfo> EditorViews;
+        public UIndex PersistentFaceFXAnimSet; //ME3/LE
+        public Fixed4<LevelViewportInfo> EditorViews;
         [UIndexRef("DecalManager")]
-        private UIndex DecalManager; //ME1/LE1
+        public UIndex DecalManager; //ME1/LE1
         private float unkFloat; //UDK
         [UIndexRef("Object")]
         public UIndex[] ExtraReferencedObjects;

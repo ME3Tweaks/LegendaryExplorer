@@ -88,7 +88,7 @@ public static class LightAssignment
     /// static sky lighting whatever UseDirectLightMap says. LE3's lightmaps hold every static light's direct lighting.
     /// </summary>
     public static bool BakesDirectLighting(SceneLight light, bool forceDirectLightMap) =>
-        light.HasStaticLighting && (light.Export.Game is MEGame.LE3 || light.Type is SceneLightType.Sky || light.UseDirectLightMap || forceDirectLightMap
+        light.HasStaticLighting && (light.Export.Game.IsLEGame3() || light.Type is SceneLightType.Sky || light.UseDirectLightMap || forceDirectLightMap
             || !light.HasStaticShadowing);
 
     /// <summary>

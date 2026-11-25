@@ -66,6 +66,13 @@ HRESULT Dispose() {
 }
 
 HRESULT ConvertTexture(const TextureBuffer* inputBuffer, TextureBuffer* outputBuffer) {
+	return ConvertTextureWithOptions(inputBuffer, outputBuffer, TextureConvertOption_None);
+}
+
+HRESULT ConvertTextureWithOptions(const TextureBuffer* inputBuffer, TextureBuffer* outputBuffer, uint32_t options) {
+	if ((options & ~static_cast<uint32_t>(TextureConvertOption_UniformWeighting)) != 0) {
+		return E_INVALIDARG;
+	}
 
 	HRESULT hr = S_OK;
 	DirectX::Image sourceImage = { inputBuffer->Width, inputBuffer->Height, inputBuffer->Format, 0, 0, inputBuffer->PixelData };
@@ -90,7 +97,7 @@ HRESULT ConvertTexture(const TextureBuffer* inputBuffer, TextureBuffer* outputBu
 			}
 
 			// Recompress to output buffer
-			hr = ConvertTexture(&decompressedBuffer, outputBuffer);
+			hr = ConvertTextureWithOptions(&decompressedBuffer, outputBuffer, options);
 		}
 		else {
 			// Decompression
@@ -119,7 +126,12 @@ HRESULT ConvertTexture(const TextureBuffer* inputBuffer, TextureBuffer* outputBu
 				hr = DirectX::Compress(D3DDevice, sourceImage, outputBuffer->Format, DirectX::TEX_COMPRESS_FLAGS::TEX_COMPRESS_DEFAULT, 1.0f, *outputBuffer->_ScratchImage);
 			}
 			else {
-				hr = DirectX::Compress(sourceImage, outputBuffer->Format, DirectX::TEX_COMPRESS_FLAGS::TEX_COMPRESS_PARALLEL, 1.0f, *outputBuffer->_ScratchImage);
+				// TEX_COMPRESS_UNIFORM only affects BC1-BC3, which otherwise weight their error by luminance
+				auto flags = DirectX::TEX_COMPRESS_FLAGS::TEX_COMPRESS_PARALLEL;
+				if (options & TextureConvertOption_UniformWeighting) {
+					flags |= DirectX::TEX_COMPRESS_FLAGS::TEX_COMPRESS_UNIFORM;
+				}
+				hr = DirectX::Compress(sourceImage, outputBuffer->Format, flags, 1.0f, *outputBuffer->_ScratchImage);
 			}
 		}
 		else {

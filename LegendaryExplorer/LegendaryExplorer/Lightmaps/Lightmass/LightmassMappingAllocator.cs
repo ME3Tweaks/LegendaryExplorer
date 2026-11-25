@@ -4,6 +4,8 @@ using System.Linq;
 using System.Numerics;
 using LegendaryExplorer.Lightmaps.Codec;
 using LegendaryExplorer.Lightmaps.Game;
+using LegendaryExplorer.Tools.LevelEditor;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -23,7 +25,7 @@ public static class LightmassMappingAllocator
     {
         int resolution = component.GetProp<BoolProperty>("bOverrideLightMapRes") is { Value: true }
             ? component.GetProp<IntProperty>("OverriddenLightMapRes")?.Value ?? 0
-            : mesh.GetProp<IntProperty>("LightMapResolution")?.Value ?? (game is MEGame.LE3 ? 32 : 0);
+            : mesh.GetProp<IntProperty>("LightMapResolution")?.Value ?? (game.IsLEGame3() ? 32 : 0);
         if (resolution <= 0 || !hasUv) return (0, 0);
         int size = Math.Clamp(resolution >> Math.Min(lod, 10), 4, 2048);
         size = (size + 3) & ~3;
@@ -37,7 +39,7 @@ public static class LightmassMappingAllocator
     /// </summary>
     /// <param name="directLights">The lights whose direct lighting the result holds</param>
     public static bool KeepsNewLightmap(MEGame game, LightmassMapping mapping, IReadOnlyCollection<Guid> directLights) =>
-        game is MEGame.LE3 || mapping is not LightmassInstance instance || directLights.Count > 0 || instance.RelevantLights.Any(l => l.IndirectOnly);
+        game.IsLEGame3() || mapping is not LightmassInstance instance || directLights.Count > 0 || instance.RelevantLights.Any(l => l.IndirectOnly);
 
     public static bool IsComplete(LightmassMapping mapping, LightmassMappingResult result)
     {
@@ -115,8 +117,11 @@ public static class LightmassMappingAllocator
             || Separates(triangle.C, triangle.A, triangle.B);
     }
 
+    /// <param name="tfc">Where new static mesh lightmaps stream from; null stores every new lightmap in the package</param>
+    /// <param name="cache">Resolves the components' meshes and materials for the level's texture streaming map</param>
+    /// <param name="format">The new atlases' format</param>
     public static void Write(IMEPackage package, TfcWriter tfc, LightmassScene scene,
-        IReadOnlyDictionary<Guid, LightmassMappingResult> results, LightmapRewriter.Summary summary)
+        IReadOnlyDictionary<Guid, LightmassMappingResult> results, LightmapRewriter.Summary summary, PackageCache cache, LightmapTextureFormat format)
     {
         var candidates = scene.Mappings.Where(m => m.AllocateLightmap && m.Targets.Any(t => t.Owner.FileRef == package)).ToArray();
         var mappings = candidates.Where(m => results.TryGetValue(m.Guid, out var r) && IsComplete(m, r)).ToArray();
@@ -185,44 +190,54 @@ public static class LightmassMappingAllocator
             summary.VertexLightmaps++;
         }
 
-        // Keep new textures package-stored: they need no pre-existing streaming instances, and survive copying the package alone.
+        // UE3 streams static meshes' lightmaps (LMF_Streamed) from the TFC, and stores BSP's and terrain's in the package (UnStaticMeshLight.cpp,
+        // UnModelLight.cpp, TerrainLight.cpp). With no TFC to write to, every new lightmap is stored in the package
         var requests = mappings.Where(m => m.IsTextureMapping).Select(m => new AtlasRequest(m, "Directional", m.SizeX - (m.Padded ? 2 : 0),
-            m.SizeY - (m.Padded ? 2 : 0), Streamed: false, Padding: m.Padded ? 1 : 0));
+            m.SizeY - (m.Padded ? 2 : 0), Streamed: tfc != null && m is LightmassInstance, Bounds: m.BoundingSphere, Padding: m.Padded ? 1 : 0));
+        var streamedTextures = new HashSet<ExportEntry>();
+        var streamedOwners = new HashSet<ExportEntry>();
         foreach (var atlas in AtlasPacker.Pack(requests, maxSize: 2048))
         {
-            var tops = new[] { MipLevel.Create(atlas.SizeX, atlas.SizeY), MipLevel.Create(atlas.SizeX, atlas.SizeY), MipLevel.Create(atlas.SizeX, atlas.SizeY) };
+            // The two directional textures. Shipping LMT_2D lightmaps have no simple lightmap texture (Texture3 0); LE1's and LE2's keep its scale
+            var tops = new[] { MipLevel.Create(atlas.SizeX, atlas.SizeY), MipLevel.Create(atlas.SizeX, atlas.SizeY) };
             var maps = new Dictionary<LightmassMapping, LightMap_2D>();
             foreach (var placement in atlas.Placements)
             {
                 var mapping = (LightmassMapping)placement.Request.Key;
                 var result = results[mapping.Guid];
                 var split = result.Directional.Select(s => Directional.Split(s)).ToArray();
-                var scales = new[] { Quantization.ChooseScale(split.Select(s => s.Colour)), Quantization.ChooseScale(split.Select(s => s.MaxComponents)), Quantization.ChooseScale(result.Simple) };
+                var scales = new[] { Quantization.ChooseScale(split.Select(s => s.Colour)), Quantization.ChooseScale(split.Select(s => s.MaxComponents)) };
+                var simpleScale = package.Game.IsGame3() ? Vector3.Zero : Quantization.ChooseScale(result.Simple);
                 for (int y = 0; y < result.SizeY; y++)
                 for (int x = 0; x < result.SizeX; x++)
                 {
                     int source = y * result.SizeX + x, dest = (placement.OffsetY + y) * atlas.SizeX + placement.OffsetX + x;
-                    for (int c = 0; c < 3; c++)
+                    for (int c = 0; c < tops.Length; c++)
                     {
-                        var color = Encode(c == 0 ? split[source].Colour : c == 1 ? split[source].MaxComponents : result.Simple[source], scales[c]);
+                        var color = Encode(c == 0 ? split[source].Colour : split[source].MaxComponents, scales[c]);
                         (tops[c].Rgb[dest * 3], tops[c].Rgb[dest * 3 + 1], tops[c].Rgb[dest * 3 + 2]) = (color.R, color.G, color.B);
                         tops[c].Coverage[dest] = result.Coverage[source];
                     }
                 }
                 var (scale, bias) = placement.Coordinates(atlas.SizeX, atlas.SizeY);
                 maps[mapping] = new LightMap_2D { LightMapType = ELightMapType.LMT_2D, LightGuids = Guids(result),
-                    ScaleVector1 = scales[0], ScaleVector2 = scales[1], ScaleVector3 = scales[2], CoordinateScale = scale, CoordinateBias = bias };
+                    ScaleVector1 = scales[0], ScaleVector2 = scales[1], ScaleVector3 = simpleScale, CoordinateScale = scale, CoordinateBias = bias };
             }
-            var textures = tops.Select(top => WriteTexture(package, top)).ToArray();
+            var textures = tops.Select(top => WriteTexture(package, top, atlas.Streamed ? tfc : null, format.PixelFormat())).ToArray();
             foreach (var (mapping, map) in maps)
             {
-                (map.Texture1, map.Texture2, map.Texture3) = (textures[0].UIndex, textures[1].UIndex, textures[2].UIndex);
+                (map.Texture1, map.Texture2) = (textures[0].UIndex, textures[1].UIndex);
                 Apply(mapping, _ => map);
                 summary.Allocations++;
+                if (atlas.Streamed) streamedOwners.UnionWith(mapping.Targets.Where(t => t.Owner.FileRef == package).Select(t => t.Owner));
             }
-            summary.TextureSets++; summary.NewAtlases++; summary.Textures += 3;
+            if (atlas.Streamed) streamedTextures.UnionWith(textures);
+            summary.TextureSets++; summary.NewAtlases++; summary.Textures += textures.Length;
         }
         foreach (var (owner, binary) in binaries) owner.WriteBinary(binary);
+        // Where the streamed ones are drawn, for the level's texture streaming, as UE3's editor lists them when it saves the level
+        if (streamedTextures.Count > 0 && package.GetLevel() is { } level)
+            TextureStreamingUpdate.AddLighting(level, streamedOwners, streamedTextures, cache);
         foreach (var group in mappings.OfType<LightmassBspMapping>().Where(m => m.ModelExport != null).GroupBy(m => m.ModelExport))
         {
             var model = ObjectBinary.From<Model>(group.Key);
@@ -251,17 +266,19 @@ public static class LightmassMappingAllocator
         return new Color(r, g, b, (byte)255);
     }
 
-    static ExportEntry WriteTexture(IMEPackage package, MipLevel top)
+    /// <param name="tfc">The cache to stream the texture from, or null to store it in the package</param>
+    static ExportEntry WriteTexture(IMEPackage package, MipLevel top, TfcWriter tfc, string format)
     {
-        var export = new ExportEntry(package, 0, package.GetNextIndexedName("LightMapTexture2D_LEX"),
-            properties: new PropertyCollection { new BoolProperty(true, "NeverStream"), new EnumProperty("TEXTUREGROUP_Lightmap", "TextureGroup", package.Game, "LODGroup") },
-            binary: new UTexture2D { Mips = [], TextureGuid = Guid.NewGuid() })
+        var properties = new PropertyCollection { new EnumProperty("TEXTUREGROUP_Lightmap", "TextureGroup", package.Game, "LODGroup") };
+        if (tfc == null) properties.Add(new BoolProperty(true, "NeverStream"));
+        var export = new ExportEntry(package, 0, package.GetNextIndexedName("LightMapTexture2D_LEX"), properties: properties,
+            binary: new LightMapTexture2D { Mips = [], TextureGuid = Guid.NewGuid(), LightMapFlags = tfc != null ? ELightMapFlags.LMF_Streamed : ELightMapFlags.LMF_None })
         {
             Class = EntryImporter.EnsureClassIsInFile(package, "LightMapTexture2D", new RelinkerOptionsPackage())
         };
         package.AddExport(export);
         var mips = MipChain.BuildDilated(top, MipAveraging.Linear);
-        LightmapTextureWriter.Write(export, "PF_DXT1", top.Width, top.Height, LightmapTextureWriter.Encode(mips, "PF_DXT1"), null, true);
+        LightmapTextureWriter.Write(export, format, top.Width, top.Height, LightmapTextureWriter.Encode(mips, format), tfc, true);
         return export;
     }
 }

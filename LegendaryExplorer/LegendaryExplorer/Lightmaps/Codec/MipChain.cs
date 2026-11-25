@@ -40,8 +40,8 @@ public static class MipChain
 {
     static readonly float[] PowTable = Enumerable.Range(0, 256).Select(i => MathF.Pow(i / 255f, 2.2f)).ToArray();
 
-    /// <summary>Smallest mip edge for a pixel format: one block (4) for DXT1, 1 for PF_A8R8G8B8 (the Dir atlas goes down to 1x1).</summary>
-    public static int MinMipSize(string pixelFormat) => pixelFormat == "PF_DXT1" ? 4 : 1;
+    /// <summary>Smallest mip edge for a pixel format: one block (4) for DXT1 and BC7, 1 for PF_A8R8G8B8 (the Dir atlas goes down to 1x1).</summary>
+    public static int MinMipSize(string pixelFormat) => pixelFormat is "PF_DXT1" or "PF_BC7" ? 4 : 1;
 
     /// <summary>UE3: max(ceil(log2(SizeX)), ceil(log2(SizeY))) + 1 levels, each at least one block of the format (see MinMipSize).</summary>
     public static int MipCount(int width, int height) => Math.Max(CeilLog2(width), CeilLog2(height)) + 1;
@@ -133,9 +133,6 @@ public static class MipChain
             foreach (int i in filled) source[i] = 1;
         }
     }
-
-    /// <summary>DXT1 blocks for every level (colour atlases).</summary>
-    public static List<byte[]> EncodeDxt1(List<MipLevel> levels) => levels.Select(l => Dxt1.Encode(l.Rgb, l.Width, l.Height)).ToList();
 
     /// <summary>
     /// PF_A8R8G8B8 bytes (B, G, R, A in memory) for every level: the LMT_4 direction atlas. Its alpha is unused by the

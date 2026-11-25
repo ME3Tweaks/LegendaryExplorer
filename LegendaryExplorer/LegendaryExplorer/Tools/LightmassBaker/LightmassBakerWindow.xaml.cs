@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using LegendaryExplorer.Lightmaps.Game;
 using LegendaryExplorer.Lightmaps.Lightmass;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Bases;
@@ -56,6 +57,13 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
 
     private LightmassQuality quality = LightmassQuality.Preview;
     public LightmassQuality Quality { get => quality; set => SetProperty(ref quality, value); }
+
+    /// <summary>In the enum's order (a dictionary's enumeration order isn't defined).</summary>
+    public IReadOnlyList<KeyValuePair<LightmapTextureFormat, string>> TextureFormats { get; } =
+        Enum.GetValues<LightmapTextureFormat>().Select(f => KeyValuePair.Create(f, f.Describe())).ToList();
+
+    private LightmapTextureFormat textureFormat = LightmapTextureFormats.Default;
+    public LightmapTextureFormat TextureFormat { get => textureFormat; set => SetProperty(ref textureFormat, value); }
 
     private string tfcName = "Textures_DLC_MOD_LEXLightmaps";
     public string TfcName { get => tfcName; set { if (SetProperty(ref tfcName, value)) ScheduleValidation(); } }
@@ -188,6 +196,7 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
     {
         Files = Files.Select(f => new LightmassBakeJobFile { Path = f.Path, Editable = f.Editable }).ToList(),
         Quality = Quality,
+        TextureFormat = TextureFormat,
         AssignmentPolicy = AssignmentPolicy,
         BioWareLightmassSettings = bioWareLightmassSettings,
         TfcName = TfcName,
@@ -200,6 +209,7 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
         Files.ClearEx();
         AddFiles(job.Files.Select(f => (f.Path, f.Editable)));
         Quality = job.Quality;
+        TextureFormat = job.TextureFormat;
         AssignmentPolicy = job.AssignmentPolicy;
         bioWareLightmassSettings = job.BioWareLightmassSettings;
         TfcName = job.TfcName;

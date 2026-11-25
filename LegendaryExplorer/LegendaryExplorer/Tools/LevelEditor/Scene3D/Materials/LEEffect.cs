@@ -76,17 +76,17 @@ public unsafe class LEEffect : IDisposable
             AlphaToCoverageEnable = false,
             IndependentBlendEnable = true,
         };
-        //scene color: multiply in the selection highlight, and replace alpha with a marker that this pixel was rendered with game shaders
+        //scene color: replace alpha with a marker that this pixel was rendered with game shaders
         hitBlendDesc.RenderTarget[0] = new RenderTargetBlendDescription
         {
-            IsBlendEnabled = true,
-            SourceBlend = BlendOption.DestinationColor,
+            IsBlendEnabled = false,
+            SourceBlend = BlendOption.One,
             DestinationBlend = BlendOption.Zero,
             BlendOperation = BlendOperation.Add,
             SourceAlphaBlend = BlendOption.One,
             DestinationAlphaBlend = BlendOption.Zero,
             AlphaBlendOperation = BlendOperation.Add,
-            RenderTargetWriteMask = ColorWriteMaskFlags.All
+            RenderTargetWriteMask = ColorWriteMaskFlags.Alpha
         };
         //hit test target: overwrite
         hitBlendDesc.RenderTarget[1] = new RenderTargetBlendDescription

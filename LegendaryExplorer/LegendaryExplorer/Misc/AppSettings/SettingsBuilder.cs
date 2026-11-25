@@ -202,6 +202,11 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _leveleditor_cameraspeed;
             set => SetProperty(ref _leveleditor_cameraspeed, value);
         }
+        private static bool _leveleditor_showselectionoutline = false;
+        public static bool LevelEditor_ShowSelectionOutline {
+            get => _leveleditor_showselectionoutline;
+            set => SetProperty(ref _leveleditor_showselectionoutline, value);
+        }
         private static string _assetdb_defaultgame = "";
         public static string AssetDB_DefaultGame {
             get => _assetdb_defaultgame;
@@ -403,7 +408,8 @@ namespace LegendaryExplorer.Misc.AppSettings
         }
 
         // Settings converters
-        public static double TryGetSetting(Dictionary<string, object> settings, string key, double defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && double.TryParse(svalue, out var fvalue) ? fvalue : defaultValue;
+        public static float TryGetSetting(Dictionary<string, object> settings, string key, float defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && float.TryParse(svalue, out var fvalue) ? fvalue : defaultValue;
+        public static double TryGetSetting(Dictionary<string, object> settings, string key, double defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && double.TryParse(svalue, out var dvalue) ? dvalue : defaultValue;
         public static int TryGetSetting(Dictionary<string, object> settings, string key, int defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && int.TryParse(svalue, out var ivalue) ? ivalue : defaultValue;
         public static bool TryGetSetting(Dictionary<string, object> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && bool.TryParse(svalue, out var bvalue) ? bvalue : defaultValue;
         public static string TryGetSetting(Dictionary<string, object> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue ? svalue : defaultValue;
@@ -472,6 +478,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             PathfindingEditor_ShowEverythingElseLayer = TryGetSetting(settingsJson, "pathfindingeditor_showeverythingelselayer", false);
             PathfindingNetworkEditor_RotationArrowMinZoom = TryGetSetting(settingsJson, "pathfindingnetworkeditor_rotationarrowminzoom", 1.0);
             LevelEditor_CameraSpeed = TryGetSetting(settingsJson, "leveleditor_cameraspeed", 500);
+            LevelEditor_ShowSelectionOutline = TryGetSetting(settingsJson, "leveleditor_showselectionoutline", false);
             AssetDB_DefaultGame = TryGetSetting(settingsJson, "assetdb_defaultgame", "");
             AssetDBGame = TryGetSetting(settingsJson, "assetdbgame", "LE3");
             AssetDBPath = TryGetSetting(settingsJson, "assetdbpath", "");
@@ -558,8 +565,9 @@ namespace LegendaryExplorer.Misc.AppSettings
                     settingsJson["pathfindingeditor_showartlayer"] = PathfindingEditor_ShowArtLayer.ToString();
                     settingsJson["pathfindingeditor_showsplineslayer"] = PathfindingEditor_ShowSplinesLayer.ToString();
                     settingsJson["pathfindingeditor_showeverythingelselayer"] = PathfindingEditor_ShowEverythingElseLayer.ToString();
-                    settingsJson["leveleditor_cameraspeed"] = LevelEditor_CameraSpeed.ToString();
                     settingsJson["pathfindingnetworkeditor_rotationarrowminzoom"] = PathfindingNetworkEditor_RotationArrowMinZoom.ToString();
+                    settingsJson["leveleditor_cameraspeed"] = LevelEditor_CameraSpeed.ToString();
+                    settingsJson["leveleditor_showselectionoutline"] = LevelEditor_ShowSelectionOutline.ToString();
                     settingsJson["assetdb_defaultgame"] = AssetDB_DefaultGame.ToString();
                     settingsJson["assetdbgame"] = AssetDBGame.ToString();
                     settingsJson["assetdbpath"] = AssetDBPath.ToString();

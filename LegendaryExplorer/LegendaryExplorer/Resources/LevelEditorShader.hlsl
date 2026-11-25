@@ -111,12 +111,25 @@ VS_OUT VSMainTerrain(VS_IN_TERRAIN input) {
 #define FLAG_ENABLEALPHACHANNEL (1 << 5)
 
 //level editor flags
+#define FLAG_OVERLAY (1 << 25)
 #define FLAG_SPRITE (1 << 26)
 #define FLAG_HIGHLIGHTED (1 << 27)
 #define FLAG_UNLIT (1 << 28)
 #define FLAG_WIREFRAME (1 << 29)
 #define FLAG_SELECTED (1 << 30)
 #define FLAG_PRIMITIVE (1 << 31)
+
+//UE3's SelectionColor material parameter, linear: MeshRenderContext.SelectionColor, which the game's shaders are given. Like them,
+//a selected or highlighted surface's color is taken off and added on, so the tint shows on dark surfaces too
+float3 SelectionColor() {
+    return (Flags & FLAG_SELECTED) != 0 ? float3(0.04, 0.02, 0.24)
+         : (Flags & FLAG_HIGHLIGHTED) != 0 ? float3(0.35, 0.122, 0.0033)
+         : 0;
+}
+float3 ApplySelectionColor(float3 linearColor) {
+    float3 selection = SelectionColor();
+    return linearColor * (1 - selection) + selection;
+}
 
 PS_OUT PSMain(PS_IN input) {
 	PS_OUT result = (PS_OUT)0;
@@ -158,29 +171,16 @@ PS_OUT PSMain(PS_IN input) {
 	
 	// use the input normal (negative values are clamped to zero (black))
 	//result.color = float4(input.normal, 1.0);
-	
-    if ((Flags & FLAG_SELECTED) == FLAG_SELECTED)
-    {
-        result.color.b *= 2;
-        if ((Flags & FLAG_WIREFRAME) == FLAG_WIREFRAME)
-        {
-            result.color.rgba = float4(1.0, 1.0, 0, 1.0);
-        }
-    }
-    else if ((Flags & FLAG_HIGHLIGHTED) == FLAG_HIGHLIGHTED)
-    {
-        //LevelEditorRenderContext.HighlightColor, which outlines highlighted meshes
-        result.color.rgb = lerp(result.color.rgb, float3(1.0, 0.62, 0.12), 0.35);
-    }
-	
+
 	//the second render target is used for hit testing (clicking)
     result.hitTestID = float4(HitTestID, 1.0f);
-	
+
 	//ignore all that, and use vertex info
     if ((Flags & FLAG_PRIMITIVE) == FLAG_PRIMITIVE)
     {
         result.color = input.color;
-        result.hitTestID = float4(input.hitTestID, 1.0f);
+        //alpha 0 marks what's drawn over the scene, which the selection outline leaves alone (see IsOnOutline)
+        result.hitTestID = float4(input.hitTestID, (Flags & FLAG_OVERLAY) != 0 ? 0.0f : 1.0f);
         if ((Flags & FLAG_SPRITE) == FLAG_SPRITE)
         {
             //premultiplied alpha. Transparent texels are discarded, so they neither occlude nor take clicks
@@ -193,6 +193,10 @@ PS_OUT PSMain(PS_IN input) {
 	//The scene is rendered in linear space and gamma-encoded when resolved to the screen (see PSMainResolve).
 	//This shader's colors are already gamma-encoded, so decode them
     result.color.rgb = pow(abs(result.color.rgb), GAMMA);
+    if ((Flags & FLAG_PRIMITIVE) == 0)
+    {
+        result.color.rgb = (Flags & (FLAG_SELECTED | FLAG_WIREFRAME)) == (FLAG_SELECTED | FLAG_WIREFRAME) ? float3(1, 1, 0) : ApplySelectionColor(result.color.rgb);
+    }
 
 	return result;
 }
@@ -204,17 +208,9 @@ PS_OUT PSMainTerrain(PS_IN input) {
 	float lambert = saturate(dot(toLight, normalize(input.normal))) * 0.7 + 0.3;
 	if ((Flags & FLAG_UNLIT) != 0) lambert = 1.0;
 	result.color = float4(float3(0.72, 0.66, 0.54) * lambert, 1.0);
-    if ((Flags & FLAG_SELECTED) == FLAG_SELECTED)
-    {
-        result.color.b *= 2;
-        if ((Flags & FLAG_WIREFRAME) == FLAG_WIREFRAME) result.color = float4(1.0, 1.0, 0, 1.0);
-    }
-    else if ((Flags & FLAG_HIGHLIGHTED) == FLAG_HIGHLIGHTED)
-    {
-        result.color.rgb = lerp(result.color.rgb, float3(1.0, 0.62, 0.12), 0.35);
-    }
     result.hitTestID = float4(HitTestID, 1.0f);
     result.color.rgb = pow(abs(result.color.rgb), GAMMA);
+    result.color.rgb = (Flags & (FLAG_SELECTED | FLAG_WIREFRAME)) == (FLAG_SELECTED | FLAG_WIREFRAME) ? float3(1, 1, 0) : ApplySelectionColor(result.color.rgb);
 	return result;
 }
 
@@ -258,6 +254,57 @@ struct PS_OUT_RESOLVE {
     float4 hitTestID : SV_TARGET1;
 };
 
+cbuffer ResolveConstants : register(b4) {
+    int OutlinedHitID; //MeshRenderContext.OutlinedHitID: the hit proxy whose pixels are outlined, -1 for none
+};
+
+//LevelEditorRenderContext.HighlightColor
+#define OUTLINE_COLOR float3(1.0, 0.62, 0.12)
+
+float4 HitTestSample(int2 pixel, int2 size) {
+    return LOAD_SAMPLE(ResolveHitTest, clamp(pixel, 0, size - 1), 0);
+}
+bool IsOutlined(float4 hitTest) {
+    int3 bytes = int3(round(hitTest.rgb * 255));
+    return (bytes.r | (bytes.g << 8) | (bytes.b << 16)) == OutlinedHitID;
+}
+//the widget and gizmos (FLAG_OVERLAY), drawn over the scene. What they cover is unknown, so the outline neither crosses nor surrounds them
+bool IsOverlay(float4 hitTest) {
+    return hitTest.a < 0.5;
+}
+
+//The outline is drawn 1 pixel out from the outlined pixels, and 1 pixel in, so it shows against both them and what's around them
+static const int2 InnerOutlineOffsets[4] = { int2(0, -1), int2(-1, 0), int2(1, 0), int2(0, 1) };
+static const int2 OuterOutlineOffsets[8] = {
+    int2(-1, -1), int2(0, -1), int2(1, -1), int2(-1, 0), int2(1, 0), int2(-1, 1), int2(0, 1), int2(1, 1)
+};
+bool IsOnOutline(int2 pixel) {
+    if (OutlinedHitID < 0) return false;
+    uint width, height;
+#if MSAA_SAMPLES > 1
+    uint samples;
+    ResolveHitTest.GetDimensions(width, height, samples);
+#else
+    ResolveHitTest.GetDimensions(width, height);
+#endif
+    int2 size = int2(width, height);
+    float4 here = HitTestSample(pixel, size);
+    if (IsOverlay(here)) return false;
+    if (IsOutlined(here)) {
+        [unroll]
+        for (int i = 0; i < 4; i++) {
+            float4 neighbor = HitTestSample(pixel + InnerOutlineOffsets[i], size);
+            if (!IsOutlined(neighbor) && !IsOverlay(neighbor)) return true;
+        }
+        return false;
+    }
+    [unroll]
+    for (int j = 0; j < 8; j++) {
+        if (IsOutlined(HitTestSample(pixel + OuterOutlineOffsets[j], size))) return true;
+    }
+    return false;
+}
+
 PS_OUT_RESOLVE PSMainResolve(float4 pos : SV_POSITION) {
     PS_OUT_RESOLVE result;
     int2 pixel = int2(pos.xy);
@@ -279,6 +326,7 @@ PS_OUT_RESOLVE PSMainResolve(float4 pos : SV_POSITION) {
         sum += saturate(color);
     }
     result.color = float4(pow(sum / MSAA_SAMPLES, 1 / GAMMA), 1);
+    if (IsOnOutline(pixel)) result.color.rgb = OUTLINE_COLOR;
     //IDs can't be averaged, so one sample is copied
     result.hitTestID = LOAD_SAMPLE(ResolveHitTest, pixel, 0);
     return result;
@@ -292,16 +340,14 @@ cbuffer HitProxyConstants : register(b3) {
 };
 
 struct PS_OUT_HITPROXY {
-	float4 color : SV_TARGET0; //added to the scene color
+	float4 color : SV_TARGET0; //only alpha is written
     float4 hitTestID : SV_Target1;
 };
 
 PS_OUT_HITPROXY PSMainHitProxy() {
 	PS_OUT_HITPROXY result;
-    //rgb multiplies the scene color (selection highlight). alpha replaces it, marking the pixel as game-shaded for PSMainResolve
-    result.color = (HitProxyFlags & FLAG_SELECTED) == FLAG_SELECTED ? float4(0.8, 0.8, 1.6, 2.0)
-                 : (HitProxyFlags & FLAG_HIGHLIGHTED) == FLAG_HIGHLIGHTED ? float4(1.5, 1.1, 0.5, 2.0)
-                 : float4(1, 1, 1, 2.0);
+    //marks the pixel as game-shaded for PSMainResolve. The game's shaders tint selections themselves (MeshRenderContext.SelectionColor)
+    result.color = float4(0, 0, 0, GAME_SHADER_PIXEL_ALPHA);
     result.hitTestID = float4(HitProxyID, 1.0f);
 	return result;
 }

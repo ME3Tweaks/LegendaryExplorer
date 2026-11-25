@@ -42,7 +42,7 @@ public partial class MeshRenderContext
     private KeyStates PressedKeys;
     private MouseButtons PressedMouseButton;
     /// <summary>
-    /// Units per second the first-person camera moves at with WASD/QE. A scroll notch and a dragged pixel move it
+    /// Units per second the first-person camera flies at with WASD/QE, once it's up to speed. A scroll notch and a dragged pixel move it
     /// as far as that speed does in <see cref="ScrollNotchSeconds"/> and <see cref="DragPixelSeconds"/>
     /// </summary>
     public float CameraSpeed { get; set; } = DefaultCameraSpeed;
@@ -51,6 +51,13 @@ public partial class MeshRenderContext
     public const float FastCameraMultiplier = 10f;
     private const float ScrollNotchSeconds = 0.2f;
     private const float DragPixelSeconds = 1 / 60f;
+    /// <summary>
+    /// Per second, how quickly the first-person camera's velocity closes on the one WASD/QE ask for: UE3's editor camera's
+    /// MovementVelocityDampingAmount, so it eases in and out over about a tenth of a second (FEditorCameraController::UpdatePosition)
+    /// </summary>
+    private const float CameraVelocityDamping = 10f;
+    /// <summary>World-space units per second the first-person camera is coasting at</summary>
+    private Vector3 CameraVelocity;
 
     //a camera drag keeps moving the camera outside the viewport, and its release there still ends it
     public override bool HoldsMouseCapture => PressedMouseButton is not MouseButtons.None;

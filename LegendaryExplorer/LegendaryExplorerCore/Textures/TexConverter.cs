@@ -157,6 +157,12 @@ namespace LegendaryExplorerCore.Textures
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "ConvertTexture")]
         private static extern unsafe int TCConvertTexture(TextureBuffer* inputBuffer, TextureBuffer* outputBuffer);
 
+        /// <summary>TextureConvertOptionFlags in TexConverter.h.</summary>
+        private const uint TextureConvertOption_UniformWeighting = 1;
+
+        [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "ConvertTextureWithOptions")]
+        private static extern unsafe int TCConvertTextureWithOptions(TextureBuffer* inputBuffer, TextureBuffer* outputBuffer, uint options);
+
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "SaveTexture", CharSet = CharSet.Ansi)]
         private static extern unsafe int TCSaveTexture(TextureBuffer* inputBuffer, string outputFilename);
 
@@ -236,7 +242,9 @@ namespace LegendaryExplorerCore.Textures
 
         private static Lock _syncObj = new();
 
-        public static unsafe byte[] ConvertTexture(byte[] pixelData, uint width, uint height, PixelFormat inputFormat, PixelFormat outputFormat)
+        /// <param name="uniformWeighting">Weight every channel's error equally when compressing to DXT1/DXT3/DXT5, for textures that
+        /// hold data rather than colour. By default their error is weighted by luminance, so blue counts for about a tenth of green.</param>
+        public static unsafe byte[] ConvertTexture(byte[] pixelData, uint width, uint height, PixelFormat inputFormat, PixelFormat outputFormat, bool uniformWeighting = false)
         {
             byte[] result = null;
             lock (_syncObj)
@@ -261,8 +269,8 @@ namespace LegendaryExplorerCore.Textures
                         Height = height,
                         Format = GetDXGIFormatForPixelFormat(outputFormat)
                     };
-
-                    int hr = TCConvertTexture(&inputBuffer, &outputBuffer);
+                    uint options = uniformWeighting ? TextureConvertOption_UniformWeighting : 0;
+                    int hr = TCConvertTextureWithOptions(&inputBuffer, &outputBuffer, options);
                     Marshal.ThrowExceptionForHR(hr);
 
                     result = new byte[outputBuffer.PixelDataLength];

@@ -187,7 +187,26 @@ public partial class MeshRenderContext
     /// For <see cref="RenderPass.Lighting"/>: queues a light pass, which <see cref="EndLightingPass"/> draws with the light's attenuation (null if it has none).
     /// The draw sets up all its own render state
     /// </summary>
-    internal void QueueLightPass(SceneLight light, Action<ShaderResourceView> draw) => PendingLightPasses.Add((light, draw));
+    internal void QueueLightPass(SceneLight light, Action<ShaderResourceView> draw)
+    {
+        ShaderFlags tint = RenderFlags & SelectionTintFlags;
+        PendingLightPasses.Add((light, attenuation => DrawTinted(tint, () => draw(attenuation))));
+    }
+
+    //a queued pass is drawn after its mesh's flags are cleared, so it's drawn with the selection tint it was queued with
+    private void DrawTinted(ShaderFlags tint, Action draw)
+    {
+        ShaderFlags flags = RenderFlags;
+        RenderFlags = (flags & ~SelectionTintFlags) | tint;
+        try
+        {
+            draw();
+        }
+        finally
+        {
+            RenderFlags = flags;
+        }
+    }
 
     /// <summary>Draw a decal's light immediately after its base pass, before the next sorted decal.
     /// Attenuation uses the opaque receiver's scene depth; decals never write depth or cast shadows.</summary>
@@ -200,7 +219,11 @@ public partial class MeshRenderContext
     /// Queues a light pass to be drawn by <see cref="EndLightingPass"/> after the modulated shadows, so that they don't darken it. Only call if
     /// <see cref="AreModulatedShadowsActive"/>. The draw sets up all its own render state
     /// </summary>
-    internal void QueuePostModulatedShadowPass(Action draw) => PendingPostModulatedShadowPasses.Add(draw);
+    internal void QueuePostModulatedShadowPass(Action draw)
+    {
+        ShaderFlags tint = RenderFlags & SelectionTintFlags;
+        PendingPostModulatedShadowPasses.Add(() => DrawTinted(tint, draw));
+    }
 
     /// <summary>
     /// Whether light environments' modulated shadows are rendered (by <see cref="EndLightingPass"/>)

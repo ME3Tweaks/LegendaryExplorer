@@ -15,7 +15,9 @@ using Microsoft.Win32;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -47,13 +49,55 @@ public class RecentFileSet
         _ => $"{Path.GetFileName(FilePaths[0])} (+{FilePaths.Count - 1} more)"
     };
 
+    /// <summary>Where the camera was when the set was last closed. Null for a set never closed since this was recorded</summary>
+    public RecentCameraView Camera { get; set; }
+
+    /// <summary>Where the first file is: Basegame, the DLC folder it's in, or its directory if it's outside the game</summary>
     [JsonIgnore]
-    public string TooltipText => string.Join("\n", FilePaths.Select(Path.GetFileName));
+    public string LocationText => FilePaths.Count == 0 ? "" : DescribeLocation(Game, FilePaths[0]);
+
+    [JsonIgnore]
+    public string TooltipText => string.Join("\n", FilePaths);
+
+    private static string DescribeLocation(MEGame game, string filePath)
+    {
+        string directory = Path.GetDirectoryName(filePath);
+        if (game.IsLEGame())
+        {
+            if (IsUnder(directory, MEDirectories.GetCookedPath(game))) return "Basegame";
+            string dlcPath = MEDirectories.GetDLCPath(game);
+            if (IsUnder(directory, dlcPath))
+                return Path.GetRelativePath(dlcPath, directory).Split(Path.DirectorySeparatorChar)[0];
+        }
+        return directory;
+    }
+
+    private static bool IsUnder(string directory, string root)
+    {
+        if (string.IsNullOrEmpty(root)) return false;
+        string relative = Path.GetRelativePath(root, directory);
+        return relative != ".." && !relative.StartsWith(".." + Path.DirectorySeparatorChar) && !Path.IsPathRooted(relative);
+    }
+}
+
+/// <summary>The perspective camera's eye and rotation (radians), as <see cref="Scene3D.SceneCamera"/> has them</summary>
+public class RecentCameraView
+{
+    public float X { get; set; }
+    public float Y { get; set; }
+    public float Z { get; set; }
+    public float Pitch { get; set; }
+    public float Yaw { get; set; }
 }
 
 public partial class LevelEditor
 {
+    private const int MaxRecentSets = 20;
+
     public ObservableCollectionExtended<RecentFileSet> RecentSets { get; } = [];
+
+    /// <summary>The camera of the recent set being opened, which its first file starts at instead of the level's own view</summary>
+    private RecentCameraView pendingRecentCamera;
 
     private static string RecentSetsFile => Path.Combine(
         Directory.CreateDirectory(Path.Combine(AppDirectories.AppDataFolder, "LevelEditor")).FullName,
@@ -90,43 +134,62 @@ public partial class LevelEditor
         if (OpenFiles.Count == 0) return;
         var currentPaths = OpenFiles.Select(f => f.FilePath).ToList();
 
-        for (int i = 0; i < RecentSets.Count; i++)
-        {
-            var existing = RecentSets[i].FilePaths;
-            if (existing.Count > 0 && existing[0] == currentPaths[0])
-            {
-                RecentSets.RemoveAt(i);
-            }
-        }
+        //(the set keeps its camera until it's closed again)
+        RecentCameraView camera = FindRecentSet(currentPaths[0])?.Camera;
+        RecentSets.RemoveAll(set => set.FilePaths.Count > 0 && IsSameFile(set.FilePaths[0], currentPaths[0]));
 
         RecentSets.Insert(0, new RecentFileSet
         {
             Game = Game,
             FilePaths = currentPaths,
-            ReadOnlyFilePaths = OpenFiles.Where(f => f.IsReadOnly).Select(f => f.FilePath).ToList()
+            ReadOnlyFilePaths = OpenFiles.Where(f => f.IsReadOnly).Select(f => f.FilePath).ToList(),
+            Camera = camera
         });
 
-        while (RecentSets.Count > 10)
+        while (RecentSets.Count > MaxRecentSets)
             RecentSets.RemoveAt(RecentSets.Count - 1);
 
+        SaveRecentSets();
+    }
+
+    private RecentFileSet FindRecentSet(string firstFilePath) =>
+        RecentSets.FirstOrDefault(set => set.FilePaths.Count > 0 && IsSameFile(set.FilePaths[0], firstFilePath));
+
+    private static bool IsSameFile(string a, string b) => string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Stores where the camera is with the open files' recent set, which reopening it from Recent returns to</summary>
+    private void RememberCameraInRecents()
+    {
+        if (IsBakePreview || OpenFiles.Count == 0 || FindRecentSet(OpenFiles[0].FilePath) is not { } set) return;
+        (Vector3 position, float pitch, float yaw) = RenderContext.Camera.PerspectiveView;
+        set.Camera = new RecentCameraView { X = position.X, Y = position.Y, Z = position.Z, Pitch = pitch, Yaw = yaw };
         SaveRecentSets();
     }
 
     private async void OpenRecentFileSet(RecentFileSet set)
     {
         if (!ConfirmCloseFiles("Open the new files anyway?")) return;
+        //(this stores the camera of the files open now, which may be this set)
         CloseAllFiles();
 
         using var guard = new RenderGuard(this);
 
-        var paths = set.FilePaths.Where(File.Exists).ToList();
-        for (int i = 0; i < paths.Count; i++)
+        pendingRecentCamera = set.Camera;
+        try
         {
-            string path = paths[i];
-            await AddLevelFile(path, i + 1, paths.Count).ConfigureAwait(true);
-            var openFile = OpenFiles.LastOrDefault(f => f.FilePath == path);
-            if (openFile is not null && set.ReadOnlyFilePaths.Contains(path))
-                openFile.IsReadOnly = true;
+            var paths = set.FilePaths.Where(File.Exists).ToList();
+            for (int i = 0; i < paths.Count; i++)
+            {
+                string path = paths[i];
+                await AddLevelFile(path, i + 1, paths.Count).ConfigureAwait(true);
+                var openFile = OpenFiles.LastOrDefault(f => f.FilePath == path);
+                if (openFile is not null && set.ReadOnlyFilePaths.Contains(path))
+                    openFile.IsReadOnly = true;
+            }
+        }
+        finally
+        {
+            pendingRecentCamera = null;
         }
     }
 
@@ -138,7 +201,7 @@ public partial class LevelEditor
         {
             var mi = new MenuItem
             {
-                Header = set.DisplayName.Replace("_", "__"),
+                Header = $"{set.DisplayName}  ({set.LocationText})".Replace("_", "__"),
                 ToolTip = set.TooltipText,
                 Tag = set
             };

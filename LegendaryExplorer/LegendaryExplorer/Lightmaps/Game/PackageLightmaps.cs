@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using LegendaryExplorerCore.Packages;
@@ -98,24 +99,52 @@ public static class PackageLightmaps
         var top = texture.GetTopMip();
         var data = texture.GetImageBytesForMip(top, package.Game, useLowerMipsIfTFCMissing: false, out _);
         string format = export.GetProperty<EnumProperty>("Format")?.Value.Name ?? "?";
-        byte[] rgb = format switch
-        {
-            "PF_DXT1" => Codec.Dxt1.Decode(data, top.width, top.height),
-            "PF_A8R8G8B8" => BgraToRgb(data, top.width * top.height),
-            _ => throw new NotSupportedException($"{export.InstancedFullPath}: unsupported lightmap format {format}"),
-        };
+        byte[] rgb = DecodeRgb(data, format, top.width, top.height)
+            ?? throw new NotSupportedException($"{export.InstancedFullPath}: unsupported lightmap format {format}");
         return new DecodedTexture(export, format, top.width, top.height, rgb, data);
     }
 
-    /// <summary>PF_A8R8G8B8 is D3DFMT_A8R8G8B8: bytes B, G, R, A in memory.</summary>
-    static byte[] BgraToRgb(byte[] bgra, int texels)
+    /// <summary>RGB bytes of a lightmap mip of any size, or null for a format lightmaps don't use.</summary>
+    /// <exception cref="InvalidDataException">The data is too short for the mip.</exception>
+    public static byte[] DecodeRgb(byte[] data, string format, int width, int height)
     {
-        var rgb = new byte[texels * 3];
-        for (int i = 0; i < texels; i++)
+        int blockBytes = format switch { "PF_DXT1" => 8, "PF_BC7" => 16, _ => 0 };
+        if (format == "PF_A8R8G8B8")
         {
-            rgb[i * 3] = bgra[i * 4 + 2];
-            rgb[i * 3 + 1] = bgra[i * 4 + 1];
-            rgb[i * 3 + 2] = bgra[i * 4];
+            RequireLength(data, width * height * 4, format, width, height);
+            return BgraToRgb(data, width, width, height);
+        }
+        if (blockBytes == 0) return null;
+
+        // Blocks cover the mip's texels rounded up to 4 on each side (a mip below 4x4 is one block): decode them all, keep the mip's
+        int blocksX = (width + 3) / 4, blocksY = (height + 3) / 4;
+        int length = blocksX * blocksY * blockBytes;
+        RequireLength(data, length, format, width, height);
+        int paddedWidth = blocksX * 4, paddedHeight = blocksY * 4;
+        // Decoded as PF_A8R8G8B8 is stored: B, G, R, A
+        var bgra = LegendaryExplorerCore.Textures.Image.convertRawToARGB(data.Length == length ? data : data[..length], ref paddedWidth, ref paddedHeight,
+            LegendaryExplorerCore.Textures.Image.getPixelFormatType(format));
+        return BgraToRgb(bgra, paddedWidth, width, height);
+    }
+
+    static void RequireLength(byte[] data, int length, string format, int width, int height)
+    {
+        if (data == null || data.Length < length)
+            throw new InvalidDataException($"A {width}x{height} {format} mip needs {length} bytes, but has {data?.Length ?? 0}.");
+    }
+
+    /// <summary>The top-left width x height texels of a BGRA image whose rows are <paramref name="stride"/> texels long, as RGB.</summary>
+    /// <remarks>PF_A8R8G8B8 is D3DFMT_A8R8G8B8: bytes B, G, R, A in memory.</remarks>
+    static byte[] BgraToRgb(byte[] bgra, int stride, int width, int height)
+    {
+        var rgb = new byte[width * height * 3];
+        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
+        {
+            int s = (y * stride + x) * 4, d = (y * width + x) * 3;
+            rgb[d] = bgra[s + 2];
+            rgb[d + 1] = bgra[s + 1];
+            rgb[d + 2] = bgra[s];
         }
         return rgb;
     }

@@ -26,6 +26,8 @@ public sealed class LightmassBakeSettings
     /// <summary>Original path of the cache copied into TfcDirectory for a preview.</summary>
     internal string CopiedCacheSource;
     public string TfcName = "Textures_DLC_MOD_LEXLightmaps";
+    /// <summary>The format of the colour atlases the bake writes.</summary>
+    public LightmapTextureFormat TextureFormat = LightmapTextureFormats.Default;
     /// <summary>
     /// Atlases get new allocations (AtlasPacker) instead of keeping the original layout. Not offered in the Lightmass Baker: it trashes and
     /// replaces the atlases, which is for testing the rewriter's write path.
@@ -79,7 +81,7 @@ public static class LightmassBake
         string lightmassExe = Path.Combine(win64, "UnrealLightmass.exe");
         if (!File.Exists(lightmassExe)) throw new FileNotFoundException("UnrealLightmass.exe wasn't found in the UDK's Binaries\\Win64 folder", lightmassExe);
         var ini = DuplicatingIni.LoadIni(Path.Combine(settings.UdkBinaries, "..", "Engine", "Config", "BaseLightmass.ini"));
-        if (settings.BioWareLightmassSettings && levels.Count > 0 && levels[0].Game == MEGame.LE3) ini.ApplyBioWareOverrides();
+        if (settings.BioWareLightmassSettings && levels.Count > 0 && levels[0].Game.IsLEGame3()) ini.ApplyBioWareOverrides();
 
         var timer = Stopwatch.StartNew();
         log("Gathering the scene...");
@@ -276,8 +278,8 @@ public static class LightmassBake
         foreach (var package in packages)
         {
             cancel.ThrowIfCancellationRequested();
-            var summary = new LightmapRewriter(package, tfc, ByteEncoding.Gamma22, source, VectorBrightness).RewriteAll(settings.Repack);
-            LightmassMappingAllocator.Write(package, tfc, scene, result.Results, summary);
+            var summary = new LightmapRewriter(package, tfc, ByteEncoding.Gamma22, source, VectorBrightness, settings.TextureFormat).RewriteAll(settings.Repack);
+            LightmassMappingAllocator.Write(package, tfc, scene, result.Results, summary, cache, settings.TextureFormat);
             result.Rewrites[package] = summary;
             log($"{package.FileNameNoExtension}: {LightmassBakeReport.LightmapLine(summary)}");
             var shadows = result.ShadowMaps[package] = new LightmassShadowMapWriter(package, tfc, scene, result.Results).Write(summary.AppliedLightmaps, summary.ShadowOnlyAllocations);

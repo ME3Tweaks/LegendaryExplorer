@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using LegendaryExplorer.Lightmaps.Game;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -149,6 +150,10 @@ public abstract class LightmassMapping
     public abstract int Cost { get; }
     /// <summary>Whether Lightmass pads the texture mapping (bPadMappings: the lightmap UVs' 0..1 covers the interior). Terrain isn't padded.</summary>
     public virtual bool Padded => true;
+    /// <summary>The world-space box of what's mapped</summary>
+    public Vector3 BoundsMin, BoundsMax;
+    /// <summary>The sphere round <see cref="BoundsMin"/> and <see cref="BoundsMax"/>, or null if they're unset; it keeps streamed atlases to nearby primitives (<see cref="AtlasPacker"/>)</summary>
+    public (Vector3 Center, float Radius)? BoundingSphere => BoundsMin == BoundsMax ? null : ((BoundsMin + BoundsMax) / 2, Vector3.Distance(BoundsMin, BoundsMax) / 2);
 }
 
 /// <summary>One LOD of a static mesh component: a Lightmass mesh instance, with a solve task when it has compatible precomputed output.</summary>
@@ -161,7 +166,6 @@ public sealed class LightmassInstance : LightmassMapping
     /// <summary>Null for ordinary static meshes; Lightmass applies this deformation to the shared source mesh.</summary>
     public SplineMeshDeformation Spline;
     public string VertexFactoryType => Spline == null ? "FLocalVertexFactory" : "FSplineMeshVertexFactory";
-    public Vector3 BoundsMin, BoundsMax;
     public int MeshIndex, LevelId;
     public bool CastShadow, CastShadowAsTwoSided;
     /// <summary>bSelfShadowOnly: the mesh only shadows itself (GI_INSTANCE_SELFSHADOWONLY)</summary>
@@ -198,7 +202,6 @@ public sealed class LightmassBspMapping : LightmassMapping
     public List<LightmapRef> Lightmaps = [];
     public int LevelId;
     public bool CastShadowAsTwoSided;
-    public Vector3 BoundsMin, BoundsMax;
     public List<LightmassLight> RelevantLights = [];
     public List<LightmassElement> Elements = [];
     public List<LightmassBspVertex> Vertices = [];
@@ -249,7 +252,6 @@ public sealed class LightmassTerrainMapping : LightmassMapping
     public bool CastShadow, SelfShadowOnly, BilinearFilter;
     public int SectionBaseX, SectionBaseY, SectionSizeX, SectionSizeY, TrueSectionSizeX, TrueSectionSizeY, ExpandQuadsX, ExpandQuadsY;
     public Matrix4x4 LocalToWorld;
-    public Vector3 BoundsMin, BoundsMax;
     public TerrainPatchBounds[] PatchBounds;
     /// <summary>The section's visible quads, relative to its base, including the expanded border.</summary>
     public List<(int X, int Y)> Quads = [];
@@ -371,7 +373,7 @@ public sealed class LightmassSceneBuilder : IDisposable
             hasShadowOnlyReceivers |= package.Exports.Where(IsStaticMeshComponent)
                 .Any(e => ObjectBinary.From<StaticMeshComponent>(e).LODData.Any(l => l.LightMap.LightMapType == ELightMapType.LMT_None
                     && (l.ShadowMaps.Length > 0 || l.ShadowVertexBuffers.Length > 0)));
-            var levelExport = package.Exports.FirstOrDefault(e => e.ClassName == "Level" && e.ObjectName.Name == "PersistentLevel");
+            var levelExport = package.GetLevel();
             if (levelExport == null) { scene.Count($"{package.FileNameNoExtension}: no PersistentLevel"); continue; }
             levelBinaries.Add((package, ObjectBinary.From<Level>(levelExport)));
         }
@@ -731,7 +733,7 @@ public sealed class LightmassSceneBuilder : IDisposable
     /// <param name="relevantLights">Those whose radius reaches the primitive (<see cref="ReachesBox"/>): UE3's sphere test admits lights that light none of it,
     /// which the vanilla bakes leave out</param>
     public static bool NeedsNewLightmap(MEGame game, IEnumerable<LightmassLight> relevantLights) =>
-        game is MEGame.LE3 || relevantLights.Any(l => !l.ShadowOnly && !l.Light.IsDominant);
+        game.IsLEGame3() || relevantLights.Any(l => !l.ShadowOnly && !l.Light.IsDominant);
 
     /// <summary>
     /// Whether a primitive without a lightmap gets a new mapping to solve. Without a lightmap it still needs an output for its shadow maps:

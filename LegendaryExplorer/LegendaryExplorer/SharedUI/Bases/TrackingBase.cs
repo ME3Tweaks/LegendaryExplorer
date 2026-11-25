@@ -17,7 +17,7 @@ namespace LegendaryExplorer.SharedUI.Bases
         /// <summary>
         /// Base constructor for tracking windows. Specify track telemetry if this is a tool - if this is not a tool (e.g. a dialog) SET IT TO FALSE to only perform memory tracking.
         /// </summary>
-        protected TrackingNotifyPropertyChangedWindowBase(string trackingName, bool trackTelemetry)
+        protected TrackingNotifyPropertyChangedWindowBase(string trackingName, bool trackTelemetry, bool followAppTheme = true) : base(followAppTheme)
         {
             MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended($"[TrackingWindow] {trackingName}", new WeakReference(this)));
             if (trackTelemetry)

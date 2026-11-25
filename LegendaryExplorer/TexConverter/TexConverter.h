@@ -41,6 +41,20 @@ HRESULT EXPORT Dispose();
  */
 HRESULT EXPORT ConvertTexture(const TextureBuffer* inputBuffer, TextureBuffer* outputBuffer);
 
+// Opt-in conversion options. ConvertTexture keeps its behavior.
+// Unknown bits return E_INVALIDARG.
+enum TextureConvertOptionFlags : uint32_t {
+    TextureConvertOption_None = 0,
+    // Weight every channel's error equally when compressing to BC1-BC3, for textures that hold data rather than colour.
+    // The default weights by luminance, so blue error counts for about a tenth of green.
+    TextureConvertOption_UniformWeighting = 1
+};
+
+/**
+ * @brief ConvertTexture with options (TextureConvertOptionFlags).
+ */
+HRESULT EXPORT ConvertTextureWithOptions(const TextureBuffer* inputBuffer, TextureBuffer* outputBuffer, uint32_t options);
+
 /**
  * @brief Saves the given texture to the given filename.
  * 

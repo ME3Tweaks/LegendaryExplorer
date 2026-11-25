@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using LegendaryExplorer.Lightmaps.Codec;
 using LegendaryExplorer.Lightmaps.Game;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -144,7 +145,7 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
     /// <summary>Packs the pending shadow maps into atlases, writes the textures and makes a ShadowMap2D for each. Returns the new textures.</summary>
     List<(ExportEntry Texture, Atlas Atlas)> WriteAtlases(List<Pending> pending, Dictionary<LightmapRef, HashSet<int>> oldTextures, Summary summary)
     {
-        var levelExport = package.Exports.FirstOrDefault(e => e.ClassName == "Level" && e.ObjectName.Name == "PersistentLevel");
+        var levelExport = package.GetLevel();
         var streamingSources = levelExport == null ? new HashSet<int>() : ObjectBinary.From<Level>(levelExport).TextureToInstancesMap
             .Where(kv => kv.Value.Instances.Length > 0).Select(kv => kv.Key).ToHashSet();
         var requests = pending.Select(p =>
@@ -152,9 +153,10 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
             bool padded = p.Mapping.Padded && p.Result.SizeX > 2 && p.Result.SizeY > 2;
             int pad = padded ? 1 : 0;
             bool sdf = p.Shadow.SignedDistanceField;
-            // New receivers (and later rebakes of them) have no streaming instances to inherit. Keep their shadows resident.
+            // A receiver whose lightmap has no streaming instances has none to inherit: BSP, terrain, a LOD past the first, a vertex-lit or shadow-only
+            // mesh, one with bIgnoreInstanceForTextureStreaming, or an LE3 mesh whose owner isn't static. Keep its shadows resident.
             bool streamed = sdf && p.Targets.All(t => StreamingSourceTextures(t, oldTextures).Any(streamingSources.Contains));
-            return new AtlasRequest(p, sdf ? "sdf" : "vis", p.Result.SizeX - 2 * pad, p.Result.SizeY - 2 * pad, Streamed: streamed, Bounds(p.Mapping), pad);
+            return new AtlasRequest(p, sdf ? "sdf" : "vis", p.Result.SizeX - 2 * pad, p.Result.SizeY - 2 * pad, Streamed: streamed, p.Mapping.BoundingSphere, pad);
         });
         var created = new List<(ExportEntry, Atlas)>();
         foreach (var atlas in AtlasPacker.Pack(requests))
@@ -199,18 +201,6 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
             }
         }
         return created;
-    }
-
-    static (Vector3 Center, float Radius)? Bounds(LightmassMapping m)
-    {
-        var (min, max) = m switch
-        {
-            LightmassInstance i => (i.BoundsMin, i.BoundsMax),
-            LightmassBspMapping b => (b.BoundsMin, b.BoundsMax),
-            LightmassTerrainMapping t => (t.BoundsMin, t.BoundsMax),
-            _ => (Vector3.Zero, Vector3.Zero),
-        };
-        return min == max ? null : ((min + max) / 2, Vector3.Distance(min, max) / 2);
     }
 
     ExportEntry NewTexture()
@@ -322,7 +312,7 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
     /// <summary>The level's texture streaming map: each new streamed atlas gets the instances of the textures its primitives used.</summary>
     void InheritStreamingInstances(List<(ExportEntry Texture, Atlas Atlas)> created, Dictionary<LightmapRef, HashSet<int>> oldTextures, HashSet<int> unused)
     {
-        var levelExport = package.Exports.FirstOrDefault(e => e.ClassName == "Level" && e.ObjectName.Name == "PersistentLevel");
+        var levelExport = package.GetLevel();
         if (levelExport == null) return;
         var level = ObjectBinary.From<Level>(levelExport);
         var map = level.TextureToInstancesMap;

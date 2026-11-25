@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using LegendaryExplorer.Lightmaps.Game;
+using LegendaryExplorer.Tools.LevelEditor;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -43,6 +45,10 @@ public sealed class LightmassBakeJob
 
     /// <summary>Uses the Lightmass settings BioWare changed for ME3 (<see cref="LightmassIni.ApplyBioWareOverrides"/>) instead of UDK's stock ones.</summary>
     public bool BioWareLightmassSettings { get; set; } = true;
+
+    /// <summary>The format of the baked colour atlases. Jobs saved before it existed get the default too.</summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public LightmapTextureFormat TextureFormat { get; set; } = LightmapTextureFormats.Default;
 
     /// <summary>Name of the texture file cache the streamed lightmap textures go in. An existing cache of that name is added to.</summary>
     public string TfcName { get; set; } = "Textures_DLC_MOD_LEXLightmaps";
@@ -91,6 +97,7 @@ public sealed class LightmassBakeJob
     {
         var problems = new List<string>();
         if (!Enum.IsDefined(AssignmentPolicy)) problems.Add("Unknown light assignment policy.");
+        if (!Enum.IsDefined(TextureFormat)) problems.Add("Unknown lightmap texture format.");
         if (ResolvedUdkBinaries is not { } udk)
             problems.Add($"Choose UDK's Binaries folder: SwarmAgent.exe version {RequiredSwarmVersion} is required (February 2015 UDK).");
         else
@@ -162,14 +169,11 @@ public sealed class LightmassBakeJob
     {
         using var package = MEPackageHandler.OpenMEPackage(persistentPath, forceLoadFromDisk: true);
         string folder = Path.GetDirectoryName(persistentPath);
-        var loaded = MELoadedFiles.GetFilesLoadedInGame(package.Game);
         var result = new List<string>();
         foreach (var export in package.Exports.Where(e => e.ClassName.StartsWith("LevelStreaming")))
         {
             if (export.GetProperty<NameProperty>("PackageName")?.Value.Instanced is not { Length: > 0 } name) continue;
-            string fileName = name + ".pcc";
-            string local = Path.Combine(folder, fileName);
-            string path = File.Exists(local) ? local : loaded.TryGetValue(fileName, out var p) ? p : null;
+            string path = RelatedLevelFiles.Find(name + ".pcc", folder, package.Game);
             if (path != null && !result.Contains(path, StringComparer.OrdinalIgnoreCase)) result.Add(path);
         }
         return result;
@@ -220,6 +224,7 @@ public sealed class LightmassBakeJob
                 Quality = Quality,
                 BioWareLightmassSettings = BioWareLightmassSettings,
                 TfcName = TfcName,
+                TextureFormat = TextureFormat,
                 TfcDirectory = preview.TemporaryDirectory,
                 CopiedCacheSource = preview.CopiedCacheSource,
                 Scene = new LightmassSceneOptions { ContextOnly = contextOnly, AssignmentPolicy = AssignmentPolicy },
@@ -237,8 +242,8 @@ public sealed class LightmassBakeJob
 
     public static void ValidateGame(MEGame game, MEGame sceneGame)
     {
-        if (game is not (MEGame.LE1 or MEGame.LE2 or MEGame.LE3))
-            throw new NotSupportedException($"{game} levels cannot be baked; choose LE1, LE2 or LE3 levels.");
+        if (!game.IsLEGame())
+            throw new NotSupportedException($"{game} levels cannot be baked; choose Legendary Edition levels.");
         if (game != sceneGame) throw new NotSupportedException($"A bake cannot mix {sceneGame} and {game} packages.");
     }
 

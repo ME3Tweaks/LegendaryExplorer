@@ -66,6 +66,9 @@ public partial class MeshRenderContext
     private VertexShader ResolveVertexShader;
     //tonemaps pixels rendered with game shaders, to match how the game displays HDR scene color
     private PixelShader ResolvePixelShader;
+    //ResolveConstants in LevelEditorShader.hlsl
+    private SharpDX.Direct3D11.Buffer ResolveConstantBuffer;
+    private const int RESOLVE_CONSTANT_BUFFER_SLOT = 4;
     private const float DisplayGamma = 2.2f;
     public LEEffect LEEffect { get; private set; }
     private Texture2D DefaultTexture;
@@ -280,6 +283,8 @@ public partial class MeshRenderContext
         {
             ResolvePixelShader = new PixelShader(Device, resolvePSBytecode);
         }
+        //(constant buffers are a multiple of 16 bytes)
+        ResolveConstantBuffer = new SharpDX.Direct3D11.Buffer(Device, 16, ResourceUsage.Default, BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
         //create fallback textures
         WhiteTextureCube = CreateWhiteTextureCube();
@@ -438,6 +443,7 @@ public partial class MeshRenderContext
         RegularTerrainIndices.Clear();
         ResolveVertexShader?.Dispose();
         ResolvePixelShader?.Dispose();
+        ResolveConstantBuffer?.Dispose();
         LEEffect?.Dispose();
         LightAttenuations.Dispose();
         FillRasterizerState?.Dispose();

@@ -55,6 +55,24 @@ public partial class MeshRenderContext : RenderContext
     /// </summary>
     public ShaderFlags RenderFlags = ShaderFlags.EnableRedChannel | ShaderFlags.EnableGreenChannel | ShaderFlags.EnableBlueChannel | ShaderFlags.EnableAlphaChannel;
 
+    /// <summary>The flags that tint what's drawn, which <see cref="SelectionColor"/> follows</summary>
+    public const ShaderFlags SelectionTintFlags = ShaderFlags.Selected | ShaderFlags.Highlighted;
+    //UE3's DefaultSelectedMaterialColor (BaseEngine.ini)
+    private static readonly Vector4 SelectedMaterialColor = new(0.04f, 0.02f, 0.24f, 1);
+    //LevelEditorRenderContext.HighlightColor, linear, at 35%
+    private static readonly Vector4 HighlightedMaterialColor = new(0.35f, 0.122f, 0.0033f, 1);
+
+    /// <summary>
+    /// UE3's SelectionColor material parameter for what's being drawn: every game material adds it to its emissive and takes it off its diffuse
+    /// (FMaterialResource::CompileProperty), so it shows on dark surfaces and in every light pass. LevelEditorShader.hlsl's SelectionColor() matches it
+    /// </summary>
+    public Vector4 SelectionColor => (RenderFlags & ShaderFlags.Selected) != 0 ? SelectedMaterialColor
+        : (RenderFlags & ShaderFlags.Highlighted) != 0 ? HighlightedMaterialColor
+        : Vector4.Zero;
+
+    /// <summary>The hit proxy ID whose pixels the resolve outlines; -1 for none</summary>
+    public int OutlinedHitID { get; set; } = -1;
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct WorldConstants
     {
@@ -232,6 +250,10 @@ public partial class MeshRenderContext : RenderContext
             FPS = MathF.Round(frameDelta / fpsDelta);
         }
 
+        if (!Camera.FirstPerson || Camera.IsOrthographic)
+        {
+            CameraVelocity = Vector3.Zero;
+        }
         if (Camera.IsOrthographic)
         {
             float panSpeed = Camera.OrthoWidth * 0.5f;
@@ -256,30 +278,23 @@ public partial class MeshRenderContext : RenderContext
         }
         else if (Camera.FirstPerson)
         {
-            float distance = timestep * CameraSpeed * (PressedKeys.HasFlag(KeyStates.Shift) ? FastCameraMultiplier : 1);
-            if (PressedKeys.HasFlag(KeyStates.W))
+            Vector3 direction = Vector3.Zero;
+            if (PressedKeys.HasFlag(KeyStates.W)) direction += Camera.CameraForward;
+            if (PressedKeys.HasFlag(KeyStates.S)) direction -= Camera.CameraForward;
+            if (PressedKeys.HasFlag(KeyStates.A)) direction -= Camera.CameraRight;
+            if (PressedKeys.HasFlag(KeyStates.D)) direction += Camera.CameraRight;
+            if (PressedKeys.HasFlag(KeyStates.Q)) direction -= Vector3.UnitZ;
+            if (PressedKeys.HasFlag(KeyStates.E)) direction += Vector3.UnitZ;
+            Vector3 target = direction * (CameraSpeed * (PressedKeys.HasFlag(KeyStates.Shift) ? FastCameraMultiplier : 1));
+
+            //UE3 steps dv/dt = Damping * (target - v) once a frame; this is its exact solution, so the easing doesn't depend on the frame rate
+            float decay = MathF.Exp(-CameraVelocityDamping * timestep);
+            Vector3 lag = CameraVelocity - target;
+            Camera.Position += target * timestep + lag * ((1 - decay) / CameraVelocityDamping);
+            CameraVelocity = target + lag * decay;
+            if (CameraVelocity.LengthSquared() < 1e-4f)
             {
-                Camera.Position += Camera.CameraForward * distance;
-            }
-            if (PressedKeys.HasFlag(KeyStates.S))
-            {
-                Camera.Position -= Camera.CameraForward * distance;
-            }
-            if (PressedKeys.HasFlag(KeyStates.A))
-            {
-                Camera.Position -= Camera.CameraRight * distance;
-            }
-            if (PressedKeys.HasFlag(KeyStates.D))
-            {
-                Camera.Position += Camera.CameraRight * distance;
-            }
-            if (PressedKeys.HasFlag(KeyStates.Q))
-            {
-                Camera.Position -= Vector3.UnitZ * distance;
-            }
-            if (PressedKeys.HasFlag(KeyStates.E))
-            {
-                Camera.Position += Vector3.UnitZ * distance;
+                CameraVelocity = Vector3.Zero;
             }
         }
 
@@ -366,8 +381,16 @@ public partial class MeshRenderContext : RenderContext
         base.Render();
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    private struct ResolveConstants
+    {
+        public int OutlinedHitID;
+        private readonly int Padding0, Padding1, Padding2;
+    }
+
     /// <summary>
-    /// Resolves the multisampled linear scene color into the gamma-encoded backbuffer, and copies the hit proxy IDs into <see cref="HitBuffer"/>
+    /// Resolves the multisampled linear scene color into the gamma-encoded backbuffer, outlining <see cref="OutlinedHitID"/>'s pixels, and copies the hit proxy
+    /// IDs into <see cref="HitBuffer"/>
     /// </summary>
     private void ResolveSceneColor()
     {
@@ -380,6 +403,9 @@ public partial class MeshRenderContext : RenderContext
         ImmediateContext.PixelShader.Set(ResolvePixelShader);
         ImmediateContext.PixelShader.SetShaderResource(0, SceneColorResourceView);
         ImmediateContext.PixelShader.SetShaderResource(1, HitBufferMSResourceView);
+        var constants = new ResolveConstants { OutlinedHitID = OutlinedHitID };
+        ImmediateContext.UpdateSubresource(ref constants, ResolveConstantBuffer);
+        ImmediateContext.PixelShader.SetConstantBuffer(RESOLVE_CONSTANT_BUFFER_SLOT, ResolveConstantBuffer);
 
         ImmediateContext.Draw(3, 0);
 

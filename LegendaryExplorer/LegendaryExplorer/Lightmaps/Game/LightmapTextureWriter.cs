@@ -6,6 +6,7 @@ using LegendaryExplorer.Lightmaps.Codec;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Texture2D = LegendaryExplorerCore.Unreal.Classes.Texture2D;
@@ -149,7 +150,7 @@ public static class LightmapTextureWriter
 {
     const int PackageStoredMips = 6;
 
-    /// <param name="levels">Encoded data per level, top first: DXT1 blocks or BGRA bytes (MipChain.EncodeDxt1 / EncodeBgra).</param>
+    /// <param name="levels">Encoded data per level, top first: DXT1 or BC7 blocks, or BGRA bytes (<see cref="Encode"/>).</param>
     /// <param name="sizeX">Top level size; lower levels are max(1, size >> i), as UE3 records them.</param>
     /// <param name="srgb">Serialized SRGB: false for LightMapVector_Dir; null leaves the property absent (default TRUE).</param>
     public static void Write(ExportEntry export, string pixelFormat, int sizeX, int sizeY, List<byte[]> levels, TfcWriter tfc, bool? srgb)
@@ -222,7 +223,50 @@ public static class LightmapTextureWriter
         export.Data = ms.ToArray();
     }
 
-    /// <summary>Nominal texture sizes for a chain of MipChain levels (lower DXT1 levels are stored as whole 4x4 blocks).</summary>
-    public static List<byte[]> Encode(List<MipLevel> levels, string pixelFormat) =>
-        pixelFormat == "PF_DXT1" ? MipChain.EncodeDxt1(levels) : MipChain.EncodeBgra(levels);
+    /// <summary>
+    /// The stored data of each MipChain level in a pixel format, top first. Block-compressed levels are whole 4x4 blocks: MipChain makes
+    /// their levels at least 4 texels on a side (MipChain.MinMipSize), however small UE3 records the lower mips.
+    /// </summary>
+    public static List<byte[]> Encode(List<MipLevel> levels, string pixelFormat) => pixelFormat switch
+    {
+        // Opaque alpha: BC1 makes any texel below 255 punch-through black, and BC7 then spends every bit on colour. Uniform weighting:
+        // the channels are scaled and biased separately per allocation, and some atlases hold coefficients rather than colour, so an
+        // error costs the same in each (BC1 otherwise weights it by luminance; BC7 doesn't weight)
+        "PF_DXT1" or "PF_BC7" => MipChain.EncodeBgra(levels, alpha: 255).Select((bgra, i) => TexConverter.ConvertTexture(bgra,
+            (uint)levels[i].Width, (uint)levels[i].Height, LegendaryExplorerCore.Textures.PixelFormat.ARGB, Image.getPixelFormatType(pixelFormat),
+            uniformWeighting: true)).ToList(),
+        _ => MipChain.EncodeBgra(levels),
+    };
+}
+
+/// <summary>
+/// The pixel format of the colour atlases a bake writes. The LMT_4 direction atlas stays PF_A8R8G8B8, and atlases the bake leaves
+/// untouched keep their own format, so a level can end up with both.
+/// </summary>
+public enum LightmapTextureFormat
+{
+    /// <summary>PF_BC7: twice DXT1's size, without its banding.</summary>
+    BC7,
+    /// <summary>PF_DXT1, as the games' own lightmaps.</summary>
+    DXT1,
+}
+
+public static class LightmapTextureFormats
+{
+    /// <summary>The bake's format unless a job chooses another.</summary>
+    public const LightmapTextureFormat Default = LightmapTextureFormat.BC7;
+
+    public static string PixelFormat(this LightmapTextureFormat format) => format switch
+    {
+        LightmapTextureFormat.BC7 => "PF_BC7",
+        LightmapTextureFormat.DXT1 => "PF_DXT1",
+        _ => throw new ArgumentOutOfRangeException(nameof(format), format, null),
+    };
+
+    public static string Describe(this LightmapTextureFormat format) => format switch
+    {
+        LightmapTextureFormat.BC7 => "BC7 (larger, fewer compression artifacts)",
+        LightmapTextureFormat.DXT1 => "DXT1 (smaller, UE3's default)",
+        _ => throw new ArgumentOutOfRangeException(nameof(format), format, null),
+    };
 }

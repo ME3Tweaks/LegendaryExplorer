@@ -153,7 +153,7 @@ public partial class LevelEditor
 
         if (isFirstFile)
         {
-            CenterView();
+            PlaceStartingCamera(levelExport);
         }
 
         if (ignoredClasses.Count > 0)
@@ -201,6 +201,7 @@ public partial class LevelEditor
 
     private void CloseAllFiles()
     {
+        RememberCameraInRecents();
         CancelViewportDrag();
         Game = MEGame.Unknown;
         // Through SelectActor, so that the details panes stop showing (and offering to select) the closed levels' actors
@@ -303,6 +304,7 @@ public partial class LevelEditor
 
     private void CloseFileCore(OpenLevelFile file)
     {
+        if (OpenFiles.Count == 1) RememberCameraInRecents();
         CancelViewportDrag();
         if (SelectedActor is not null && file.Actors.Contains(SelectedActor))
         {
@@ -394,7 +396,7 @@ public partial class LevelEditor
             List<(string filename, string path)> candidates = [];
             var regex = new Regex($"^Bio[PDA]_{realLevelIdent}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             var openFilePaths = OpenFiles.Select(f => Path.GetFileName(f.FilePath)).ToHashSet(StringComparer.OrdinalIgnoreCase);
-            foreach ((string filename, string path) in MELoadedFiles.GetFilesLoadedInGame(game))
+            foreach ((string filename, string path) in RelatedLevelFiles.All(Path.GetDirectoryName(firstFile.FilePath), game))
             {
                 if (regex.IsMatch(filename) && !filename.Contains("_LOC_", StringComparison.OrdinalIgnoreCase) && !openFilePaths.Contains(filename))
                 {

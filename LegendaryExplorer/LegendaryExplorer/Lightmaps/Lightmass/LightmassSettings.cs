@@ -21,8 +21,8 @@ public static class LightmassIni
 {
     /// <summary>
     /// Applies the solver settings BioWare changed from UE3's BaseLightmass.ini for ME3. Their other changes don't apply here:
-    /// bAllowLightmapCompression and DefaultStaticMeshLightingRes are the editor's (the bake keeps the levels' DXT1 atlases and
-    /// allocations), and bVisualizeVolumeLightSamples only makes Lightmass return debug samples for the editor to draw.
+    /// bAllowLightmapCompression and DefaultStaticMeshLightingRes are the editor's (the bake keeps the levels' allocations and
+    /// writes its atlases in the job's LightmapTextureFormat), and bVisualizeVolumeLightSamples only makes Lightmass return debug samples for the editor to draw.
     /// SurfaceLightSampleSpacing is for volume samples, which the bake doesn't import; a coarser spacing just makes them cheaper.
     /// </summary>
     public static void ApplyBioWareOverrides(this DuplicatingIni ini)
