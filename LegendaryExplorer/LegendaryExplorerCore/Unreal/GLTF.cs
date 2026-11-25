@@ -795,8 +795,11 @@ namespace LegendaryExplorerCore.Unreal
                     skeletonMap.Add(mesh, skeletonNodes);
                 }
             }
-
-            var gltf = scene.ToGltf2();
+            
+            var gltf = scene.ToGltf2(new SceneBuilderSchema2Settings()
+            {
+                AllowArmatureDuplicatedNames = true
+            });
             gltf.Asset.Generator = $"{versionInfo ?? "Legendary Explorer Core"}";
 
             foreach (var (mesh, skeletonNodes) in skeletonMap)
