@@ -1,0 +1,124 @@
+<misc:NotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Dialogs.ISACTBankBuilderDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+        Title="ISACT Bank Builder" Width="760" SizeToContent="Height"
+        MaxHeight="850" WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="165"/><ColumnDefinition Width="*"/><ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.ColumnSpan="3" Margin="0,0,0,10">
+                <TextBlock x:Name="DescriptionText" TextWrapping="Wrap"/>
+                <TextBlock Margin="0,4,0,0">
+                    <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/wiki/Audio-Authoring-with-ISACT-in-LE1"
+                               misc:HyperlinkExtensions.IsExternal="True">View ISACT authoring documentation</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+
+            <Label Grid.Row="1" Content="WAV source folder:" ToolTip="Folder containing the source WAVs."/>
+            <TextBox x:Name="WavFolderBox" Grid.Row="1" Grid.Column="1" Margin="3"
+                     ToolTip="WAV naming depends on the selected content type."/>
+            <Button Grid.Row="1" Grid.Column="2" Margin="3" Content="Browse" Click="BrowseWavFolder_Click"
+                    ToolTip="Select the folder containing the source WAVs."/>
+
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="3">
+                <Grid x:Name="ExistingBankPanel">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="165"/><ColumnDefinition Width="*"/><ColumnDefinition Width="80"/></Grid.ColumnDefinitions>
+                    <Label Content="Existing ISB:" ToolTip="The final sample bank that new or replacement audio will be added to."/>
+                    <TextBox x:Name="ExistingIsbBox" Grid.Column="1" Margin="3" ToolTip="Existing compiled ISACT sample bank."/>
+                    <Button Grid.Column="2" Margin="3" Content="Browse" Click="BrowseExistingIsb_Click" ToolTip="Select the existing ISB."/>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="165"/><ColumnDefinition Width="*"/><ColumnDefinition Width="80"/></Grid.ColumnDefinitions>
+                    <Label Content="Content type:" ToolTip="Controls how WAV filenames become Sound Events."/>
+                    <ComboBox x:Name="AuthoringModeComboBox" Grid.Column="1" Grid.ColumnSpan="2" Margin="3"
+                              DisplayMemberPath="DisplayName" SelectionChanged="AuthoringModeComboBox_SelectionChanged"
+                              ToolTip="Conversation pairs VO line IDs; codex uses exact names; soundsets translate vanilla cue codes; music uses named events."/>
+                </Grid>
+                <CheckBox x:Name="LoopingMusicQueueCheckBox" Margin="168,3,3,3" Visibility="Collapsed"
+                          Content="Create a looping Sound Queue named after the bank"
+                          ToolTip="Optional. Without this, music WAVs create ordinary Sound Events only."/>
+            </StackPanel>
+
+            <Label Grid.Row="3" Content="Bank name:" ToolTip="Name used for the generated ICB and ISB."/>
+            <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/><ColumnDefinition Width="95"/><ColumnDefinition Width="85"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="BankNameBox" Margin="3" ToolTip="For conversations, this should normally match the BioConversation name."/>
+                <Label Grid.Column="1" Content="Localisation:" ToolTip="Language suffix used by LE1 audio objects."/>
+                <ComboBox x:Name="LocalizationComboBox" Grid.Column="2" Margin="3" DisplayMemberPath="DisplayName"
+                          ToolTip="Controls the ISB, BioStreamingData and DVDStreamingAudioData suffix. Inferred from a selected LOC package."/>
+            </Grid>
+
+            <Label Grid.Row="4" Content="Output folder:" ToolTip="Folder where the final banks will be written."/>
+            <TextBox x:Name="OutputFolderBox" Grid.Row="4" Grid.Column="1" Margin="3" ToolTip="Output location for the compiled ICB and ISB."/>
+            <Button Grid.Row="4" Grid.Column="2" Margin="3" Content="Browse" Click="BrowseOutputFolder_Click" ToolTip="Select the output folder."/>
+
+            <Label Grid.Row="5" Content="BankBuilder.exe:" ToolTip="Official ISACT command-line bank compiler."/>
+            <TextBox x:Name="BankBuilderBox" Grid.Row="5" Grid.Column="1" Margin="3" ToolTip="Path to the official BankBuilder.exe."/>
+            <Button Grid.Row="5" Grid.Column="2" Margin="3" Content="Browse" Click="BrowseBankBuilder_Click" ToolTip="Locate BankBuilder.exe."/>
+
+            <Label Grid.Row="6" Content="Stream packet (ms):" ToolTip="Streaming packet duration stored in the sample bank."/>
+            <TextBox x:Name="PacketSizeBox" Grid.Row="6" Grid.Column="1" Width="100" HorizontalAlignment="Left" Margin="3" Text="2500"
+                     ToolTip="LE1 dialogue banks commonly use 2500 ms."/>
+            <Label Grid.Row="7" Content="Vorbis quality:" ToolTip="Ogg Vorbis compression quality passed to BankBuilder."/>
+            <TextBox x:Name="QualityBox" Grid.Row="7" Grid.Column="1" Width="100" HorizontalAlignment="Left" Margin="3" Text="0.8"
+                     ToolTip="Compression quality from 0 to 1. LE1 commonly uses 0.8."/>
+
+            <CheckBox x:Name="NormalizeCheckBox" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" Margin="3,8" IsChecked="True"
+                      Content="Convert incompatible WAVs to signed 16-bit PCM automatically"
+                      ToolTip="Converts unsupported WAV formats while preserving sample rate and channel count."/>
+
+            <Separator Grid.Row="9" Grid.ColumnSpan="3" Margin="0,8"/>
+            <CheckBox x:Name="CopyIsbCheckBox" Grid.Row="10" Grid.ColumnSpan="3" Margin="3"
+                      Content="Copy the finished ISB into a DLC Content folder"
+                      ToolTip="Copies the external sample bank into the selected mod Content folder."/>
+            <Label Grid.Row="11" Content="DLC Content folder:" ToolTip="Usually DLC_MOD_Name/Content."/>
+            <TextBox x:Name="DlcContentBox" Grid.Row="11" Grid.Column="1" Margin="3" ToolTip="Destination folder for the external ISB."/>
+            <Button Grid.Row="11" Grid.Column="2" Margin="3" Content="Browse" Click="BrowseDlcContent_Click" ToolTip="Select the DLC Content folder."/>
+
+            <Separator Grid.Row="12" Grid.ColumnSpan="3" Margin="0,8"/>
+            <CheckBox x:Name="PackageIntegrationCheckBox" Grid.Row="13" Grid.ColumnSpan="3" Margin="3" IsChecked="True"
+                      Content="Create or update BioSoundNodeWaveStreamingData in a package"
+                      ToolTip="Writes the compiled ICB and stripped ISB metadata into the selected package export."/>
+            <Label Grid.Row="14" Content="Package file:" ToolTip="LE1 package containing the target streaming-data export."/>
+            <TextBox x:Name="DestinationPccBox" Grid.Row="14" Grid.Column="1" Margin="3" ToolTip="Package that will receive the new or rebuilt bank metadata."/>
+            <Button Grid.Row="14" Grid.Column="2" Margin="3" Content="Browse" Click="BrowseDestinationPcc_Click" ToolTip="Select an LE1 PCC or UPK."/>
+            <Label Grid.Row="15" Content="BioStreamingData export:" ToolTip="Streaming-data export to update."/>
+            <ComboBox x:Name="StreamingDataComboBox" Grid.Row="15" Grid.Column="1" Grid.ColumnSpan="2" Margin="3"
+                      DisplayMemberPath="DisplayName" SelectedValuePath="UIndex"
+                      ToolTip="Choose existing BioStreamingData. New builds can instead create one."/>
+
+            <StackPanel x:Name="ExistingIcbPanel" Grid.Row="16" Grid.ColumnSpan="3">
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="165"/><ColumnDefinition Width="*"/><ColumnDefinition Width="80"/></Grid.ColumnDefinitions>
+                    <Label Content="Existing ICB (optional):" ToolTip="Optional override for the ICB embedded in the selected BioStreamingData."/>
+                    <TextBox x:Name="ExistingIcbBox" Grid.Column="1" Margin="3"
+                             ToolTip="Leave blank to extract the current ICB from the selected package export."/>
+                    <Button Grid.Column="2" Margin="3" Content="Browse" Click="BrowseExistingIcb_Click" ToolTip="Select an external existing ICB."/>
+                </Grid>
+            </StackPanel>
+
+            <Separator Grid.Row="17" Grid.ColumnSpan="3" Margin="0,8"/>
+            <TextBlock x:Name="StatusText" Grid.Row="18" Grid.ColumnSpan="3" Margin="3" TextWrapping="Wrap"/>
+            <ProgressBar x:Name="Progress" Grid.Row="19" Grid.ColumnSpan="3" Height="16" Margin="3" IsIndeterminate="True" Visibility="Collapsed"/>
+            <StackPanel Grid.Row="20" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                <Button Width="90" Margin="3" Content="Cancel" Click="Cancel_Click" ToolTip="Close without running the operation."/>
+                <Button x:Name="RunButton" Width="110" Margin="3" Content="Build" IsDefault="True" Click="Run_Click" ToolTip="Run the configured ISACT bank operation."/>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</misc:NotifyPropertyChangedWindowBase>
