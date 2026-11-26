@@ -1,6 +1,4 @@
-﻿using ClosedXML.Excel;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,15 +11,22 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
+using ClosedXML.Excel;
+using LegendaryExplorer.Audio;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorer.Tools.Soundplorer;
+using LegendaryExplorer.UnrealExtensions;
+using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.GameFilesystem;
-using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
-using LegendaryExplorer.SharedUI.Bases;
-using LegendaryExplorerCore;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Sound.ISACT;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 
 namespace LegendaryExplorer.Tools.DialogueDumper
@@ -88,7 +93,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         private static BackgroundWorker xlworker = new();
         public BlockingCollection<List<string>> _xlqueue = new();
         private ActionBlock<DialogueDumperSingleFileTask> ProcessingQueue;
-        private string outputfile;
+        public string outputfile;
 
         private int _listViewHeight;
         public int ListViewHeight
@@ -102,6 +107,8 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             // Player commands
             DumpGameCommand = new RelayCommand(DumpSelectedGame, CanDumpGame);
             DumpSpecificFilesCommand = new RelayCommand(DumpSpecificFiles, CanDumpSpecificFiles);
+            DumpGameAudioCommand = new RelayCommand(DumpSelectedGameAudio, CanDumpGame);
+            DumpSpecificAudioFilesCommand = new RelayCommand(DumpSpecificAudioFiles, CanDumpSpecificFiles);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             ManageTLKsCommand = new RelayCommand(ManageTLKs);
         }
@@ -137,6 +144,34 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             this.RestoreAndBringToFront();
         }
 
+        private async void DumpSpecificAudioFiles(object obj)
+        {
+            CommonOpenFileDialog dlg = new()
+            {
+                Multiselect = true,
+                EnsureFileExists = true,
+                Title = "Select files to dump",
+            };
+            dlg.Filters.Add(new CommonFileDialogFilter("All supported files", "*.pcc;*.sfm;*.u;*.upk"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3/LE package files", "*.pcc"));
+
+            if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
+            {
+                var dlgOut = new CommonOpenFileDialog("Select output folder")
+                {
+                    IsFolderPicker = true
+                };
+                if (dlgOut.ShowDialog(this) != CommonFileDialogResult.Ok)
+                {
+                    return;
+                }
+                outputfile = dlgOut.FileName;
+                await DumpAudioPackages(dlg.FileNames.ToList(), outputfile);
+            }
+            this.RestoreAndBringToFront();
+        }
+
         /// <summary>
         /// Cancelation of dumping
         /// </summary>
@@ -155,6 +190,8 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         #region Commands
         public ICommand DumpGameCommand { get; set; }
         public ICommand DumpSpecificFilesCommand { get; set; }
+        public ICommand DumpGameAudioCommand { get; set; }
+        public ICommand DumpSpecificAudioFilesCommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
         public ICommand ManageTLKsCommand { get; set; }
 
@@ -197,6 +234,11 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         private void DumpSelectedGame(object obj)
         {
             DumpGame(SelectedGame);
+        }
+
+        private void DumpSelectedGameAudio(object obj)
+        {
+            DumpGameAudio(SelectedGame);
         }
 
         private bool CanCancelDump(object obj)
@@ -244,6 +286,21 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                 outputfile = m.FileName;
                 this.RestoreAndBringToFront();
                 DumpPackagesFromFolder(rootPath, outputfile, game);
+            }
+        }
+
+        private void DumpGameAudio(MEGame game)
+        {
+            string rootPath = MEDirectories.GetDefaultGamePath(game);
+            var dlgOut = new CommonOpenFileDialog("Select output folder")
+            {
+                IsFolderPicker = true
+            };
+            if (dlgOut.ShowDialog(this) == CommonFileDialogResult.Ok)
+            {
+                outputfile = dlgOut.FileName;
+                this.RestoreAndBringToFront();
+                DumpAudioPackagesFromFolder(rootPath, outputfile, game);
             }
         }
 
@@ -299,6 +356,27 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             List<string> files = Directory.GetFiles(path, "Bio*.*", SearchOption.AllDirectories)
                 .Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower())) && s.GetUnrealLocalization() == MELocalization.None || s.GetUnrealLocalization() == SelectedLocalization).ToList();
             await DumpPackages(files, outFile, game);
+        }
+
+
+        /// <summary>
+        /// Dumps PCC data from all PCCs in the specified folder, recursively.
+        /// </summary>
+        /// <param name="path">Base path to start dumping functions from. Will search all subdirectories for package files.</param>
+        /// <param name="game">MEGame game determines.  If default then Unknown, which means done as single file (always fully parsed). </param>
+        /// <param name="outputfile">Output audio files to the selected folder.</param>
+        public async void DumpAudioPackagesFromFolder(string path, string outFile, MEGame game = MEGame.Unknown)
+        {
+            OverallProgressValue = 0;
+            OverallProgressMaximum = 100;
+            CurrentOverallOperationText = "Scanning...";
+            await Task.Delay(100);  //allow dialog catch up before i/o
+
+            path = Path.GetFullPath(path);
+            var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
+            List<string> files = Directory.GetFiles(path, "Bio*.*", SearchOption.AllDirectories)
+                .Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower())) && s.GetUnrealLocalization() == MELocalization.None || s.GetUnrealLocalization() == SelectedLocalization).ToList();
+            await DumpAudioPackages(files, outFile, game);
         }
 
         private async Task DumpPackages(List<string> files, string outFile, MEGame game = MEGame.Unknown)
@@ -400,6 +478,62 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             }
         }
 
+        private async Task DumpAudioPackages(List<string> files, string outFile, MEGame game = MEGame.Unknown)
+        {
+            CurrentOverallOperationText = "Dumping packages...";
+            OverallProgressMaximum = files.Count;
+            OverallProgressValue = 0;
+            isProcessing = true;
+
+            _xlqueue = new BlockingCollection<List<string>>(); //Reset queue for multiple operations
+
+            //Background Consumer does work
+            xlworker = new BackgroundWorker();
+            xlworker.DoWork += XlAudioProcessor;
+            xlworker.RunWorkerCompleted += Xlworker_RunAudioWorkerCompleted;
+            xlworker.WorkerSupportsCancellation = true;
+            xlworker.RunWorkerAsync();
+
+            ProcessingQueue = new ActionBlock<DialogueDumperSingleFileTask>(x =>
+            {
+                if (x.DumpCanceled)
+                {
+                    OverallProgressValue++;
+                    return;
+                }
+                Application.Current.Dispatcher.Invoke(() => CurrentDumpingItems.Add(x));
+                x.DumpPackageFileAudio(game, this); // What to do on each item
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    OverallProgressValue++; //Concurrency 
+                    CurrentDumpingItems.Remove(x);
+                });
+            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Math.Min(App.CoreCount, 8) }); // How many items at the same time 
+
+            AllDumpingItems = new List<DialogueDumperSingleFileTask>();
+            CurrentDumpingItems.ClearEx();
+            foreach (var item in files)
+            {
+                var threadtask = new DialogueDumperSingleFileTask(item, SelectedLocalization);
+                AllDumpingItems.Add(threadtask); //For setting cancelation value
+                ProcessingQueue.Post(threadtask); // Post all items to the block
+            }
+
+            ProcessingQueue.Complete(); // Signal completion
+            CommandManager.InvalidateRequerySuggested();
+            await ProcessingQueue.Completion;
+
+            if (!shouldDoDebugOutput)
+            {
+                CurrentOverallOperationText = $"Dump {(DumpCanceled ? "canceled" : "completed")} - saving excel";
+            }
+
+            while (isProcessing)
+            {
+                isProcessing = await CheckProcess();
+            }
+        }
+
         public async Task<bool> CheckProcess()
         {
             if (_xlqueue.IsEmpty() && ((OverallProgressValue >= OverallProgressMaximum) || DumpCanceled))
@@ -440,6 +574,33 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             }
         }
 
+        private void Xlworker_RunAudioWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            xlworker.CancelAsync();
+            CommandManager.InvalidateRequerySuggested();
+            try
+            {
+                if (DumpCanceled)
+                {
+                    DumpCanceled = false;
+                    OverallProgressMaximum = 100;
+                    MessageBox.Show("Dialogue Dump was cancelled. Work in progress was saved.", "Cancelled", MessageBoxButton.OK);
+                    CurrentOverallOperationText = "Dump canceled";
+                }
+                else
+                {
+                    OverallProgressValue = 100;
+                    OverallProgressMaximum = 100;
+                    MessageBox.Show("Dialogue Dump was completed.", "Success", MessageBoxButton.OK);
+                    CurrentOverallOperationText = "Dump completed";
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Unable to save excel file. Check it is not open.", "Error", MessageBoxButton.OK);
+            }
+        }
+
         private void XlProcessor(object sender, DoWorkEventArgs e)
         {
             foreach (List<string> newrow in _xlqueue.GetConsumingEnumerable(CancellationToken.None))
@@ -459,6 +620,21 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                 catch
                 {
                     MessageBox.Show($"Error writing excel. {newrow[0]}, {newrow[2]}, {newrow[6]}, {newrow[7]}");
+                }
+            }
+        }
+
+        private void XlAudioProcessor(object sender, DoWorkEventArgs e)
+        {
+            foreach (List<string> newrow in _xlqueue.GetConsumingEnumerable(CancellationToken.None))
+            {
+                try
+                {
+                    // Noop - actual work is being done in the task
+                }
+                catch
+                {
+                    MessageBox.Show($"Error writing audio.");
                 }
             }
         }
@@ -983,6 +1159,354 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             {
                 var excelout = new List<string> { "DEBUG", "SUCCESS", fileName };
                 dumper._xlqueue.Add(excelout);
+            }
+        }
+
+
+        /// <summary>
+        /// Dumps Audio into a folder
+        /// </summary>
+        public void DumpPackageFileAudio(MEGame GameBeingDumped, DialogueDumperWindow dumper)
+        {
+            string fileName = ShortFileName.ToUpper();
+            dumper.CurrentOverallOperationText = $"Dumping Packages.... {dumper.OverallProgressValue}/{dumper.OverallProgressMaximum}";
+
+            //SETUP FILE FILTERS
+            var fileLoc = fileName.GetUnrealLocalization();
+
+            string className = null;
+            IMEPackage pcc = null;
+
+            try
+            {
+                var testPcc = MEPackageHandler.QuickOpenMEPackage(File);
+                if (testPcc.Game.IsGame1() || dumper.shouldDoDebugOutput)
+                {
+                    // We need to do a full load so it loads the local TLKS
+                    pcc = MEPackageHandler.OpenMEPackage(File);
+                }
+                else
+                {
+                    // We can do a partial load which will skip reading a lot of stuff
+                    // THIS ONLY WORKS IN RELEASE MODE
+                    // because the debug dump stuff would mean i have to load a bunch of stuff so I don't bother.
+                    pcc = MEPackageHandler.UnsafePartialLoad(File, x =>
+                        x.ClassName is "BioConversation" or "BioTlkFile" or "BioTlkFileSet"
+                    );
+                }
+                if (pcc.Game.IsGame1() && pcc is UnrealPackageFile upf)
+                {
+                    // Force it to read the proper TLK - it may not be set properly in LEX
+                    upf.SetLocalTLKs(upf.ReadLocalTLKs(_selectedLocalization.ToLocaleString(pcc.Game)));
+                }
+                //using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File);
+                if (GameBeingDumped == MEGame.Unknown) //Correct mapping
+                {
+                    GameBeingDumped = pcc.Game;
+                }
+
+                CurrentFileProgressMaximum = pcc.ExportCount;
+
+                //CHECK FOR WAV FILES TO DUMP
+
+                // We do a .ToArray() since we need to account. Count() a few times
+                var audioExports = pcc.Exports.Where(e => e.ClassName is "WwiseBank" or "WwiseStream" or "SoundNodeWave").Select(x => new SoundplorerExport(x)).ToArray();
+                CurrentFileProgressMaximum = audioExports.Length;
+
+                int doneCount = 0;
+                var location = dumper.outputfile;
+                foreach (object o in audioExports)
+                {
+                    if (DumpCanceled)
+                    {
+                        return;
+                    }
+
+                    CurrentFileProgressValue = doneCount++;
+                    switch (o)
+                    {
+                        case SoundplorerExport sp when sp.Export.ClassName == "WwiseStream":
+                            {
+                                string outfile = Path.Combine(location, sp.Export.ObjectName + ".wav");
+                                ExportWave(sp, outfile);
+                                break;
+                            }
+                        case SoundplorerExport sp when sp.Export.ClassName == "WwiseBank":
+                            {
+                                ExtractBankToWav(sp, location);
+                                break;
+                            }
+                        case SoundplorerExport sp when sp.Export.ClassName == "SoundNodeWave":
+                            {
+                                ExtractSoundNodeToWav(sp, location);
+                                break;
+                            }
+                        case ISACTFileEntry ife:
+                            {
+                                string outfile = Path.Combine(location, Path.GetFileNameWithoutExtension(ife.Entry.TitleInfo.Value) + ".wav");
+                                MemoryStream ms = AudioStreamHelper.GetWaveStreamFromISBEntry(ife.Entry);
+                                System.IO.File.WriteAllBytes(outfile, ms.ToArray());
+                                break;
+                            }
+                        case AFCFileEntry afE:
+                            {
+                                string presetfilename = $"{Path.GetFileNameWithoutExtension(afE.AFCPath)}_{afE.Offset}.wav";
+                                ExportWaveAFC(afE, Path.Combine(location, presetfilename));
+                                break;
+                            }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (dumper.shouldDoDebugOutput)
+                {
+                    var excelout = new List<string>
+                        { "DEBUG", "FAILURE", fileName, className, CurrentFileProgressValue.ToString(), e.ToString() };
+                    dumper._xlqueue.Add(excelout);
+                }
+            }
+            finally
+            {
+                pcc?.Dispose();
+            }
+        }
+
+        private void ExportWave(SoundplorerExport spExport, string outputLocation)
+        {
+            if (spExport != null && spExport.Export.ClassName == "WwiseStream")
+            {
+                bool silent = outputLocation != null;
+              
+                WwiseStream w = spExport.Export.GetBinaryData<WwiseStream>();
+                Stream source = w.CreateWaveStream();
+                if (source != null)
+                {
+                    using (var fileStream = System.IO.File.Create(outputLocation))
+                    {
+                        source.Seek(0, SeekOrigin.Begin);
+                        source.CopyTo(fileStream);
+                    }
+                    if (!silent)
+                    {
+                        MessageBox.Show("Done.");
+                    }
+                }
+                else
+                {
+                    if (!silent)
+                    {
+                        MessageBox.Show("Error creating Wave file.\nThis might not be a supported codec or the AFC data may be incorrect.");
+                    }
+                }
+            }
+        }
+
+        private void ExtractBankToWav(SoundplorerExport spExport, string location)
+        {
+            if (spExport != null && spExport.Export.ClassName == "WwiseBank")
+            {
+                var bank = spExport.Export.GetBinaryData<WwiseBankParsed>();
+                if (bank.EmbeddedFiles.Count > 0)
+                {
+                    foreach ((uint wemID, byte[] wemData) in bank.EmbeddedFiles)
+                    {
+                        string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
+                        string wemName = $"{spExport.Export.ObjectName}_0x{wemID:X8}";
+                        if (wemHeader == "RIFF" || wemHeader == "RIFX")
+                        {
+                            var wem = new EmbeddedWEMFile(wemData, wemName, spExport.Export); //will correct truncated stuff
+                            Stream waveStream = GetPCMStream(forcedWemFile: wem);
+                            if (waveStream != null && waveStream.Length > 0)
+                            {
+                                string outputname = wemName + ".wav";
+                                string outpath = Path.Combine(location, outputname);
+                                waveStream.SeekBegin();
+                                using var fileStream = System.IO.File.Create(outpath);
+                                waveStream.CopyTo(fileStream);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ExtractSoundNodeToWav(SoundplorerExport spExport, string location)
+        {
+            if (spExport != null && spExport.Export.ClassName == "SoundNodeWave")
+            {
+                var soundNodeWave = spExport.Export.GetBinaryData<SoundNodeWave>();
+                if (soundNodeWave.RawData.Length > 0)
+                {
+                    ISACTBankPair ibp = ISACTHelper.GetPairedBanks(soundNodeWave.RawData);
+                    foreach (var isbC in ibp.ISBBank.GetAllBankChunks().Where(x => x.ChunkName == "data"))
+                    {
+                        var objectParent = isbC.GetParent();
+                        if (objectParent != null && objectParent is ISACTListBankChunk bankEntry)
+                        {
+                            string isbName = null;
+                            try
+                            {
+                                // This is to prevent error if malformed names
+                                isbName = spExport.Export.ObjectName.Instanced.Substring(0, spExport.Export.ObjectName.Instanced.IndexOf(":"));
+                            }
+                            catch
+                            {
+                            }
+                            Stream waveStream = AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry, isbName: isbName, game: spExport.Export.Game);
+                            if (waveStream != null && waveStream.Length > 0)
+                            {
+                                waveStream.WriteToFile(Path.Combine(location, spExport.Export.ObjectName.Instanced.Replace(':', '_') + ".wav"));
+                            }
+                        }
+                    }
+                } else
+                {
+                    var bsd = spExport.Export.GetProperty<ObjectProperty>("BioStreamingData");
+                    if (bsd == null)
+                    {
+                        //ExportInformationList.Add("This export contains no embedded audio");
+                        return;
+                    }
+
+                    // Imports are very unreliable here and will be slow to load
+                    if (bsd.ResolveToEntry(spExport.Export.FileRef) is ExportEntry streamingData)
+                    {
+                        // Remove the ISB: prefix
+                        var indexEntryName = spExport.Export.ObjectName.Instanced.Substring(spExport.Export.ObjectName.Instanced.IndexOf(":") + 1);
+                        ISACTBankPair ibp = ISACTHelper.GetPairedBanks(streamingData.GetBinaryData().Skip(4).ToArray());
+                        IndexEntry foundICBInfo = null;
+                        if (ibp.ICBBank.GetAllBankChunks().FirstOrDefault(x => x.ChunkName == ContentIndexBankChunk.FixedChunkTitle) is ContentIndexBankChunk contentIndex)
+                        {
+                            // Find info about sample in ICB so we can get entry in ISB
+                            foreach (var p in contentIndex.IndexPages)
+                            {
+                                if (foundICBInfo != null)
+                                    break;
+                                foreach (var indexEntry in p.IndexEntries)
+                                {
+                                    if (indexEntry.Title == indexEntryName)
+                                    {
+                                        foundICBInfo = indexEntry;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (foundICBInfo == null)
+                        {
+                            //ExportInformationList.Add("Could not find information about this sound in the streaming data ICB");
+                            return;
+                        }
+
+                        var referencedSndeChunk = ibp.ICBBank.GetAllBankChunks().OfType<ISACTListBankChunk>().FirstOrDefault(x => x.GetAllSubChunks().Any(a => a is IntBankChunk { ChunkName: "indx" } ac && ac.Value == foundICBInfo.ObjectIndex));
+                        if (referencedSndeChunk == null)
+                        {
+                            //ExportInformationList.Add("Could not find snde chunk about this sound in the streaming data ICB");
+                            return;
+                        }
+
+                        var soundTracks = referencedSndeChunk.GetAllSubChunks().OfType<SoundEventSoundTracksFour>().FirstOrDefault()?.SoundTracks;
+                        soundTracks ??= referencedSndeChunk.GetAllSubChunks().OfType<SoundEventSoundTracks>().FirstOrDefault()?.SoundTracks; // ISACT generated soundtracks
+                        if (soundTracks == null)
+                        {
+                            //ExportInformationList.Add("Could not find sound track about this sound in the streaming data ICB");
+                            return;
+                        }
+
+                        foreach (var soundTrack in soundTracks)
+                        {
+                            var isbIndex = soundTrack.BufferIndex & 0xFFFF;
+                            var sampChunk = ibp.ISBBank.GetAllBankChunks().OfType<ISACTListBankChunk>().FirstOrDefault(x => x.ObjectType == "samp" && x.GetAllSubChunks().Any(a => a is IntBankChunk { ChunkName: "indx" } ac && ac.Value == isbIndex));
+                            if (sampChunk == null)
+                            {
+                                //ExportInformationList.Add($"Could not find samp resource index {isbIndex} in streaming ISB referenced by ICB");
+                                continue;
+                            }
+
+                            if (sampChunk.SampleOffset != null)
+                            {
+
+                                
+                                string isbName = null;
+                                try
+                                {
+                                    // This is to prevent error if malformed names
+                                    isbName = spExport.Export.ObjectName.Instanced.Substring(0, spExport.Export.ObjectName.Instanced.IndexOf(":"));
+                                }
+                                catch
+                                {
+                                }
+                                Stream waveStream = AudioStreamHelper.GetWaveStreamFromISBEntry(sampChunk, isbName: isbName, game: spExport.Export.Game);
+                                if (waveStream != null && waveStream.Length > 0)
+                                {
+                                    waveStream.WriteToFile(Path.Combine(location, spExport.Export.ObjectName.Instanced.Replace(':', '_') + ".wav"));
+                                }
+                            }
+                            else
+                            {
+                                //ExportInformationList.Add("The ISB data for this entry does not list an external ISB offset for some reason");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //ExportInformationList.Add("Audio data can only load in the toolset if the streaming data is an export");
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Gets a PCM stream of data (WAV) from either the currently loaded export or selected WEM
+        /// </summary>
+        /// <param name="forcedWemFile">WEM that we will force to get a stream for</param>
+        /// <returns></returns>
+        public Stream GetPCMStream(ExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
+        {
+            ExportEntry localCurrentExport = forcedWwiseStreamExport;
+            WwiseStream wwiseStream = null;
+            if (localCurrentExport != null || forcedWemFile != null)
+            {
+                if (localCurrentExport?.ClassName == "WwiseStream")
+                {
+                    wwiseStream = localCurrentExport.GetBinaryData<WwiseStream>();
+
+                    if (wwiseStream.IsPCCStored || wwiseStream.GetPathToAFC() != "")
+                    {
+                        return wwiseStream.CreateWaveStream();
+                    }
+                }
+                else if (forcedWemFile != null || (localCurrentExport?.ClassName == "WwiseBank"))
+                {
+                    object currentWEMItem = forcedWemFile;
+                    if (currentWEMItem == null || currentWEMItem is string)
+                    {
+                        return null; //nothing selected, or current wem is not playable
+                    }
+
+                    var wemObject = (EmbeddedWEMFile)currentWEMItem;
+                    string basePath = $"{Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
+                    var outpath = basePath + ".wem";
+                    System.IO.File.WriteAllBytes(outpath, wemObject.WemData);
+                    return AudioStreamHelper.ConvertRIFFToWaveVGMStream(outpath); //use vgmstream
+                }
+            }
+
+            return null;
+        }
+
+        private void ExportWaveAFC(AFCFileEntry afE, string location = null)
+        {
+            using (Stream s = AudioStreamHelper.CreateWaveStreamFromRaw(afE.AFCPath, afE.Offset, afE.DataSize, afE.ME2))
+            {
+                using (var fileStream = System.IO.File.Create(location))
+                {
+                    s.Seek(0, SeekOrigin.Begin);
+                    s.CopyTo(fileStream);
+                }
             }
         }
     }
